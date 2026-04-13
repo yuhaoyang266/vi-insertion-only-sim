@@ -1,73 +1,63 @@
 # vi-insertion-only-sim
 
-GitHub-ready paper package for:
+Simulation-only research package for the manuscript:
 
 **Demonstration Support Gates Learnability in a 3DoF Variable-Impedance Insertion Benchmark**
 
-Target repository URL, also embedded in `paper/main.tex`:
+This repository contains the LaTeX source, paper figures, frozen result artifacts, and focused
+reproduction scripts for a controlled 3DoF analytical insertion benchmark. The central claim is
+deliberately scoped: in this teacher-coupled benchmark, behavior-cloning demonstration support is
+the cleanest gate into useful contact, while variable impedance has a localized high-friction
+load/work advantage rather than implying a general algorithm ranking.
+
+Repository URL embedded in the manuscript:
 
 `https://github.com/yuhaoyang266/vi-insertion-only-sim`
 
-## Repository Layout
+## Quick Links
 
-```text
-paper/
-  main.tex
-  references.bib
+| Item | Path |
+| --- | --- |
+| Manuscript source | [`paper/main.tex`](paper/main.tex) |
+| Bibliography | [`paper/references.bib`](paper/references.bib) |
+| Main figures | [`figures/main/`](figures/main/) |
+| Appendix figures | [`figures/appendix/`](figures/appendix/) |
+| Supplementary successful-only mechanics view | [`supplement/figures/`](supplement/figures/) |
+| Final benchmark artifacts | [`artifacts/main_benchmark/`](artifacts/main_benchmark/) |
+| Diagnostic sweep artifacts | [`artifacts/diagnostics/`](artifacts/diagnostics/) |
+| Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
+| Mechanics trace artifacts | [`artifacts/mechanics/`](artifacts/mechanics/) |
+| Figure/table export scripts | [`scripts/export/`](scripts/export/) |
+| Experiment runners | [`scripts/experiments/`](scripts/experiments/) |
+| Paper-facing source modules | [`src/vi_full/`](src/vi_full/) |
 
-figures/
-  main/
-    Figure 1, Figure 2, Figure 3 assets
-  appendix/
-    Appendix Figure A1 and A2 assets
+## Evidence Map
 
-supplement/
-  figures/
-    Successful-only companion view for Figure 3
-
-artifacts/
-  main_benchmark/
-    final benchmark JSON/table/statistics artifacts
-  diagnostics/
-    factorized mechanism sweep artifacts
-  stress_tests/
-    PPO large-budget, tuned fixed-stiffness, and pose-perturbation artifacts
-  mechanics/
-    high-friction mechanics trace and contact-transition audit artifacts
-
-scripts/
-  export/
-    figure/table export scripts
-  experiments/
-    experiment runner scripts for the reported artifacts
-
-src/
-  vi_full/
-    source modules required by the experiment and export scripts
-
-tests/
-  focused tests for paper figures, tables, and paper-facing runners
-
-docs/
-  figure_asset_manifest.md
-  github_upload.md
-```
+| Evidence block | Where to look | Role |
+| --- | --- | --- |
+| Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
+| Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
+| High-friction mechanics traces | `figures/main/fig3_*`, `supplement/figures/`, `artifacts/mechanics/` | Load/work interpretation |
+| PPO large-budget audit | `artifacts/stress_tests/three_dof_ppo_large_budget_ablation_20260413_full_cpu.json` | PPO-only non-contact check |
+| Tuned fixed-stiffness sweep | `artifacts/stress_tests/three_dof_tuned_fixed_impedance_sweep_20260412_full.json` | Fixed-impedance tuning check |
+| Pose-perturbation proxy | `artifacts/stress_tests/three_dof_pose_perturbation_study_stage5_20260412.json` | Scope stress test |
 
 ## Build The Manuscript
 
-Run LaTeX from the `paper/` directory:
+From the repository root:
 
 ```bash
 cd paper
 latexmk -pdf main.tex
 ```
 
-The manuscript uses relative figure paths and expects the repository layout above.
+The TeX source uses relative paths to `../figures/main/`, `../figures/appendix/`, and
+`../supplement/figures/`.
 
-## Reproduce Paper Assets
+## Reproduce Exported Assets
 
-The already-exported paper assets are committed under `figures/` and `supplement/`. To regenerate
-them from artifacts:
+The exported PDF/PNG figures are already included. To regenerate them from the frozen artifacts,
+run the export scripts from the repository root:
 
 ```bash
 python scripts/export/export_paper_only_sim_figure1.py
@@ -77,10 +67,35 @@ python scripts/export/export_paper_only_sim_figureA1.py
 python scripts/export/export_paper_only_sim_figureA2.py
 ```
 
-The export scripts are copied from the working project and may need path adjustment if run outside
-this packaged layout.
+The scripts are preserved with the source modules used to produce the paper assets. If running them
+outside the original working tree, verify paths before regenerating figures.
 
-## Scope Note
+## Reproduce Experiments
 
-This repository package is intended for a benchmark-local, teacher-coupled manuscript. The paper is
-not framed as a teacher-independent theorem or a general robotics algorithm ranking.
+The frozen artifacts used by the manuscript are included under `artifacts/`. The corresponding
+runners are kept under `scripts/experiments/`:
+
+```bash
+python scripts/experiments/run_3dof_uncertainty_benchmark.py
+python scripts/experiments/run_3dof_factor_sweeps.py
+python scripts/experiments/run_3dof_ppo_large_budget_ablation.py
+python scripts/experiments/run_3dof_tuned_fixed_impedance_sweep.py
+python scripts/experiments/run_3dof_pose_perturbation_study.py
+```
+
+These runs can be computationally slower than figure export. For manuscript inspection, the frozen
+JSON/Markdown artifacts are the canonical paper record.
+
+## Scope
+
+This is a simulation-only, translational 3DoF analytical benchmark. It uses relative observations,
+synthetic force signals, diagonal stiffness decoding, and behavior-cloning demonstrations generated
+by a variable-impedance teacher. The repository should therefore be read as a benchmark-local,
+teacher-coupled learnability study rather than a hardware validation, a 6DoF insertion benchmark, or
+a teacher-independent causal theorem.
+
+## Repository Hygiene
+
+The repository intentionally separates manuscript files, figures, supplementary views, result
+artifacts, scripts, source modules, and tests. Generated LaTeX products and Python caches are
+ignored; frozen paper artifacts are tracked.
