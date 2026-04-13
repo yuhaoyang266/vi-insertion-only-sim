@@ -1,0 +1,3036 @@
+{
+  "config": {
+    "train_mode": "bc_only",
+    "init_seeds": [
+      0,
+      1
+    ],
+    "demo_seeds": [
+      0,
+      1
+    ],
+    "eval_seeds": [
+      0,
+      1,
+      2
+    ],
+    "episodes_per_eval_seed": 50,
+    "max_episode_steps": 64,
+    "uncertainty_profiles": [
+      "nominal",
+      "tight_clearance",
+      "high_friction",
+      "offset_bias",
+      "noisy_force"
+    ],
+    "coverage_condition": "reset_repaired",
+    "training_budget": {
+      "total_timesteps": 0,
+      "bc_rollout_episodes": 8,
+      "bc_pretrain_steps": 32,
+      "bc_batch_size": 64
+    },
+    "bc_rollout_episodes": 8,
+    "bc_pretrain_steps": 32,
+    "bc_batch_size": 64,
+    "bc_demo_policy_name": "variable_impedance"
+  },
+  "results": {
+    "init_0__demo_0": {
+      "factor_values": {
+        "init_seed": 0,
+        "demo_seed": 0,
+        "coverage_condition": "reset_repaired",
+        "training_budget": {
+          "total_timesteps": 0,
+          "bc_rollout_episodes": 8,
+          "bc_pretrain_steps": 32,
+          "bc_batch_size": 64
+        }
+      },
+      "train_config": {
+        "total_timesteps": 0,
+        "n_envs": 1,
+        "n_steps": 16,
+        "batch_size": 16,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 0,
+        "demo_seed": 0,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "training_summary": {
+        "dapg_enabled": false,
+        "num_chunks": 0,
+        "num_demo_updates": 0,
+        "demo_updates_per_chunk": 1,
+        "demo_batch_size": 64,
+        "demo_dataset_id": "contact_new__reset_repaired",
+        "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+        "demo_dataset_hash": "e054f452c623"
+      },
+      "demo_audit": {
+        "episodes": 8,
+        "bc_demo_policy_name": "variable_impedance",
+        "num_rows": 211,
+        "contact_sample_count": 169,
+        "contact_sample_ratio": 0.8009478672985783,
+        "contact_episode_count": 8,
+        "contact_episode_ratio": 1.0,
+        "first_contact_step_histogram": {
+          "1": 4,
+          "5": 1,
+          "13": 3
+        },
+        "first_contact_step_mean": 6.0,
+        "low_force_onset_threshold_n": 2.0,
+        "low_force_onset_max_contact_steps": 3,
+        "low_force_onset_sample_count": 28,
+        "low_force_onset_sample_ratio": 0.13270142180094788,
+        "teacher_dataset_summary": {
+          "num_rows": 211,
+          "weight_sum": 211.0,
+          "mean_obs_xy_norm": 0.00022821470338385552,
+          "mean_obs_z": 0.0044149854220449924,
+          "mean_action_dx": -0.055869437754154205,
+          "mean_action_dy": 0.015027348883450031,
+          "mean_action_dz": -0.28265637159347534,
+          "mean_action_k_xy": 0.2861611545085907,
+          "mean_action_k_z": 0.2686018645763397,
+          "std_action_dx": 0.13670744001865387,
+          "std_action_dy": 0.03574025630950928,
+          "std_action_dz": 0.2830526828765869,
+          "std_action_k_xy": 0.15060368180274963,
+          "std_action_k_z": 0.21185733377933502,
+          "num_unique_action_rows": 199,
+          "num_unique_descent_impedance_rows": 28
+        }
+      },
+      "eval_results": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.917554832197515,
+              "mean_final_distance": 0.0009420348774061727,
+              "mean_episode_length": 54.02,
+              "mean_peak_contact_force": 1.0429600135287602,
+              "p95_peak_contact_force": 1.4621288754875017,
+              "mean_force_std": 0.18250271453201544,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 35.44,
+              "mean_settling_steps_after_contact": 33.86,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.919763965794629,
+              "mean_final_distance": 0.0009448348750998479,
+              "mean_episode_length": 54.22,
+              "mean_peak_contact_force": 1.0440954020214352,
+              "p95_peak_contact_force": 1.4621288754875017,
+              "mean_force_std": 0.1825051867203949,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 35.6,
+              "mean_settling_steps_after_contact": 34.04,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.92134415328379,
+              "mean_final_distance": 0.0009427928875959207,
+              "mean_episode_length": 54.28,
+              "mean_peak_contact_force": 1.0536478650170535,
+              "p95_peak_contact_force": 1.4621288754875017,
+              "mean_force_std": 0.18368541648631653,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 35.68,
+              "mean_settling_steps_after_contact": 34.06,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.919554317091978,
+            "mean_episode_return_std": 0.0015540705706012033,
+            "mean_final_distance_mean": 0.0009432208800339804,
+            "mean_final_distance_std": 1.1824776013167953e-06,
+            "mean_episode_length_mean": 54.17333333333334,
+            "mean_episode_length_std": 0.11115554667021921,
+            "mean_peak_contact_force_mean": 1.0469010935224163,
+            "mean_peak_contact_force_std": 0.004793152821679524,
+            "p95_peak_contact_force_mean": 1.4621288754875017,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.18289777257957562,
+            "mean_force_std_std": 0.0005569492620807316,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 35.57333333333333,
+            "mean_contact_steps_std": 0.09977753031397281,
+            "mean_settling_steps_after_contact_mean": 33.98666666666667,
+            "mean_settling_steps_after_contact_std": 0.08993825042154766,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.94,
+              "mean_episode_return": 6.576136812639715,
+              "mean_final_distance": 0.0009624630317541957,
+              "mean_episode_length": 55.88,
+              "mean_peak_contact_force": 1.3715637837951917,
+              "p95_peak_contact_force": 1.9478509222064924,
+              "mean_force_std": 0.21534265042658124,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 37.52,
+              "mean_settling_steps_after_contact": 35.46,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.94,
+              "mean_episode_return": 6.578580834207026,
+              "mean_final_distance": 0.0009630803281163217,
+              "mean_episode_length": 56.06,
+              "mean_peak_contact_force": 1.3798016837913212,
+              "p95_peak_contact_force": 1.9478509222064924,
+              "mean_force_std": 0.2151447807301523,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 37.68,
+              "mean_settling_steps_after_contact": 35.58,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.94,
+              "mean_episode_return": 6.579881314779617,
+              "mean_final_distance": 0.0009616659122331917,
+              "mean_episode_length": 56.16,
+              "mean_peak_contact_force": 1.3963669585048577,
+              "p95_peak_contact_force": 1.9478509222064924,
+              "mean_force_std": 0.217014434588314,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 37.8,
+              "mean_settling_steps_after_contact": 35.68,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.94,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.578199653875452,
+            "mean_episode_return_std": 0.0015522667087879342,
+            "mean_final_distance_mean": 0.0009624030907012365,
+            "mean_final_distance_std": 5.789863383448991e-07,
+            "mean_episode_length_mean": 56.03333333333333,
+            "mean_episode_length_std": 0.11585431464654958,
+            "mean_peak_contact_force_mean": 1.3825774753637903,
+            "mean_peak_contact_force_std": 0.010314330906070965,
+            "p95_peak_contact_force_mean": 1.9478509222064924,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.21583395524834917,
+            "mean_force_std_std": 0.0008386245517727357,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 37.666666666666664,
+            "mean_contact_steps_std": 0.11469767022723258,
+            "mean_settling_steps_after_contact_mean": 35.57333333333333,
+            "mean_settling_steps_after_contact_std": 0.08993825042154643,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.7403180285446345,
+              "mean_final_distance": 0.0009346183460775922,
+              "mean_episode_length": 59.6,
+              "mean_peak_contact_force": 1.6496502834754188,
+              "p95_peak_contact_force": 2.030240724425068,
+              "mean_force_std": 0.3042423469510654,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 38.14,
+              "mean_settling_steps_after_contact": 41.9,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.7339423580766935,
+              "mean_final_distance": 0.0009351363445373164,
+              "mean_episode_length": 59.66,
+              "mean_peak_contact_force": 1.652780802285881,
+              "p95_peak_contact_force": 2.030240724425068,
+              "mean_force_std": 0.30625658855760635,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 38.02,
+              "mean_settling_steps_after_contact": 41.96,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.736478139196005,
+              "mean_final_distance": 0.000933693339952144,
+              "mean_episode_length": 59.66,
+              "mean_peak_contact_force": 1.65977246699756,
+              "p95_peak_contact_force": 2.030240724425068,
+              "mean_force_std": 0.30642949129510216,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 38.1,
+              "mean_settling_steps_after_contact": 41.96,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.98,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.7369128419391116,
+            "mean_episode_return_std": 0.002620943638601891,
+            "mean_final_distance_mean": 0.0009344826768556842,
+            "mean_final_distance_std": 5.968641171640077e-07,
+            "mean_episode_length_mean": 59.63999999999999,
+            "mean_episode_length_std": 0.028284271247459622,
+            "mean_peak_contact_force_mean": 1.6540678509196198,
+            "mean_peak_contact_force_std": 0.004231392241582256,
+            "p95_peak_contact_force_mean": 2.030240724425068,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.3056428089345913,
+            "mean_force_std_std": 0.0009927887202671008,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 38.086666666666666,
+            "mean_contact_steps_std": 0.04988876515698482,
+            "mean_settling_steps_after_contact_mean": 41.94,
+            "mean_settling_steps_after_contact_std": 0.028284271247462973,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.794739203504918,
+              "mean_final_distance": 0.0009559268628950911,
+              "mean_episode_length": 54.06,
+              "mean_peak_contact_force": 1.1221569243691858,
+              "p95_peak_contact_force": 1.554295099141024,
+              "mean_force_std": 0.1900737884632882,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 35.54,
+              "mean_settling_steps_after_contact": 33.96,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.797252255215594,
+              "mean_final_distance": 0.0009570679556894389,
+              "mean_episode_length": 54.26,
+              "mean_peak_contact_force": 1.1206542709194673,
+              "p95_peak_contact_force": 1.554295099141024,
+              "mean_force_std": 0.18959993953790666,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 35.7,
+              "mean_settling_steps_after_contact": 34.1,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.798526669508168,
+              "mean_final_distance": 0.0009564011508314808,
+              "mean_episode_length": 54.32,
+              "mean_peak_contact_force": 1.1328922395615124,
+              "p95_peak_contact_force": 1.554295099141024,
+              "mean_force_std": 0.19108001437695127,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 35.78,
+              "mean_settling_steps_after_contact": 34.14,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.98,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.796839376076226,
+            "mean_episode_return_std": 0.0015735472811956991,
+            "mean_final_distance_mean": 0.0009564653231386703,
+            "mean_final_distance_std": 4.680539535036738e-07,
+            "mean_episode_length_mean": 54.21333333333333,
+            "mean_episode_length_std": 0.11115554667021921,
+            "mean_peak_contact_force_mean": 1.1252344782833885,
+            "mean_peak_contact_force_std": 0.005449493719116667,
+            "p95_peak_contact_force_mean": 1.554295099141024,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.19025124745938204,
+            "mean_force_std_std": 0.0006171299991434576,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 35.67333333333334,
+            "mean_contact_steps_std": 0.09977753031397281,
+            "mean_settling_steps_after_contact_mean": 34.06666666666667,
+            "mean_settling_steps_after_contact_std": 0.0771722460186015,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.907731818100748,
+              "mean_final_distance": 0.0009163191124054843,
+              "mean_episode_length": 50.7,
+              "mean_peak_contact_force": 1.123221183658424,
+              "p95_peak_contact_force": 1.5147122438597118,
+              "mean_force_std": 0.22966487565846352,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 33.78,
+              "mean_settling_steps_after_contact": 33.14,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.906657242084773,
+              "mean_final_distance": 0.0009176353842476268,
+              "mean_episode_length": 50.7,
+              "mean_peak_contact_force": 1.12467501071984,
+              "p95_peak_contact_force": 1.5147122438597118,
+              "mean_force_std": 0.23036539755136076,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 33.76,
+              "mean_settling_steps_after_contact": 33.14,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.905653146457339,
+              "mean_final_distance": 0.0009165112301606511,
+              "mean_episode_length": 50.74,
+              "mean_peak_contact_force": 1.1374978445573964,
+              "p95_peak_contact_force": 1.5147122438597118,
+              "mean_force_std": 0.23279322413472203,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 33.78,
+              "mean_settling_steps_after_contact": 33.28,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.90668073554762,
+            "mean_episode_return_std": 0.0008487767305072842,
+            "mean_final_distance_mean": 0.0009168219089379207,
+            "mean_final_distance_std": 5.805364574188088e-07,
+            "mean_episode_length_mean": 50.71333333333334,
+            "mean_episode_length_std": 0.018856180831640864,
+            "mean_peak_contact_force_mean": 1.1284646796452202,
+            "mean_peak_contact_force_std": 0.006414928138285773,
+            "p95_peak_contact_force_mean": 1.5147122438597116,
+            "p95_peak_contact_force_std": 2.220446049250313e-16,
+            "mean_force_std_mean": 0.23094116578151544,
+            "mean_force_std_std": 0.0013404657992326945,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 33.77333333333333,
+            "mean_contact_steps_std": 0.009428090415822106,
+            "mean_settling_steps_after_contact_mean": 33.18666666666667,
+            "mean_settling_steps_after_contact_std": 0.0659966329107447,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        }
+      }
+    },
+    "init_0__demo_1": {
+      "factor_values": {
+        "init_seed": 0,
+        "demo_seed": 1,
+        "coverage_condition": "reset_repaired",
+        "training_budget": {
+          "total_timesteps": 0,
+          "bc_rollout_episodes": 8,
+          "bc_pretrain_steps": 32,
+          "bc_batch_size": 64
+        }
+      },
+      "train_config": {
+        "total_timesteps": 0,
+        "n_envs": 1,
+        "n_steps": 16,
+        "batch_size": 16,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 0,
+        "demo_seed": 1,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "training_summary": {
+        "dapg_enabled": false,
+        "num_chunks": 0,
+        "num_demo_updates": 0,
+        "demo_updates_per_chunk": 1,
+        "demo_batch_size": 64,
+        "demo_dataset_id": "contact_new__reset_repaired",
+        "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+        "demo_dataset_hash": "6c7c69edc3ac"
+      },
+      "demo_audit": {
+        "episodes": 8,
+        "bc_demo_policy_name": "variable_impedance",
+        "num_rows": 211,
+        "contact_sample_count": 168,
+        "contact_sample_ratio": 0.7962085308056872,
+        "contact_episode_count": 8,
+        "contact_episode_ratio": 1.0,
+        "first_contact_step_histogram": {
+          "1": 4,
+          "5": 1,
+          "13": 3
+        },
+        "first_contact_step_mean": 6.0,
+        "low_force_onset_threshold_n": 2.0,
+        "low_force_onset_max_contact_steps": 3,
+        "low_force_onset_sample_count": 28,
+        "low_force_onset_sample_ratio": 0.13270142180094788,
+        "teacher_dataset_summary": {
+          "num_rows": 211,
+          "weight_sum": 211.0,
+          "mean_obs_xy_norm": 0.0002319912746315822,
+          "mean_obs_z": 0.004439640324562788,
+          "mean_action_dx": -0.056766897439956665,
+          "mean_action_dy": 0.015351112000644207,
+          "mean_action_dz": -0.28559133410453796,
+          "mean_action_k_xy": 0.2886256277561188,
+          "mean_action_k_z": 0.271090030670166,
+          "std_action_dx": 0.13698524236679077,
+          "std_action_dy": 0.03587338700890541,
+          "std_action_dz": 0.2823614478111267,
+          "std_action_k_xy": 0.15031880140304565,
+          "std_action_k_z": 0.21125638484954834,
+          "num_unique_action_rows": 199,
+          "num_unique_descent_impedance_rows": 28
+        }
+      },
+      "eval_results": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.810924717108966,
+              "mean_final_distance": 0.0009338666062970146,
+              "mean_episode_length": 51.38,
+              "mean_peak_contact_force": 0.9742520508592019,
+              "p95_peak_contact_force": 1.3910604147639933,
+              "mean_force_std": 0.2102636521068487,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.32,
+              "mean_settling_steps_after_contact": 32.24,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.808480406341642,
+              "mean_final_distance": 0.0009358425614327501,
+              "mean_episode_length": 51.52,
+              "mean_peak_contact_force": 0.981832467739973,
+              "p95_peak_contact_force": 1.3910604147639933,
+              "mean_force_std": 0.21218774293475381,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.34,
+              "mean_settling_steps_after_contact": 32.48,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.809885621028688,
+              "mean_final_distance": 0.0009355713079109102,
+              "mean_episode_length": 51.56,
+              "mean_peak_contact_force": 0.9869018421944163,
+              "p95_peak_contact_force": 1.3910604147639933,
+              "mean_force_std": 0.21285181006395595,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.4,
+              "mean_settling_steps_after_contact": 32.52,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.809763581493098,
+            "mean_episode_return_std": 0.0010016100432133014,
+            "mean_final_distance_mean": 0.0009350934918802249,
+            "mean_final_distance_std": 8.745782960927096e-07,
+            "mean_episode_length_mean": 51.48666666666667,
+            "mean_episode_length_std": 0.0771722460186015,
+            "mean_peak_contact_force_mean": 0.9809954535978638,
+            "mean_peak_contact_force_std": 0.00519806051726251,
+            "p95_peak_contact_force_mean": 1.3910604147639933,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.21176773503518617,
+            "mean_force_std_std": 0.0010975564919428484,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 31.353333333333335,
+            "mean_contact_steps_std": 0.033993463423951174,
+            "mean_settling_steps_after_contact_mean": 32.413333333333334,
+            "mean_settling_steps_after_contact_std": 0.1236482466066088,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.814636031326335,
+              "mean_final_distance": 0.0009394345788478142,
+              "mean_episode_length": 51.7,
+              "mean_peak_contact_force": 1.085740363003432,
+              "p95_peak_contact_force": 1.506490932770961,
+              "mean_force_std": 0.22007583326386115,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.74,
+              "mean_settling_steps_after_contact": 32.5,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.810521420657711,
+              "mean_final_distance": 0.0009387461234145837,
+              "mean_episode_length": 51.78,
+              "mean_peak_contact_force": 1.0879861375492188,
+              "p95_peak_contact_force": 1.506490932770961,
+              "mean_force_std": 0.22144810671545445,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.68,
+              "mean_settling_steps_after_contact": 32.66,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.811958223814306,
+              "mean_final_distance": 0.0009384333745468738,
+              "mean_episode_length": 51.88,
+              "mean_peak_contact_force": 1.0978583740140173,
+              "p95_peak_contact_force": 1.506490932770961,
+              "mean_force_std": 0.22242941700913618,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.78,
+              "mean_settling_steps_after_contact": 32.74,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.812371891932784,
+            "mean_episode_return_std": 0.0017050603552901818,
+            "mean_final_distance_mean": 0.000938871358936424,
+            "mean_final_distance_std": 4.18222799476832e-07,
+            "mean_episode_length_mean": 51.78666666666667,
+            "mean_episode_length_std": 0.07363574011458167,
+            "mean_peak_contact_force_mean": 1.0905282915222225,
+            "mean_peak_contact_force_std": 0.0052636145901216215,
+            "p95_peak_contact_force_mean": 1.506490932770961,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.22131778566281726,
+            "mean_force_std_std": 0.0009652553355031873,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 31.733333333333334,
+            "mean_contact_steps_std": 0.04109609335312698,
+            "mean_settling_steps_after_contact_mean": 32.63333333333333,
+            "mean_settling_steps_after_contact_std": 0.09977753031397217,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.712661944176204,
+              "mean_final_distance": 0.0009246153153218153,
+              "mean_episode_length": 53.64,
+              "mean_peak_contact_force": 1.6438692833321624,
+              "p95_peak_contact_force": 2.022694479572423,
+              "mean_force_std": 0.381646066221074,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.64,
+              "mean_settling_steps_after_contact": 36.64,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.708595420278479,
+              "mean_final_distance": 0.0009236671905687731,
+              "mean_episode_length": 53.6,
+              "mean_peak_contact_force": 1.6510330010317766,
+              "p95_peak_contact_force": 2.022694479572423,
+              "mean_force_std": 0.3841467799690117,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.54,
+              "mean_settling_steps_after_contact": 36.6,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.709767492910691,
+              "mean_final_distance": 0.0009213587897816826,
+              "mean_episode_length": 53.64,
+              "mean_peak_contact_force": 1.6553149405595666,
+              "p95_peak_contact_force": 2.022694479572423,
+              "mean_force_std": 0.38417003764032964,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.6,
+              "mean_settling_steps_after_contact": 36.64,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.710341619121792,
+            "mean_episode_return_std": 0.0017090679394326364,
+            "mean_final_distance_mean": 0.0009232137652240902,
+            "mean_final_distance_std": 1.367585598974729e-06,
+            "mean_episode_length_mean": 53.626666666666665,
+            "mean_episode_length_std": 0.018856180831640864,
+            "mean_peak_contact_force_mean": 1.6500724083078353,
+            "mean_peak_contact_force_std": 0.0047217808171475875,
+            "p95_peak_contact_force_mean": 2.022694479572423,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.38332096127680515,
+            "mean_force_std_std": 0.0011843677119327378,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 31.593333333333334,
+            "mean_contact_steps_std": 0.04109609335312717,
+            "mean_settling_steps_after_contact_mean": 36.62666666666667,
+            "mean_settling_steps_after_contact_std": 0.018856180831640864,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.811132579090632,
+              "mean_final_distance": 0.0009361805971428785,
+              "mean_episode_length": 51.36,
+              "mean_peak_contact_force": 0.9752555669784525,
+              "p95_peak_contact_force": 1.3910604147639933,
+              "mean_force_std": 0.20985895373684826,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.32,
+              "mean_settling_steps_after_contact": 32.22,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.809236368934796,
+              "mean_final_distance": 0.00093531797699771,
+              "mean_episode_length": 51.52,
+              "mean_peak_contact_force": 0.983087000342382,
+              "p95_peak_contact_force": 1.3910604147639933,
+              "mean_force_std": 0.21178540988763583,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.36,
+              "mean_settling_steps_after_contact": 32.46,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.810641583621841,
+              "mean_final_distance": 0.0009350467234758701,
+              "mean_episode_length": 51.56,
+              "mean_peak_contact_force": 0.9881563747968254,
+              "p95_peak_contact_force": 1.3910604147639933,
+              "mean_force_std": 0.212449477016838,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 31.42,
+              "mean_settling_steps_after_contact": 32.5,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.810336843882422,
+            "mean_episode_return_std": 0.0008035558351724325,
+            "mean_final_distance_mean": 0.0009355150992054862,
+            "mean_final_distance_std": 4.834323439618925e-07,
+            "mean_episode_length_mean": 51.48,
+            "mean_episode_length_std": 0.08640987597877292,
+            "mean_peak_contact_force_mean": 0.9821663140392198,
+            "mean_peak_contact_force_std": 0.005306816876638971,
+            "p95_peak_contact_force_mean": 1.3910604147639933,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.21136461354710737,
+            "mean_force_std_std": 0.001098636999860527,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 31.366666666666664,
+            "mean_contact_steps_std": 0.04109609335312717,
+            "mean_settling_steps_after_contact_mean": 32.39333333333334,
+            "mean_settling_steps_after_contact_std": 0.12364824660661007,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.880223006052555,
+              "mean_final_distance": 0.0009170181285988346,
+              "mean_episode_length": 50.4,
+              "mean_peak_contact_force": 1.0709196983838651,
+              "p95_peak_contact_force": 1.4178912018261465,
+              "mean_force_std": 0.2300763649276831,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 32.82,
+              "mean_settling_steps_after_contact": 32.8,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.880177962921192,
+              "mean_final_distance": 0.0009158098687786037,
+              "mean_episode_length": 50.38,
+              "mean_peak_contact_force": 1.074874977037219,
+              "p95_peak_contact_force": 1.4178912018261465,
+              "mean_force_std": 0.23164823773900126,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 32.82,
+              "mean_settling_steps_after_contact": 32.78,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.879790309698616,
+              "mean_final_distance": 0.0009171742777261562,
+              "mean_episode_length": 50.48,
+              "mean_peak_contact_force": 1.0829803972794672,
+              "p95_peak_contact_force": 1.4178912018261465,
+              "mean_force_std": 0.23348860723339257,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 32.88,
+              "mean_settling_steps_after_contact": 33.0,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.880063759557455,
+            "mean_episode_return_std": 0.0001942306874051403,
+            "mean_final_distance_mean": 0.0009166674250345315,
+            "mean_final_distance_std": 6.097254499917699e-07,
+            "mean_episode_length_mean": 50.419999999999995,
+            "mean_episode_length_std": 0.04320493798938372,
+            "mean_peak_contact_force_mean": 1.0762583575668503,
+            "mean_peak_contact_force_std": 0.005019988096261877,
+            "p95_peak_contact_force_mean": 1.4178912018261467,
+            "p95_peak_contact_force_std": 2.220446049250313e-16,
+            "mean_force_std_mean": 0.23173773663335898,
+            "mean_force_std_std": 0.0013944788578023944,
+            "mean_first_contact_step_mean": 17.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 32.84,
+            "mean_contact_steps_std": 0.028284271247462973,
+            "mean_settling_steps_after_contact_mean": 32.86,
+            "mean_settling_steps_after_contact_std": 0.09933109617167586,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        }
+      }
+    },
+    "init_1__demo_0": {
+      "factor_values": {
+        "init_seed": 1,
+        "demo_seed": 0,
+        "coverage_condition": "reset_repaired",
+        "training_budget": {
+          "total_timesteps": 0,
+          "bc_rollout_episodes": 8,
+          "bc_pretrain_steps": 32,
+          "bc_batch_size": 64
+        }
+      },
+      "train_config": {
+        "total_timesteps": 0,
+        "n_envs": 1,
+        "n_steps": 16,
+        "batch_size": 16,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 1,
+        "demo_seed": 0,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "training_summary": {
+        "dapg_enabled": false,
+        "num_chunks": 0,
+        "num_demo_updates": 0,
+        "demo_updates_per_chunk": 1,
+        "demo_batch_size": 64,
+        "demo_dataset_id": "contact_new__reset_repaired",
+        "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+        "demo_dataset_hash": "e054f452c623"
+      },
+      "demo_audit": {
+        "episodes": 8,
+        "bc_demo_policy_name": "variable_impedance",
+        "num_rows": 211,
+        "contact_sample_count": 169,
+        "contact_sample_ratio": 0.8009478672985783,
+        "contact_episode_count": 8,
+        "contact_episode_ratio": 1.0,
+        "first_contact_step_histogram": {
+          "1": 4,
+          "5": 1,
+          "13": 3
+        },
+        "first_contact_step_mean": 6.0,
+        "low_force_onset_threshold_n": 2.0,
+        "low_force_onset_max_contact_steps": 3,
+        "low_force_onset_sample_count": 28,
+        "low_force_onset_sample_ratio": 0.13270142180094788,
+        "teacher_dataset_summary": {
+          "num_rows": 211,
+          "weight_sum": 211.0,
+          "mean_obs_xy_norm": 0.00022821470338385552,
+          "mean_obs_z": 0.0044149854220449924,
+          "mean_action_dx": -0.055869437754154205,
+          "mean_action_dy": 0.015027348883450031,
+          "mean_action_dz": -0.28265637159347534,
+          "mean_action_k_xy": 0.2861611545085907,
+          "mean_action_k_z": 0.2686018645763397,
+          "std_action_dx": 0.13670744001865387,
+          "std_action_dy": 0.03574025630950928,
+          "std_action_dz": 0.2830526828765869,
+          "std_action_k_xy": 0.15060368180274963,
+          "std_action_k_z": 0.21185733377933502,
+          "num_unique_action_rows": 199,
+          "num_unique_descent_impedance_rows": 28
+        }
+      },
+      "eval_results": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.7968610982003135,
+              "mean_final_distance": 0.0009458743735737719,
+              "mean_episode_length": 36.96,
+              "mean_peak_contact_force": 1.6531419548402697,
+              "p95_peak_contact_force": 2.2708268086677252,
+              "mean_force_std": 0.33175491578929445,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 23.56,
+              "mean_settling_steps_after_contact": 22.54,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.800414171084089,
+              "mean_final_distance": 0.000940845489259401,
+              "mean_episode_length": 36.98,
+              "mean_peak_contact_force": 1.6505165506555224,
+              "p95_peak_contact_force": 2.2708268086677252,
+              "mean_force_std": 0.3307975257117826,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 23.58,
+              "mean_settling_steps_after_contact": 22.56,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.802190057520425,
+              "mean_final_distance": 0.0009432391545139286,
+              "mean_episode_length": 37.12,
+              "mean_peak_contact_force": 1.6595902726066725,
+              "p95_peak_contact_force": 2.2708268086677252,
+              "mean_force_std": 0.3310861064193692,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 23.72,
+              "mean_settling_steps_after_contact": 22.66,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.79982177560161,
+            "mean_episode_return_std": 0.0022154986142474326,
+            "mean_final_distance_mean": 0.0009433196724490337,
+            "mean_final_distance_std": 2.0538227309478064e-06,
+            "mean_episode_length_mean": 37.02,
+            "mean_episode_length_std": 0.07118052168020789,
+            "mean_peak_contact_force_mean": 1.654416259367488,
+            "mean_peak_contact_force_std": 0.0038123480544814585,
+            "p95_peak_contact_force_mean": 2.2708268086677252,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.33121284930681544,
+            "mean_force_std_std": 0.00040099605963831494,
+            "mean_first_contact_step_mean": 14.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 23.62,
+            "mean_contact_steps_std": 0.07118052168020889,
+            "mean_settling_steps_after_contact_mean": 22.586666666666662,
+            "mean_settling_steps_after_contact_std": 0.05249338582674594,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.34,
+              "mean_episode_return": -3.003212164004411,
+              "mean_final_distance": 0.0024731636164258015,
+              "mean_episode_length": 49.98,
+              "mean_peak_contact_force": 6.287013593514469,
+              "p95_peak_contact_force": 9.401309871797649,
+              "mean_force_std": 0.45328167081118315,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 36.98,
+              "mean_settling_steps_after_contact": 35.94,
+              "jam_rate": 0.64,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.34,
+              "mean_episode_return": -2.997619352753402,
+              "mean_final_distance": 0.0024676712873209234,
+              "mean_episode_length": 50.06,
+              "mean_peak_contact_force": 6.282668978482672,
+              "p95_peak_contact_force": 9.401309871797649,
+              "mean_force_std": 0.45360037753902,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 37.06,
+              "mean_settling_steps_after_contact": 36.02,
+              "jam_rate": 0.64,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.32,
+              "mean_episode_return": -3.289457703060572,
+              "mean_final_distance": 0.0025081649696918336,
+              "mean_episode_length": 50.4,
+              "mean_peak_contact_force": 6.40884770591343,
+              "p95_peak_contact_force": 9.401309871797649,
+              "mean_force_std": 0.4574671806902699,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 37.4,
+              "mean_settling_steps_after_contact": 36.36,
+              "jam_rate": 0.66,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.3333333333333333,
+            "success_rate_std": 0.009428090415820642,
+            "mean_episode_return_mean": -3.096763073272795,
+            "mean_episode_return_std": 0.13627480849667634,
+            "mean_final_distance_mean": 0.002482999957812853,
+            "mean_final_distance_std": 1.793506410918761e-05,
+            "mean_episode_length_mean": 50.14666666666667,
+            "mean_episode_length_std": 0.18208667044996876,
+            "mean_peak_contact_force_mean": 6.326176759303524,
+            "mean_peak_contact_force_std": 0.05848408889021074,
+            "p95_peak_contact_force_mean": 9.401309871797649,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.45478307634682436,
+            "mean_force_std_std": 0.0019024029698374721,
+            "mean_first_contact_step_mean": 14.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 37.14666666666667,
+            "mean_contact_steps_std": 0.18208667044996876,
+            "mean_settling_steps_after_contact_mean": 36.10666666666667,
+            "mean_settling_steps_after_contact_std": 0.18208667044996876,
+            "jam_rate_mean": 0.6466666666666666,
+            "jam_rate_std": 0.009428090415820642
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.808732699678344,
+              "mean_final_distance": 0.0009172379352671463,
+              "mean_episode_length": 45.26,
+              "mean_peak_contact_force": 2.6871129271821506,
+              "p95_peak_contact_force": 3.27836858586923,
+              "mean_force_std": 0.4752768625191234,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 30.2,
+              "mean_settling_steps_after_contact": 31.16,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.806238290819494,
+              "mean_final_distance": 0.0009141344232716193,
+              "mean_episode_length": 45.44,
+              "mean_peak_contact_force": 2.6971129766810003,
+              "p95_peak_contact_force": 3.27836858586923,
+              "mean_force_std": 0.4775661880410694,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 30.24,
+              "mean_settling_steps_after_contact": 31.34,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.805785689426627,
+              "mean_final_distance": 0.0009161416178232525,
+              "mean_episode_length": 45.5,
+              "mean_peak_contact_force": 2.7040667681924226,
+              "p95_peak_contact_force": 3.27836858586923,
+              "mean_force_std": 0.4773120682887907,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 30.28,
+              "mean_settling_steps_after_contact": 31.4,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.806918893308155,
+            "mean_episode_return_std": 0.001295796323143706,
+            "mean_final_distance_mean": 0.0009158379921206727,
+            "mean_final_distance_std": 1.2850650053713992e-06,
+            "mean_episode_length_mean": 45.4,
+            "mean_episode_length_std": 0.1019803902718563,
+            "mean_peak_contact_force_mean": 2.6960975573518575,
+            "mean_peak_contact_force_std": 0.0069585194096106855,
+            "p95_peak_contact_force_mean": 3.2783685858692295,
+            "p95_peak_contact_force_std": 4.440892098500626e-16,
+            "mean_force_std_mean": 0.4767183729496612,
+            "mean_force_std_std": 0.001024567698474641,
+            "mean_first_contact_step_mean": 14.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 30.24,
+            "mean_contact_steps_std": 0.032659863237109794,
+            "mean_settling_steps_after_contact_mean": 31.3,
+            "mean_settling_steps_after_contact_std": 0.10198039027185515,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.84,
+              "mean_episode_return": 5.230214155260923,
+              "mean_final_distance": 0.0011374421175562636,
+              "mean_episode_length": 41.54,
+              "mean_peak_contact_force": 2.38611452788328,
+              "p95_peak_contact_force": 7.647460388357378,
+              "mean_force_std": 0.3385633640607314,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 28.24,
+              "mean_settling_steps_after_contact": 27.1,
+              "jam_rate": 0.04,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.84,
+              "mean_episode_return": 5.233792672299031,
+              "mean_final_distance": 0.0011300950516343648,
+              "mean_episode_length": 41.58,
+              "mean_peak_contact_force": 2.3883697725814255,
+              "p95_peak_contact_force": 7.647460388357378,
+              "mean_force_std": 0.3366808357742712,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 28.28,
+              "mean_settling_steps_after_contact": 27.14,
+              "jam_rate": 0.04,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.84,
+              "mean_episode_return": 5.230198825408703,
+              "mean_final_distance": 0.0011375632173452465,
+              "mean_episode_length": 41.68,
+              "mean_peak_contact_force": 2.4023750421588566,
+              "p95_peak_contact_force": 7.647460388357378,
+              "mean_force_std": 0.33928902626260343,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 28.38,
+              "mean_settling_steps_after_contact": 27.24,
+              "jam_rate": 0.04,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.84,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 5.231401884322886,
+            "mean_episode_return_std": 0.0016905539745406101,
+            "mean_final_distance_mean": 0.001135033462178625,
+            "mean_final_distance_std": 3.4923335386212206e-06,
+            "mean_episode_length_mean": 41.6,
+            "mean_episode_length_std": 0.05887840577551933,
+            "mean_peak_contact_force_mean": 2.392286447541187,
+            "mean_peak_contact_force_std": 0.0071928825089749935,
+            "p95_peak_contact_force_mean": 7.647460388357378,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.33817774203253537,
+            "mean_force_std_std": 0.0010991489639198713,
+            "mean_first_contact_step_mean": 14.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 28.299999999999997,
+            "mean_contact_steps_std": 0.05887840577551893,
+            "mean_settling_steps_after_contact_mean": 27.16,
+            "mean_settling_steps_after_contact_std": 0.05887840577551772,
+            "jam_rate_mean": 0.04,
+            "jam_rate_std": 0.0
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.87603826033853,
+              "mean_final_distance": 0.0009249267624694687,
+              "mean_episode_length": 40.6,
+              "mean_peak_contact_force": 1.7032292012513361,
+              "p95_peak_contact_force": 2.264477699409879,
+              "mean_force_std": 0.3333802315342631,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 27.34,
+              "mean_settling_steps_after_contact": 26.54,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.878981796253652,
+              "mean_final_distance": 0.0009230209670278775,
+              "mean_episode_length": 40.66,
+              "mean_peak_contact_force": 1.7013774572126923,
+              "p95_peak_contact_force": 2.264477699409879,
+              "mean_force_std": 0.3332979594421532,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 27.36,
+              "mean_settling_steps_after_contact": 26.6,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.879867661462777,
+              "mean_final_distance": 0.0009232435794119058,
+              "mean_episode_length": 40.76,
+              "mean_peak_contact_force": 1.7132684646934218,
+              "p95_peak_contact_force": 2.264477699409879,
+              "mean_force_std": 0.3346725582780444,
+              "mean_first_contact_step": 14.0,
+              "mean_contact_steps": 27.46,
+              "mean_settling_steps_after_contact": 26.7,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 1.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": 6.8782959060183195,
+            "mean_episode_return_std": 0.0016368490673220773,
+            "mean_final_distance_mean": 0.000923730436303084,
+            "mean_final_distance_std": 8.507981706073572e-07,
+            "mean_episode_length_mean": 40.673333333333325,
+            "mean_episode_length_std": 0.06599663291074327,
+            "mean_peak_contact_force_mean": 1.7059583743858167,
+            "mean_peak_contact_force_std": 0.005224002566689579,
+            "p95_peak_contact_force_mean": 2.264477699409879,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.3337835830848202,
+            "mean_force_std_std": 0.0006294970716961163,
+            "mean_first_contact_step_mean": 14.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 27.386666666666667,
+            "mean_contact_steps_std": 0.05249338582674594,
+            "mean_settling_steps_after_contact_mean": 26.613333333333333,
+            "mean_settling_steps_after_contact_std": 0.06599663291074435,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        }
+      }
+    },
+    "init_1__demo_1": {
+      "factor_values": {
+        "init_seed": 1,
+        "demo_seed": 1,
+        "coverage_condition": "reset_repaired",
+        "training_budget": {
+          "total_timesteps": 0,
+          "bc_rollout_episodes": 8,
+          "bc_pretrain_steps": 32,
+          "bc_batch_size": 64
+        }
+      },
+      "train_config": {
+        "total_timesteps": 0,
+        "n_envs": 1,
+        "n_steps": 16,
+        "batch_size": 16,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 1,
+        "demo_seed": 1,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "training_summary": {
+        "dapg_enabled": false,
+        "num_chunks": 0,
+        "num_demo_updates": 0,
+        "demo_updates_per_chunk": 1,
+        "demo_batch_size": 64,
+        "demo_dataset_id": "contact_new__reset_repaired",
+        "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+        "demo_dataset_hash": "6c7c69edc3ac"
+      },
+      "demo_audit": {
+        "episodes": 8,
+        "bc_demo_policy_name": "variable_impedance",
+        "num_rows": 211,
+        "contact_sample_count": 168,
+        "contact_sample_ratio": 0.7962085308056872,
+        "contact_episode_count": 8,
+        "contact_episode_ratio": 1.0,
+        "first_contact_step_histogram": {
+          "1": 4,
+          "5": 1,
+          "13": 3
+        },
+        "first_contact_step_mean": 6.0,
+        "low_force_onset_threshold_n": 2.0,
+        "low_force_onset_max_contact_steps": 3,
+        "low_force_onset_sample_count": 28,
+        "low_force_onset_sample_ratio": 0.13270142180094788,
+        "teacher_dataset_summary": {
+          "num_rows": 211,
+          "weight_sum": 211.0,
+          "mean_obs_xy_norm": 0.0002319912746315822,
+          "mean_obs_z": 0.004439640324562788,
+          "mean_action_dx": -0.056766897439956665,
+          "mean_action_dy": 0.015351112000644207,
+          "mean_action_dz": -0.28559133410453796,
+          "mean_action_k_xy": 0.2886256277561188,
+          "mean_action_k_z": 0.271090030670166,
+          "std_action_dx": 0.13698524236679077,
+          "std_action_dy": 0.03587338700890541,
+          "std_action_dz": 0.2823614478111267,
+          "std_action_k_xy": 0.15031880140304565,
+          "std_action_k_z": 0.21125638484954834,
+          "num_unique_action_rows": 199,
+          "num_unique_descent_impedance_rows": 28
+        }
+      },
+      "eval_results": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.02,
+              "mean_episode_return": -4.0196852303533355,
+              "mean_final_distance": 0.004657793939035224,
+              "mean_episode_length": 63.64,
+              "mean_peak_contact_force": 4.603522056434147,
+              "p95_peak_contact_force": 5.192800751708538,
+              "mean_force_std": 0.4865426411550924,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 49.64,
+              "mean_settling_steps_after_contact": 48.64,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.04,
+              "mean_episode_return": -3.755306632607492,
+              "mean_final_distance": 0.004565977366837443,
+              "mean_episode_length": 63.18,
+              "mean_peak_contact_force": 4.530807048267069,
+              "p95_peak_contact_force": 5.192800751708538,
+              "mean_force_std": 0.4809846864543668,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 49.18,
+              "mean_settling_steps_after_contact": 48.18,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.04,
+              "mean_episode_return": -3.855649641599257,
+              "mean_final_distance": 0.0046439857743220325,
+              "mean_episode_length": 63.18,
+              "mean_peak_contact_force": 4.5742990697102615,
+              "p95_peak_contact_force": 5.192800751708538,
+              "mean_force_std": 0.48508117317922334,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 49.18,
+              "mean_settling_steps_after_contact": 48.18,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.03333333333333333,
+            "success_rate_std": 0.009428090415820633,
+            "mean_episode_return_mean": -3.8768805015200285,
+            "mean_episode_return_std": 0.10897116681717894,
+            "mean_final_distance_mean": 0.004622585693398233,
+            "mean_final_distance_std": 4.0423123169760635e-05,
+            "mean_episode_length_mean": 63.333333333333336,
+            "mean_episode_length_std": 0.21684607956387497,
+            "mean_peak_contact_force_mean": 4.569542724803825,
+            "mean_peak_contact_force_std": 0.029875689290082164,
+            "p95_peak_contact_force_mean": 5.192800751708538,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.48420283359622746,
+            "mean_force_std_std": 0.002352491648036511,
+            "mean_first_contact_step_mean": 15.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 49.333333333333336,
+            "mean_contact_steps_std": 0.21684607956387497,
+            "mean_settling_steps_after_contact_mean": 48.333333333333336,
+            "mean_settling_steps_after_contact_std": 0.21684607956387497,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.8939035677412415,
+              "mean_final_distance": 0.005603182424514777,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.281057949912113,
+              "p95_peak_contact_force": 5.3843486176302235,
+              "mean_force_std": 0.5443125733950619,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.832019048819732,
+              "mean_final_distance": 0.005602856059254707,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.27599390235518,
+              "p95_peak_contact_force": 5.3843486176302235,
+              "mean_force_std": 0.5440541516558257,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.880989268400591,
+              "mean_final_distance": 0.005604433341978825,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.284296619001241,
+              "p95_peak_contact_force": 5.393745915266513,
+              "mean_force_std": 0.5441520256000111,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": -7.868970628320522,
+            "mean_episode_return_std": 0.026655320951826905,
+            "mean_final_distance_mean": 0.00560349060858277,
+            "mean_final_distance_std": 6.797981380645967e-07,
+            "mean_episode_length_mean": 64.0,
+            "mean_episode_length_std": 0.0,
+            "mean_peak_contact_force_mean": 5.2804494904228445,
+            "mean_peak_contact_force_std": 0.003416766808817573,
+            "p95_peak_contact_force_mean": 5.387481050175654,
+            "p95_peak_contact_force_std": 0.004429928588965848,
+            "mean_force_std_mean": 0.5441729168836328,
+            "mean_force_std_std": 0.00010652944233399682,
+            "mean_first_contact_step_mean": 15.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 50.0,
+            "mean_contact_steps_std": 0.0,
+            "mean_settling_steps_after_contact_mean": 49.0,
+            "mean_settling_steps_after_contact_std": 0.0,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.06,
+              "mean_episode_return": -3.7195326838276213,
+              "mean_final_distance": 0.0046485573566651065,
+              "mean_episode_length": 63.04,
+              "mean_peak_contact_force": 4.587372506025045,
+              "p95_peak_contact_force": 5.188364318608209,
+              "mean_force_std": 0.5236475762970371,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 49.04,
+              "mean_settling_steps_after_contact": 47.98,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.08,
+              "mean_episode_return": -3.4544377889998583,
+              "mean_final_distance": 0.004556291559050562,
+              "mean_episode_length": 62.66,
+              "mean_peak_contact_force": 4.532885744816476,
+              "p95_peak_contact_force": 5.188364318608209,
+              "mean_force_std": 0.5202514314788179,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 48.66,
+              "mean_settling_steps_after_contact": 47.6,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.06,
+              "mean_episode_return": -3.7058811610233966,
+              "mean_final_distance": 0.004649963223678647,
+              "mean_episode_length": 62.96,
+              "mean_peak_contact_force": 4.594690491915473,
+              "p95_peak_contact_force": 5.188364318608209,
+              "mean_force_std": 0.5261980008262737,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 48.96,
+              "mean_settling_steps_after_contact": 47.96,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.06666666666666667,
+            "success_rate_std": 0.009428090415820635,
+            "mean_episode_return_mean": -3.6266172112836252,
+            "mean_episode_return_std": 0.12187673038005083,
+            "mean_final_distance_mean": 0.004618270713131438,
+            "mean_final_distance_std": 4.382963815312405e-05,
+            "mean_episode_length_mean": 62.88666666666666,
+            "mean_episode_length_std": 0.16357125528513872,
+            "mean_peak_contact_force_mean": 4.571649580918998,
+            "mean_peak_contact_force_std": 0.02757250407453654,
+            "p95_peak_contact_force_mean": 5.188364318608209,
+            "p95_peak_contact_force_std": 0.0,
+            "mean_force_std_mean": 0.5233656695340428,
+            "mean_force_std_std": 0.0024358469188753016,
+            "mean_first_contact_step_mean": 15.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 48.88666666666666,
+            "mean_contact_steps_std": 0.16357125528513872,
+            "mean_settling_steps_after_contact_mean": 47.846666666666664,
+            "mean_settling_steps_after_contact_std": 0.17461067804944932,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.257280382293482,
+              "mean_final_distance": 0.005251307755765402,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.963238301862397,
+              "p95_peak_contact_force": 5.294473298145529,
+              "mean_force_std": 0.5255707344878067,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.171206619017676,
+              "mean_final_distance": 0.005224212571176998,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.943666376312901,
+              "p95_peak_contact_force": 5.27955672669355,
+              "mean_force_std": 0.523401213685905,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.237008945675565,
+              "mean_final_distance": 0.005247820552690447,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.9604279133870905,
+              "p95_peak_contact_force": 5.297638113586329,
+              "mean_force_std": 0.52577390866338,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": -5.221831982328908,
+            "mean_episode_return_std": 0.036741696054430256,
+            "mean_final_distance_mean": 0.005241113626544281,
+            "mean_final_distance_std": 1.2035347958340617e-05,
+            "mean_episode_length_mean": 64.0,
+            "mean_episode_length_std": 0.0,
+            "mean_peak_contact_force_mean": 4.955777530520796,
+            "mean_peak_contact_force_std": 0.00864039401227721,
+            "p95_peak_contact_force_mean": 5.290556046141803,
+            "p95_peak_contact_force_std": 0.007884279101989806,
+            "mean_force_std_mean": 0.5249152856123639,
+            "mean_force_std_std": 0.0010738188193772844,
+            "mean_first_contact_step_mean": 15.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 50.0,
+            "mean_contact_steps_std": 0.0,
+            "mean_settling_steps_after_contact_mean": 49.0,
+            "mean_settling_steps_after_contact_std": 0.0,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -3.465197548707359,
+              "mean_final_distance": 0.004184947753572686,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.4064306478979915,
+              "p95_peak_contact_force": 5.30431914025831,
+              "mean_force_std": 0.4934334795948262,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 0
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.02,
+              "mean_episode_return": -3.2157818805254563,
+              "mean_final_distance": 0.0040972296038329645,
+              "mean_episode_length": 63.54,
+              "mean_peak_contact_force": 4.334312638943455,
+              "p95_peak_contact_force": 5.30431914025831,
+              "mean_force_std": 0.4885174906787009,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 49.54,
+              "mean_settling_steps_after_contact": 48.54,
+              "jam_rate": 0.0,
+              "seed": 1
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.02,
+              "mean_episode_return": -3.3067954124108083,
+              "mean_final_distance": 0.004173193277277534,
+              "mean_episode_length": 63.54,
+              "mean_peak_contact_force": 4.384663748683073,
+              "p95_peak_contact_force": 5.317038987760947,
+              "mean_force_std": 0.4931886196503342,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 49.54,
+              "mean_settling_steps_after_contact": 48.54,
+              "jam_rate": 0.0,
+              "seed": 2
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.013333333333333334,
+            "success_rate_std": 0.009428090415820633,
+            "mean_episode_return_mean": -3.3292582805478745,
+            "mean_episode_return_std": 0.10305493427411634,
+            "mean_final_distance_mean": 0.004151790211561062,
+            "mean_final_distance_std": 3.887747304020469e-05,
+            "mean_episode_length_mean": 63.69333333333333,
+            "mean_episode_length_std": 0.21684607956387497,
+            "mean_peak_contact_force_mean": 4.375135678508173,
+            "mean_peak_contact_force_std": 0.030203089188966564,
+            "p95_peak_contact_force_mean": 5.308559089425856,
+            "p95_peak_contact_force_std": 0.005996193616515436,
+            "mean_force_std_mean": 0.4917131966412871,
+            "mean_force_std_std": 0.0022619153458350062,
+            "mean_first_contact_step_mean": 15.0,
+            "mean_first_contact_step_std": 0.0,
+            "mean_contact_steps_mean": 49.69333333333333,
+            "mean_contact_steps_std": 0.21684607956387497,
+            "mean_settling_steps_after_contact_mean": 48.69333333333333,
+            "mean_settling_steps_after_contact_std": 0.21684607956387497,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0
+          }
+        }
+      }
+    }
+  }
+}

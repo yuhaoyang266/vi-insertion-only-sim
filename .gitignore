@@ -1,0 +1,30 @@
+# LaTeX build products
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environments and editor state
+.venv/
+venv/
+.env
+.DS_Store
+Thumbs.db
+
+# Keep paper artifacts tracked; ignore only ad hoc scratch outputs
+scratch/
+tmp/

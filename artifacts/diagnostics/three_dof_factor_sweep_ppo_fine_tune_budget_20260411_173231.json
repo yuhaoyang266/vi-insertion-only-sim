@@ -1,0 +1,3951 @@
+{
+  "sweep_name": "ppo_fine_tune_budget",
+  "manipulated_factor": "ppo_fine_tune_budget",
+  "fixed_controls": {
+    "demonstration_coverage": "reset_repaired",
+    "reset_coverage": "reset_repaired",
+    "bc_optimization_depth": 32,
+    "bc_rollout_episodes": 8,
+    "bc_batch_size": 64
+  },
+  "seed_list": [
+    0,
+    1,
+    2
+  ],
+  "uncertainty_profiles": [
+    "nominal",
+    "tight_clearance",
+    "high_friction",
+    "offset_bias",
+    "noisy_force"
+  ],
+  "episodes_per_seed": 50,
+  "max_episode_steps": 64,
+  "points": [
+    {
+      "point_name": "ppo_total_timesteps_0",
+      "factor_value": 0,
+      "demonstration_coverage": "reset_repaired",
+      "reset_coverage": "reset_repaired",
+      "training_budget": {
+        "total_timesteps": 0,
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "train_config_snapshot": {
+        "total_timesteps": 0,
+        "n_envs": 1,
+        "n_steps": 16,
+        "batch_size": 16,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 0,
+        "demo_seed": null,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "per_profile_metrics": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.8393182112154856,
+              "mean_final_distance": 0.0009576382975061538,
+              "mean_episode_length": 56.04,
+              "mean_peak_contact_force": 1.0771459843852071,
+              "p95_peak_contact_force": 1.4597536002962173,
+              "mean_force_std": 0.18573887846331325,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 37.54,
+              "mean_settling_steps_after_contact": 35.32,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.08,
+              "mean_episode_return": -3.1457368004491766,
+              "mean_final_distance": 0.0043917115631681315,
+              "mean_episode_length": 62.22,
+              "mean_peak_contact_force": 4.364095299387689,
+              "p95_peak_contact_force": 5.18243989156711,
+              "mean_force_std": 0.47148349561770403,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 48.22,
+              "mean_settling_steps_after_contact": 47.14,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.901354868413551,
+              "mean_final_distance": 0.0009223842120293155,
+              "mean_episode_length": 46.6,
+              "mean_peak_contact_force": 1.2193123056780595,
+              "p95_peak_contact_force": 1.6365463296609244,
+              "mean_force_std": 0.250410439487013,
+              "mean_first_contact_step": 16.0,
+              "mean_contact_steps": 30.58,
+              "mean_settling_steps_after_contact": 29.6,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6866666666666666,
+            "success_rate_std": 0.4290558109254423,
+            "mean_episode_return_mean": 3.5316454263932866,
+            "mean_episode_return_std": 4.721690176848596,
+            "mean_final_distance_mean": 0.0020905780242345333,
+            "mean_final_distance_std": 0.00162721078037225,
+            "mean_episode_length_mean": 54.953333333333326,
+            "mean_episode_length_std": 6.4229657393519455,
+            "mean_peak_contact_force_mean": 2.220184529816985,
+            "mean_peak_contact_force_std": 1.5170844530740362,
+            "p95_peak_contact_force_mean": 2.759579940508084,
+            "p95_peak_contact_force_std": 1.714740344604855,
+            "mean_force_std_mean": 0.3025442711893434,
+            "mean_force_std_std": 0.12234091401803547,
+            "mean_first_contact_step_mean": 16.0,
+            "mean_first_contact_step_std": 0.816496580927726,
+            "mean_contact_steps_mean": 38.779999999999994,
+            "mean_contact_steps_std": 7.254681247305081,
+            "mean_settling_steps_after_contact_mean": 37.35333333333333,
+            "mean_settling_steps_after_contact_std": 7.303594244540758,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_0",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.94,
+              "mean_episode_return": 6.602982036147339,
+              "mean_final_distance": 0.0009658949069322499,
+              "mean_episode_length": 57.62,
+              "mean_peak_contact_force": 1.5149378245023082,
+              "p95_peak_contact_force": 1.9629739072896704,
+              "mean_force_std": 0.2242142450572057,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 39.32,
+              "mean_settling_steps_after_contact": 36.7,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.644689774533841,
+              "mean_final_distance": 0.0056047986662126174,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.278511595446125,
+              "p95_peak_contact_force": 5.387700505883163,
+              "mean_force_std": 0.5403328950259256,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.67834231029419,
+              "mean_final_distance": 0.0011195281298641375,
+              "mean_episode_length": 55.84,
+              "mean_peak_contact_force": 1.6053513566085256,
+              "p95_peak_contact_force": 1.9579175389714576,
+              "mean_force_std": 0.27881629862561014,
+              "mean_first_contact_step": 16.0,
+              "mean_contact_steps": 40.78,
+              "mean_settling_steps_after_contact": 37.78,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.64,
+            "success_rate_std": 0.4528428719397785,
+            "mean_episode_return_mean": 1.878878190635896,
+            "mean_episode_return_std": 6.734249766832992,
+            "mean_final_distance_mean": 0.002563407234336335,
+            "mean_final_distance_std": 0.002151502912418039,
+            "mean_episode_length_mean": 59.153333333333336,
+            "mean_episode_length_std": 3.5033063747773405,
+            "mean_peak_contact_force_mean": 2.7996002588523194,
+            "mean_peak_contact_force_std": 1.7532436059519219,
+            "p95_peak_contact_force_mean": 3.102863984048097,
+            "p95_peak_contact_force_std": 1.6156247172221365,
+            "mean_force_std_mean": 0.3477878129029138,
+            "mean_force_std_std": 0.13796268227505037,
+            "mean_first_contact_step_mean": 16.0,
+            "mean_first_contact_step_std": 0.816496580927726,
+            "mean_contact_steps_mean": 43.36666666666667,
+            "mean_contact_steps_std": 4.7281943934468496,
+            "mean_settling_steps_after_contact_mean": 41.160000000000004,
+            "mean_settling_steps_after_contact_std": 5.561222887099562,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_0",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "tight_clearance",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.94,
+              "mean_episode_return": 6.4565286557800174,
+              "mean_final_distance": 0.0009551684067043213,
+              "mean_episode_length": 59.7,
+              "mean_peak_contact_force": 1.688434534779889,
+              "p95_peak_contact_force": 2.0307472642443645,
+              "mean_force_std": 0.3221452276501065,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 37.26,
+              "mean_settling_steps_after_contact": 42.7,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.1,
+              "mean_episode_return": -2.9754947402263157,
+              "mean_final_distance": 0.004392258003212482,
+              "mean_episode_length": 62.2,
+              "mean_peak_contact_force": 4.4206199207215535,
+              "p95_peak_contact_force": 5.175582142694152,
+              "mean_force_std": 0.5170737837977747,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 48.2,
+              "mean_settling_steps_after_contact": 47.2,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.828110809756646,
+              "mean_final_distance": 0.0009236475506417288,
+              "mean_episode_length": 52.36,
+              "mean_peak_contact_force": 1.940158609552168,
+              "p95_peak_contact_force": 2.33565490087737,
+              "mean_force_std": 0.4003950092203632,
+              "mean_first_contact_step": 16.0,
+              "mean_contact_steps": 33.4,
+              "mean_settling_steps_after_contact": 36.36,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.68,
+            "success_rate_std": 0.4108527716834827,
+            "mean_episode_return_mean": 3.4363815751034497,
+            "mean_episode_return_std": 4.53641831820388,
+            "mean_final_distance_mean": 0.002090357986852844,
+            "mean_final_distance_std": 0.0016277399782272978,
+            "mean_episode_length_mean": 58.086666666666666,
+            "mean_episode_length_std": 4.1760055342662366,
+            "mean_peak_contact_force_mean": 2.683071021684537,
+            "mean_peak_contact_force_std": 1.2329229186134743,
+            "p95_peak_contact_force_mean": 3.1806614359386294,
+            "p95_peak_contact_force_std": 1.4161034887796273,
+            "mean_force_std_mean": 0.4132046735560815,
+            "mean_force_std_std": 0.0800930755465123,
+            "mean_first_contact_step_mean": 16.0,
+            "mean_first_contact_step_std": 0.816496580927726,
+            "mean_contact_steps_mean": 39.620000000000005,
+            "mean_contact_steps_std": 6.268290569738028,
+            "mean_settling_steps_after_contact_mean": 42.086666666666666,
+            "mean_settling_steps_after_contact_std": 4.446611693813119,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_0",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "high_friction",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.833775008208566,
+              "mean_final_distance": 0.0009652950961417593,
+              "mean_episode_length": 56.02,
+              "mean_peak_contact_force": 1.1446054186458434,
+              "p95_peak_contact_force": 1.5638408468049712,
+              "mean_force_std": 0.19154416707974886,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 37.5,
+              "mean_settling_steps_after_contact": 35.46,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -4.922934061097563,
+              "mean_final_distance": 0.005157570728361325,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.891123003161129,
+              "p95_peak_contact_force": 5.252855625156483,
+              "mean_force_std": 0.5160680981391769,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 50.0,
+              "mean_settling_steps_after_contact": 49.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.892146926449175,
+              "mean_final_distance": 0.0009299751602830199,
+              "mean_episode_length": 46.74,
+              "mean_peak_contact_force": 1.2621183550408326,
+              "p95_peak_contact_force": 1.664933533162983,
+              "mean_force_std": 0.25057883191990504,
+              "mean_first_contact_step": 16.0,
+              "mean_contact_steps": 30.82,
+              "mean_settling_steps_after_contact": 29.7,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.66,
+            "success_rate_std": 0.4667618950457146,
+            "mean_episode_return_mean": 2.934329291186726,
+            "mean_episode_return_std": 5.555975303555148,
+            "mean_final_distance_mean": 0.002350946994928701,
+            "mean_final_distance_std": 0.001984635056337852,
+            "mean_episode_length_mean": 55.58666666666667,
+            "mean_episode_length_std": 7.053024567910957,
+            "mean_peak_contact_force_mean": 2.4326155922826014,
+            "mean_peak_contact_force_std": 1.739089098649735,
+            "p95_peak_contact_force_mean": 2.8272100017081456,
+            "p95_peak_contact_force_std": 1.7156869276812179,
+            "mean_force_std_mean": 0.31939703237961026,
+            "mean_force_std_std": 0.14114036510616002,
+            "mean_first_contact_step_mean": 16.0,
+            "mean_first_contact_step_std": 0.816496580927726,
+            "mean_contact_steps_mean": 39.44,
+            "mean_contact_steps_std": 7.949457004517143,
+            "mean_settling_steps_after_contact_mean": 38.053333333333335,
+            "mean_settling_steps_after_contact_std": 8.08976857243491,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_0",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "offset_bias",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.934129150686784,
+              "mean_final_distance": 0.0009340063248401678,
+              "mean_episode_length": 51.84,
+              "mean_peak_contact_force": 1.1296326472893667,
+              "p95_peak_contact_force": 1.5792231690235603,
+              "mean_force_std": 0.2285889802120166,
+              "mean_first_contact_step": 17.0,
+              "mean_contact_steps": 34.96,
+              "mean_settling_steps_after_contact": 34.36,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.12,
+              "mean_episode_return": -2.1933215781388604,
+              "mean_final_distance": 0.003929996929783953,
+              "mean_episode_length": 61.96,
+              "mean_peak_contact_force": 4.1305123001283235,
+              "p95_peak_contact_force": 5.296032797264965,
+              "mean_force_std": 0.46594633361093185,
+              "mean_first_contact_step": 15.0,
+              "mean_contact_steps": 47.96,
+              "mean_settling_steps_after_contact": 46.96,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.947231848010107,
+              "mean_final_distance": 0.0009249205628020205,
+              "mean_episode_length": 48.54,
+              "mean_peak_contact_force": 1.2763742926662642,
+              "p95_peak_contact_force": 1.7384692908677213,
+              "mean_force_std": 0.2526478267529233,
+              "mean_first_contact_step": 16.0,
+              "mean_contact_steps": 32.9,
+              "mean_settling_steps_after_contact": 32.1,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.7066666666666667,
+            "success_rate_std": 0.4148359782961079,
+            "mean_episode_return_mean": 3.8960131401860103,
+            "mean_episode_return_std": 4.305813194896466,
+            "mean_final_distance_mean": 0.0019296412724753803,
+            "mean_final_distance_std": 0.0014144699135630898,
+            "mean_episode_length_mean": 54.11333333333334,
+            "mean_episode_length_std": 5.709648753547707,
+            "mean_peak_contact_force_mean": 2.1788397466946514,
+            "mean_peak_contact_force_std": 1.3813405552799576,
+            "p95_peak_contact_force_mean": 2.8712417523854157,
+            "p95_peak_contact_force_std": 1.7158182771545947,
+            "mean_force_std_mean": 0.31572771352529055,
+            "mean_force_std_std": 0.1066737468156853,
+            "mean_first_contact_step_mean": 16.0,
+            "mean_first_contact_step_std": 0.816496580927726,
+            "mean_contact_steps_mean": 38.60666666666666,
+            "mean_contact_steps_std": 6.667059988397352,
+            "mean_settling_steps_after_contact_mean": 37.806666666666665,
+            "mean_settling_steps_after_contact_std": 6.537814789531914,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_0",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "noisy_force",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        }
+      }
+    },
+    {
+      "point_name": "ppo_total_timesteps_32",
+      "factor_value": 32,
+      "demonstration_coverage": "reset_repaired",
+      "reset_coverage": "reset_repaired",
+      "training_budget": {
+        "total_timesteps": 32,
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "train_config_snapshot": {
+        "total_timesteps": 32,
+        "n_envs": 1,
+        "n_steps": 32,
+        "batch_size": 32,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 0,
+        "demo_seed": null,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "per_profile_metrics": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.773929788605002,
+              "mean_final_distance": 0.0009427662677269072,
+              "mean_episode_length": 56.22,
+              "mean_peak_contact_force": 0.8250966895835302,
+              "p95_peak_contact_force": 1.1604498993534336,
+              "mean_force_std": 0.15706442612596086,
+              "mean_first_contact_step": 23.0,
+              "mean_contact_steps": 33.94,
+              "mean_settling_steps_after_contact": 30.16,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -3.833318639145736,
+              "mean_final_distance": 0.0042368078755752586,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.368315065689717,
+              "p95_peak_contact_force": 5.1115543501046625,
+              "mean_force_std": 0.5038080271546123,
+              "mean_first_contact_step": 20.0,
+              "mean_contact_steps": 45.0,
+              "mean_settling_steps_after_contact": 44.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.718548567475552,
+              "mean_final_distance": 0.0008972905021787029,
+              "mean_episode_length": 53.66,
+              "mean_peak_contact_force": 0.8720025489701634,
+              "p95_peak_contact_force": 1.2095247652393226,
+              "mean_force_std": 0.22245510889236275,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 31.26,
+              "mean_settling_steps_after_contact": 30.78,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6666666666666666,
+            "success_rate_std": 0.4714045207910317,
+            "mean_episode_return_mean": 3.2197199056449395,
+            "mean_episode_return_std": 4.9873026313924225,
+            "mean_final_distance_mean": 0.0020256215484936225,
+            "mean_final_distance_std": 0.0015636550645027458,
+            "mean_episode_length_mean": 57.96,
+            "mean_episode_length_std": 4.3969383287313315,
+            "mean_peak_contact_force_mean": 2.021804768081137,
+            "mean_peak_contact_force_std": 1.6593438406989933,
+            "p95_peak_contact_force_mean": 2.4938430048991393,
+            "p95_peak_contact_force_std": 1.8511098654102465,
+            "mean_force_std_mean": 0.29444252072431193,
+            "mean_force_std_std": 0.1504314280334535,
+            "mean_first_contact_step_mean": 21.666666666666668,
+            "mean_first_contact_step_std": 1.247219128924647,
+            "mean_contact_steps_mean": 36.733333333333334,
+            "mean_contact_steps_std": 5.946928245367986,
+            "mean_settling_steps_after_contact_mean": 34.98,
+            "mean_settling_steps_after_contact_std": 6.383123582280596,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_32",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.773971386853951,
+              "mean_final_distance": 0.0009414607131072607,
+              "mean_episode_length": 56.88,
+              "mean_peak_contact_force": 1.0784372543309473,
+              "p95_peak_contact_force": 1.4748703310148743,
+              "mean_force_std": 0.18202949102444993,
+              "mean_first_contact_step": 23.0,
+              "mean_contact_steps": 34.6,
+              "mean_settling_steps_after_contact": 30.78,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.63232403309879,
+              "mean_final_distance": 0.0053977860403952695,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.269013076229649,
+              "p95_peak_contact_force": 5.402028593900447,
+              "mean_force_std": 0.5922748792227353,
+              "mean_first_contact_step": 20.0,
+              "mean_contact_steps": 45.0,
+              "mean_settling_steps_after_contact": 44.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.774792558273493,
+              "mean_final_distance": 0.0010267580487714725,
+              "mean_episode_length": 58.02,
+              "mean_peak_contact_force": 1.1981492780959477,
+              "p95_peak_contact_force": 1.5681040520886929,
+              "mean_force_std": 0.22958710110355843,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 36.78,
+              "mean_settling_steps_after_contact": 34.06,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6666666666666666,
+            "success_rate_std": 0.4714045207910317,
+            "mean_episode_return_mean": 1.9721466373428846,
+            "mean_episode_return_std": 6.7913863490508515,
+            "mean_final_distance_mean": 0.0024553349340913342,
+            "mean_final_distance_std": 0.0020809185141197934,
+            "mean_episode_length_mean": 59.63333333333333,
+            "mean_episode_length_std": 3.122577283093067,
+            "mean_peak_contact_force_mean": 2.5151998695521818,
+            "mean_peak_contact_force_std": 1.9478531986286693,
+            "p95_peak_contact_force_mean": 2.8150009923346713,
+            "p95_peak_contact_force_std": 1.8297007023251453,
+            "mean_force_std_mean": 0.3346304904502479,
+            "mean_force_std_std": 0.18321372741249603,
+            "mean_first_contact_step_mean": 21.666666666666668,
+            "mean_first_contact_step_std": 1.247219128924647,
+            "mean_contact_steps_mean": 38.79333333333333,
+            "mean_contact_steps_std": 4.478104757843681,
+            "mean_settling_steps_after_contact_mean": 36.28,
+            "mean_settling_steps_after_contact_std": 5.620699837801932,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_32",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "tight_clearance",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.72,
+              "mean_episode_return": 5.146055111165796,
+              "mean_final_distance": 0.0010119154517741341,
+              "mean_episode_length": 62.7,
+              "mean_peak_contact_force": 1.3324887409050883,
+              "p95_peak_contact_force": 1.6432742929751152,
+              "mean_force_std": 0.27053653599971517,
+              "mean_first_contact_step": 23.0,
+              "mean_contact_steps": 39.6,
+              "mean_settling_steps_after_contact": 39.4,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -3.982025681797365,
+              "mean_final_distance": 0.004384281066261109,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.431816096298979,
+              "p95_peak_contact_force": 5.116122408401467,
+              "mean_force_std": 0.5308470490857037,
+              "mean_first_contact_step": 20.0,
+              "mean_contact_steps": 45.0,
+              "mean_settling_steps_after_contact": 44.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.58701284701544,
+              "mean_final_distance": 0.0008998982961988309,
+              "mean_episode_length": 59.26,
+              "mean_peak_contact_force": 1.3950663761891835,
+              "p95_peak_contact_force": 1.7167272639390088,
+              "mean_force_std": 0.37248012079081205,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 32.0,
+              "mean_settling_steps_after_contact": 37.26,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.5733333333333334,
+            "success_rate_std": 0.42121517330483504,
+            "mean_episode_return_mean": 2.5836807587946233,
+            "mean_episode_return_std": 4.679776746608722,
+            "mean_final_distance_mean": 0.0020986982714113578,
+            "mean_final_distance_std": 0.0016167979661191841,
+            "mean_episode_length_mean": 61.98666666666667,
+            "mean_episode_length_std": 1.9997555406154592,
+            "mean_peak_contact_force_mean": 2.3864570711310837,
+            "mean_peak_contact_force_std": 1.4465128519964279,
+            "p95_peak_contact_force_mean": 2.825374655105197,
+            "p95_peak_contact_force_std": 1.6200808182844433,
+            "mean_force_std_mean": 0.39128790195874363,
+            "mean_force_std_std": 0.10710023429827546,
+            "mean_first_contact_step_mean": 21.666666666666668,
+            "mean_first_contact_step_std": 1.247219128924647,
+            "mean_contact_steps_mean": 38.86666666666667,
+            "mean_contact_steps_std": 5.332499934885659,
+            "mean_settling_steps_after_contact_mean": 40.22,
+            "mean_settling_steps_after_contact_std": 2.812021811200381,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_32",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "high_friction",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.773080858682208,
+              "mean_final_distance": 0.0009396896232495091,
+              "mean_episode_length": 56.2,
+              "mean_peak_contact_force": 0.8418422086879288,
+              "p95_peak_contact_force": 1.1604498993534336,
+              "mean_force_std": 0.15835876251042336,
+              "mean_first_contact_step": 23.0,
+              "mean_contact_steps": 33.92,
+              "mean_settling_steps_after_contact": 30.16,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -4.733350469211281,
+              "mean_final_distance": 0.004772165324303711,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.730388803791985,
+              "p95_peak_contact_force": 5.237284063070993,
+              "mean_force_std": 0.5284795570415514,
+              "mean_first_contact_step": 20.0,
+              "mean_contact_steps": 45.0,
+              "mean_settling_steps_after_contact": 44.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.719178960904062,
+              "mean_final_distance": 0.0008920997663926882,
+              "mean_episode_length": 53.58,
+              "mean_peak_contact_force": 0.8833231853001479,
+              "p95_peak_contact_force": 1.2083307947347577,
+              "mean_force_std": 0.2214185827809297,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 31.24,
+              "mean_settling_steps_after_contact": 30.7,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6666666666666666,
+            "success_rate_std": 0.4714045207910317,
+            "mean_episode_return_mean": 2.919636450124996,
+            "mean_episode_return_std": 5.411523688346018,
+            "mean_final_distance_mean": 0.0022013182379819695,
+            "mean_final_distance_std": 0.0018179672264291334,
+            "mean_episode_length_mean": 57.92666666666667,
+            "mean_episode_length_std": 4.425692663929066,
+            "mean_peak_contact_force_mean": 2.1518513992600203,
+            "mean_peak_contact_force_std": 1.8233799252638865,
+            "p95_peak_contact_force_mean": 2.535354919053061,
+            "p95_peak_contact_force_std": 1.910652413794083,
+            "mean_force_std_mean": 0.3027523007776348,
+            "mean_force_std_std": 0.16167607717998775,
+            "mean_first_contact_step_mean": 21.666666666666668,
+            "mean_first_contact_step_std": 1.247219128924647,
+            "mean_contact_steps_mean": 36.72,
+            "mean_contact_steps_std": 5.956195653826918,
+            "mean_settling_steps_after_contact_mean": 34.95333333333333,
+            "mean_settling_steps_after_contact_std": 6.400756899686856,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_32",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "offset_bias",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.96,
+              "mean_episode_return": 6.5467503978076875,
+              "mean_final_distance": 0.0009345672762660643,
+              "mean_episode_length": 57.46,
+              "mean_peak_contact_force": 0.9170393707182559,
+              "p95_peak_contact_force": 1.295569772164051,
+              "mean_force_std": 0.19903398093791436,
+              "mean_first_contact_step": 23.0,
+              "mean_contact_steps": 35.1,
+              "mean_settling_steps_after_contact": 33.84,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -3.368685287299599,
+              "mean_final_distance": 0.003855564399980233,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.267930012207483,
+              "p95_peak_contact_force": 5.092068008044759,
+              "mean_force_std": 0.5154579080947694,
+              "mean_first_contact_step": 20.0,
+              "mean_contact_steps": 45.0,
+              "mean_settling_steps_after_contact": 44.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.98,
+              "mean_episode_return": 6.663537466345748,
+              "mean_final_distance": 0.0009340928375842429,
+              "mean_episode_length": 56.52,
+              "mean_peak_contact_force": 0.9708286495347558,
+              "p95_peak_contact_force": 1.3577294254593122,
+              "mean_force_std": 0.21636033884356562,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 34.56,
+              "mean_settling_steps_after_contact": 34.08,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6466666666666666,
+            "success_rate_std": 0.4573352769637999,
+            "mean_episode_return_mean": 3.280534192284612,
+            "mean_episode_return_std": 4.7019499196685075,
+            "mean_final_distance_mean": 0.0019080748379435135,
+            "mean_final_distance_std": 0.0013770830892274914,
+            "mean_episode_length_mean": 59.326666666666675,
+            "mean_episode_length_std": 3.326753505880603,
+            "mean_peak_contact_force_mean": 2.0519326774868314,
+            "mean_peak_contact_force_std": 1.56710060562932,
+            "p95_peak_contact_force_mean": 2.5817890685560405,
+            "p95_peak_contact_force_std": 1.7752166480282343,
+            "mean_force_std_mean": 0.3102840759587498,
+            "mean_force_std_std": 0.14525214103896109,
+            "mean_first_contact_step_mean": 21.666666666666668,
+            "mean_first_contact_step_std": 1.247219128924647,
+            "mean_contact_steps_mean": 38.22,
+            "mean_contact_steps_std": 4.799249941397092,
+            "mean_settling_steps_after_contact_mean": 37.306666666666665,
+            "mean_settling_steps_after_contact_std": 4.733915457161815,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_32",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "noisy_force",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        }
+      }
+    },
+    {
+      "point_name": "ppo_total_timesteps_128",
+      "factor_value": 128,
+      "demonstration_coverage": "reset_repaired",
+      "reset_coverage": "reset_repaired",
+      "training_budget": {
+        "total_timesteps": 128,
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "train_config_snapshot": {
+        "total_timesteps": 128,
+        "n_envs": 1,
+        "n_steps": 64,
+        "batch_size": 64,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 0,
+        "demo_seed": null,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "per_profile_metrics": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.596787234281014,
+              "mean_final_distance": 0.0010525944103674182,
+              "mean_episode_length": 52.92,
+              "mean_peak_contact_force": 2.0225906191053453,
+              "p95_peak_contact_force": 2.528372511024148,
+              "mean_force_std": 0.3492391301892232,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 31.92,
+              "mean_settling_steps_after_contact": 30.48,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -6.995008270330329,
+              "mean_final_distance": 0.00477366539709315,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.402781922988499,
+              "p95_peak_contact_force": 5.7427067141389205,
+              "mean_force_std": 0.6231183969339322,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 43.0,
+              "mean_settling_steps_after_contact": 42.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.92,
+              "mean_episode_return": 5.6086262657194,
+              "mean_final_distance": 0.0012087319994434425,
+              "mean_episode_length": 55.42,
+              "mean_peak_contact_force": 1.518531463625946,
+              "p95_peak_contact_force": 6.376252732507061,
+              "mean_force_std": 0.21183608742466897,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 31.0,
+              "mean_settling_steps_after_contact": 29.02,
+              "jam_rate": 0.06,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.64,
+            "success_rate_std": 0.4537253207246281,
+            "mean_episode_return_mean": 1.7368017432233618,
+            "mean_episode_return_std": 6.187487110265068,
+            "mean_final_distance_mean": 0.0023449972689680034,
+            "mean_final_distance_std": 0.001718510283958909,
+            "mean_episode_length_mean": 57.446666666666665,
+            "mean_episode_length_std": 4.744971607455154,
+            "mean_peak_contact_force_mean": 2.9813013352399302,
+            "mean_peak_contact_force_std": 1.7245666287868802,
+            "p95_peak_contact_force_mean": 4.882443985890043,
+            "p95_peak_contact_force_std": 1.684554247851243,
+            "mean_force_std_mean": 0.3947312048492748,
+            "mean_force_std_std": 0.17095892522567155,
+            "mean_first_contact_step_mean": 23.0,
+            "mean_first_contact_step_std": 1.4142135623730951,
+            "mean_contact_steps_mean": 35.306666666666665,
+            "mean_contact_steps_std": 5.452958422320452,
+            "mean_settling_steps_after_contact_mean": 33.833333333333336,
+            "mean_settling_steps_after_contact_std": 5.805384473821599,
+            "jam_rate_mean": 0.02,
+            "jam_rate_std": 0.028284271247461898,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_128",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.9,
+              "mean_episode_return": 5.488265541078834,
+              "mean_final_distance": 0.0012223189063358079,
+              "mean_episode_length": 56.2,
+              "mean_peak_contact_force": 2.4161889988178267,
+              "p95_peak_contact_force": 5.3787302188362425,
+              "mean_force_std": 0.41960500841393034,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 35.2,
+              "mean_settling_steps_after_contact": 33.88,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -8.698785643463921,
+              "mean_final_distance": 0.005499030589126617,
+              "mean_episode_length": 44.68,
+              "mean_peak_contact_force": 8.792015555665714,
+              "p95_peak_contact_force": 16.170017000704306,
+              "mean_force_std": 1.7578738853396358,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 23.68,
+              "mean_settling_steps_after_contact": 22.68,
+              "jam_rate": 0.46,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.12,
+              "mean_episode_return": -6.158930490681034,
+              "mean_final_distance": 0.00435089288949992,
+              "mean_episode_length": 43.42,
+              "mean_peak_contact_force": 16.766104186624663,
+              "p95_peak_contact_force": 34.74109556516677,
+              "mean_force_std": 0.7051913976852703,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 19.42,
+              "mean_settling_steps_after_contact": 18.24,
+              "jam_rate": 0.86,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.34,
+            "success_rate_std": 0.3989987468652001,
+            "mean_episode_return_mean": -3.123150197688707,
+            "mean_episode_return_std": 6.176842603288481,
+            "mean_final_distance_mean": 0.003690747461654115,
+            "mean_final_distance_std": 0.0018072833561009257,
+            "mean_episode_length_mean": 48.1,
+            "mean_episode_length_std": 5.750617358162514,
+            "mean_peak_contact_force_mean": 9.3247695803694,
+            "mean_peak_contact_force_std": 5.8704279578488885,
+            "p95_peak_contact_force_mean": 18.763280928235773,
+            "p95_peak_contact_force_std": 12.126579293195174,
+            "mean_force_std_mean": 0.9608900971462787,
+            "mean_force_std_std": 0.5754866146236799,
+            "mean_first_contact_step_mean": 23.0,
+            "mean_first_contact_step_std": 1.4142135623730951,
+            "mean_contact_steps_mean": 26.100000000000005,
+            "mean_contact_steps_std": 6.665553240354473,
+            "mean_settling_steps_after_contact_mean": 24.933333333333334,
+            "mean_settling_steps_after_contact_std": 6.580807110242803,
+            "jam_rate_mean": 0.44,
+            "jam_rate_std": 0.3513782387494517,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_128",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "tight_clearance",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.94,
+              "mean_episode_return": 6.27293265988379,
+              "mean_final_distance": 0.001043057765637079,
+              "mean_episode_length": 57.08,
+              "mean_peak_contact_force": 2.2678499612123115,
+              "p95_peak_contact_force": 2.8185769022587372,
+              "mean_force_std": 0.3402655148700384,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 36.08,
+              "mean_settling_steps_after_contact": 34.1,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.115061532201818,
+              "mean_final_distance": 0.004800055311150738,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.417636371783058,
+              "p95_peak_contact_force": 5.728851378474654,
+              "mean_force_std": 0.6301597292220008,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 43.0,
+              "mean_settling_steps_after_contact": 42.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.88,
+              "mean_episode_return": 5.117838068742095,
+              "mean_final_distance": 0.0013407523427004025,
+              "mean_episode_length": 59.54,
+              "mean_peak_contact_force": 2.4984849605345407,
+              "p95_peak_contact_force": 13.236419665914735,
+              "mean_force_std": 0.36398119274303115,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 32.38,
+              "mean_settling_steps_after_contact": 34.54,
+              "jam_rate": 0.08,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6066666666666666,
+            "success_rate_std": 0.4296768811819205,
+            "mean_episode_return_mean": 1.4252363988080223,
+            "mean_episode_return_std": 6.057286380408828,
+            "mean_final_distance_mean": 0.002394621806496073,
+            "mean_final_distance_std": 0.0017052347393227412,
+            "mean_episode_length_mean": 60.20666666666667,
+            "mean_episode_length_std": 2.8641384199945525,
+            "mean_peak_contact_force_mean": 3.3946570978433033,
+            "mean_peak_contact_force_std": 1.433557807884624,
+            "p95_peak_contact_force_mean": 7.261282648882709,
+            "p95_peak_contact_force_std": 4.388934658962107,
+            "mean_force_std_mean": 0.4448021456116901,
+            "mean_force_std_std": 0.13142471532055622,
+            "mean_first_contact_step_mean": 23.0,
+            "mean_first_contact_step_std": 1.4142135623730951,
+            "mean_contact_steps_mean": 37.153333333333336,
+            "mean_contact_steps_std": 4.401524988253755,
+            "mean_settling_steps_after_contact_mean": 36.879999999999995,
+            "mean_settling_steps_after_contact_std": 3.624840226364007,
+            "jam_rate_mean": 0.02666666666666667,
+            "jam_rate_std": 0.03771236166328253,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_128",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "high_friction",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.600632475231216,
+              "mean_final_distance": 0.0010565082974711066,
+              "mean_episode_length": 54.0,
+              "mean_peak_contact_force": 1.832119545801251,
+              "p95_peak_contact_force": 2.5002369018182815,
+              "mean_force_std": 0.3275848176028156,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 33.0,
+              "mean_settling_steps_after_contact": 31.38,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.955652303721275,
+              "mean_final_distance": 0.004930967669843463,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.56200119996454,
+              "p95_peak_contact_force": 5.823200937269697,
+              "mean_force_std": 0.6469291934721335,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 43.0,
+              "mean_settling_steps_after_contact": 42.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.8,
+              "mean_episode_return": 4.3629197021262796,
+              "mean_final_distance": 0.0015846916274508832,
+              "mean_episode_length": 55.08,
+              "mean_peak_contact_force": 2.482024188144115,
+              "p95_peak_contact_force": 12.073904542532174,
+              "mean_force_std": 0.24636872206613017,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 30.66,
+              "mean_settling_steps_after_contact": 28.76,
+              "jam_rate": 0.12,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.6,
+            "success_rate_std": 0.43204937989385733,
+            "mean_episode_return_mean": 1.0026332912120735,
+            "mean_episode_return_std": 6.40000001114698,
+            "mean_final_distance_mean": 0.0025240558649218176,
+            "mean_final_distance_std": 0.001715549034569888,
+            "mean_episode_length_mean": 57.69333333333333,
+            "mean_episode_length_std": 4.4812299898824905,
+            "mean_peak_contact_force_mean": 3.292048311303302,
+            "mean_peak_contact_force_std": 1.6268801632963679,
+            "p95_peak_contact_force_mean": 6.799114127206718,
+            "p95_peak_contact_force_std": 3.9688859007226758,
+            "mean_force_std_mean": 0.4069609110470264,
+            "mean_force_std_std": 0.1728922515539625,
+            "mean_first_contact_step_mean": 23.0,
+            "mean_first_contact_step_std": 1.4142135623730951,
+            "mean_contact_steps_mean": 35.553333333333335,
+            "mean_contact_steps_std": 5.351543910146138,
+            "mean_settling_steps_after_contact_mean": 34.04666666666667,
+            "mean_settling_steps_after_contact_std": 5.724667870035974,
+            "jam_rate_mean": 0.04,
+            "jam_rate_std": 0.056568542494923796,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_128",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "offset_bias",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 1.0,
+              "mean_episode_return": 6.5266768202658705,
+              "mean_final_distance": 0.0010702401710044817,
+              "mean_episode_length": 53.04,
+              "mean_peak_contact_force": 2.0730705848094813,
+              "p95_peak_contact_force": 2.5904424412035185,
+              "mean_force_std": 0.3969081543598435,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 32.04,
+              "mean_settling_steps_after_contact": 31.0,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -6.728388654332974,
+              "mean_final_distance": 0.004678252768475016,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.533306114273894,
+              "p95_peak_contact_force": 5.93592935486576,
+              "mean_force_std": 0.6621851565251429,
+              "mean_first_contact_step": 22.0,
+              "mean_contact_steps": 43.0,
+              "mean_settling_steps_after_contact": 42.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.92,
+              "mean_episode_return": 6.142560937389915,
+              "mean_final_distance": 0.0010832335531952217,
+              "mean_episode_length": 58.1,
+              "mean_peak_contact_force": 1.0024463131570804,
+              "p95_peak_contact_force": 1.3455379918388128,
+              "mean_force_std": 0.22093399793165103,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 33.56,
+              "mean_settling_steps_after_contact": 32.86,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.64,
+            "success_rate_std": 0.4537253207246281,
+            "mean_episode_return_mean": 1.980283034440937,
+            "mean_episode_return_std": 6.1599571529899775,
+            "mean_final_distance_mean": 0.0022772421642249063,
+            "mean_final_distance_std": 0.001697779166693222,
+            "mean_episode_length_mean": 58.379999999999995,
+            "mean_episode_length_std": 4.478779595678567,
+            "mean_peak_contact_force_mean": 2.8696076707468183,
+            "mean_peak_contact_force_std": 1.9335677095806139,
+            "p95_peak_contact_force_mean": 3.2906365959693633,
+            "p95_peak_contact_force_std": 1.938320081447556,
+            "mean_force_std_mean": 0.4266757696055459,
+            "mean_force_std_std": 0.18136561494779332,
+            "mean_first_contact_step_mean": 23.0,
+            "mean_first_contact_step_std": 1.4142135623730951,
+            "mean_contact_steps_mean": 36.199999999999996,
+            "mean_contact_steps_std": 4.848202416016338,
+            "mean_settling_steps_after_contact_mean": 35.28666666666667,
+            "mean_settling_steps_after_contact_std": 4.807392455606492,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_128",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "noisy_force",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        }
+      }
+    },
+    {
+      "point_name": "ppo_total_timesteps_512",
+      "factor_value": 512,
+      "demonstration_coverage": "reset_repaired",
+      "reset_coverage": "reset_repaired",
+      "training_budget": {
+        "total_timesteps": 512,
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "train_config_snapshot": {
+        "total_timesteps": 512,
+        "n_envs": 1,
+        "n_steps": 64,
+        "batch_size": 64,
+        "n_epochs": 1,
+        "learning_rate": 0.0001,
+        "gamma": 0.95,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.0,
+        "vf_coef": 0.5,
+        "clip_range": 0.2,
+        "seed": 0,
+        "demo_seed": null,
+        "max_episode_steps": 64,
+        "norm_obs": true,
+        "norm_reward": true,
+        "verbose": 0,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_learning_rate": 0.001,
+        "bc_demo_policy_name": "variable_impedance",
+        "dapg_enabled": false,
+        "dapg_mini_updates_per_chunk": 1,
+        "dapg_demo_batch_size": 64,
+        "dapg_log_demo_updates": true,
+        "base_env_overrides": {},
+        "train_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.15
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.35,
+                0.65
+              ],
+              "weight": 0.4
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.88
+              ],
+              "weight": 0.25
+            }
+          ]
+        },
+        "bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.35
+            },
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.75,
+                0.9
+              ],
+              "weight": 0.3
+            }
+          ]
+        },
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "approach_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0008,
+              "start_depth_fraction_range": [
+                0.0,
+                0.2
+              ],
+              "weight": 0.6
+            },
+            {
+              "start_xy_noise_m": 0.0005,
+              "start_depth_fraction_range": [
+                0.3,
+                0.6
+              ],
+              "weight": 0.4
+            }
+          ]
+        },
+        "approach_bc_action_loss_weights": null,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.82,
+                0.92
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "contact_bc_action_loss_weights": [
+          0.25,
+          0.25,
+          0.1,
+          1.0,
+          1.0
+        ],
+        "contact_bc_freeze_pose_head": false,
+        "contact_bc_after_finetune": false,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "contact_finetune_env_overrides": {
+          "force_penalty_scale": 0.03,
+          "stability_penalty_scale": 0.06,
+          "contact_bonus": 0.08,
+          "enable_contact_intent_projection": false,
+          "contact_intent_trigger_height_m": 0.0025,
+          "contact_intent_trigger_xy_threshold_m": 0.0015,
+          "contact_intent_max_xy_error_increase_m": "inf"
+        },
+        "contact_finetune_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "phase_bias_distill_trigger_weight": 1.0,
+        "phase_bias_distill_sample_selection": "all",
+        "phase_bias_distill_contact_onset_force_threshold_n": 2.0,
+        "phase_bias_distill_contact_onset_max_steps": 3,
+        "phase_bias_distill_env_overrides": {},
+        "phase_bias_distill_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 5e-05,
+              "start_depth_fraction_range": [
+                0.6,
+                0.68
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_force_threshold_n": 0.3,
+        "intent_lift_bc_max_contact_steps": 8,
+        "intent_lift_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.00015,
+              "start_depth_fraction_range": [
+                0.62,
+                0.76
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "intent_lift_bc_precontact_bridge_steps": 2,
+        "intent_lift_bc_precontact_bridge_weight": 0.25,
+        "intent_lift_bc_sample_selection": "contact_bridge",
+        "intent_lift_bc_late_descent_height_m": 0.0,
+        "intent_lift_bc_late_descent_dz_scale": 1.0,
+        "intent_lift_bc_late_descent_k_z_scale": 1.0,
+        "intent_lift_bc_contact_handoff_force_threshold_n": 2.0,
+        "intent_lift_bc_contact_handoff_max_steps": 0,
+        "intent_lift_bc_contact_handoff_weight": 0.25,
+        "intent_lift_bc_contact_handoff_xy_scale": 1.0,
+        "intent_lift_bc_contact_handoff_dz_scale": 1.0,
+        "intent_lift_bc_contact_handoff_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_force_threshold_n": 0.3,
+        "intent_lift_bc_contact_relief_max_steps": 0,
+        "intent_lift_bc_contact_relief_weight": 0.25,
+        "intent_lift_bc_contact_relief_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_dz_scale": 1.0,
+        "intent_lift_bc_contact_relief_k_z_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_start_step": 0,
+        "intent_lift_bc_contact_relief_tail_xy_scale": 1.0,
+        "intent_lift_bc_contact_relief_tail_dz_scale": 1.0,
+        "intent_lift_bc_legacy_stabilization_semantics": false,
+        "intent_lift_bc_action_loss_weights": null,
+        "intent_lift_bc_freeze_pose_head": false,
+        "intent_lift_bc_after_stabilization": false,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "stabilization_bc_force_threshold_n": 1.0,
+        "stabilization_bc_max_contact_steps": 4,
+        "stabilization_bc_onset_force_threshold_n": 0.0,
+        "stabilization_bc_onset_max_steps": 0,
+        "stabilization_bc_onset_weight": 0.5,
+        "stabilization_bc_relief_force_threshold_n": 0.0,
+        "stabilization_bc_relief_max_steps": 0,
+        "stabilization_bc_relief_weight": 0.25,
+        "stabilization_bc_relief_tail_start_step": 0,
+        "stabilization_bc_relief_tail_weight": 0.25,
+        "stabilization_bc_relief_tail_force_threshold_n": 0.0,
+        "stabilization_bc_relief_tail_max_steps": 0,
+        "stabilization_bc_relief_xy_scale": 1.0,
+        "stabilization_bc_relief_dz_scale": 1.0,
+        "stabilization_bc_relief_tail_xy_scale": 1.0,
+        "stabilization_bc_relief_tail_dz_scale": 1.0,
+        "stabilization_bc_reset_config": {
+          "curriculum_stages": [
+            {
+              "start_xy_noise_m": 0.0002,
+              "start_depth_fraction_range": [
+                0.78,
+                0.9
+              ],
+              "weight": 1.0
+            }
+          ]
+        },
+        "stabilization_bc_precontact_bridge_steps": 0,
+        "stabilization_bc_precontact_bridge_weight": 0.25,
+        "stabilization_bc_action_loss_weights": null,
+        "stabilization_bc_freeze_pose_head": false
+      },
+      "per_profile_metrics": {
+        "nominal": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.213492847755646,
+              "mean_final_distance": 0.0026577738659610078,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.935881110539565,
+              "p95_peak_contact_force": 5.49295454453809,
+              "mean_force_std": 0.7222624371123737,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 40.0,
+              "mean_settling_steps_after_contact": 39.0,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.673470020577248,
+              "mean_final_distance": 0.004835452017643977,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.930806580100593,
+              "p95_peak_contact_force": 5.177799222302406,
+              "mean_force_std": 0.6364950062932322,
+              "mean_first_contact_step": 27.0,
+              "mean_contact_steps": 38.0,
+              "mean_settling_steps_after_contact": 37.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "nominal",
+              "episodes": 50,
+              "success_rate": 0.08,
+              "mean_episode_return": 0.8567802005199107,
+              "mean_final_distance": 0.0016313004352565836,
+              "mean_episode_length": 63.98,
+              "mean_peak_contact_force": 0.6464467368056803,
+              "p95_peak_contact_force": 0.8612766942412065,
+              "mean_force_std": 0.17621420161707854,
+              "mean_first_contact_step": 29.0,
+              "mean_contact_steps": 31.5,
+              "mean_settling_steps_after_contact": 34.22,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "nominal",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.02666666666666667,
+            "success_rate_std": 0.03771236166328253,
+            "mean_episode_return_mean": -3.343394222604328,
+            "mean_episode_return_std": 2.9759025116625835,
+            "mean_final_distance_mean": 0.003041508772953856,
+            "mean_final_distance_std": 0.0013359356770599692,
+            "mean_episode_length_mean": 63.99333333333333,
+            "mean_episode_length_std": 0.009428090415822108,
+            "mean_peak_contact_force_mean": 3.5043781424819467,
+            "mean_peak_contact_force_std": 2.0208637389950916,
+            "p95_peak_contact_force_mean": 3.844010153693901,
+            "p95_peak_contact_force_std": 2.1130317692654077,
+            "mean_force_std_mean": 0.5116572150075615,
+            "mean_force_std_std": 0.2397645017813588,
+            "mean_first_contact_step_mean": 27.0,
+            "mean_first_contact_step_std": 1.632993161855452,
+            "mean_contact_steps_mean": 36.5,
+            "mean_contact_steps_std": 3.6285901761795403,
+            "mean_settling_steps_after_contact_mean": 36.74,
+            "mean_settling_steps_after_contact_std": 1.9600680260303895,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_512",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "tight_clearance": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -6.3660589509274095,
+              "mean_final_distance": 0.003957427400650172,
+              "mean_episode_length": 47.62,
+              "mean_peak_contact_force": 7.709852850675275,
+              "p95_peak_contact_force": 13.968782242537001,
+              "mean_force_std": 1.5854810009291176,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 23.62,
+              "mean_settling_steps_after_contact": 22.62,
+              "jam_rate": 0.42,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -7.567057451750474,
+              "mean_final_distance": 0.005545052330927198,
+              "mean_episode_length": 48.46,
+              "mean_peak_contact_force": 7.680263009989639,
+              "p95_peak_contact_force": 14.01391889099984,
+              "mean_force_std": 1.5585836813621945,
+              "mean_first_contact_step": 27.0,
+              "mean_contact_steps": 22.46,
+              "mean_settling_steps_after_contact": 21.46,
+              "jam_rate": 0.42,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "tight_clearance",
+              "episodes": 50,
+              "success_rate": 0.02,
+              "mean_episode_return": -6.146197850292245,
+              "mean_final_distance": 0.004617533904728358,
+              "mean_episode_length": 45.14,
+              "mean_peak_contact_force": 16.254431088734297,
+              "p95_peak_contact_force": 32.90836304523503,
+              "mean_force_std": 0.768257239813558,
+              "mean_first_contact_step": 29.0,
+              "mean_contact_steps": 16.82,
+              "mean_settling_steps_after_contact": 16.06,
+              "jam_rate": 0.76,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "tight_clearance",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.006666666666666667,
+            "success_rate_std": 0.009428090415820633,
+            "mean_episode_return_mean": -6.6931047509900425,
+            "mean_episode_return_std": 0.62446228509973,
+            "mean_final_distance_mean": 0.004706671212101909,
+            "mean_final_distance_std": 0.0006512026435673399,
+            "mean_episode_length_mean": 47.07333333333333,
+            "mean_episode_length_std": 1.4094285682108505,
+            "mean_peak_contact_force_mean": 10.548182316466404,
+            "mean_peak_contact_force_std": 4.034945284876825,
+            "p95_peak_contact_force_mean": 20.297021392923956,
+            "p95_peak_contact_force_std": 8.917584240616803,
+            "mean_force_std_mean": 1.30410730736829,
+            "mean_force_std_std": 0.3790622970997243,
+            "mean_first_contact_step_mean": 27.0,
+            "mean_first_contact_step_std": 1.632993161855452,
+            "mean_contact_steps_mean": 20.966666666666665,
+            "mean_contact_steps_std": 2.970132806607962,
+            "mean_settling_steps_after_contact_mean": 20.046666666666667,
+            "mean_settling_steps_after_contact_std": 2.8584999951411976,
+            "jam_rate_mean": 0.5333333333333333,
+            "jam_rate_std": 0.1602775370689508,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_512",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "tight_clearance",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "high_friction": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.10835878804552,
+              "mean_final_distance": 0.002561377337465519,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.80796377727937,
+              "p95_peak_contact_force": 5.226756275602683,
+              "mean_force_std": 0.7024752824412736,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 40.0,
+              "mean_settling_steps_after_contact": 39.0,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.72900619673648,
+              "mean_final_distance": 0.004858609565243213,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.937228629844947,
+              "p95_peak_contact_force": 5.166520492308606,
+              "mean_force_std": 0.6390860754258447,
+              "mean_first_contact_step": 27.0,
+              "mean_contact_steps": 38.0,
+              "mean_settling_steps_after_contact": 37.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "high_friction",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -0.07299623046521768,
+              "mean_final_distance": 0.002321895242316532,
+              "mean_episode_length": 63.6,
+              "mean_peak_contact_force": 1.411374054257138,
+              "p95_peak_contact_force": 1.9818604641907873,
+              "mean_force_std": 0.3196439389411249,
+              "mean_first_contact_step": 29.0,
+              "mean_contact_steps": 27.28,
+              "mean_settling_steps_after_contact": 34.6,
+              "jam_rate": 0.02,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "high_friction",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": -3.6367870717490725,
+            "mean_episode_return_std": 2.5326869357519253,
+            "mean_final_distance_mean": 0.003247294048341755,
+            "mean_final_distance_std": 0.0011435591195123518,
+            "mean_episode_length_mean": 63.86666666666667,
+            "mean_episode_length_std": 0.188561808316412,
+            "mean_peak_contact_force_mean": 3.718855487127152,
+            "mean_peak_contact_force_std": 1.6324889530625901,
+            "p95_peak_contact_force_mean": 4.125045744034026,
+            "p95_peak_contact_force_std": 1.515660350078433,
+            "mean_force_std_mean": 0.5537350989360811,
+            "mean_force_std_std": 0.1675381574096865,
+            "mean_first_contact_step_mean": 27.0,
+            "mean_first_contact_step_std": 1.632993161855452,
+            "mean_contact_steps_mean": 35.093333333333334,
+            "mean_contact_steps_std": 5.584868445680305,
+            "mean_settling_steps_after_contact_mean": 36.86666666666667,
+            "mean_settling_steps_after_contact_std": 1.7987650084309383,
+            "jam_rate_mean": 0.006666666666666667,
+            "jam_rate_std": 0.009428090415820633,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_512",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "high_friction",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "offset_bias": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.406533140570435,
+              "mean_final_distance": 0.0026878179543427523,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.0001817807133015,
+              "p95_peak_contact_force": 5.473599206087864,
+              "mean_force_std": 0.7310367770546595,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 40.0,
+              "mean_settling_steps_after_contact": 39.0,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -6.367819034223437,
+              "mean_final_distance": 0.004991517883823829,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.065397730931349,
+              "p95_peak_contact_force": 5.2819907684265095,
+              "mean_force_std": 0.6668376119800462,
+              "mean_first_contact_step": 27.0,
+              "mean_contact_steps": 38.0,
+              "mean_settling_steps_after_contact": 37.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "offset_bias",
+              "episodes": 50,
+              "success_rate": 0.08,
+              "mean_episode_return": 0.3814886047504541,
+              "mean_final_distance": 0.001899637563914646,
+              "mean_episode_length": 62.74,
+              "mean_peak_contact_force": 1.2351855172976227,
+              "p95_peak_contact_force": 6.0797699049933165,
+              "mean_force_std": 0.19978126617674033,
+              "mean_first_contact_step": 29.0,
+              "mean_contact_steps": 31.14,
+              "mean_settling_steps_after_contact": 33.06,
+              "jam_rate": 0.06,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "offset_bias",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.02666666666666667,
+            "success_rate_std": 0.03771236166328253,
+            "mean_episode_return_mean": -3.797621190014473,
+            "mean_episode_return_std": 2.9810218214407818,
+            "mean_final_distance_mean": 0.0031929911340270755,
+            "mean_final_distance_std": 0.0013118259371996744,
+            "mean_episode_length_mean": 63.580000000000005,
+            "mean_episode_length_std": 0.593969696196699,
+            "mean_peak_contact_force_mean": 3.766921676314091,
+            "mean_peak_contact_force_std": 1.7904057760173262,
+            "p95_peak_contact_force_mean": 5.611786626502564,
+            "p95_peak_contact_force_std": 0.3400340277638613,
+            "mean_force_std_mean": 0.532551885070482,
+            "mean_force_std_std": 0.2367595077967828,
+            "mean_first_contact_step_mean": 27.0,
+            "mean_first_contact_step_std": 1.632993161855452,
+            "mean_contact_steps_mean": 36.38,
+            "mean_contact_steps_std": 3.7941358260698395,
+            "mean_settling_steps_after_contact_mean": 36.35333333333333,
+            "mean_settling_steps_after_contact_std": 2.4677295007534523,
+            "jam_rate_mean": 0.02,
+            "jam_rate_std": 0.028284271247461898,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_512",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "offset_bias",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        },
+        "noisy_force": {
+          "per_seed": [
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.2961033570409795,
+              "mean_final_distance": 0.0027289532928013627,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 5.731967129093431,
+              "p95_peak_contact_force": 7.210402134714008,
+              "mean_force_std": 0.8569741164374673,
+              "mean_first_contact_step": 25.0,
+              "mean_contact_steps": 40.0,
+              "mean_settling_steps_after_contact": 39.0,
+              "jam_rate": 0.0,
+              "seed": 0,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+                "demo_dataset_hash": "e054f452c623"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": -5.286259227925599,
+              "mean_final_distance": 0.0046682541364853536,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 4.96349087326576,
+              "p95_peak_contact_force": 5.377180600389785,
+              "mean_force_std": 0.6659118127468622,
+              "mean_first_contact_step": 27.0,
+              "mean_contact_steps": 38.0,
+              "mean_settling_steps_after_contact": 37.0,
+              "jam_rate": 0.0,
+              "seed": 1,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/6c7c69edc3ac",
+                "demo_dataset_hash": "6c7c69edc3ac"
+              }
+            },
+            {
+              "policy_name": "PPO",
+              "uncertainty_profile": "noisy_force",
+              "episodes": 50,
+              "success_rate": 0.0,
+              "mean_episode_return": 0.37774767420622024,
+              "mean_final_distance": 0.0019279090086509953,
+              "mean_episode_length": 64.0,
+              "mean_peak_contact_force": 0.8695123428057979,
+              "p95_peak_contact_force": 1.0983496604092366,
+              "mean_force_std": 0.20668888876655778,
+              "mean_first_contact_step": 29.0,
+              "mean_contact_steps": 32.4,
+              "mean_settling_steps_after_contact": 34.98,
+              "jam_rate": 0.0,
+              "seed": 2,
+              "training_summary": {
+                "dapg_enabled": false,
+                "num_chunks": 0,
+                "num_demo_updates": 0,
+                "demo_updates_per_chunk": 1,
+                "demo_batch_size": 64,
+                "demo_dataset_id": "contact_new__reset_repaired",
+                "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/02745701a7d1",
+                "demo_dataset_hash": "02745701a7d1"
+              }
+            }
+          ],
+          "aggregate": {
+            "policy_name": "PPO",
+            "uncertainty_profile": "noisy_force",
+            "num_seeds": 3,
+            "seeds": [
+              0,
+              1,
+              2
+            ],
+            "success_rate_mean": 0.0,
+            "success_rate_std": 0.0,
+            "mean_episode_return_mean": -3.401538303586786,
+            "mean_episode_return_std": 2.672361764828587,
+            "mean_final_distance_mean": 0.0031083721459792372,
+            "mean_final_distance_std": 0.0011504613145810936,
+            "mean_episode_length_mean": 64.0,
+            "mean_episode_length_std": 0.0,
+            "mean_peak_contact_force_mean": 3.854990115054997,
+            "mean_peak_contact_force_std": 2.134236332647388,
+            "p95_peak_contact_force_mean": 4.561977465171011,
+            "p95_peak_contact_force_std": 2.560952098460865,
+            "mean_force_std_mean": 0.5765249393169625,
+            "mean_force_std_std": 0.2728983072964865,
+            "mean_first_contact_step_mean": 27.0,
+            "mean_first_contact_step_std": 1.632993161855452,
+            "mean_contact_steps_mean": 36.800000000000004,
+            "mean_contact_steps_std": 3.216623488483952,
+            "mean_settling_steps_after_contact_mean": 36.99333333333333,
+            "mean_settling_steps_after_contact_std": 1.6411648979375066,
+            "jam_rate_mean": 0.0,
+            "jam_rate_std": 0.0,
+            "suite_name": "factor_sweep__ppo_fine_tune_budget__ppo_total_timesteps_512",
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "noisy_force",
+            "bc_rollout_episodes": 8,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+            "approach_bc_pretrain_steps": 0,
+            "contact_bc_pretrain_steps": 0,
+            "contact_bc_freeze_pose_head": false,
+            "contact_bc_after_finetune": false,
+            "contact_finetune_timesteps": 0,
+            "contact_finetune_anchor_rollout_episodes": 0,
+            "contact_finetune_anchor_bc_steps": 0,
+            "contact_finetune_anchor_interval_timesteps": 0,
+            "base_env_overrides": {},
+            "train_reset_stage_count": 3,
+            "bc_reset_stage_count": 3,
+            "dapg_enabled": false,
+            "num_chunks": 0,
+            "num_demo_updates": 0,
+            "demo_updates_per_chunk": 1,
+            "demo_batch_size": 64,
+            "demo_dataset_id": "contact_new__reset_repaired",
+            "demo_dataset_path": "generated://three_dof/contact_new__reset_repaired/e054f452c623",
+            "demo_dataset_hash": "e054f452c623"
+          }
+        }
+      }
+    }
+  ]
+}

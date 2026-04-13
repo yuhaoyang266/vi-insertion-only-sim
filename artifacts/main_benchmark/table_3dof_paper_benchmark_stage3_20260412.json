@@ -1,0 +1,5745 @@
+{
+  "export_name": "three_dof_paper_benchmark_table",
+  "source_artifacts": {
+    "benchmark_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+    "fixed_impedance_report": null,
+    "statistics_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\paper_only_sim_tables\\three_dof_statistics_report_stage3_20260412.json"
+  },
+  "suite_order": [
+    "ppo_no_bc",
+    "bc_only_stable_r32_p32",
+    "fixed_impedance_rl_stable_r32_p32",
+    "repaired_mainline_bc_to_ppo",
+    "dapg_lite_repaired_mainline",
+    "dapg_lite_contact_old__reset_coverage_collapse",
+    "dapg_lite_contact_old__reset_repaired",
+    "dapg_lite_contact_new__reset_coverage_collapse",
+    "dapg_lite_contact_new__reset_repaired"
+  ],
+  "suite_rows": [
+    {
+      "suite_name": "ppo_no_bc",
+      "display_name": "PPO w/o BC",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 18.381168688885605,
+        "mean_peak_contact_force_n": 0.0,
+        "p95_peak_contact_force_n": 0.0,
+        "mean_contact_steps": 0.0
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.38116868888561,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.381168688885605,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.381168688885605,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.38116868888561,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.38116868888561,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.381168688885605,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.381168688885605,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 18.381168688885605,
+            "mean_peak_contact_force_n": 0.0,
+            "p95_peak_contact_force_n": 0.0,
+            "mean_contact_steps": 0.0
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 18.3811686888856,
+          "std": 0.3364555199975391,
+          "ci": {
+            "lower": 18.046646933857936,
+            "upper": 18.645441906199874
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": []
+    },
+    {
+      "suite_name": "bc_only_stable_r32_p32",
+      "display_name": "BC-only (stable 32/32)",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 0.9996,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.9006875238634531,
+        "mean_peak_contact_force_n": 0.9319136561563752,
+        "p95_peak_contact_force_n": 1.2344152541122317,
+        "mean_contact_steps": 29.9724
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8974986983362013,
+            "mean_peak_contact_force_n": 0.7917907231689164,
+            "p95_peak_contact_force_n": 1.0954448992238763,
+            "mean_contact_steps": 27.93733333333333
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9040319474348781,
+            "mean_peak_contact_force_n": 1.331967128863647,
+            "p95_peak_contact_force_n": 1.5864672656863008,
+            "mean_contact_steps": 32.622
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 0.998,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9069095768737838,
+            "mean_peak_contact_force_n": 0.9522289824114798,
+            "p95_peak_contact_force_n": 1.2992743072032293,
+            "mean_contact_steps": 33.428
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9002283378235075,
+            "mean_peak_contact_force_n": 0.80676635378711,
+            "p95_peak_contact_force_n": 1.1201893244964063,
+            "mean_contact_steps": 28.413999999999998
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8943384457851826,
+            "mean_peak_contact_force_n": 0.7808453132299228,
+            "p95_peak_contact_force_n": 1.0904035752634693,
+            "mean_contact_steps": 27.758
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9040319474348781,
+            "mean_peak_contact_force_n": 1.331967128863647,
+            "p95_peak_contact_force_n": 1.5864672656863008,
+            "mean_contact_steps": 32.622
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8979293113999136,
+            "mean_peak_contact_force_n": 0.7877605024897163,
+            "p95_peak_contact_force_n": 1.0757417979117532,
+            "mean_contact_steps": 27.640000000000004
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 0.998,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9069095768737838,
+            "mean_peak_contact_force_n": 0.9522289824114798,
+            "p95_peak_contact_force_n": 1.2992743072032293,
+            "mean_contact_steps": 33.428
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 0.9996,
+          "std": 0.0008000000000000007,
+          "ci": {
+            "lower": 0.9987999999999999,
+            "upper": 1.0
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 0.9006875238634532,
+          "std": 0.008231361314863732,
+          "ci": {
+            "lower": 0.8924691433138031,
+            "upper": 0.9074630162856541
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 0.9319136561563752,
+          "std": 0.032825946138575944,
+          "ci": {
+            "lower": 0.902766235682672,
+            "upper": 0.9592780352583279
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 1.2344152541122315,
+          "std": 0.04742213138272362,
+          "ci": {
+            "lower": 1.191990028260869,
+            "upper": 1.2700712699017458
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 29.9724,
+          "std": 1.1366726177752322,
+          "ci": {
+            "lower": 29.010400000000004,
+            "upper": 30.934400000000004
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": []
+    },
+    {
+      "suite_name": "fixed_impedance_rl_stable_r32_p32",
+      "display_name": "Fixed-impedance RL (stable BC 32/32)",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 0.9468,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.9164351289263972,
+        "mean_peak_contact_force_n": 1.0705691478428165,
+        "p95_peak_contact_force_n": 1.4166021993949534,
+        "mean_contact_steps": 36.492399999999996
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 0.9913333333333333,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9023388014500463,
+            "mean_peak_contact_force_n": 0.9070700986733581,
+            "p95_peak_contact_force_n": 1.2513763427561198,
+            "mean_contact_steps": 34.907999999999994
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 0.776,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.981210666582577,
+            "mean_peak_contact_force_n": 1.5332087553071296,
+            "p95_peak_contact_force_n": 1.8550893576349998,
+            "mean_contact_steps": 43.032000000000004
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 0.984,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.893948573699269,
+            "mean_peak_contact_force_n": 1.0984266878868785,
+            "p95_peak_contact_force_n": 1.4737926110714072,
+            "mean_contact_steps": 34.706
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.994,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9007929438331431,
+            "mean_peak_contact_force_n": 0.9260136250649017,
+            "p95_peak_contact_force_n": 1.2680611896175598,
+            "mean_contact_steps": 35.292
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.9879999999999999,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9008262397887816,
+            "mean_peak_contact_force_n": 0.8950435325829342,
+            "p95_peak_contact_force_n": 1.237880354661431,
+            "mean_contact_steps": 34.64399999999999
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 0.776,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.981210666582577,
+            "mean_peak_contact_force_n": 1.5332087553071296,
+            "p95_peak_contact_force_n": 1.8550893576349998,
+            "mean_contact_steps": 43.032000000000004
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.992,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9053972207282143,
+            "mean_peak_contact_force_n": 0.9001531383722385,
+            "p95_peak_contact_force_n": 1.2481874839893687,
+            "mean_contact_steps": 34.788
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 0.984,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.893948573699269,
+            "mean_peak_contact_force_n": 1.0984266878868785,
+            "p95_peak_contact_force_n": 1.4737926110714072,
+            "mean_contact_steps": 34.706
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 0.9468,
+          "std": 0.06691606683002224,
+          "ci": {
+            "lower": 0.8792,
+            "upper": 0.9936
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 0.9164351289263969,
+          "std": 0.030155570964155158,
+          "ci": {
+            "lower": 0.8948749148673103,
+            "upper": 0.9453596773909758
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 1.0705691478428165,
+          "std": 0.10887384000125835,
+          "ci": {
+            "lower": 1.002351824703742,
+            "upper": 1.180648091794977
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 1.4166021993949531,
+          "std": 0.14259747210397763,
+          "ci": {
+            "lower": 1.3289165921533734,
+            "upper": 1.5611948349375846
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 36.492399999999996,
+          "std": 1.2434187709697837,
+          "ci": {
+            "lower": 35.4356,
+            "upper": 37.50760000000001
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": [
+        "vs BC -> PPO on success_rate: materially different."
+      ]
+    },
+    {
+      "suite_name": "repaired_mainline_bc_to_ppo",
+      "display_name": "BC -> PPO",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.9023221867525009,
+        "mean_peak_contact_force_n": 0.902159574183848,
+        "p95_peak_contact_force_n": 1.1916638835200524,
+        "mean_contact_steps": 29.7592
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9011010696849272,
+            "mean_peak_contact_force_n": 0.7687077433142223,
+            "p95_peak_contact_force_n": 1.0596884547677783,
+            "mean_contact_steps": 27.989333333333335
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.908123765139671,
+            "mean_peak_contact_force_n": 1.27749095612367,
+            "p95_peak_contact_force_n": 1.5196436960177597,
+            "mean_contact_steps": 32.794
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9001839595680512,
+            "mean_peak_contact_force_n": 0.9271836848529025,
+            "p95_peak_contact_force_n": 1.2596103572791661,
+            "mean_contact_steps": 32.034000000000006
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.901106653224948,
+            "mean_peak_contact_force_n": 0.7842951430328415,
+            "p95_peak_contact_force_n": 1.085087470802333,
+            "mean_contact_steps": 28.426
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9040316794237307,
+            "mean_peak_contact_force_n": 0.7583709842725103,
+            "p95_peak_contact_force_n": 1.0476329902325152,
+            "mean_contact_steps": 27.746
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.908123765139671,
+            "mean_peak_contact_force_n": 1.27749095612367,
+            "p95_peak_contact_force_n": 1.5196436960177597,
+            "mean_contact_steps": 32.794
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.898164876406103,
+            "mean_peak_contact_force_n": 0.7634571026373153,
+            "p95_peak_contact_force_n": 1.0463449032684866,
+            "mean_contact_steps": 27.796000000000003
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9001839595680512,
+            "mean_peak_contact_force_n": 0.9271836848529025,
+            "p95_peak_contact_force_n": 1.2596103572791661,
+            "mean_contact_steps": 32.034000000000006
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 1.0,
+            "upper": 1.0
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 0.9023221867525008,
+          "std": 0.00652789904256155,
+          "ci": {
+            "lower": 0.8961204706310925,
+            "upper": 0.9076571403882339
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 0.902159574183848,
+          "std": 0.06368821843673439,
+          "ci": {
+            "lower": 0.8575634381043507,
+            "upper": 0.9630408125416483
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 1.1916638835200521,
+          "std": 0.09345296635696633,
+          "ci": {
+            "lower": 1.125239205275314,
+            "upper": 1.2786664424363337
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 29.7592,
+          "std": 1.473490332509852,
+          "ci": {
+            "lower": 28.554399999999998,
+            "upper": 31.1332
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": [
+        "vs BC-only (stable 32/32) on success_rate: negligible under ceiling saturation."
+      ]
+    },
+    {
+      "suite_name": "dapg_lite_repaired_mainline",
+      "display_name": "DAPG-lite",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.8950739919187874,
+        "mean_peak_contact_force_n": 1.0085136684983,
+        "p95_peak_contact_force_n": 1.3390206492474221,
+        "mean_contact_steps": 29.556400000000004
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8908115200657276,
+            "mean_peak_contact_force_n": 0.8597425507634319,
+            "p95_peak_contact_force_n": 1.2004936529748684,
+            "mean_contact_steps": 27.902666666666665
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8989890410280499,
+            "mean_peak_contact_force_n": 1.4732779029720255,
+            "p95_peak_contact_force_n": 1.757890440433951,
+            "mean_contact_steps": 32.186
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9039463583687048,
+            "mean_peak_contact_force_n": 0.9900627872291793,
+            "p95_peak_contact_force_n": 1.3357318468785535,
+            "mean_contact_steps": 31.888000000000005
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8887540378425,
+            "mean_peak_contact_force_n": 0.8759403807145347,
+            "p95_peak_contact_force_n": 1.2226745219686443,
+            "mean_contact_steps": 28.412
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8922598967010129,
+            "mean_peak_contact_force_n": 0.8471802881757778,
+            "p95_peak_contact_force_n": 1.1807373742081069,
+            "mean_contact_steps": 27.657999999999998
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8989890410280499,
+            "mean_peak_contact_force_n": 1.4732779029720255,
+            "p95_peak_contact_force_n": 1.757890440433951,
+            "mean_contact_steps": 32.186
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8914206256536696,
+            "mean_peak_contact_force_n": 0.8561069833999827,
+            "p95_peak_contact_force_n": 1.198069062747854,
+            "mean_contact_steps": 27.637999999999998
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9039463583687048,
+            "mean_peak_contact_force_n": 0.9900627872291793,
+            "p95_peak_contact_force_n": 1.3357318468785535,
+            "mean_contact_steps": 31.888000000000005
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 1.0,
+            "upper": 1.0
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 0.8950739919187873,
+          "std": 0.002615407945007409,
+          "ci": {
+            "lower": 0.8928462756019124,
+            "upper": 0.8972564046510453
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 1.0085136684983,
+          "std": 0.10074432462038777,
+          "ci": {
+            "lower": 0.9188331406487169,
+            "upper": 1.0918666497522598
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 1.3390206492474221,
+          "std": 0.13778083525928297,
+          "ci": {
+            "lower": 1.215741884226237,
+            "upper": 1.4520709961459928
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 29.556399999999996,
+          "std": 0.989611964357747,
+          "ci": {
+            "lower": 28.782,
+            "upper": 30.470819999999993
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": [
+        "vs BC-only (stable 32/32) on success_rate: negligible under ceiling saturation."
+      ]
+    },
+    {
+      "suite_name": "dapg_lite_contact_old__reset_coverage_collapse",
+      "display_name": "DAPG-lite old reset (coverage collapse)",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 0.10719999999999999,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 2.0353464156119405,
+        "mean_peak_contact_force_n": 0.6561060224644437,
+        "p95_peak_contact_force_n": 0.8875146043237556,
+        "mean_contact_steps": 19.843600000000002
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 0.13799999999999998,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9587413819838186,
+            "mean_peak_contact_force_n": 0.5346359138032973,
+            "p95_peak_contact_force_n": 0.744171026724047,
+            "mean_contact_steps": 19.816
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 2.304260242252329,
+            "mean_peak_contact_force_n": 0.8920660308267397,
+            "p95_peak_contact_force_n": 1.1340999607974647,
+            "mean_contact_steps": 19.954
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 0.122,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.996247689855919,
+            "mean_peak_contact_force_n": 0.7845563400855867,
+            "p95_peak_contact_force_n": 1.0709599806491727,
+            "mean_contact_steps": 19.816
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.12999999999999998,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9729371657339887,
+            "mean_peak_contact_force_n": 0.5514047853349344,
+            "p95_peak_contact_force_n": 0.7773435744507803,
+            "mean_contact_steps": 19.842
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.144,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9487942598760752,
+            "mean_peak_contact_force_n": 0.5303198994354801,
+            "p95_peak_contact_force_n": 0.7394605699779488,
+            "mean_contact_steps": 19.804000000000002
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 2.304260242252329,
+            "mean_peak_contact_force_n": 0.8920660308267397,
+            "p95_peak_contact_force_n": 1.1340999607974647,
+            "mean_contact_steps": 19.954
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.13999999999999999,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9544927203413924,
+            "mean_peak_contact_force_n": 0.5221830566394777,
+            "p95_peak_contact_force_n": 0.7157089357434119,
+            "mean_contact_steps": 19.802
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 0.122,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.996247689855919,
+            "mean_peak_contact_force_n": 0.7845563400855867,
+            "p95_peak_contact_force_n": 1.0709599806491727,
+            "mean_contact_steps": 19.816
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 0.1072,
+          "std": 0.1894733754383449,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.3008
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 2.035346415611941,
+          "std": 1.0839441367685514,
+          "ci": {
+            "lower": 1.2647736420574627,
+            "upper": 3.139351855864036
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 0.6561060224644437,
+          "std": 0.04667255035680911,
+          "ci": {
+            "lower": 0.6093545311456519,
+            "upper": 0.6898625576027094
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 0.8875146043237556,
+          "std": 0.06610499360055849,
+          "ci": {
+            "lower": 0.8231997056278918,
+            "upper": 0.9354029829206978
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 19.8436,
+          "std": 5.980539828477025,
+          "ci": {
+            "lower": 14.371500000000015,
+            "upper": 24.3108
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": []
+    },
+    {
+      "suite_name": "dapg_lite_contact_old__reset_repaired",
+      "display_name": "DAPG-lite old reset (repaired)",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.8938828298726942,
+        "mean_peak_contact_force_n": 0.9945390048190939,
+        "p95_peak_contact_force_n": 1.3172916745960883,
+        "mean_contact_steps": 29.791199999999996
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8883666615427354,
+            "mean_peak_contact_force_n": 0.845428179362507,
+            "p95_peak_contact_force_n": 1.1727907813851537,
+            "mean_contact_steps": 27.923999999999996
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9034690851027983,
+            "mean_peak_contact_force_n": 1.437917502655631,
+            "p95_peak_contact_force_n": 1.7221912851381067,
+            "mean_contact_steps": 32.123999999999995
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9008450796324661,
+            "mean_peak_contact_force_n": 0.9984929833523177,
+            "p95_peak_contact_force_n": 1.345894743686873,
+            "mean_contact_steps": 33.06
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8909387271257406,
+            "mean_peak_contact_force_n": 0.8602210177791308,
+            "p95_peak_contact_force_n": 1.194549243863587,
+            "mean_contact_steps": 28.454
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8904335533199874,
+            "mean_peak_contact_force_n": 0.8327121599856515,
+            "p95_peak_contact_force_n": 1.1553561671736814,
+            "mean_contact_steps": 27.688
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9034690851027983,
+            "mean_peak_contact_force_n": 1.437917502655631,
+            "p95_peak_contact_force_n": 1.7221912851381067,
+            "mean_contact_steps": 32.123999999999995
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8837277041824779,
+            "mean_peak_contact_force_n": 0.8433513603227384,
+            "p95_peak_contact_force_n": 1.1684669331181927,
+            "mean_contact_steps": 27.630000000000003
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9008450796324661,
+            "mean_peak_contact_force_n": 0.9984929833523177,
+            "p95_peak_contact_force_n": 1.345894743686873,
+            "mean_contact_steps": 33.06
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 1.0,
+            "upper": 1.0
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 0.893882829872694,
+          "std": 0.00975948786528664,
+          "ci": {
+            "lower": 0.8852231072655675,
+            "upper": 0.9023549180370004
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 0.9945390048190939,
+          "std": 0.096861729716554,
+          "ci": {
+            "lower": 0.9124623186150795,
+            "upper": 1.0766156910231082
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 1.317291674596088,
+          "std": 0.12803002453975482,
+          "ci": {
+            "lower": 1.2023733299605766,
+            "upper": 1.4240657730010022
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 29.791200000000003,
+          "std": 0.9008303724897366,
+          "ci": {
+            "lower": 28.95223,
+            "upper": 30.6196
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": []
+    },
+    {
+      "suite_name": "dapg_lite_contact_new__reset_coverage_collapse",
+      "display_name": "DAPG-lite new reset (coverage collapse)",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 0.18319999999999997,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 2.0388840230257057,
+        "mean_peak_contact_force_n": 0.636480494671283,
+        "p95_peak_contact_force_n": 0.856717962238257,
+        "mean_contact_steps": 19.4076
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 0.23266666666666666,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.972363110001554,
+            "mean_peak_contact_force_n": 0.5218346316155863,
+            "p95_peak_contact_force_n": 0.7259446615467661,
+            "mean_contact_steps": 19.366
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 2.286919963921086,
+            "mean_peak_contact_force_n": 0.8548007406351825,
+            "p95_peak_contact_force_n": 1.0716702405375977,
+            "mean_contact_steps": 19.53
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 0.21800000000000003,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9904108212027831,
+            "mean_peak_contact_force_n": 0.762097837874473,
+            "p95_peak_contact_force_n": 1.0340855860133888,
+            "mean_contact_steps": 19.41
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.22599999999999998,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9834602811615627,
+            "mean_peak_contact_force_n": 0.5349333874310919,
+            "p95_peak_contact_force_n": 0.7397089155947891,
+            "mean_contact_steps": 19.387999999999998
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.238,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.965814322409385,
+            "mean_peak_contact_force_n": 0.5186070702458343,
+            "p95_peak_contact_force_n": 0.7270434972099534,
+            "mean_contact_steps": 19.354
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 0.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 2.286919963921086,
+            "mean_peak_contact_force_n": 0.8548007406351825,
+            "p95_peak_contact_force_n": 1.0716702405375977,
+            "mean_contact_steps": 19.53
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 0.23399999999999999,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9678147264337136,
+            "mean_peak_contact_force_n": 0.5119634371698331,
+            "p95_peak_contact_force_n": 0.7110815718355558,
+            "mean_contact_steps": 19.356
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 0.21800000000000003,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 1.9904108212027831,
+            "mean_peak_contact_force_n": 0.762097837874473,
+            "p95_peak_contact_force_n": 1.0340855860133888,
+            "mean_contact_steps": 19.41
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 0.18319999999999997,
+          "std": 0.22287431435676924,
+          "ci": {
+            "lower": 0.0008,
+            "upper": 0.3696
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 2.038884023025706,
+          "std": 1.26429895292494,
+          "ci": {
+            "lower": 1.1460071652434416,
+            "upper": 3.324113956740132
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 0.6364804946712829,
+          "std": 0.06193452589552941,
+          "ci": {
+            "lower": 0.5762138859032967,
+            "upper": 0.6863038074036265
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 0.856717962238257,
+          "std": 0.08712781482159693,
+          "ci": {
+            "lower": 0.7745472156818667,
+            "upper": 0.9273573555773844
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 19.407600000000002,
+          "std": 6.954975358691071,
+          "ci": {
+            "lower": 12.6968,
+            "upper": 24.83
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": []
+    },
+    {
+      "suite_name": "dapg_lite_contact_new__reset_repaired",
+      "display_name": "DAPG-lite new reset (repaired)",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.8950739919187874,
+        "mean_peak_contact_force_n": 1.0085136684983,
+        "p95_peak_contact_force_n": 1.3390206492474221,
+        "mean_contact_steps": 29.556400000000004
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8908115200657276,
+            "mean_peak_contact_force_n": 0.8597425507634319,
+            "p95_peak_contact_force_n": 1.2004936529748684,
+            "mean_contact_steps": 27.902666666666665
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8989890410280499,
+            "mean_peak_contact_force_n": 1.4732779029720255,
+            "p95_peak_contact_force_n": 1.757890440433951,
+            "mean_contact_steps": 32.186
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9039463583687048,
+            "mean_peak_contact_force_n": 0.9900627872291793,
+            "p95_peak_contact_force_n": 1.3357318468785535,
+            "mean_contact_steps": 31.888000000000005
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8887540378425,
+            "mean_peak_contact_force_n": 0.8759403807145347,
+            "p95_peak_contact_force_n": 1.2226745219686443,
+            "mean_contact_steps": 28.412
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8922598967010129,
+            "mean_peak_contact_force_n": 0.8471802881757778,
+            "p95_peak_contact_force_n": 1.1807373742081069,
+            "mean_contact_steps": 27.657999999999998
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8989890410280499,
+            "mean_peak_contact_force_n": 1.4732779029720255,
+            "p95_peak_contact_force_n": 1.757890440433951,
+            "mean_contact_steps": 32.186
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.8914206256536696,
+            "mean_peak_contact_force_n": 0.8561069833999827,
+            "p95_peak_contact_force_n": 1.198069062747854,
+            "mean_contact_steps": 27.637999999999998
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9039463583687048,
+            "mean_peak_contact_force_n": 0.9900627872291793,
+            "p95_peak_contact_force_n": 1.3357318468785535,
+            "mean_contact_steps": 31.888000000000005
+          }
+        }
+      },
+      "five_profile_statistics": {
+        "success_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 1.0,
+            "upper": 1.0
+          },
+          "num_samples": 5
+        },
+        "jam_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci": {
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "num_samples": 5
+        },
+        "mean_final_distance_mm": {
+          "mean": 0.8950739919187873,
+          "std": 0.002615407945007409,
+          "ci": {
+            "lower": 0.8926627186173535,
+            "upper": 0.8972564046510453
+          },
+          "num_samples": 5
+        },
+        "mean_peak_contact_force_n": {
+          "mean": 1.0085136684983,
+          "std": 0.10074432462038777,
+          "ci": {
+            "lower": 0.9193215451683843,
+            "upper": 1.0918666497522596
+          },
+          "num_samples": 5
+        },
+        "p95_peak_contact_force_n": {
+          "mean": 1.3390206492474221,
+          "std": 0.13778083525928297,
+          "ci": {
+            "lower": 1.215741884226237,
+            "upper": 1.453271735373767
+          },
+          "num_samples": 5
+        },
+        "mean_contact_steps": {
+          "mean": 29.556399999999996,
+          "std": 0.989611964357747,
+          "ci": {
+            "lower": 28.782,
+            "upper": 30.43938
+          },
+          "num_samples": 5
+        }
+      },
+      "comparison_notes": []
+    }
+  ],
+  "handcrafted_policy_order": [
+    "pose_only",
+    "fixed_impedance",
+    "variable_impedance"
+  ],
+  "handcrafted_rows": [
+    {
+      "suite_name": "pose_only",
+      "display_name": "Pose-only",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.969034732183401,
+        "mean_peak_contact_force_n": 1.1124954937216045,
+        "p95_peak_contact_force_n": 1.4635232051115958,
+        "mean_contact_steps": 11.0
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9690347321834011,
+            "mean_peak_contact_force_n": 0.9570834264328821,
+            "p95_peak_contact_force_n": 1.3223020957705172,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 1.5798077655433325,
+            "p95_peak_contact_force_n": 1.909514124007248,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 1.1114194237660437,
+            "p95_peak_contact_force_n": 1.4411956142391793,
+            "mean_contact_steps": 11.0
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 0.957083426432882,
+            "p95_peak_contact_force_n": 1.3223020957705172,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 0.957083426432882,
+            "p95_peak_contact_force_n": 1.3223020957705172,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 1.5798077655433325,
+            "p95_peak_contact_force_n": 1.909514124007248,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 0.957083426432882,
+            "p95_peak_contact_force_n": 1.3223020957705172,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 1.1114194237660437,
+            "p95_peak_contact_force_n": 1.4411956142391793,
+            "mean_contact_steps": 11.0
+          }
+        }
+      }
+    },
+    {
+      "suite_name": "fixed_impedance",
+      "display_name": "Handcrafted fixed impedance",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.969034732183401,
+        "mean_peak_contact_force_n": 2.9586640481145725,
+        "p95_peak_contact_force_n": 3.916712621245086,
+        "mean_contact_steps": 11.0
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9690347321834011,
+            "mean_peak_contact_force_n": 2.572894574988876,
+            "p95_peak_contact_force_n": 3.5990144589793673,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 4.338149638922737,
+            "p95_peak_contact_force_n": 5.267275697196965,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 2.736486876683498,
+            "p95_peak_contact_force_n": 3.519244032090362,
+            "mean_contact_steps": 11.0
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 2.572894574988876,
+            "p95_peak_contact_force_n": 3.599014458979368,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 2.572894574988876,
+            "p95_peak_contact_force_n": 3.599014458979368,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 4.338149638922737,
+            "p95_peak_contact_force_n": 5.267275697196965,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 2.572894574988876,
+            "p95_peak_contact_force_n": 3.599014458979368,
+            "mean_contact_steps": 11.0
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.969034732183401,
+            "mean_peak_contact_force_n": 2.736486876683498,
+            "p95_peak_contact_force_n": 3.519244032090362,
+            "mean_contact_steps": 11.0
+          }
+        }
+      }
+    },
+    {
+      "suite_name": "variable_impedance",
+      "display_name": "Handcrafted variable impedance",
+      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "five_profile_mean": {
+        "success_rate": 0.9904,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.9466892203812014,
+        "mean_peak_contact_force_n": 0.8849679706984587,
+        "p95_peak_contact_force_n": 1.1429043152107052,
+        "mean_contact_steps": 30.594
+      },
+      "effective_pressure_classes": {
+        "baseline": {
+          "profiles": [
+            "nominal",
+            "tight_clearance",
+            "offset_bias"
+          ],
+          "pressure_source": "No extra active pressure under current 3DoF semantics.",
+          "design_rationale": [
+            "offset_bias is absorbed by the relative observation coordinate frame",
+            "tight_clearance only activates under lateral overflow"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9477335818714264,
+            "mean_peak_contact_force_n": 0.7620354146272025,
+            "p95_peak_contact_force_n": 1.0372913826332641,
+            "mean_contact_steps": 27.294
+          }
+        },
+        "high_friction": {
+          "profiles": [
+            "high_friction"
+          ],
+          "pressure_source": "Force-impedance coupling.",
+          "design_rationale": [
+            "higher wall friction changes the contact force response"
+          ],
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9379994218649428,
+            "mean_peak_contact_force_n": 1.1989710092342685,
+            "p95_peak_contact_force_n": 1.431412853112466,
+            "mean_contact_steps": 30.084000000000003
+          }
+        },
+        "noisy_force": {
+          "profiles": [
+            "noisy_force"
+          ],
+          "pressure_source": "Force-sensor uncertainty.",
+          "design_rationale": [
+            "force noise perturbs the observed contact signal"
+          ],
+          "metrics": {
+            "success_rate": 0.952,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9522459344267848,
+            "mean_peak_contact_force_n": 0.9397626003764173,
+            "p95_peak_contact_force_n": 1.1712345750412678,
+            "mean_contact_steps": 41.004
+          }
+        }
+      },
+      "per_profile": {
+        "nominal": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9477335818714263,
+            "mean_peak_contact_force_n": 0.7620354146272025,
+            "p95_peak_contact_force_n": 1.0372913826332641,
+            "mean_contact_steps": 27.294
+          }
+        },
+        "tight_clearance": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9477335818714263,
+            "mean_peak_contact_force_n": 0.7620354146272025,
+            "p95_peak_contact_force_n": 1.0372913826332641,
+            "mean_contact_steps": 27.294
+          }
+        },
+        "high_friction": {
+          "equivalence_class": "high_friction",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9379994218649428,
+            "mean_peak_contact_force_n": 1.1989710092342685,
+            "p95_peak_contact_force_n": 1.431412853112466,
+            "mean_contact_steps": 30.084000000000003
+          }
+        },
+        "offset_bias": {
+          "equivalence_class": "baseline",
+          "metrics": {
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9477335818714263,
+            "mean_peak_contact_force_n": 0.7620354146272025,
+            "p95_peak_contact_force_n": 1.0372913826332641,
+            "mean_contact_steps": 27.294
+          }
+        },
+        "noisy_force": {
+          "equivalence_class": "noisy_force",
+          "metrics": {
+            "success_rate": 0.952,
+            "jam_rate": 0.0,
+            "mean_final_distance_mm": 0.9522459344267848,
+            "mean_peak_contact_force_n": 0.9397626003764173,
+            "p95_peak_contact_force_n": 1.1712345750412678,
+            "mean_contact_steps": 41.004
+          }
+        }
+      }
+    }
+  ],
+  "profile_equivalence_annotation": {
+    "summary": "Five nominal eval profiles collapse to three effective pressure classes in this 3DoF environment design.",
+    "equivalence_classes": [
+      {
+        "class_name": "baseline",
+        "profiles": [
+          "nominal",
+          "tight_clearance",
+          "offset_bias"
+        ],
+        "pressure_source": "No extra active pressure under current 3DoF semantics.",
+        "design_rationale": [
+          "offset_bias is absorbed by the relative observation coordinate frame",
+          "tight_clearance only activates under lateral overflow"
+        ]
+      },
+      {
+        "class_name": "high_friction",
+        "profiles": [
+          "high_friction"
+        ],
+        "pressure_source": "Force-impedance coupling.",
+        "design_rationale": [
+          "higher wall friction changes the contact force response"
+        ]
+      },
+      {
+        "class_name": "noisy_force",
+        "profiles": [
+          "noisy_force"
+        ],
+        "pressure_source": "Force-sensor uncertainty.",
+        "design_rationale": [
+          "force noise perturbs the observed contact signal"
+        ]
+      }
+    ]
+  },
+  "statistics_report": {
+    "report_name": "three_dof_statistics_report",
+    "source_artifacts": {
+      "benchmark_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "fixed_impedance_report": null
+    },
+    "sample_plan": {
+      "recommended_training_seed_min": 5,
+      "recommended_training_seed_max": 10,
+      "recommended_episodes_per_seed_profile_min": 100,
+      "interval_method": "bootstrap",
+      "paired_test_method": "paired sign-flip permutation",
+      "confidence_level": 0.95
+    },
+    "observed_sample_plan": {
+      "num_training_seeds": 5,
+      "episodes_per_seed": 100,
+      "meets_recommended_seed_floor": true,
+      "meets_recommended_episode_floor": true
+    },
+    "suite_order": [
+      "ppo_no_bc",
+      "bc_only_stable_r32_p32",
+      "fixed_impedance_rl_stable_r32_p32",
+      "repaired_mainline_bc_to_ppo",
+      "dapg_lite_repaired_mainline",
+      "dapg_lite_contact_old__reset_coverage_collapse",
+      "dapg_lite_contact_old__reset_repaired",
+      "dapg_lite_contact_new__reset_coverage_collapse",
+      "dapg_lite_contact_new__reset_repaired"
+    ],
+    "suite_statistics": {
+      "ppo_no_bc": {
+        "display_name": "PPO w/o BC",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            18.354572344892592,
+            18.428500841726564,
+            18.81471211479341,
+            18.522756052324638,
+            17.78530209069082
+          ],
+          "mean_peak_contact_force_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "p95_peak_contact_force_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_contact_steps": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 18.3811686888856,
+            "std": 0.3364555199975391,
+            "ci": {
+              "lower": 18.046646933857936,
+              "upper": 18.645441906199874
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 18.381168688885605,
+              "std": 0.3364555199975392,
+              "ci": {
+                "lower": 18.046646933857936,
+                "upper": 18.645441906199874
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 18.381168688885605,
+              "std": 0.3364555199975392,
+              "ci": {
+                "lower": 18.046646933857936,
+                "upper": 18.645441906199874
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 18.3811686888856,
+              "std": 0.3364555199975391,
+              "ci": {
+                "lower": 18.046646933857936,
+                "upper": 18.660227605566668
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 18.3811686888856,
+              "std": 0.3364555199975391,
+              "ci": {
+                "lower": 18.042581591105115,
+                "upper": 18.645441906199878
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 18.3811686888856,
+              "std": 0.3364555199975391,
+              "ci": {
+                "lower": 18.061432633224733,
+                "upper": 18.660227605566668
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "bc_only_stable_r32_p32": {
+        "display_name": "BC-only (stable 32/32)",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.998
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            0.9026490246152935,
+            0.9023338230035426,
+            0.9015140338803374,
+            0.8857876229833931,
+            0.911153114834699
+          ],
+          "mean_peak_contact_force_n": [
+            0.9698409927746601,
+            0.9614096574420017,
+            0.8784651052594533,
+            0.9170262051929988,
+            0.9328263201127618
+          ],
+          "p95_peak_contact_force_n": [
+            1.2869110977756104,
+            1.2698723070488316,
+            1.1512380880546127,
+            1.2197507491330657,
+            1.2443040285490388
+          ],
+          "mean_contact_steps": [
+            31.6,
+            29.242,
+            29.627999999999997,
+            28.470000000000006,
+            30.922000000000004
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 0.9996,
+            "std": 0.0008000000000000007,
+            "ci": {
+              "lower": 0.9987999999999999,
+              "upper": 1.0
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 0.9006875238634532,
+            "std": 0.008231361314863732,
+            "ci": {
+              "lower": 0.8924691433138031,
+              "upper": 0.9074630162856541
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 0.9319136561563752,
+            "std": 0.032825946138575944,
+            "ci": {
+              "lower": 0.902766235682672,
+              "upper": 0.9592780352583279
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 1.2344152541122315,
+            "std": 0.04742213138272362,
+            "ci": {
+              "lower": 1.191990028260869,
+              "upper": 1.2700712699017458
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 29.9724,
+            "std": 1.1366726177752322,
+            "ci": {
+              "lower": 29.010400000000004,
+              "upper": 30.934400000000004
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9002283378235075,
+              "std": 0.012608716247641077,
+              "ci": {
+                "lower": 0.8877722820716565,
+                "upper": 0.9084411462116624
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.80676635378711,
+              "std": 0.03114584208515472,
+              "ci": {
+                "lower": 0.7779659067338386,
+                "upper": 0.8324027624432648
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.1201893244964063,
+              "std": 0.0582561601743573,
+              "ci": {
+                "lower": 1.0703065667335288,
+                "upper": 1.1700720822592836
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 28.413999999999998,
+              "std": 1.0913221339274661,
+              "ci": {
+                "lower": 27.4993,
+                "upper": 29.356
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8943384457851826,
+              "std": 0.010410867377276811,
+              "ci": {
+                "lower": 0.8838338424885533,
+                "upper": 0.9009531768575167
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.7808453132299228,
+              "std": 0.026783253203346506,
+              "ci": {
+                "lower": 0.7572670567958377,
+                "upper": 0.8021321369340564
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0904035752634693,
+              "std": 0.04651947355329262,
+              "ci": {
+                "lower": 1.0469073343271542,
+                "upper": 1.126789415060324
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.758,
+              "std": 1.0624198793320847,
+              "ci": {
+                "lower": 26.854000000000003,
+                "upper": 28.706
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9040319474348781,
+              "std": 0.01014836225991798,
+              "ci": {
+                "lower": 0.8949558507040605,
+                "upper": 0.9133085109227244
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.331967128863647,
+              "std": 0.0705924301597787,
+              "ci": {
+                "lower": 1.2738066064283171,
+                "upper": 1.3901276512989766
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.5864672656863008,
+              "std": 0.0818582451094559,
+              "ci": {
+                "lower": 1.5111995072137954,
+                "upper": 1.6487498626778376
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 32.622,
+              "std": 1.4312987109614828,
+              "ci": {
+                "lower": 31.458,
+                "upper": 33.976
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8979293113999137,
+              "std": 0.009078048250653854,
+              "ci": {
+                "lower": 0.8892819656815814,
+                "upper": 0.9053522243595984
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.7877605024897163,
+              "std": 0.027155759074538457,
+              "ci": {
+                "lower": 0.7636421772050358,
+                "upper": 0.8105557644743
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0757417979117532,
+              "std": 0.05435576910477327,
+              "ci": {
+                "lower": 1.0258249126143004,
+                "upper": 1.1203770087094211
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.640000000000004,
+              "std": 1.0897706180660225,
+              "ci": {
+                "lower": 26.71,
+                "upper": 28.57
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 0.998,
+              "std": 0.0040000000000000036,
+              "ci": {
+                "lower": 0.994,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9069095768737837,
+              "std": 0.009646429071784701,
+              "ci": {
+                "lower": 0.8999094586854847,
+                "upper": 0.9159615415342488
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9522289824114798,
+              "std": 0.02449313109500619,
+              "ci": {
+                "lower": 0.9324894950683674,
+                "upper": 0.9744664754236831
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.2992743072032293,
+              "std": 0.0490257855499371,
+              "ci": {
+                "lower": 1.258924666558273,
+                "upper": 1.3438233539676907
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 33.428,
+              "std": 1.0990796149506183,
+              "ci": {
+                "lower": 32.498000000000005,
+                "upper": 34.358
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "fixed_impedance_rl_stable_r32_p32": {
+        "display_name": "Fixed-impedance RL (stable BC 32/32)",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            0.82,
+            0.938,
+            0.994,
+            0.984,
+            0.998
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            0.9732192367043562,
+            0.9183409340284919,
+            0.906856373461722,
+            0.8951214527506945,
+            0.8886376476867202
+          ],
+          "mean_peak_contact_force_n": [
+            1.003323346005311,
+            1.2843835194658544,
+            1.0150489731655945,
+            1.055058171406077,
+            0.9950317291712463
+          ],
+          "p95_peak_contact_force_n": [
+            1.3511866377722763,
+            1.6979025283385496,
+            1.3250429203056284,
+            1.3872236693666455,
+            1.3216552411916669
+          ],
+          "mean_contact_steps": [
+            37.918000000000006,
+            37.246,
+            35.501999999999995,
+            37.21,
+            34.586
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 0.9468,
+            "std": 0.06691606683002224,
+            "ci": {
+              "lower": 0.8792,
+              "upper": 0.9936
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 0.9164351289263969,
+            "std": 0.030155570964155158,
+            "ci": {
+              "lower": 0.8948749148673103,
+              "upper": 0.9453596773909758
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 1.0705691478428165,
+            "std": 0.10887384000125835,
+            "ci": {
+              "lower": 1.002351824703742,
+              "upper": 1.180648091794977
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 1.4166021993949531,
+            "std": 0.14259747210397763,
+            "ci": {
+              "lower": 1.3289165921533734,
+              "upper": 1.5611948349375846
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 36.492399999999996,
+            "std": 1.2434187709697837,
+            "ci": {
+              "lower": 35.4356,
+              "upper": 37.50760000000001
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 0.994,
+              "std": 0.012000000000000009,
+              "ci": {
+                "lower": 0.9819999999999999,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.900792943833143,
+              "std": 0.010425367821940208,
+              "ci": {
+                "lower": 0.8910626550934502,
+                "upper": 0.9091227960234416
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9260136250649017,
+              "std": 0.10114740438673504,
+              "ci": {
+                "lower": 0.8613961819638283,
+                "upper": 1.0293598842544325
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.2680611896175598,
+              "std": 0.1486960089648958,
+              "ci": {
+                "lower": 1.1688907414419822,
+                "upper": 1.4156625659310345
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 35.292,
+              "std": 1.1288649166308622,
+              "ci": {
+                "lower": 34.312,
+                "upper": 36.25600000000001
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 0.9879999999999999,
+              "std": 0.024000000000000025,
+              "ci": {
+                "lower": 0.9640000000000001,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9008262397887815,
+              "std": 0.012626413836150475,
+              "ci": {
+                "lower": 0.8891487767888332,
+                "upper": 0.9116170165684234
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8950435325829342,
+              "std": 0.09899264173033875,
+              "ci": {
+                "lower": 0.8319532559518246,
+                "upper": 0.9948031775739069
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.237880354661431,
+              "std": 0.14335182982016859,
+              "ci": {
+                "lower": 1.1462883021681272,
+                "upper": 1.3725254948366143
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 34.64399999999999,
+              "std": 1.0482289826178246,
+              "ci": {
+                "lower": 33.757999999999996,
+                "upper": 35.529999999999994
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 0.776,
+              "std": 0.2564059281685976,
+              "ci": {
+                "lower": 0.522,
+                "upper": 0.968
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9812106665825769,
+              "std": 0.11525317453785339,
+              "ci": {
+                "lower": 0.9019955500987289,
+                "upper": 1.0986623984030401
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.5332087553071296,
+              "std": 0.1987452310600924,
+              "ci": {
+                "lower": 1.4042777331701555,
+                "upper": 1.731726514779314
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.8550893576349998,
+              "std": 0.20965192407221747,
+              "ci": {
+                "lower": 1.7240702455347656,
+                "upper": 2.061023988557213
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 43.032000000000004,
+              "std": 1.8858462291501936,
+              "ci": {
+                "lower": 41.391999999999996,
+                "upper": 44.594
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 0.992,
+              "std": 0.016000000000000014,
+              "ci": {
+                "lower": 0.976,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9053972207282142,
+              "std": 0.013550041332931506,
+              "ci": {
+                "lower": 0.8942449942987313,
+                "upper": 0.9174419030928374
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9001531383722385,
+              "std": 0.10079930917484954,
+              "ci": {
+                "lower": 0.837701827285058,
+                "upper": 1.00353962986491
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.2481874839893687,
+              "std": 0.15295650482661122,
+              "ci": {
+                "lower": 1.1526270519574195,
+                "upper": 1.393001115375056
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 34.788,
+              "std": 1.1797016571998193,
+              "ci": {
+                "lower": 33.79,
+                "upper": 35.81
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 0.984,
+              "std": 0.03199999999999998,
+              "ci": {
+                "lower": 0.952,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8939485736992691,
+              "std": 0.011989106885628988,
+              "ci": {
+                "lower": 0.8841797770032601,
+                "upper": 0.9050769862639741
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.0984266878868785,
+              "std": 0.04605286062968992,
+              "ci": {
+                "lower": 1.0740496370813446,
+                "upper": 1.1446873130010153
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.4737926110714072,
+              "std": 0.07317706386563771,
+              "ci": {
+                "lower": 1.4161152872624811,
+                "upper": 1.5417278970835815
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 34.706,
+              "std": 1.5624928799837778,
+              "ci": {
+                "lower": 33.489999999999995,
+                "upper": 36.148
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "repaired_mainline_bc_to_ppo": {
+        "display_name": "BC -> PPO",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            0.911760002568976,
+            0.9042469688087802,
+            0.9046346493126656,
+            0.8922105876466215,
+            0.8987587254254604
+          ],
+          "mean_peak_contact_force_n": [
+            0.9024205358358776,
+            0.8855396022954303,
+            0.8365711497246597,
+            0.8645676443885021,
+            1.02169893867477
+          ],
+          "p95_peak_contact_force_n": [
+            1.2016678443239834,
+            1.140660033769769,
+            1.0944494775664388,
+            1.1559770037041546,
+            1.3655650582359151
+          ],
+          "mean_contact_steps": [
+            32.102,
+            27.810000000000002,
+            30.546,
+            29.524,
+            28.814
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 0.9023221867525008,
+            "std": 0.00652789904256155,
+            "ci": {
+              "lower": 0.8961204706310925,
+              "upper": 0.9076571403882339
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 0.902159574183848,
+            "std": 0.06368821843673439,
+            "ci": {
+              "lower": 0.8575634381043507,
+              "upper": 0.9630408125416483
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 1.1916638835200521,
+            "std": 0.09345296635696633,
+            "ci": {
+              "lower": 1.125239205275314,
+              "upper": 1.2786664424363337
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 29.7592,
+            "std": 1.473490332509852,
+            "ci": {
+              "lower": 28.554399999999998,
+              "upper": 31.1332
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.901106653224948,
+              "std": 0.005959772967173539,
+              "ci": {
+                "lower": 0.8959914723170149,
+                "upper": 0.9060745433746327
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.7842951430328415,
+              "std": 0.057187680695651916,
+              "ci": {
+                "lower": 0.7441446224049295,
+                "upper": 0.8393785301235556
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.085087470802333,
+              "std": 0.09713907961070897,
+              "ci": {
+                "lower": 1.0145672515916757,
+                "upper": 1.1842582964060322
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 28.426,
+              "std": 1.4926298938450882,
+              "ci": {
+                "lower": 27.171999999999997,
+                "upper": 29.68
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9040316794237307,
+              "std": 0.008537383775670737,
+              "ci": {
+                "lower": 0.8968023146526605,
+                "upper": 0.9113801709320828
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.7583709842725103,
+              "std": 0.05176781817010024,
+              "ci": {
+                "lower": 0.7203107795817315,
+                "upper": 0.8144897617511309
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0476329902325152,
+              "std": 0.09075459906354849,
+              "ci": {
+                "lower": 0.9830770196658243,
+                "upper": 1.1357616302123463
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.746,
+              "std": 1.4127505087594199,
+              "ci": {
+                "lower": 26.57,
+                "upper": 29.068
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9081237651396711,
+              "std": 0.010999313022430034,
+              "ci": {
+                "lower": 0.8971512676976623,
+                "upper": 0.916075566219703
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.27749095612367,
+              "std": 0.12552913612486588,
+              "ci": {
+                "lower": 1.1833348980891243,
+                "upper": 1.397512717440685
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.5196436960177597,
+              "std": 0.15045425925744146,
+              "ci": {
+                "lower": 1.4092416885120955,
+                "upper": 1.656787142230358
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 32.794,
+              "std": 1.5797544112930968,
+              "ci": {
+                "lower": 31.657999999999998,
+                "upper": 34.296
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.898164876406103,
+              "std": 0.007858014124798996,
+              "ci": {
+                "lower": 0.8910162868349387,
+                "upper": 0.9044835539881557
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.7634571026373153,
+              "std": 0.05714674996108645,
+              "ci": {
+                "lower": 0.7221017650375339,
+                "upper": 0.8193519763570849
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0463449032684866,
+              "std": 0.09096182580331086,
+              "ci": {
+                "lower": 0.984103821806421,
+                "upper": 1.1311817698534505
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.796000000000003,
+              "std": 1.3766858755722016,
+              "ci": {
+                "lower": 26.656,
+                "upper": 29.056
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9001839595680512,
+              "std": 0.00915150829549712,
+              "ci": {
+                "lower": 0.8937290440172363,
+                "upper": 0.9095294835280286
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9271836848529025,
+              "std": 0.03084080808663812,
+              "ci": {
+                "lower": 0.9051149383771062,
+                "upper": 0.9592234991770369
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.2596103572791661,
+              "std": 0.06295652104230705,
+              "ci": {
+                "lower": 1.20434232002309,
+                "upper": 1.3148783945352425
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 32.034000000000006,
+              "std": 1.734630796452086,
+              "ci": {
+                "lower": 30.538,
+                "upper": 33.59339999999999
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "dapg_lite_repaired_mainline": {
+        "display_name": "DAPG-lite",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            0.8936923069418181,
+            0.897397183580386,
+            0.898040158033977,
+            0.8908329710112557,
+            0.8954073400265001
+          ],
+          "mean_peak_contact_force_n": [
+            0.841561070656166,
+            1.1084346098795514,
+            1.0205855321182988,
+            1.1109392484419485,
+            0.9610478813955355
+          ],
+          "p95_peak_contact_force_n": [
+            1.111180556165578,
+            1.4738153674554157,
+            1.3587819329161568,
+            1.4799730045209238,
+            1.2713523851790351
+          ],
+          "mean_contact_steps": [
+            31.278,
+            28.43,
+            29.929999999999996,
+            28.906,
+            29.238
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 0.8950739919187873,
+            "std": 0.002615407945007409,
+            "ci": {
+              "lower": 0.8928462756019124,
+              "upper": 0.8972564046510453
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 1.0085136684983,
+            "std": 0.10074432462038777,
+            "ci": {
+              "lower": 0.9188331406487169,
+              "upper": 1.0918666497522598
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 1.3390206492474221,
+            "std": 0.13778083525928297,
+            "ci": {
+              "lower": 1.215741884226237,
+              "upper": 1.4520709961459928
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 29.556399999999996,
+            "std": 0.989611964357747,
+            "ci": {
+              "lower": 28.782,
+              "upper": 30.470819999999993
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8887540378425,
+              "std": 0.008269725916330623,
+              "ci": {
+                "lower": 0.8816088046750516,
+                "upper": 0.895899271009948
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8759403807145347,
+              "std": 0.09511643335759203,
+              "ci": {
+                "lower": 0.7901483594534381,
+                "upper": 0.9530416558639464
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.2226745219686443,
+              "std": 0.15065192392686755,
+              "ci": {
+                "lower": 1.0805753371757372,
+                "upper": 1.326791252466484
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 28.412,
+              "std": 1.0081349116065774,
+              "ci": {
+                "lower": 27.598000000000003,
+                "upper": 29.368000000000002
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8922598967010129,
+              "std": 0.006457349658505652,
+              "ci": {
+                "lower": 0.886709670079135,
+                "upper": 0.8978101233228909
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8471802881757778,
+              "std": 0.0905693132260128,
+              "ci": {
+                "lower": 0.7658640569807008,
+                "upper": 0.9218959751253213
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.1807373742081069,
+              "std": 0.14619010109170666,
+              "ci": {
+                "lower": 1.0449330159707713,
+                "upper": 1.2828649740433224
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.657999999999998,
+              "std": 1.0026245558532867,
+              "ci": {
+                "lower": 26.836000000000002,
+                "upper": 28.579999999999995
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8989890410280499,
+              "std": 0.0027374146873522056,
+              "ci": {
+                "lower": 0.8965812135169966,
+                "upper": 0.9013975442377766
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.4732779029720255,
+              "std": 0.18051030963261247,
+              "ci": {
+                "lower": 1.3090135025777472,
+                "upper": 1.620512772624193
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.757890440433951,
+              "std": 0.19719224460212867,
+              "ci": {
+                "lower": 1.5835816565355485,
+                "upper": 1.92001971708304
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 32.186,
+              "std": 0.6577719969715937,
+              "ci": {
+                "lower": 31.627249999999997,
+                "upper": 32.709999999999994
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8914206256536698,
+              "std": 0.004049319078355379,
+              "ci": {
+                "lower": 0.8873324443548036,
+                "upper": 0.8940863233539063
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8561069833999827,
+              "std": 0.08971762282701459,
+              "ci": {
+                "lower": 0.7763592820637447,
+                "upper": 0.9304294741901462
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.198069062747854,
+              "std": 0.13271106610423092,
+              "ci": {
+                "lower": 1.0740325065104457,
+                "upper": 1.3085795118140837
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.637999999999998,
+              "std": 1.0048164011400282,
+              "ci": {
+                "lower": 26.824,
+                "upper": 28.601999999999997
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9039463583687046,
+              "std": 0.004542533517590898,
+              "ci": {
+                "lower": 0.8999772713232845,
+                "upper": 0.9079345119407021
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9900627872291793,
+              "std": 0.04946932724937476,
+              "ci": {
+                "lower": 0.9524568586877183,
+                "upper": 1.0332030485558834
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.3357318468785535,
+              "std": 0.07081001998471495,
+              "ci": {
+                "lower": 1.2747189326373816,
+                "upper": 1.398827009016842
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 31.888000000000005,
+              "std": 1.5598128092819352,
+              "ci": {
+                "lower": 30.932,
+                "upper": 33.448
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "dapg_lite_contact_old__reset_coverage_collapse": {
+        "display_name": "DAPG-lite old reset (coverage collapse)",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            0.484,
+            0.0,
+            0.0,
+            0.0,
+            0.052000000000000005
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            1.086056663469186,
+            1.5563290212482532,
+            4.081206442988957,
+            2.1554270193029623,
+            1.2977129310503446
+          ],
+          "mean_peak_contact_force_n": [
+            0.6914664973649368,
+            0.6750483213080523,
+            0.568478300350952,
+            0.6956657359878108,
+            0.6498712573104668
+          ],
+          "p95_peak_contact_force_n": [
+            0.918775644711139,
+            0.9094480851991349,
+            0.7658563233120175,
+            0.9620369305039335,
+            0.8814560378925537
+          ],
+          "mean_contact_steps": [
+            26.340000000000003,
+            20.977999999999998,
+            8.994,
+            18.958,
+            23.948
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 0.1072,
+            "std": 0.1894733754383449,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.3008
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 2.035346415611941,
+            "std": 1.0839441367685514,
+            "ci": {
+              "lower": 1.2647736420574627,
+              "upper": 3.139351855864036
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 0.6561060224644437,
+            "std": 0.04667255035680911,
+            "ci": {
+              "lower": 0.6093545311456519,
+              "upper": 0.6898625576027094
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 0.8875146043237556,
+            "std": 0.06610499360055849,
+            "ci": {
+              "lower": 0.8231997056278918,
+              "upper": 0.9354029829206978
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 19.8436,
+            "std": 5.980539828477025,
+            "ci": {
+              "lower": 14.371500000000015,
+              "upper": 24.3108
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 0.12999999999999998,
+              "std": 0.23117093242879821,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.366
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.9729371657339883,
+              "std": 1.0934989253848457,
+              "ci": {
+                "lower": 1.2112728332520344,
+                "upper": 3.0455995089300627
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.5514047853349344,
+              "std": 0.034177491253049974,
+              "ci": {
+                "lower": 0.5174373888450996,
+                "upper": 0.5784210297226179
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.7773435744507803,
+              "std": 0.051088161517809524,
+              "ci": {
+                "lower": 0.7293951652790703,
+                "upper": 0.8167155803329502
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.842,
+              "std": 5.963510375609319,
+              "ci": {
+                "lower": 13.988,
+                "upper": 24.286
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 0.144,
+              "std": 0.24113066996962454,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.392
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.9487942598760752,
+              "std": 1.0958921457174935,
+              "ci": {
+                "lower": 1.213079892859703,
+                "upper": 3.02571203018715
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.5303198994354801,
+              "std": 0.031024362163841197,
+              "ci": {
+                "lower": 0.5017969889203291,
+                "upper": 0.5534550772752944
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.7394605699779488,
+              "std": 0.054545546811592016,
+              "ci": {
+                "lower": 0.6893352867476507,
+                "upper": 0.785235037947977
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.804000000000002,
+              "std": 5.924756872648868,
+              "ci": {
+                "lower": 14.383950000000018,
+                "upper": 24.218
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 2.304260242252329,
+              "std": 1.0458346097206714,
+              "ci": {
+                "lower": 1.5454732592648335,
+                "upper": 3.2829113597286876
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8920660308267397,
+              "std": 0.09731658542756248,
+              "ci": {
+                "lower": 0.8056224776718152,
+                "upper": 0.9652005681730517
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.1340999607974647,
+              "std": 0.133158074981776,
+              "ci": {
+                "lower": 1.005305039837964,
+                "upper": 1.234629727417584
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.954,
+              "std": 6.1133807340946795,
+              "ci": {
+                "lower": 13.975999999999999,
+                "upper": 24.728
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 0.13999999999999999,
+              "std": 0.233238075793812,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.38
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.9544927203413924,
+              "std": 1.095002932594899,
+              "ci": {
+                "lower": 1.1822109110025272,
+                "upper": 3.0299439497779788
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.5221830566394777,
+              "std": 0.030077283464081193,
+              "ci": {
+                "lower": 0.4913777898026952,
+                "upper": 0.5440230552392841
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.7157089357434119,
+              "std": 0.049222094787262895,
+              "ci": {
+                "lower": 0.6683371955547217,
+                "upper": 0.753754683418703
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.802,
+              "std": 5.934008426013566,
+              "ci": {
+                "lower": 13.979999999999999,
+                "upper": 24.222
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 0.122,
+              "std": 0.244,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.366
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.9962476898559185,
+              "std": 1.0904372916649463,
+              "ci": {
+                "lower": 1.2194690607306684,
+                "upper": 3.057406615255894
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.7845563400855867,
+              "std": 0.046159234129787355,
+              "ci": {
+                "lower": 0.7398560780118444,
+                "upper": 0.8117936025283129
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0709599806491727,
+              "std": 0.05170723720776659,
+              "ci": {
+                "lower": 1.0191371285245505,
+                "upper": 1.103227766656722
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.816,
+              "std": 5.97168518929121,
+              "ci": {
+                "lower": 14.349800000000018,
+                "upper": 24.274
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "dapg_lite_contact_old__reset_repaired": {
+        "display_name": "DAPG-lite old reset (repaired)",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            0.8909459888267921,
+            0.90047803760511,
+            0.9093448115129009,
+            0.8832621180411891,
+            0.885383193377478
+          ],
+          "mean_peak_contact_force_n": [
+            0.8505627269077504,
+            1.1223205144833908,
+            0.9357516962227079,
+            1.0743773396671386,
+            0.9896827468144819
+          ],
+          "p95_peak_contact_force_n": [
+            1.1313709305303168,
+            1.4870591758304266,
+            1.2341861845298756,
+            1.4249651529838558,
+            1.3088769291059663
+          ],
+          "mean_contact_steps": [
+            31.174,
+            29.518,
+            30.092000000000002,
+            29.788,
+            28.384000000000004
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 0.893882829872694,
+            "std": 0.00975948786528664,
+            "ci": {
+              "lower": 0.8852231072655675,
+              "upper": 0.9023549180370004
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 0.9945390048190939,
+            "std": 0.096861729716554,
+            "ci": {
+              "lower": 0.9124623186150795,
+              "upper": 1.0766156910231082
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 1.317291674596088,
+            "std": 0.12803002453975482,
+            "ci": {
+              "lower": 1.2023733299605766,
+              "upper": 1.4240657730010022
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 29.791200000000003,
+            "std": 0.9008303724897366,
+            "ci": {
+              "lower": 28.95223,
+              "upper": 30.6196
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8909387271257406,
+              "std": 0.010646117467539995,
+              "ci": {
+                "lower": 0.8834700408776364,
+                "upper": 0.9014715263653346
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8602210177791308,
+              "std": 0.0907162322313298,
+              "ci": {
+                "lower": 0.7805716673929457,
+                "upper": 0.9360170802236107
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.194549243863587,
+              "std": 0.1399848897527792,
+              "ci": {
+                "lower": 1.0713801614336131,
+                "upper": 1.3115345110525425
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 28.454,
+              "std": 0.9307330444332572,
+              "ci": {
+                "lower": 27.636000000000003,
+                "upper": 29.28
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8904335533199875,
+              "std": 0.015569931423195054,
+              "ci": {
+                "lower": 0.8771908456158808,
+                "upper": 0.9043126649039142
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8327121599856515,
+              "std": 0.08584580468031149,
+              "ci": {
+                "lower": 0.7580766915252763,
+                "upper": 0.9054438442958773
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.1553561671736814,
+              "std": 0.13619114837928734,
+              "ci": {
+                "lower": 1.0415841014930534,
+                "upper": 1.268929935087304
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.688,
+              "std": 0.886191852817436,
+              "ci": {
+                "lower": 26.926,
+                "upper": 28.440000000000005
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9034690851027986,
+              "std": 0.009507022380354054,
+              "ci": {
+                "lower": 0.8955677802518128,
+                "upper": 0.912156031750128
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.437917502655631,
+              "std": 0.17120325507664025,
+              "ci": {
+                "lower": 1.2937993561701822,
+                "upper": 1.582260168398524
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.7221912851381067,
+              "std": 0.18027688130622052,
+              "ci": {
+                "lower": 1.5673804705578793,
+                "upper": 1.8770020997183336
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 32.123999999999995,
+              "std": 0.722456919130823,
+              "ci": {
+                "lower": 31.444,
+                "upper": 32.702
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8837277041824778,
+              "std": 0.009423054435126012,
+              "ci": {
+                "lower": 0.87506298995867,
+                "upper": 0.8916947575443641
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8433513603227384,
+              "std": 0.08210849699845658,
+              "ci": {
+                "lower": 0.7736655453035317,
+                "upper": 0.9126021100567417
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.1684669331181927,
+              "std": 0.12500483675080543,
+              "ci": {
+                "lower": 1.0605232926601844,
+                "upper": 1.276410573576201
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.630000000000003,
+              "std": 0.9365254935131241,
+              "ci": {
+                "lower": 26.806,
+                "upper": 28.381999999999998
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.900845079632466,
+              "std": 0.009597087808952402,
+              "ci": {
+                "lower": 0.8920336563426723,
+                "upper": 0.9082930673439573
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9984929833523177,
+              "std": 0.05570024950434845,
+              "ci": {
+                "lower": 0.9448768668580767,
+                "upper": 1.047805891771072
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.345894743686873,
+              "std": 0.06109491730437781,
+              "ci": {
+                "lower": 1.2927564252293504,
+                "upper": 1.3990484673001498
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 33.06,
+              "std": 1.2577440121105719,
+              "ci": {
+                "lower": 31.986,
+                "upper": 34.239999999999995
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "dapg_lite_contact_new__reset_coverage_collapse": {
+        "display_name": "DAPG-lite new reset (coverage collapse)",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            0.44399999999999995,
+            0.004,
+            0.0,
+            0.46799999999999997,
+            0.0
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            1.1043057711260844,
+            1.2993589573529132,
+            4.418270644615553,
+            1.1110326633060628,
+            2.261452078727917
+          ],
+          "mean_peak_contact_force_n": [
+            0.6668260944871539,
+            0.6676435195206676,
+            0.540098001196022,
+            0.7147029517448217,
+            0.5931319064077496
+          ],
+          "p95_peak_contact_force_n": [
+            0.8808660733930275,
+            0.8993434717277365,
+            0.7243146105651431,
+            0.9786168805192105,
+            0.8004487749861674
+          ],
+          "mean_contact_steps": [
+            25.584,
+            21.958,
+            6.994,
+            25.511999999999997,
+            16.990000000000002
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 0.18319999999999997,
+            "std": 0.22287431435676924,
+            "ci": {
+              "lower": 0.0008,
+              "upper": 0.3696
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 2.038884023025706,
+            "std": 1.26429895292494,
+            "ci": {
+              "lower": 1.1460071652434416,
+              "upper": 3.324113956740132
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 0.6364804946712829,
+            "std": 0.06193452589552941,
+            "ci": {
+              "lower": 0.5762138859032967,
+              "upper": 0.6863038074036265
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 0.856717962238257,
+            "std": 0.08712781482159693,
+            "ci": {
+              "lower": 0.7745472156818667,
+              "upper": 0.9273573555773844
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 19.407600000000002,
+            "std": 6.954975358691071,
+            "ci": {
+              "lower": 12.6968,
+              "upper": 24.83
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 0.22599999999999998,
+              "std": 0.27302747114530435,
+              "ci": {
+                "lower": 0.002,
+                "upper": 0.4579999999999999
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.983460281161562,
+              "std": 1.2811590841852425,
+              "ci": {
+                "lower": 1.0780143014682382,
+                "upper": 3.28564913145741
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.5349333874310919,
+              "std": 0.04497091289805069,
+              "ci": {
+                "lower": 0.4971141158059694,
+                "upper": 0.5720205768467784
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.7397089155947891,
+              "std": 0.06934209899192671,
+              "ci": {
+                "lower": 0.6731751218318249,
+                "upper": 0.7959251280392132
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.387999999999998,
+              "std": 6.928819235627381,
+              "ci": {
+                "lower": 12.995999999999999,
+                "upper": 24.778
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 0.238,
+              "std": 0.29232858224949543,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.49000000000000005
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.9658143224093856,
+              "std": 1.2883413623123632,
+              "ci": {
+                "lower": 1.0567552329961267,
+                "upper": 3.2760637709778586
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.5186070702458343,
+              "std": 0.04013422814758273,
+              "ci": {
+                "lower": 0.4832903320066306,
+                "upper": 0.5496973773569688
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.7270434972099534,
+              "std": 0.0510719917229608,
+              "ci": {
+                "lower": 0.6850610242705037,
+                "upper": 0.7694734549163872
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.354,
+              "std": 6.901392902885619,
+              "ci": {
+                "lower": 12.679999999999998,
+                "upper": 24.714
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 2.286919963921086,
+              "std": 1.180156397348327,
+              "ci": {
+                "lower": 1.4713409941012334,
+                "upper": 3.489801582434461
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8548007406351825,
+              "std": 0.12804536057165936,
+              "ci": {
+                "lower": 0.7473034144177199,
+                "upper": 0.9622980668526451
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0716702405375977,
+              "std": 0.18650819892447823,
+              "ci": {
+                "lower": 0.9108880689665868,
+                "upper": 1.2324524121086087
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.53,
+              "std": 7.067027663735299,
+              "ci": {
+                "lower": 12.796000000000001,
+                "upper": 25.083999999999996
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 0.23399999999999999,
+              "std": 0.2826021939051429,
+              "ci": {
+                "lower": 0.002,
+                "upper": 0.46799999999999997
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.9678147264337134,
+              "std": 1.2873122120615008,
+              "ci": {
+                "lower": 1.0568690552559439,
+                "upper": 3.2758013020967227
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.5119634371698331,
+              "std": 0.03941747003978309,
+              "ci": {
+                "lower": 0.4784977504335054,
+                "upper": 0.5445018010274728
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 0.7110815718355558,
+              "std": 0.061494271435401496,
+              "ci": {
+                "lower": 0.6586291352144904,
+                "upper": 0.7683478149998686
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.356,
+              "std": 6.912896932545719,
+              "ci": {
+                "lower": 12.672,
+                "upper": 24.729999999999997
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 0.21800000000000003,
+              "std": 0.2670131082924582,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.43800000000000006
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 1.990410821202783,
+              "std": 1.2849254030134647,
+              "ci": {
+                "lower": 1.0725916201594234,
+                "upper": 3.1436060267287016
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.762097837874473,
+              "std": 0.06105108958002715,
+              "ci": {
+                "lower": 0.7056970038667059,
+                "upper": 0.8078749123280643
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.0340855860133888,
+              "std": 0.07507457854392273,
+              "ci": {
+                "lower": 0.9644533072793667,
+                "upper": 1.095452406672124
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 19.41,
+              "std": 6.966789791575457,
+              "ci": {
+                "lower": 12.694000000000003,
+                "upper": 24.844
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      },
+      "dapg_lite_contact_new__reset_repaired": {
+        "display_name": "DAPG-lite new reset (repaired)",
+        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "seed_order": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "five_profile_seed_samples": {
+          "success_rate": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "jam_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "mean_final_distance_mm": [
+            0.8936923069418181,
+            0.897397183580386,
+            0.898040158033977,
+            0.8908329710112557,
+            0.8954073400265001
+          ],
+          "mean_peak_contact_force_n": [
+            0.841561070656166,
+            1.1084346098795514,
+            1.0205855321182988,
+            1.1109392484419485,
+            0.9610478813955355
+          ],
+          "p95_peak_contact_force_n": [
+            1.111180556165578,
+            1.4738153674554157,
+            1.3587819329161568,
+            1.4799730045209238,
+            1.2713523851790351
+          ],
+          "mean_contact_steps": [
+            31.278,
+            28.43,
+            29.929999999999996,
+            28.906,
+            29.238
+          ]
+        },
+        "five_profile_statistics": {
+          "success_rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "num_samples": 5
+          },
+          "jam_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci": {
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "num_samples": 5
+          },
+          "mean_final_distance_mm": {
+            "mean": 0.8950739919187873,
+            "std": 0.002615407945007409,
+            "ci": {
+              "lower": 0.8926627186173535,
+              "upper": 0.8972564046510453
+            },
+            "num_samples": 5
+          },
+          "mean_peak_contact_force_n": {
+            "mean": 1.0085136684983,
+            "std": 0.10074432462038777,
+            "ci": {
+              "lower": 0.9193215451683843,
+              "upper": 1.0918666497522596
+            },
+            "num_samples": 5
+          },
+          "p95_peak_contact_force_n": {
+            "mean": 1.3390206492474221,
+            "std": 0.13778083525928297,
+            "ci": {
+              "lower": 1.215741884226237,
+              "upper": 1.453271735373767
+            },
+            "num_samples": 5
+          },
+          "mean_contact_steps": {
+            "mean": 29.556399999999996,
+            "std": 0.989611964357747,
+            "ci": {
+              "lower": 28.782,
+              "upper": 30.43938
+            },
+            "num_samples": 5
+          }
+        },
+        "per_profile_statistics": {
+          "nominal": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8887540378425,
+              "std": 0.008269725916330623,
+              "ci": {
+                "lower": 0.8816796798139949,
+                "upper": 0.895899271009948
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8759403807145347,
+              "std": 0.09511643335759203,
+              "ci": {
+                "lower": 0.7901483594534381,
+                "upper": 0.9532919782657545
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.2226745219686443,
+              "std": 0.15065192392686755,
+              "ci": {
+                "lower": 1.0814330403696701,
+                "upper": 1.341089132640147
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 28.412,
+              "std": 1.0081349116065774,
+              "ci": {
+                "lower": 27.589999999999996,
+                "upper": 29.368000000000002
+              },
+              "num_samples": 5
+            }
+          },
+          "tight_clearance": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8922598967010129,
+              "std": 0.006457349658505652,
+              "ci": {
+                "lower": 0.8866831047529444,
+                "upper": 0.8978101233228909
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8471802881757778,
+              "std": 0.0905693132260128,
+              "ci": {
+                "lower": 0.7658640569807008,
+                "upper": 0.9218959751253213
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.1807373742081069,
+              "std": 0.14619010109170666,
+              "ci": {
+                "lower": 1.0440483252465433,
+                "upper": 1.2964124571063829
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.657999999999998,
+              "std": 1.0026245558532867,
+              "ci": {
+                "lower": 26.838,
+                "upper": 28.578000000000003
+              },
+              "num_samples": 5
+            }
+          },
+          "high_friction": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8989890410280499,
+              "std": 0.0027374146873522056,
+              "ci": {
+                "lower": 0.896580537818323,
+                "upper": 0.9013975442377766
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 1.4732779029720255,
+              "std": 0.18051030963261247,
+              "ci": {
+                "lower": 1.3090135025777472,
+                "upper": 1.620512772624193
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.757890440433951,
+              "std": 0.19719224460212867,
+              "ci": {
+                "lower": 1.5821865785574167,
+                "upper": 1.9214505662913797
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 32.186,
+              "std": 0.6577719969715937,
+              "ci": {
+                "lower": 31.597999999999995,
+                "upper": 32.709999999999994
+              },
+              "num_samples": 5
+            }
+          },
+          "offset_bias": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.8914206256536698,
+              "std": 0.004049319078355379,
+              "ci": {
+                "lower": 0.8873548615945757,
+                "upper": 0.8939099753722656
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.8561069833999827,
+              "std": 0.08971762282701459,
+              "ci": {
+                "lower": 0.776497097413412,
+                "upper": 0.9304294741901462
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.198069062747854,
+              "std": 0.13271106610423092,
+              "ci": {
+                "lower": 1.0741143738169543,
+                "upper": 1.3076135012017291
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 27.637999999999998,
+              "std": 1.0048164011400282,
+              "ci": {
+                "lower": 26.824,
+                "upper": 28.601999999999997
+              },
+              "num_samples": 5
+            }
+          },
+          "noisy_force": {
+            "success_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 1.0,
+                "upper": 1.0
+              },
+              "num_samples": 5
+            },
+            "jam_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "ci": {
+                "lower": 0.0,
+                "upper": 0.0
+              },
+              "num_samples": 5
+            },
+            "mean_final_distance_mm": {
+              "mean": 0.9039463583687046,
+              "std": 0.004542533517590898,
+              "ci": {
+                "lower": 0.8999767946601201,
+                "upper": 0.9079345119407021
+              },
+              "num_samples": 5
+            },
+            "mean_peak_contact_force_n": {
+              "mean": 0.9900627872291793,
+              "std": 0.04946932724937476,
+              "ci": {
+                "lower": 0.9469225259024752,
+                "upper": 1.0332030485558836
+              },
+              "num_samples": 5
+            },
+            "p95_peak_contact_force_n": {
+              "mean": 1.3357318468785535,
+              "std": 0.07081001998471495,
+              "ci": {
+                "lower": 1.272636684740265,
+                "upper": 1.398827009016842
+              },
+              "num_samples": 5
+            },
+            "mean_contact_steps": {
+              "mean": 31.888000000000005,
+              "std": 1.5598128092819352,
+              "ci": {
+                "lower": 30.916000000000004,
+                "upper": 33.472
+              },
+              "num_samples": 5
+            }
+          }
+        }
+      }
+    },
+    "selected_comparisons": [
+      {
+        "comparison_id": "bc_only_stable_r32_p32__vs__repaired_mainline_bc_to_ppo__success_rate",
+        "reference_suite": "bc_only_stable_r32_p32",
+        "candidate_suite": "repaired_mainline_bc_to_ppo",
+        "metric": "success_rate",
+        "reference_mean": 0.9996,
+        "candidate_mean": 1.0,
+        "mean_difference": 0.00040000000000000034,
+        "ci": {
+          "lower": 0.0,
+          "upper": 0.001200000000000001
+        },
+        "p_value": 1.0,
+        "effect_size": {
+          "effect_type": "ceiling_aware_success_rate_gap",
+          "absolute_mean_difference": 0.00039999999999995595,
+          "standardized_mean_difference": 0.707106781186469,
+          "reference_failure_rate": 0.00039999999999995595,
+          "candidate_failure_rate": 0.0,
+          "failure_rate_difference": -0.00039999999999995595,
+          "remaining_error_ratio": 0.0
+        },
+        "practical_interpretation": "negligible under ceiling saturation",
+        "practical_note": "The success-rate gap stays within a 0.01 band on a ceiling-saturated protocol, so the difference is negligible under ceiling saturation."
+      },
+      {
+        "comparison_id": "bc_only_stable_r32_p32__vs__dapg_lite_repaired_mainline__success_rate",
+        "reference_suite": "bc_only_stable_r32_p32",
+        "candidate_suite": "dapg_lite_repaired_mainline",
+        "metric": "success_rate",
+        "reference_mean": 0.9996,
+        "candidate_mean": 1.0,
+        "mean_difference": 0.00040000000000000034,
+        "ci": {
+          "lower": 0.0,
+          "upper": 0.001200000000000001
+        },
+        "p_value": 1.0,
+        "effect_size": {
+          "effect_type": "ceiling_aware_success_rate_gap",
+          "absolute_mean_difference": 0.00039999999999995595,
+          "standardized_mean_difference": 0.707106781186469,
+          "reference_failure_rate": 0.00039999999999995595,
+          "candidate_failure_rate": 0.0,
+          "failure_rate_difference": -0.00039999999999995595,
+          "remaining_error_ratio": 0.0
+        },
+        "practical_interpretation": "negligible under ceiling saturation",
+        "practical_note": "The success-rate gap stays within a 0.01 band on a ceiling-saturated protocol, so the difference is negligible under ceiling saturation."
+      },
+      {
+        "comparison_id": "repaired_mainline_bc_to_ppo__vs__fixed_impedance_rl_stable_r32_p32__success_rate",
+        "reference_suite": "repaired_mainline_bc_to_ppo",
+        "candidate_suite": "fixed_impedance_rl_stable_r32_p32",
+        "metric": "success_rate",
+        "reference_mean": 1.0,
+        "candidate_mean": 0.9468,
+        "mean_difference": -0.053200000000000025,
+        "ci": {
+          "lower": -0.12080000000000005,
+          "upper": -0.0064000000000000055
+        },
+        "p_value": 0.0625,
+        "effect_size": {
+          "effect_type": "ceiling_aware_success_rate_gap",
+          "absolute_mean_difference": -0.053200000000000025,
+          "standardized_mean_difference": -1.1243362780027233,
+          "reference_failure_rate": 0.0,
+          "candidate_failure_rate": 0.053200000000000025,
+          "failure_rate_difference": 0.053200000000000025,
+          "remaining_error_ratio": null
+        },
+        "practical_interpretation": "materially different",
+        "practical_note": "The success-rate gap is too large to dismiss as a ceiling-saturation artifact and should be treated as materially different."
+      }
+    ]
+  }
+}

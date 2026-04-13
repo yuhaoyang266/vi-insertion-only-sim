@@ -1,0 +1,1012 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{placeins}
+\usepackage[hidelinks]{hyperref}
+\usepackage[authoryear]{natbib}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\repositoryurl}{\url{https://github.com/yuhaoyang266/vi-insertion-only-sim-paper}}
+\newcommand{\mm}{\ensuremath{\mathrm{mm}}}
+\newcommand{\mps}{\ensuremath{\mathrm{m/s}}}
+\newcommand{\N}{\ensuremath{\mathrm{N}}}
+\graphicspath{{../figures/main/}{../figures/appendix/}{../supplement/figures/}}
+
+\newcommand{\includeorplaceholder}[2]{%
+  \IfFileExists{../figures/main/#1.pdf}{%
+    \includegraphics[width=\linewidth]{../figures/main/#1.pdf}%
+  }{%
+    \IfFileExists{../figures/main/#1.png}{%
+      \includegraphics[width=\linewidth]{../figures/main/#1.png}%
+    }{%
+      \IfFileExists{../figures/appendix/#1.pdf}{%
+        \includegraphics[width=\linewidth]{../figures/appendix/#1.pdf}%
+      }{%
+        \IfFileExists{../figures/appendix/#1.png}{%
+          \includegraphics[width=\linewidth]{../figures/appendix/#1.png}%
+        }{%
+          \IfFileExists{../supplement/figures/#1.pdf}{%
+            \includegraphics[width=\linewidth]{../supplement/figures/#1.pdf}%
+          }{%
+            \IfFileExists{../supplement/figures/#1.png}{%
+              \includegraphics[width=\linewidth]{../supplement/figures/#1.png}%
+            }{%
+              \fbox{\parbox[c][0.22\textheight][c]{0.95\linewidth}{%
+                \centering
+                \textbf{#2}\\[0.5em]
+                \small Expected asset under \texttt{figures/} or \texttt{supplement/figures/}: \texttt{\detokenize{#1.pdf}} or \texttt{\detokenize{#1.png}}%
+              }}%
+            }%
+          }%
+        }%
+      }%
+    }%
+  }%
+}
+
+\title{Demonstration Support Gates Learnability in a 3DoF Variable-Impedance Insertion Benchmark}
+\author{Yu Haoyang\\Shanghai University\\Shanghai Institute of Applied Mathematics and Mechanics\\\texttt{yuhaoyang@shu.edu.cn}}
+\date{\small Project repository: \repositoryurl}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We study learnability in a simulation-only 3DoF final-stage insertion benchmark with a structured
+variable-impedance action space $(\Delta x, \Delta y, \Delta z, K_{xy}, K_z)$. Under the matched
+training and evaluation protocol, PPO without behavior-cloning warm-start does not reach useful
+contact, and a PPO-only audit up to 200k environment steps preserves this non-contact failure.
+A smaller factorized diagnostic sweep identifies BC demonstration support as the cleanest gate:
+removing it drives useful-contact success to zero, whereas reset coverage, BC depth, and PPO budget
+show protocol-sensitive and partly non-monotone effects. Variable impedance retains localized physical value under high-friction contact:
+tuned fixed stiffness can nearly saturate success, but same-interface mechanics traces show lower
+contact load and work for variable stiffness. The claim is benchmark-local and teacher-coupled, not
+a general robotics or teacher-independent algorithm-ranking result.
+\end{abstract}
+
+\section{Introduction}
+
+Contact-rich insertion is often framed as a reinforcement-learning problem, but in practice
+learning can fail before policy optimization has any chance to matter. A policy may never enter
+recoverable contact, or its demonstrations may fail to cover the approach states from which
+contact-relevant behavior becomes reachable. In that setting, saying that ``PPO fails'' is too
+coarse. The more precise question is whether the system ever provides a learnable interface in the
+first place.
+
+This paper studies that question in a simulation-only 3DoF final-stage peg-in-hole benchmark with
+a structured variable-impedance action space. The benchmark is intentionally reduced: it models
+translational insertion only, exposes the contact transition directly, and uses a policy interface
+that separates translational intent from impedance modulation. This reduced scope is a strength for
+our purpose. It lets us isolate where the real bottleneck lies: in demonstration guidance, in
+upstream reset coverage, in contact-law design, or in the downstream choice between PPO-style and
+DAPG-style optimization.
+
+The study is therefore framed around evidence layers rather than a single algorithm leaderboard.
+The benchmark separates whether a policy ever reaches recoverable contact, whether demonstrations
+and reset curricula expose useful state-action support, whether PPO-style fine-tuning changes a
+BC-initialized policy, and whether variable stiffness changes the contact load path once contact is
+reached. This leads to a narrow claim: in the matched teacher-coupled setup, learnability is
+dominated by upstream interface design, while the physical value of variable impedance is localized
+to lower-load high-friction contact rather than broad algorithmic superiority.
+
+Our contributions are therefore fourfold. First, we provide a controlled simulation-only benchmark
+for auditing 3DoF variable-impedance insertion with relative observations and explicit impedance
+commands. Second, we show that PPO without BC warm-start does not reach contact-relevant behavior
+under the matched protocol, and remains at zero success in an additional 50k--200k-step PPO-only
+audit, whereas a stable behavior-cloning base reopens the task.
+Third, we show with factorized controls that BC-based demonstration support is necessary to reopen
+the task, that train-reset coverage has a protocol-local direction under the matched sweep, and
+that BC optimization depth and PPO fine-tune budget induce non-monotone algorithm rankings rather
+than a universal ``fine-tuning helps'' pattern. Fourth, we show that the main learned
+fixed-impedance baseline underperforms primarily
+in the \code{high\_friction} evaluation class, supporting a concrete load-efficiency role
+and a more robust learned interface under the matched teacher-coupled setup rather than a purely
+algorithmic one.
+
+The remainder of the paper is organized as follows. Section~\ref{sec:related-work} positions the
+study relative to contact-rich insertion, impedance control, and demonstration-guided RL.
+Section~\ref{sec:setup} defines the task, action space, comparison set, and evaluation protocol.
+Section~\ref{sec:experiments} presents the main benchmark, the mechanism matrix, and the physical
+interpretation of the fixed-versus-variable comparison. Section~\ref{sec:discussion} discusses the
+scope of the claim and its limitations. The appendix expands the supporting evidence with
+the PPO-only large-budget audit, the tuned fixed-stiffness check, evaluation-class transparency, raw
+per-profile tables, the contact-transition audit, and the BC stability sweep behind the reported
+setting.
+
+\section{Related Work}
+\label{sec:related-work}
+
+Peg-in-hole assembly has long served as a canonical contact-rich manipulation problem because small
+alignment errors can rapidly produce large contact forces, wedging, and jamming. Recent reviews
+continue to organize the field around compliant search, force-feedback correction, and contact
+handling rather than around purely kinematic tracking \citep{li2025_peg_review}. Our paper shares
+that focus on contact-rich behavior, but it asks a narrower upstream question: before discussing
+policy quality, when is the insertion interface learnable at all?
+
+Impedance control provides the classical language for that question. Hogan's original formulation
+made explicit that manipulation under interaction cannot be reduced to pure position or pure force
+control \citep{hogan1985_impedance_part1,hogan1985_impedance_part2}. Hybrid position/force and
+compliance-control formalisms likewise emphasize that contact tasks require explicit task-frame
+reasoning and force-motion decomposition rather than only Cartesian tracking
+\citep{mason1981_compliance_force,raibert1981_hybrid_position_force}. More recent variable-impedance
+work has shown that impedance can itself be learned or adapted from demonstrations, inverse
+reinforcement learning, or direct policy optimization
+\citep{abudakka2020_variable_impedance_demo,zhang2021_variable_impedance_irl,
+zhang2023_variable_impedance_passivity,zhou2024_mobile_manipulator_imitation,
+yang2025_variable_impedance_passivity}. We follow that structured-control tradition, but we do not
+claim a new variable-impedance controller. Instead, we use an explicit impedance action space to
+make learnability bottlenecks auditable.
+
+Demonstration-guided learning is the second anchor. Learning from demonstration has long been used
+to provide task-relevant priors when exploration is brittle or unsafe
+\citep{argall2009_lfd_survey,billard2008_robot_programming_by_demonstration,ijspeert2013_dmp}.
+Demonstration-augmented policy gradients and related imitation-plus-RL pipelines have been
+particularly influential in dexterous and contact-rich manipulation
+\citep{vecerik2017_demo_sparse_rewards,rajeswaran2018_dexterous_demo_rl,
+johannink2019_residual_rl,wang2022_adaptive_imitation_insertion}. Off-policy and offline RL
+baselines such as SAC, benchmark suites such as robosuite, and offline datasets and algorithms
+such as D4RL and CQL define a broader comparison space that this paper does not exhaust
+\citep{haarnoja2018_sac,zhu2020_robosuite,fu2020_d4rl,kumar2020_cql}. Our emphasis is
+different from the usual sample-efficiency story. In the present benchmark, demonstrations are not
+merely a data-efficiency boost; they are a precondition for entering the contact-relevant state
+distribution at all.
+
+\section{Task Setup and Experimental Protocol}
+\label{sec:setup}
+
+\subsection{Learnability Question and Evidence Boundary}
+
+We study final-stage translational insertion in an analytical 3DoF environment. The state contains
+relative peg position, translational velocity, a synthetic three-axis force signal, and the
+previous action. The policy acts in a structured 5D action space
+$a_t = (\Delta x, \Delta y, \Delta z, K_{xy}, K_z)$, where the first three dimensions specify local
+Cartesian motion and the last two specify lateral and axial stiffness commands. This design keeps
+motion and compliance explicit rather than hiding them inside torque-level outputs.
+
+Figure~\ref{fig:overview} summarizes the task geometry and the control interface. The peg is
+observed in a hole-centered relative frame, so the policy receives relative pose, relative
+velocity, and force information rather than absolute world coordinates. This relative-frame design
+is important later: it strongly attenuates the effect of \code{offset\_bias} under the current
+environment semantics, although we do not yet isolate that interpretation with a separate
+absolute-versus-relative observation ablation.
+
+\begin{figure}[t]
+  \centering
+  \includeorplaceholder{fig1_task_policy_impedance_overview}{Final Figure 1: task, policy, and impedance overview}
+  \caption{3DoF insertion task, policy interface, and impedance strategy. The policy observes the
+  peg in a hole-centered relative frame and outputs translational motion commands together with
+  lateral and axial stiffness commands. The distinction between fixed and variable impedance is not
+  an abstract controller label: it is whether stiffness remains constant during contact or is
+  reduced after contact onset.}
+  \label{fig:overview}
+\end{figure}
+
+\subsection{Mechanics and Interface Formalization}
+
+The policy operates in a hole-centered relative frame. At time step $t$, the observation is
+\begin{equation}
+\mathbf{o}_t =
+\left[\mathbf{p}^{\mathrm{rel}}_t,\; \dot{\mathbf{p}}^{\mathrm{rel}}_t,\; \mathbf{f}_t,\;
+\mathbf{a}_{t-1}\right],
+\end{equation}
+where $\mathbf{p}^{\mathrm{rel}}_t \in \mathbb{R}^3$ is the peg position relative to the hole
+frame, $\dot{\mathbf{p}}^{\mathrm{rel}}_t \in \mathbb{R}^3$ is the translational velocity,
+$\mathbf{f}_t \in \mathbb{R}^3$ is the synthetic force observation returned by the analytical
+contact model, and $\mathbf{a}_{t-1} \in \mathbb{R}^5$ is the previous action. The resulting
+observation dimension is 14. The action is
+\begin{equation}
+\mathbf{a}_t =
+\left[\Delta x_t,\; \Delta y_t,\; \Delta z_t,\; \kappa^{xy}_t,\; \kappa^{z}_t\right],
+\end{equation}
+where the first three dimensions specify local Cartesian motion increments and the last two are
+normalized stiffness commands.
+
+The environment decodes the stiffness channels linearly after clipping them to $[0,1]$:
+\begin{align}
+K_{xy,t} &= K_{xy}^{\min} +
+\mathrm{clip}(\kappa^{xy}_t, 0, 1)\left(K_{xy}^{\max} - K_{xy}^{\min}\right), \\
+K_{z,t} &= K_{z}^{\min} +
+\mathrm{clip}(\kappa^{z}_t, 0, 1)\left(K_{z}^{\max} - K_{z}^{\min}\right),
+\end{align}
+with the structured stiffness matrix
+\begin{equation}
+\mathbf{K}_t = \mathrm{diag}(K_{xy,t}, K_{xy,t}, K_{z,t}).
+\end{equation}
+
+The analytical contact model returns a synthetic force observation
+$\mathbf{f}_t = \mathcal{C}(\mathbf{p}^{\mathrm{rel}}_t, \dot{\mathbf{p}}^{\mathrm{rel}}_t,
+\mathbf{K}_t; \theta_{\mathrm{env}})$. When the peg is already inside the hole but still rubbing
+the wall, the model applies an in-hole drag term whose lateral component is proportional to
+$K_{xy,t}$ and a wall-proximity factor $\rho_t$, while its axial component scales with
+$\mu_{\mathrm{wall}} K_{z,t} |\min(\Delta z_t, 0)|$. When lateral overflow creates blocked contact,
+the blocked-contact branch uses
+\begin{align}
+\mathbf{f}^{xy}_{t,\mathrm{block}} &=
+\alpha_{xy} K_{xy,t} o_t \mathbf{u}_t + 0.25\, \mu_{\mathrm{wall}} f^0_{z,t} \mathbf{u}_t, \\
+f^0_{z,t} &= \alpha_z K_{z,t} |\min(\Delta z_t, 0)|, \\
+f_{z,t,\mathrm{block}} &= f^0_{z,t} + 0.2 \|\mathbf{f}^{xy}_{t,\mathrm{block}}\|_2,
+\end{align}
+where $o_t$ is the lateral overflow magnitude and $\mathbf{u}_t$ is the corresponding unit
+direction. Here $\alpha_{xy}$ and $\alpha_z$ are fixed lateral and axial contact-scaling
+constants of the analytical environment, $\mu_{\mathrm{wall}}$ is the active wall-friction
+coefficient, and $\rho_t$ is the wall-proximity factor returned by the analytical contact
+geometry. The final force observation is the sum of the active drag and blocked-contact terms and
+is also used for jam monitoring.
+
+A rollout is counted as successful when
+\begin{equation}
+\|\mathbf{p}^{\mathrm{rel}}_{t,xy}\|_2 \le 0.8\,\mm, \qquad
+|p^{\mathrm{rel}}_{t,z}| \le 1.0\,\mm, \qquad
+\|\dot{\mathbf{p}}^{\mathrm{rel}}_t\|_2 \le 0.08~\mathrm{m/s},
+\end{equation}
+and it is terminated as jam when
+\begin{equation}
+\|\mathbf{f}_t\|_2 \ge 8.0~\N
+\end{equation}
+for three consecutive steps. The episode horizon is 64 steps. Table~\ref{tab:env_params}
+summarizes the key benchmark constants.
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Key environment and termination parameters used throughout the main benchmark. The
+  stiffness ranges are the default environment decoding ranges; the learned fixed-impedance
+  baseline replaces them with constant midpoint values during both training and evaluation.}
+  \label{tab:env_params}
+  \begin{tabular}{ll}
+    \toprule
+    Parameter & Value \\
+    \midrule
+    Observation dimension & 14 \\
+    Action dimension & 5 \\
+    $K_{xy}$ range & $[20.0,\;110.0]$ \\
+    $K_z$ range & $[35.0,\;140.0]$ \\
+    Success tolerance & lateral $\le 0.8\,\mm$, axial $\le 1.0\,\mm$ \\
+    Success speed gate & $\|\dot{\mathbf{p}}^{\mathrm{rel}}\|_2 \le 0.08~\mathrm{m/s}$ \\
+    Jam criterion & $\|\mathbf{f}\|_2 \ge 8.0~\N$ for 3 consecutive steps \\
+    Episode horizon & 64 steps \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Compared Pipelines}
+
+The reported comparison set contains five methods.
+\begin{enumerate}
+  \item \textbf{PPO w/o BC}: direct policy optimization from scratch.
+  \item \textbf{BC-only}: a behavior-cloned policy evaluated without PPO fine-tuning.
+  \item \textbf{Fixed-impedance RL}: the same BC-based learning path, but with stiffness channels
+  pinned to constant values.
+  \item \textbf{BC$\rightarrow$PPO}: the mainline that warm-starts PPO from the stable BC base.
+  \item \textbf{DAPG-lite}: a lightweight DAPG-style demonstration-augmented policy-gradient
+  baseline, abbreviated as \code{DAPG-lite} in the tables. It is included as a matched-protocol
+  mechanism control rather than as a full
+  reproduction of any single prior DAPG implementation.
+\end{enumerate}
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Operational definitions for the controlled factors used in the diagnostic sweeps.}
+  \label{tab:factor_definitions}
+  \begin{tabular}{ll}
+    \toprule
+    Term & Operational meaning in this paper \\
+    \midrule
+    Demonstration support & State-action support supplied by the BC demonstration dataset \\
+    Train-reset coverage & Initial-state distribution used during BC/PPO training \\
+    BC optimization depth & Number of supervised BC pretraining updates \\
+    PPO budget & PPO environment interaction steps after optional BC warm-start \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+All learned baselines reported in the main text are trained on the nominal profile only. The stable imitation
+configuration used throughout the main benchmark is
+\code{bc\_rollout\_episodes = 32}, \code{bc\_pretrain\_steps = 32}, and
+\code{bc\_batch\_size = 64}. This was selected because a separate stability sweep showed that
+\code{32/32} is the smallest BC budget that remains stable across the critical seed combinations
+(Appendix~\ref{app:bc-stability}).
+We explicitly distinguish three notions that are easy to conflate: \emph{demonstration coverage}
+is the state-action support present in the BC demonstrations, \emph{reset coverage} is the
+initial-state support induced by the reset curriculum, and \emph{BC optimization stability} is
+whether a given imitation budget reliably produces a successful BC base across seed combinations.
+The \code{32/32} setting is used because it is the smallest budget that remains stable under the
+current seed protocol, while Section~\ref{sec:coverage} manipulates reset coverage separately.
+For the fixed-impedance learned baseline, stiffness adaptation is disabled by pinning the lateral
+and axial stiffness ranges to constant values during both training and evaluation. Concretely, the
+fixed baseline uses \mbox{$K_{xy}=65.0$} and \mbox{$K_z=87.5$}, i.e., the midpoint values of the
+default lateral and axial stiffness ranges, and keeps those same constants in both training and
+evaluation.
+In addition to the learned comparison set, the evaluation package contains a minimal
+same-interface handcrafted/classical anchor roster: \code{pose\_only}, a hand-crafted
+\code{fixed\_impedance} controller, a hand-crafted \code{variable\_impedance} controller used to
+generate demonstrations, and the added \code{hybrid\_position\_force},
+\code{compliant\_search}, and \code{tuned\_impedance} references. We use them in the main text
+only as benchmark-local engineering anchors under the shared interface; they improve external
+reference coverage, but they are not presented as an exhaustive survey of classical insertion
+controllers. Because the BC demonstrations are generated by the hand-crafted variable-impedance
+teacher, the present design does not fully decouple demonstration support from the impedance prior
+embedded in that teacher. The tuned fixed-stiffness sweep in Appendix~\ref{app:tuned-fixed}
+partially checks whether fixed impedance can succeed when tuned, but it is not a matched-motion
+or fixed-expert demonstration ablation.
+
+\subsection{Nominal Profiles and Evaluation Classes}
+
+The benchmark nominally evaluates five uncertainty profiles:
+\code{nominal}, \code{tight\_clearance}, \code{high\_friction}, \code{offset\_bias}, and
+\code{noisy\_force}. However, these do not correspond to five independent evaluation stresses in the
+current environment semantics. Two design facts matter. First, \code{offset\_bias} is strongly
+attenuated under the hole-centered relative observation frame used here. We do not yet include an
+absolute-versus-relative observation ablation, so this should be read as an environment-semantic
+explanation rather than as a separately isolated causal test. Second, \code{tight\_clearance} only
+becomes active when the rollout enters lateral-overflow contact. For the reported discussion we
+therefore group the five nominal profiles into three effective evaluation classes, referred to
+below as evaluation classes:
+\begin{itemize}
+  \item \textbf{baseline}: \code{nominal}, \code{tight\_clearance}, and \code{offset\_bias},
+  \item \textbf{high friction}: \code{high\_friction},
+  \item \textbf{noisy force}: \code{noisy\_force}.
+\end{itemize}
+
+This is not a post-hoc averaging trick. It is a statement about environment semantics, and we make
+it explicit because otherwise the repeated values across several profiles would look suspicious
+rather than interpretable.
+
+\subsection{Contact Model as a Precondition}
+
+All benchmark results reported in the main text use the repaired analytical contact model as the default
+environment. This is an intentional precondition rather than a hidden tuning choice. The original
+and repaired contact-law variants are audited in Appendix~\ref{app:contact-audit}. In the main
+text we keep the repaired contact model fixed so that demonstration support, train-reset
+coverage, BC depth, and PPO budget can be compared under one protocol.
+
+\subsection{Evaluation Contract}
+
+The main benchmark uses five training seeds and 100 evaluation episodes per seed and profile.
+The supplementary statistics report attaches bootstrap 95\% confidence intervals to the main
+metrics and paired sign-permutation comparisons to the selected success-rate contrasts discussed
+below. The main reported metrics are success rate, jam rate, mean final distance to target, mean
+peak contact force, and mean contact steps. In the main tables, the evaluation-class success
+columns report mean $\pm$ std across the five training seeds, and the aggregate columns report the
+corresponding per-seed 5-profile means $\pm$ std. The factorized causal sweeps in
+Section~\ref{sec:coverage} use a smaller diagnostic matched protocol and should therefore be read
+as directional mechanism diagnostics rather than as the manuscript's highest-precision estimates.
+Unless otherwise noted, all learned baselines reported in the main text also share the same
+small PPO fine-tuning budget (\code{total\_timesteps = 128}) and the same episode horizon
+(\code{max\_episode\_steps = 64}). Here \code{total\_timesteps} denotes PPO environment
+interaction steps passed to the optimizer; it does not include BC rollout episodes or BC
+pretraining updates. The large-budget PPO-only audit in Appendix~\ref{app:ppo-large-budget} is
+reported separately because it changes the PPO-only training budget while preserving the same
+evaluation profiles and episode horizon. We therefore report success gaps with their bootstrap
+intervals and paired tests directly instead of assigning universal algorithm-ranking labels.
+Throughout the results, effect size, interval, and paired test are treated as a joint description,
+not as a single-p-value basis for ranking algorithms.
+
+\section{Experiments}
+\label{sec:experiments}
+
+The experiments use separate evidence layers. Only Figure~\ref{fig:main_results_matrix} and
+Table~\ref{tab:main_benchmark} should be read as the final benchmark estimate. They report the
+final five-seed benchmark with 100 evaluation episodes per seed and profile.
+Table~\ref{tab:mechanism_matrix} and
+Table~\ref{tab:behavioral_similarity} are smaller diagnostic sweeps intended for directional
+mechanism analysis, not direct numerical comparison with the main benchmark.
+Figure~\ref{fig:high_friction_mechanism} reports high-friction mechanics traces under the same
+3DoF interface but with its own trace sampling contract, Table~\ref{tab:pose_perturbation}
+reports a separate pose-perturbation proxy study, and Appendix Tables~\ref{tab:ppo_large_budget}
+and~\ref{tab:tuned_fixed_sweep} report supplementary stress checks rather than new main benchmark
+replacements.
+
+\subsection{Main Benchmark: Coverage Matters More than Algorithm Choice}
+
+Figure~\ref{fig:main_results_matrix} and Table~\ref{tab:main_benchmark} report the main
+benchmark. Under the matched small-budget protocol, \code{PPO w/o BC} remains at 0.000 mean
+success, and Appendix~\ref{app:ppo-large-budget} preserves the same non-contact failure at
+50k--200k environment steps. Here ``useful contact'' means contact trajectories that enter the
+recoverable contact regime and can still satisfy the benchmark success criteria, rather than merely
+producing incidental force. Once the BC base is stabilized, \code{BC-only} reaches
+$0.9996 \pm 0.0008$ mean success, while \code{BC$\rightarrow$PPO} and \code{DAPG-lite} both reach
+$1.000 \pm 0.000$. The paired success gaps against \code{BC-only} are only 0.0004 with bootstrap CI
+$[0.0000, 0.0012]$ and paired sign-permutation $p = 1.0$, so the final benchmark does not support a
+meaningful success-rate ranking among the near-ceiling BC-based methods. Instead, it motivates the
+factorized controls below, where demonstration support, reset coverage, BC depth, and PPO budget are
+separated explicitly.
+
+\begin{figure}[t]
+  \centering
+  \includeorplaceholder{fig2_main_benchmark_evaluation_class_summary}{Final Figure 2: main benchmark across evaluation classes}
+  \caption{Main benchmark across evaluation classes. Each cell shows success rate for one
+  method under one evaluation class, with the rightmost column reporting the 5-profile mean success.
+  Under the matched small budget of this paper, PPO without BC warm-start does not reach useful contact
+  behavior; Appendix~\ref{app:ppo-large-budget} shows that a PPO-only 50k--200k-step audit remains
+  in the same non-contact regime. Meanwhile, \code{BC-only},
+  \code{BC$\rightarrow$PPO}, and \code{DAPG-lite} remain inside a ceiling-saturated success band
+  under the final five-seed statistical contract. Later factorized controls show that this similarity is
+  budget-sensitive rather than universal. The
+  fixed-impedance deficit is concentrated under \code{high\_friction}.}
+  \label{fig:main_results_matrix}
+\end{figure}
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Main benchmark reported in the text. All learned methods are trained on the nominal profile and
+  evaluated with 5 seeds and 100 episodes per seed per profile. The three evaluation-class columns
+  report seed-level success mean $\pm$ std after grouping the five nominal profiles into
+  \emph{baseline}, \emph{high friction}, and \emph{noisy force}. The remaining columns summarize
+  the corresponding per-seed 5-profile mean behavior; bootstrap CI and paired-comparison notes are
+  reported in the supplementary statistics report.}
+  \label{tab:main_benchmark}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lcccccccc}
+    \toprule
+    Method & Baseline & High fric. & Noisy force & Mean success & Jam & Final dist. (\mm) & Peak force (\N) & Contact steps \\
+    \midrule
+    PPO w/o BC & $0.00 \pm 0.00$ & $0.00 \pm 0.00$ & $0.00 \pm 0.00$ & $0.000 \pm 0.000$ & $0.000 \pm 0.000$ & $18.381 \pm 0.336$ & $0.000 \pm 0.000$ & $0.0 \pm 0.0$ \\
+    BC-only & $1.00 \pm 0.00$ & $1.00 \pm 0.00$ & $1.00 \pm 0.00$ & $1.000 \pm 0.001$ & $0.000 \pm 0.000$ & $0.901 \pm 0.008$ & $0.932 \pm 0.033$ & $30.0 \pm 1.1$ \\
+    Fixed-impedance RL & $0.99 \pm 0.02$ & $0.78 \pm 0.29$ & $0.98 \pm 0.04$ & $0.947 \pm 0.067$ & $0.000 \pm 0.000$ & $0.916 \pm 0.030$ & $1.071 \pm 0.109$ & $36.5 \pm 1.2$ \\
+    BC$\rightarrow$PPO & $1.00 \pm 0.00$ & $1.00 \pm 0.00$ & $1.00 \pm 0.00$ & $1.000 \pm 0.000$ & $0.000 \pm 0.000$ & $0.902 \pm 0.007$ & $0.902 \pm 0.064$ & $29.8 \pm 1.5$ \\
+    DAPG-lite & $1.00 \pm 0.00$ & $1.00 \pm 0.00$ & $1.00 \pm 0.00$ & $1.000 \pm 0.000$ & $0.000 \pm 0.000$ & $0.895 \pm 0.003$ & $1.009 \pm 0.101$ & $29.6 \pm 1.0$ \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+The supplementary statistics report reinforces the same reading: within the ceiling-saturated
+BC-based band, the informative differences are modest contact-load shifts rather than success-rate
+separation.
+\code{BC-only} and \code{BC$\rightarrow$PPO} remain close in mean peak contact force
+($0.932 \pm 0.033$ versus $0.902 \pm 0.064$~\N), p95 peak contact force
+($1.234 \pm 0.047$ versus $1.192 \pm 0.093$~\N), and mean contact steps
+($30.0 \pm 1.1$ versus $29.8 \pm 1.5$). \code{DAPG-lite} carries slightly higher force statistics
+($1.009 \pm 0.101$~\N mean peak force; $1.339 \pm 0.138$~\N p95) without any success advantage.
+The fixed-impedance learned baseline sharpens the interpretation. Its overall mean success is
+$0.947 \pm 0.067$, and the comparison against \code{BC$\rightarrow$PPO} has a larger success gap
+(mean gap $-0.0532$, bootstrap CI $[-0.1208, -0.0064]$). At the same time, with only five paired
+training seeds, the paired sign-permutation p-value is still $0.0625$, so this descriptive gap
+should not be treated as a conventional $p<0.05$ null-hypothesis win. Its deficit is not uniform
+across the evaluation classes: the main drop occurs under
+\code{high\_friction}, where success falls to $0.776 \pm 0.287$. This localized failure mode sets
+up the physical interpretation in Section~\ref{sec:physical-value}.
+
+For additional same-interface engineering context, the simple hand-crafted references in the
+repository show the same high-friction pattern. Under \code{high\_friction}, \code{pose\_only},
+hand-crafted \code{fixed\_impedance}, and hand-crafted \code{variable\_impedance} all reach
+1.000 success, but their mean peak contact forces differ sharply:
+$1.58 \pm 0.00$~\N, $4.33 \pm 0.01$~\N, and $1.20 \pm 0.00$~\N, respectively. The repository also
+keeps minimal same-interface classical anchors (\code{hybrid\_position\_force}, \code{compliant\_search}, and
+\code{tuned\_impedance}) as supporting reference evidence. They strengthen the engineering
+reference set inside the same benchmark interface, but they are not part of the final main
+learned-method table and are not presented as an exhaustive classical-controller survey.
+
+\subsection{Factorized Causal Study: Demonstration Support Reopens Contact, but Reset and Budget Effects Are Protocol-Sensitive}
+\label{sec:coverage}
+
+The main benchmark alone cannot distinguish among demonstration support, train-reset support,
+imitation depth, and PPO budget. Table~\ref{tab:mechanism_matrix} therefore provides a
+factorized diagnostic readout. Four findings matter.
+First, removing demonstration support drives 5-profile mean success to 0.000, reduces mean
+contact steps from 34.06 to 15.87, and raises mean jam from 0.105 to 0.452; the policy still
+touches contact, but not in a useful way. Second, train-reset coverage also changes learnability,
+but under the present diagnostic protocol its direction is not a universal monotone effect: the
+narrow near-contact reset point reaches 1.000 mean success, whereas the broader reset point reaches
+0.565. We therefore report reset coverage descriptively here rather than universalizing a broad
+$>$ narrow claim. A plausible protocol-local explanation is that, at the small diagnostic budget,
+the broader reset curriculum dilutes visits to contact-relevant near-hole states faster than the
+BC/PPO budget can stabilize them; the narrow reset instead concentrates training on the recoverable
+contact regime. Third, BC optimization depth has a clear sweet spot at 32 pretraining steps:
+0 and 8 do not reopen success at all, 32 reaches 0.565 mean success, and 64 falls back to 0.456.
+Finally, these controls show why the word ``coverage'' is too coarse on its own.
+Demonstration support, train-reset support, and BC optimization stability do not move the task in
+the same way, even under a shared contact model and matched evaluation contract.
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Factorized causal controls under a smaller diagnostic matched protocol. Entries report
+  5-profile mean success, mean contact steps, and mean jam rate for directional mechanism
+  analysis; they are not direct numerical estimates under the final five-seed benchmark contract
+  in Table~\ref{tab:main_benchmark}.}
+  \label{tab:mechanism_matrix}
+  \begin{tabular}{llccc}
+    \toprule
+    Factor & Condition & Mean success & Contact steps & Jam \\
+    \midrule
+    Demo support & removed & 0.000 & 15.87 & 0.452 \\
+    Demo support & restored & 0.565 & 34.06 & 0.105 \\
+    Train reset & narrow & 1.000 & 19.69 & 0.000 \\
+    Train reset & broad & 0.565 & 34.06 & 0.105 \\
+    BC pretrain steps & 0 & 0.000 & 0.00 & 0.000 \\
+    BC pretrain steps & 8 & 0.000 & 11.72 & 0.317 \\
+    BC pretrain steps & 32 & 0.565 & 34.06 & 0.105 \\
+    BC pretrain steps & 64 & 0.456 & 32.78 & 0.027 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+This result is important for the paper's causal story. A single reset-coverage narrative would
+compress too many distinct mechanisms. The factorized controls show a cleaner but more qualified
+picture: demonstration support is the robust gating variable, train-reset coverage is real but
+protocol-local, and BC optimization depth matters as a non-monotone stability knob.
+
+\subsection{High-Friction Role of Variable Impedance}
+\label{sec:physical-value}
+
+The fixed-versus-variable comparison allows a separate question: if algorithm choice is largely
+secondary once BC is stable, where does variable impedance still matter physically? The answer is
+not in the baseline evaluation class, where fixed impedance remains strong, nor mainly in
+\code{noisy\_force}, where the gap is modest. The main separation occurs under
+\code{high\_friction}. Under the final five-seed benchmark, the stable fixed-impedance
+learned baseline reaches $0.776 \pm 0.287$ success under the same nominal training profile,
+whereas the variable-impedance pipelines remain at 1.000 success.
+The same-interface engineering anchors and the tuned fixed-stiffness sweep in
+Appendix~\ref{app:tuned-fixed} indicate that fixed impedance is not fundamentally incapable of
+success in this reduced task. The sweep selects $K_{xy}=80$ and $K_z=50$ and confirms a
+5-profile mean success of 0.999, including 1.000 under \code{high\_friction}. This removes the
+stronger interpretation that fixed impedance only fails because the midpoint stiffness is untuned.
+The remaining fixed-versus-variable claim is therefore narrower: compared with
+variable impedance, fixed impedance can succeed when tuned, but the main learned midpoint-fixed
+pipeline is less robust under the matched training budget, and the same-interface mechanics traces
+show that fixed strategies can operate at substantially higher contact load.
+
+Figure~\ref{fig:high_friction_mechanism} is a diagnostic mechanics slice, not a replot of the
+main five-seed benchmark. It aggregates high-friction trace rollouts from three training seeds and
+50 trace episodes per seed for learned fixed and learned variable suites, together with
+same-interface hand-crafted fixed and variable anchors. The hand-crafted fixed anchor uses the
+policy's default fixed command, which decodes to approximately $K_{xy}=74$ and $K_z=98$ under the
+default stiffness range; it is not the success-optimized fixed setting selected in
+Appendix~\ref{app:tuned-fixed}. The learned traces are intentionally shown
+as heterogeneous all-trace aggregates; their success rates should therefore not be compared
+numerically with Table~\ref{tab:main_benchmark}. The cleanest mechanics contrast comes from the
+two hand-crafted anchors because both succeed reliably under this diagnostic trace protocol while
+operating at different contact loads. By the end of the aggregated contact phase, the hand-crafted
+fixed controller remains near $0.87$~\N\ total contact force and about $1.87\times 10^{-2}$~J
+cumulative contact work, whereas the hand-crafted variable controller remains near $0.46$~\N\ and
+about $4.35\times 10^{-3}$~J. This direct evidence supports a conservative interpretation: fixed
+impedance is not physically impossible in this reduced task, but variable impedance can realize a
+lower-load, lower-work contact path under high friction. The learned all-trace view remains
+heterogeneous, which is why the released figure family also includes a successful-only secondary
+aggregation rather than claiming a single clean monotone force ranking from the learned traces
+alone.
+
+\begin{figure}[t]
+  \centering
+  \includeorplaceholder{fig3_high_friction_impedance_mechanism}{Final Figure 3: high-friction impedance mechanism}
+  \caption{Diagnostic high-friction mechanics traces under the shared 3DoF benchmark interface.
+  This figure is a trace-level mechanics slice, not the final five-seed benchmark table: the
+  learned fixed and learned variable traces use three training seeds with 50 trace episodes per
+  seed, while the hand-crafted anchors use the same trace count. The all-trace learned aggregates
+  are heterogeneous and are included to show rollout mechanics rather than to provide success-rate
+  estimates comparable to Table~\ref{tab:main_benchmark}. The cleanest physical contrast is the
+  hand-crafted fixed-vs-variable pair, where both controllers succeed reliably but the variable
+  strategy follows a lower-load, lower-work contact path. The hand-crafted fixed anchor is not the
+  tuned fixed-stiffness setting from Appendix~\ref{app:tuned-fixed}; it is a same-interface
+  mechanics reference for fixed-command contact paths. A successful-only companion view is provided
+  in the supplementary material.}
+  \label{fig:high_friction_mechanism}
+\end{figure}
+
+\subsection{Supplementary Budget Stress Test After BC Support Is Restored}
+
+The diagnostic budget comparison further narrows the algorithm claim. \code{PPO w/o BC} remains
+at 0.000 mean success at PPO budgets of 0, 32, 128, and 512 timesteps, so increasing PPO budget
+within this small sweep does not recover the task. The larger PPO-only audit in
+Appendix~\ref{app:ppo-large-budget} extends this negative result to 50k, 100k, and 200k PPO
+environment steps and shows zero contact steps and zero peak contact force across both PPO-only
+training contracts. \code{BC$\rightarrow$PPO} is not monotone
+either: its 5-profile
+mean success drops from 0.675 at zero extra PPO steps to 0.644 at 32, 0.565 at 128, and 0.012 at
+512. \code{DAPG-lite} is also non-monotone, reaching 0.673, 0.061, 0.620, and 0.325 at the same
+budgets. The static \code{BC-only} anchor remains at 1.000. Table~\ref{tab:behavioral_similarity}
+therefore no longer supports a ``once BC is stable, all downstream algorithms saturate'' reading.
+The safer interpretation is that under the matched protocol of this paper, algorithm ranking is
+local to the available demonstration support, BC optimization depth, and PPO budget. BC-based
+support is still the gating condition, but PPO fine-tuning is not a guaranteed monotone gain and
+can regress sharply at larger budgets.
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Diagnostic algorithm comparison as PPO budget varies under restored demonstration
+  support and broad train-reset coverage. Entries are 5-profile mean success in the smaller sweep
+  and are intended to show budget sensitivity rather than to replace the final five-seed benchmark
+  in Table~\ref{tab:main_benchmark}.}
+  \label{tab:behavioral_similarity}
+  \begin{tabular}{lcccc}
+    \toprule
+    Method & 0 & 32 & 128 & 512 \\
+    \midrule
+    PPO w/o BC & 0.000 & 0.000 & 0.000 & 0.000 \\
+    BC$\rightarrow$PPO & 0.675 & 0.644 & 0.565 & 0.012 \\
+    DAPG-lite & 0.673 & 0.061 & 0.620 & 0.325 \\
+    BC-only anchor & \multicolumn{4}{c}{1.000 (static)} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Pose-Perturbation Scope Stress Test}
+
+The benchmark is still analytical and simulation-only, so any external-validity extension must be
+read conservatively. We therefore add one explicit proxy study rather than pretending that the
+current evidence has full 6D generalization. The dedicated pose-perturbation study defines three
+same-interface evaluation profiles with hidden contact-target bias and descent-coupled lateral
+drift: \code{pose\_perturb\_mild} uses a 0.2~\mm\ hidden lateral bias with a 1.5$^\circ$ descent
+coupling proxy, \code{pose\_perturb\_moderate} uses 0.4~\mm\ and 3.0$^\circ$, and
+\code{pose\_perturb\_severe} uses 0.6~\mm\ and 4.5$^\circ$. The key point is not that this proxy
+recreates full orientation dynamics. It does not. Its value is that it breaks the clean
+hole-centered relative-frame assumption in a controlled, auditable way while keeping the same 3DoF
+interface and the same benchmark metrics.
+
+The result is a scope stress test rather than a second main benchmark. The mild proxy leaves the
+stable \code{BC-only} suite near ceiling (1.000 success), but the same hidden perturbation already drops
+\code{BC$\rightarrow$PPO} to 0.480 and \code{DAPG-lite} to 0.446. Under the moderate proxy,
+\code{BC-only} remains at 0.946 while the PPO-tuned learned suites stay near 0.39--0.45 and the
+stable fixed-impedance learned baseline drops to 0.784. Under the severe proxy, all three learned
+variable-impedance pipelines degrade sharply: \code{BC-only} reaches 0.302, \code{BC$\rightarrow$PPO}
+reaches 0.306, and \code{DAPG-lite} reaches 0.320, while the stable fixed-impedance learned
+baseline drops further to 0.110. In contrast, the same-interface
+\code{tuned\_impedance} handcrafted anchor remains at 1.000 across all three proxy levels.
+This means the main matched-protocol ranking does not survive unchanged once the relative-frame
+assumption is stressed. The benchmark still teaches something useful, but its scope stays
+benchmark-local even after the dedicated pose-perturbation study.
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Separate pose-perturbation proxy study under the shared 3DoF interface. Entries report
+  success rate under three hidden pose/tilt proxy levels. This is a scope-stressing proxy, not a
+  full 6D orientation or hardware validation, and it is not directly comparable to the matched
+  main benchmark.}
+  \label{tab:pose_perturbation}
+  \begin{tabular}{lccc}
+    \toprule
+    Method & Mild & Moderate & Severe \\
+    \midrule
+    BC-only & 1.000 & 0.946 & 0.302 \\
+    Fixed-impedance RL & 0.988 & 0.784 & 0.110 \\
+    BC$\rightarrow$PPO & 0.480 & 0.390 & 0.306 \\
+    DAPG-lite & 0.446 & 0.454 & 0.320 \\
+    Hand-tuned impedance & 1.000 & 1.000 & 1.000 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Discussion and Limitations}
+\label{sec:discussion}
+
+The main lesson of the benchmark is not that pure PPO can never solve insertion in principle. It
+is that PPO without BC warm-start does not reach contact-relevant behavior under this benchmark
+interface, even after the dedicated PPO-only audit expands the budget to 200k environment steps
+under both the paper-matched PPO contract and the alternative rollout/epoch contract. Demonstrations therefore
+act here as a learnability scaffold rather than as a mere sample-efficiency convenience.
+
+The second lesson is that the upstream interface must be split carefully. Demonstration coverage
+is the clean one-directional lever: removing it drives useful-contact success to zero. Train-reset
+coverage also changes learnability, but in the current matched protocol its direction is
+protocol-local rather than universal or monotone. BC optimization depth and PPO budget are likewise
+non-monotone; 32 BC pretraining steps is the current sweet spot, and additional PPO steps can
+substantially hurt a BC-initialized policy. This is why we instead separate demonstration coverage,
+reset coverage, BC optimization stability, and PPO budget instead of treating ``coverage'' or
+``algorithm choice'' as single knobs.
+
+The third lesson is that variable impedance still matters, but in a physically localized way.
+Fixed impedance is not uniformly poor in this benchmark: the tuned fixed-stiffness sweep nearly
+saturates success, including under high friction. The main fixed-impedance learned gap is therefore
+not a broad impossibility result. It is a narrower robustness and load-path result: the midpoint
+fixed learned pipeline is most fragile under high-friction contact, and the mechanics traces show
+that variable stiffness can realize lower-load contact paths.
+
+The fourth lesson is that the current relative-frame story is not robust to every structured
+perturbation outside the matched protocol. The dedicated pose-perturbation study does not overturn
+the main benchmark, but it does show that the learned ranking changes quickly once hidden pose bias
+and descent-coupled lateral drift are introduced. That is why the paper still keeps
+\code{benchmark-local} language even after adding the external-validity proxy.
+
+Several limitations remain important. The environment is still simulation-only, translational, and
+3DoF. It uses a relative observation frame, a synthetic force signal, diagonal stiffness decoding,
+and an analytical contact model rather than torque sensing, 6D pose error, multi-point collision,
+or hardware force/torque calibration. The pose-perturbation study improves stress coverage, but it
+is still a proxy study rather than a hardware validation or a full 6D orientation benchmark. The
+current statements about force-control accuracy, force-pose coupling, and compliant load paths
+must therefore remain benchmark-local.
+
+The learning evidence also leaves several deliberate separations unresolved. The large-budget
+PPO-only audit covers two PPO contracts rather than an exhaustive hyperparameter search, so it
+supports the benchmark-local non-contact finding without proving that every possible PPO variant
+must fail. The BC demonstrations are generated by a variable-impedance teacher, which means
+demonstration support and variable-impedance prior are not fully decoupled. A fixed-impedance
+expert demonstration set, a matched-motion/mismatched-impedance study, or a fixed-expert BC
+pipeline would be needed to isolate that prior more completely. The same-interface
+handcrafted/classical anchors improve reference coverage, but the repository still does not
+provide an exhaustive survey of hybrid position/force, admittance/compliance, demo-augmented RL,
+or offline RL baselines.
+
+Finally, the metric and parameter sensitivity evidence is still narrower than a full systems
+validation. The main table reports success, jam, final distance, peak force, and contact steps;
+contact work and stiffness-progress traces remain diagnostic rather than primary Pareto metrics.
+Future versions should add force-tracking error, contact work, success-force Pareto summaries, and
+distance-energy joint metrics as first-class table entries. Likewise, \code{offset\_bias} is only
+interpreted through the hole-centered relative-frame semantics; we do not yet provide an explicit
+absolute-versus-relative observation ablation. The analytical contact parameters
+$(\alpha_{xy}, \alpha_z, \mu_{\mathrm{wall}})$, jam thresholds, stiffness ranges, and demonstration
+quantity/quality also need systematic sensitivity sweeps before the conclusions can be read as
+anything beyond controlled-benchmark evidence. A larger 10-seed expansion would tighten the
+uncertainty on the remaining near-ceiling gaps, but it would not by itself close these external
+validity questions.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper presents a simulation-only study of 3DoF variable-impedance insertion in which the main
+question is not which RL algorithm is strongest, but which upstream conditions make the task
+learnable at all. Under the matched protocol used here, PPO without BC warm-start does not reach
+useful contact, and a 50k--200k-step PPO-only audit preserves the same non-contact failure.
+More precisely, BC-based demonstration support is necessary to reach the useful contact regime,
+train-reset coverage remains a protocol-local rather than universal lever, and downstream
+algorithm ranking is budget-sensitive rather than fixed once PPO fine-tuning is varied. The
+learned fixed-impedance gap is concentrated under high-friction contact, while the tuned
+fixed-stiffness sweep shows that fixed impedance can nearly saturate success when tuned. This
+supports a localized load-efficiency role and a more robust learned interface under the matched
+teacher-coupled setup rather than a diffuse claim of uniform superiority. The dedicated
+pose-perturbation study further shows
+that this matched-frame ranking does not automatically survive outside the clean hole-centered frame:
+several learned suites degrade sharply under hidden pose bias and descent-coupled lateral drift,
+while the strongest same-interface handcrafted anchor remains robust. Because the BC demonstrations
+are generated by a variable-impedance teacher, these results identify a learnability gate under this
+teacher-coupled interface rather than a teacher-independent causal theorem about all demonstration
+designs. These conclusions are therefore benchmark-local and should be interpreted together with
+the simulation-only 3DoF scope,
+the proxy nature of the perturbation extension, and the still-limited classical anchor roster.
+
+\FloatBarrier
+\appendix
+
+\renewcommand{\thefigure}{A\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{A\arabic{table}}
+\setcounter{table}{0}
+
+\section{Protocol Summary}
+\label{app:protocol-summary}
+
+Table~\ref{tab:protocol_summary} summarizes which evidence blocks share a numerical contract and
+which should be read only directionally. This table is included to prevent direct comparison of
+diagnostic sweeps or trace slices with the final five-seed benchmark.
+
+\begin{table}[!htbp]
+  \centering
+  \small
+  \caption{Protocol map for the paper's evidence blocks.}
+  \label{tab:protocol_summary}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lllll}
+    \toprule
+    Evidence block & Sampling contract & Train profile & Evaluation profiles & Role \\
+    \midrule
+    Table~\ref{tab:main_benchmark} / Figure~\ref{fig:main_results_matrix} & 5 seeds, 100 episodes per seed/profile & nominal & five nominal profiles grouped into three evaluation classes & final benchmark estimate \\
+    Table~\ref{tab:mechanism_matrix} & smaller diagnostic sweep & nominal & five nominal profiles & directional factor analysis, not direct comparison with Table~\ref{tab:main_benchmark} \\
+    Table~\ref{tab:behavioral_similarity} & smaller diagnostic sweep & nominal & five nominal profiles & PPO-budget sensitivity, not direct comparison with Table~\ref{tab:main_benchmark} \\
+    Figure~\ref{fig:high_friction_mechanism} & 3 seeds, 50 trace episodes per seed & nominal & high friction & mechanics trace slice, not a success estimate comparable to Table~\ref{tab:main_benchmark} \\
+    Table~\ref{tab:pose_perturbation} & separate proxy study & nominal & hidden pose/tilt proxy levels & scope stress test, not a main benchmark replacement \\
+    Table~\ref{tab:ppo_large_budget} & 5 seeds, 100 episodes per seed/profile & nominal & five nominal profiles & PPO-only budget audit, not a BC-method comparison \\
+    Table~\ref{tab:tuned_fixed_sweep} & 3-seed search, 5-seed confirm & nominal & five nominal profiles & tuned fixed-stiffness check, not a variable-impedance mechanics substitute \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+\FloatBarrier
+
+\section{Large-Budget PPO-Only Audit}
+\label{app:ppo-large-budget}
+
+The main benchmark uses a deliberately small matched PPO budget so that all learned methods share
+one evaluation contract. To address the separate concern that PPO from scratch may simply need a
+larger budget, we ran a PPO-only audit with BC rollout episodes and BC pretraining steps both set
+to zero. The audit uses the same five evaluation profiles, 5 training seeds, 100 evaluation
+episodes per seed and profile, and a 64-step episode horizon. It includes two PPO-only contracts:
+the paper-matched optimizer settings and an alternative PPO setting with 4 parallel
+environments, 256 rollout steps, 4 epochs, learning rate $3\times 10^{-4}$, $\gamma=0.99$, and
+entropy coefficient 0.01. Table~\ref{tab:ppo_large_budget} shows that neither contract reaches
+contact-relevant behavior up to 200k environment steps. A first-contact step equal to 64 indicates
+that first contact was not observed before the episode horizon.
+
+\begin{table}[!htbp]
+  \centering
+  \small
+  \caption{PPO-only large-budget audit. Entries are 5-profile means over 5 training seeds and
+  100 evaluation episodes per seed/profile. Both PPO-only contracts keep BC rollout episodes and
+  BC pretraining steps at zero.}
+  \label{tab:ppo_large_budget}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{llccccc}
+    \toprule
+    PPO-only contract & PPO steps & Success & Contact steps & First contact step & Final dist. (\mm) & Peak force (\N) \\
+    \midrule
+    Paper-matched & 50k & 0.000 & 0.0 & 64.0 & 21.59 & 0.000 \\
+    Paper-matched & 100k & 0.000 & 0.0 & 64.0 & 23.96 & 0.000 \\
+    Paper-matched & 200k & 0.000 & 0.0 & 64.0 & 24.42 & 0.000 \\
+    Alternative PPO & 50k & 0.000 & 0.0 & 64.0 & 24.70 & 0.000 \\
+    Alternative PPO & 100k & 0.000 & 0.0 & 64.0 & 25.04 & 0.000 \\
+    Alternative PPO & 200k & 0.000 & 0.0 & 64.0 & 23.42 & 0.000 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+\FloatBarrier
+
+\section{Tuned Fixed-Impedance Sweep}
+\label{app:tuned-fixed}
+
+The main fixed-impedance learned baseline pins the impedance decoder to the midpoint values
+$K_{xy}=65$ and $K_z=87.5$. To check whether this midpoint choice creates an untuned fixed
+baseline, we ran a same-interface grid search over
+$K_{xy}\in\{30,50,65,80,100\}$ and $K_z\in\{50,75,87.5,110,130\}$ using the learned fixed
+pipeline with 32 BC rollout episodes, 32 BC pretraining steps, 128 PPO steps, 3 search seeds, and
+50 evaluation episodes per seed/profile. Candidates were ranked by 5-profile mean success,
+high-friction success, mean peak contact force, and mean final distance. The selected fixed
+stiffness was then confirmed with 5 seeds and 100 evaluation episodes per seed/profile.
+Table~\ref{tab:tuned_fixed_sweep} shows that tuned fixed impedance can nearly saturate success in
+this reduced task. This check limits the fixed-versus-variable claim: fixed impedance is not a
+success-rate impossibility result, so the variable-impedance interpretation should rest on the more
+robust learned interface under the matched teacher-coupled setup and on the lower-load mechanics
+evidence in Figure~\ref{fig:high_friction_mechanism}.
+
+\begin{table}[!htbp]
+  \centering
+  \small
+  \caption{Tuned fixed-impedance confirmation for the selected grid point. Entries are mean success
+  over 5 seeds and 100 evaluation episodes per seed/profile.}
+  \label{tab:tuned_fixed_sweep}
+  \begin{tabular}{lccc}
+    \toprule
+    Profile & Success & Peak force (\N) & Final dist. (\mm) \\
+    \midrule
+    Nominal & 1.000 & 0.582 & 0.889 \\
+    Tight clearance & 1.000 & 0.567 & 0.890 \\
+    High friction & 1.000 & 0.920 & 0.904 \\
+    Offset bias & 1.000 & 0.568 & 0.895 \\
+    Noisy force & 0.996 & 0.776 & 0.906 \\
+    5-profile mean & 0.999 & 0.683 & 0.897 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\section{Evaluation-Class Transparency}
+\label{app:evaluation-classes}
+
+Figure~\ref{fig:evaluation_class_mapping} summarizes why five nominal uncertainty profiles collapse
+into only three evaluation classes in the current 3DoF environment. The purpose of this
+appendix figure is not to add a fourth result, but to make the environment semantics explicit and
+auditable. Table~\ref{tab:profile_mapping} states the same mapping in tabular form so that the
+grouping logic is inspectable without reading the figure.
+
+\begin{figure}[!htbp]
+  \centering
+  \includeorplaceholder{figA1_evaluation_class_mapping}{Appendix Figure A1: evaluation-class mapping}
+  \caption{Mapping from the five nominal uncertainty profiles to the three evaluation
+  classes used in the reported result. \code{nominal}, \code{tight\_clearance}, and
+  \code{offset\_bias} form the baseline class because tight clearance is active only under lateral
+  overflow and offset bias is strongly attenuated under the relative observation frame.
+  \code{high\_friction} and
+  \code{noisy\_force} remain separate because they alter contact mechanics and sensing uncertainty,
+  respectively.}
+  \label{fig:evaluation_class_mapping}
+\end{figure}
+\FloatBarrier
+
+\begin{table}[!htbp]
+  \centering
+  \small
+  \caption{Mapping from nominal profiles to evaluation classes used in the main paper.}
+  \label{tab:profile_mapping}
+  \begin{tabular}{lll}
+    \toprule
+    Nominal profile & Effective class & Rationale \\
+    \midrule
+    Nominal & Baseline & No extra active evaluation stress under current semantics \\
+    Tight clearance & Baseline & Active only under lateral overflow \\
+    Offset bias & Baseline & Strongly attenuated under the relative observation frame \\
+    High friction & High friction & Changes contact mechanics \\
+    Noisy force & Noisy force & Changes sensing uncertainty \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\section{Per-Profile Breakdown}
+\label{app:per-profile}
+
+Table~\ref{tab:raw_profile_breakdown} complements the grouped main results by reporting the raw
+five-profile values directly. Each entry is shown as \emph{success / jam}, so the appendix can be
+used to verify both the grouped evaluation-class means in Table~\ref{tab:main_benchmark} and the
+statement that jam remains absent throughout the main five-suite comparison.
+
+\begin{table}[!htbp]
+  \centering
+  \small
+  \caption{Raw nominal-profile breakdown for the main five learned suites. Entries are reported as
+  \emph{success / jam}; the rightmost column reports the 5-profile mean in the same format.}
+  \label{tab:raw_profile_breakdown}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lcccccc}
+    \toprule
+    Method & Nominal & Tight clr. & High fric. & Offset bias & Noisy force & 5-profile mean \\
+    \midrule
+    PPO w/o BC & 0.000 / 0.000 & 0.000 / 0.000 & 0.000 / 0.000 & 0.000 / 0.000 & 0.000 / 0.000 & 0.000 / 0.000 \\
+    BC-only & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 0.998 / 0.000 & 1.000 / 0.000 \\
+    Fixed-impedance RL & 0.994 / 0.000 & 0.988 / 0.000 & 0.776 / 0.000 & 0.992 / 0.000 & 0.984 / 0.000 & 0.947 / 0.000 \\
+    BC$\rightarrow$PPO & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 \\
+    DAPG-lite & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 & 1.000 / 0.000 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+\FloatBarrier
+
+\section{Contact-Transition Audit}
+\label{app:contact-audit}
+
+The repaired contact model used in the reported benchmark was not selected arbitrarily. The
+audit in Figure~\ref{fig:contact_audit} shows that the repaired transition broadens the usable
+safe-contact window and delays the onset of first jam. This is why the repaired model is treated
+as a precondition for the main benchmark. The old-versus-new contact-law comparison is retained
+only as an appendix audit that justifies the repaired contact model used throughout the main
+benchmark.
+
+\begin{figure}[!htbp]
+  \centering
+  \includeorplaceholder{fig1_contact_transition_audit}{Appendix Figure A2: contact-transition audit}
+  \caption{Original versus repaired contact-transition audit. The repaired model broadens the
+  safe-contact window from roughly 0.85 to 1.25~\mm\ and shifts the first-jam point from roughly
+  0.90 to 1.30~\mm. This appendix figure justifies the repaired contact model as the default
+  reported precondition without reinstating a dual-bottleneck claim.}
+  \label{fig:contact_audit}
+\end{figure}
+\FloatBarrier
+
+\section{BC Stability and Budget Evidence}
+\label{app:bc-stability}
+
+The main paper uses \code{bc\_rollout\_episodes = 32}, \code{bc\_pretrain\_steps = 32}, and
+\code{bc\_batch\_size = 64} because this is the smallest BC budget that remains stable across the
+critical seed combinations examined in the sweep. Table~\ref{tab:bc_stability} summarizes the key
+comparison. The unstable point is not a vague degradation: increasing the rollout count to
+\code{64} while keeping pretraining at \code{32} collapses the mean success to 0.352 and wipes out
+the \code{noisy\_force} class entirely. Increasing optimization depth to \code{128} recovers the
+performance, which is exactly the data pattern behind the paper's ``stable BC base'' wording.
+
+\begin{table}[!htbp]
+  \centering
+  \small
+  \caption{BC stability sweep for the critical seed combinations. All settings use
+  \code{bc\_batch\_size = 64}.}
+  \label{tab:bc_stability}
+  \begin{tabular}{lcccccc}
+    \toprule
+    Setting & Init/demo & Mean success & High fric. & Noisy force & Final dist. (\mm) & Peak force (\N) \\
+    \midrule
+    r32 / p32 & 1 / 0 & 1.000 & 1.000 & 1.000 & 0.895 & 1.063 \\
+    r32 / p32 & 1 / 1 & 1.000 & 1.000 & 1.000 & 0.896 & 0.950 \\
+    r64 / p32 & 1 / 1 & 0.352 & 0.040 & 0.000 & 1.388 & 0.878 \\
+    r64 / p128 & 1 / 1 & 1.000 & 1.000 & 1.000 & 0.920 & 0.969 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

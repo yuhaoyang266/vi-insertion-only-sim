@@ -1,0 +1,15 @@
+name: vi-insertion-full
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pytest
+  - pip:
+      - torch==2.7.1
+      - mujoco==3.4.0
+      - gymnasium==1.2.3
+      - gymnasium-robotics
+      - stable-baselines3==2.7.1
+      - pyyaml
+      - -e .
