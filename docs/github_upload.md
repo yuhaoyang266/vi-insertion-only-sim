@@ -2,7 +2,7 @@
 
 The package is prepared for this target URL:
 
-`https://github.com/yuhaoyang266/vi-insertion-only-sim-paper`
+`https://github.com/yuhaoyang266/vi-insertion-only-sim`
 
 This machine does not currently have the GitHub CLI (`gh`) installed, and the source repository's
 `origin` remote points to a local filesystem path rather than GitHub. To publish this package,
@@ -13,7 +13,7 @@ git init
 git branch -M main
 git add .
 git commit -m "docs: add paper project package"
-git remote add origin https://github.com/yuhaoyang266/vi-insertion-only-sim-paper.git
+git remote add origin https://github.com/yuhaoyang266/vi-insertion-only-sim.git
 git push -u origin main
 ```
 

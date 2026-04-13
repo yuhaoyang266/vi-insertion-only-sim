@@ -1,4 +1,4 @@
-# vi-insertion-only-sim-paper
+# vi-insertion-only-sim
 
 GitHub-ready paper package for:
 
@@ -6,7 +6,7 @@ GitHub-ready paper package for:
 
 Target repository URL, also embedded in `paper/main.tex`:
 
-`https://github.com/yuhaoyang266/vi-insertion-only-sim-paper`
+`https://github.com/yuhaoyang266/vi-insertion-only-sim`
 
 ## Repository Layout
 
