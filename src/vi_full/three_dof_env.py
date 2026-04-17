@@ -718,12 +718,12 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         return self.blocked_contact_steps >= self.config.jam_persistence_steps
 
     def _is_jammed(self) -> bool:
-        return self._force_threshold_exceeded() or self._is_blocked_contact_failure()
+        return self._meets_documented_force_jam() or self._is_blocked_contact_failure()
 
     def _termination_reason(self) -> str:
         if self._is_success():
             return "success"
-        if self._force_threshold_exceeded():
+        if self._meets_documented_force_jam():
             return "force_threshold"
         if self._is_blocked_contact_failure():
             return "blocked_contact"
@@ -734,7 +734,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         force_threshold_exceeded = self._force_threshold_exceeded()
         blocked_contact_failure = self._is_blocked_contact_failure()
         meets_documented_force_jam = self._meets_documented_force_jam()
-        jammed = force_threshold_exceeded or blocked_contact_failure
+        jammed = meets_documented_force_jam or blocked_contact_failure
         return {
             "success": success,
             "force_threshold_exceeded": force_threshold_exceeded,

@@ -121,7 +121,7 @@ def test_evaluate_3dof_policy_reports_termination_diagnostic_rates() -> None:
                             "success": False,
                             "force_threshold_exceeded": True,
                             "blocked_contact_failure": False,
-                            "meets_documented_force_jam": False,
+                            "meets_documented_force_jam": True,
                             "jammed": True,
                         },
                     ),
@@ -202,7 +202,7 @@ def test_evaluate_3dof_policy_reports_termination_diagnostic_rates() -> None:
     assert summary["force_threshold_only_termination_rate"] == 0.25
     assert summary["blocked_contact_only_termination_rate"] == 0.25
     assert summary["force_and_blocked_termination_rate"] == 0.25
-    assert summary["documented_force_jam_rate"] == 0.25
+    assert summary["documented_force_jam_rate"] == 0.5
 
 
 def test_trace_3dof_policy_rollout_includes_termination_diagnostics() -> None:

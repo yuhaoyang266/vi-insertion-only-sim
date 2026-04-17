@@ -106,10 +106,11 @@ teacher-coupled learnability study rather than a hardware validation, a 6DoF ins
 a teacher-independent causal theorem.
 
 Phase C+ benchmark artifacts also report two force-jam diagnostics with intentionally different
-semantics: `jam_rate` keeps the legacy termination rule (`single-step force threshold exceedance OR
-persistent blocked contact`), while `documented_force_jam_rate` isolates the stricter paper-facing
-diagnostic (`three consecutive force-threshold violations`). Both are retained so historical
-benchmark numbers remain reproducible while the paper-facing force-jam criterion stays auditable.
+semantics: `jam_rate` tracks the active jam termination rule (`three consecutive force-threshold
+violations OR persistent blocked contact`), while `documented_force_jam_rate` isolates just the
+paper-facing force-jam slice (`three consecutive force-threshold violations`, excluding pure
+blocked-contact failures). Both are retained so the combined jam rate and the force-specific jam
+mechanism stay auditable side by side.
 
 ## Repository Hygiene
 

@@ -20,7 +20,7 @@ def test_benchmark_contract_aligns_profile_and_training_defaults() -> None:
     assert ThreeDoFInsertionConfig().max_episode_steps == 80
 
 
-def test_force_threshold_termination_reason_is_exposed(monkeypatch) -> None:
+def test_single_force_threshold_violation_is_diagnostic_only(monkeypatch) -> None:
     env = ThreeDoFInsertionEnv(ThreeDoFInsertionConfig())
     env.reset(seed=0)
 
@@ -39,10 +39,10 @@ def test_force_threshold_termination_reason_is_exposed(monkeypatch) -> None:
 
     _, _, terminated, truncated, info = env.step(np.zeros(env.action_space.shape, dtype=np.float32))
 
-    assert terminated is True
+    assert terminated is False
     assert truncated is False
-    assert info["is_jammed"] is True
-    assert info["termination_reason"] == "force_threshold"
+    assert info["is_jammed"] is False
+    assert info["termination_reason"] == "running"
     assert info["force_over_threshold_steps"] == 1
     assert info["meets_documented_force_jam"] is False
     assert info["termination_details"] == {
@@ -50,7 +50,7 @@ def test_force_threshold_termination_reason_is_exposed(monkeypatch) -> None:
         "force_threshold_exceeded": True,
         "blocked_contact_failure": False,
         "meets_documented_force_jam": False,
-        "jammed": True,
+        "jammed": False,
     }
 
 
@@ -112,9 +112,17 @@ def test_meets_documented_force_jam_turns_true_after_consecutive_force_violation
     monkeypatch.setattr(env, "_is_success", lambda: False)
 
     info = {}
-    for _ in range(env.config.jam_persistence_steps):
-        _, _, _, _, info = env.step(np.zeros(env.action_space.shape, dtype=np.float32))
+    terminated = False
+    for step_index in range(env.config.jam_persistence_steps):
+        _, _, terminated, _, info = env.step(
+            np.zeros(env.action_space.shape, dtype=np.float32)
+        )
+        if step_index < env.config.jam_persistence_steps - 1:
+            assert terminated is False
+            assert info["is_jammed"] is False
+            assert info["termination_reason"] == "running"
 
+    assert terminated is True
     assert info["is_jammed"] is True
     assert info["termination_reason"] == "force_threshold"
     assert info["force_over_threshold_steps"] == env.config.jam_persistence_steps

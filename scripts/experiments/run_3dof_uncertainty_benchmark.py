@@ -28,7 +28,7 @@ from vi_full.three_dof_training import (
     train_3dof_ppo_agent,
 )
 
-UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION = 1
+UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION = 2
 
 
 def parse_args() -> argparse.Namespace:
