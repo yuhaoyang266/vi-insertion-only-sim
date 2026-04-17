@@ -1,0 +1,486 @@
+{
+  "export_name": "three_dof_appendix_benchmark_table",
+  "source_artifacts": {
+    "benchmark_report": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+    "fixed_impedance_report": null
+  },
+  "suite_order": [
+    "ppo_no_bc",
+    "bc_only_stable_r32_p32",
+    "fixed_impedance_rl_stable_r32_p32",
+    "repaired_mainline_bc_to_ppo",
+    "dapg_lite_repaired_mainline",
+    "teacher_variable_variable__repaired_mainline",
+    "teacher_variable_fixed__repaired_mainline",
+    "teacher_pose_variable__repaired_mainline",
+    "teacher_pose_fixed__repaired_mainline"
+  ],
+  "teacher_suite_order": [
+    "teacher_variable_variable__repaired_mainline",
+    "teacher_variable_fixed__repaired_mainline",
+    "teacher_pose_variable__repaired_mainline",
+    "teacher_pose_fixed__repaired_mainline"
+  ],
+  "teacher_rows": [
+    {
+      "suite_name": "teacher_variable_variable__repaired_mainline",
+      "display_name": "Teacher: variable motion + variable impedance",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "teacher_preset_name": "teacher_variable_variable",
+      "teacher_motion_rule": "contact_aware_variable_motion",
+      "teacher_impedance_rule": "contact_aware_variable_impedance",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.9406062365796833,
+        "mean_peak_contact_force_n": 0.6800933014961433,
+        "mean_contact_steps": 26.282
+      },
+      "per_profile": {
+        "nominal": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.9382082531741353,
+          "mean_peak_contact_force_n": 0.5799778116049377,
+          "mean_contact_steps": 26.262
+        },
+        "tight_clearance": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.9366513406055677,
+          "mean_peak_contact_force_n": 0.5619037444318211,
+          "mean_contact_steps": 26.244000000000007
+        },
+        "high_friction": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.9538001672786177,
+          "mean_peak_contact_force_n": 0.9042305446617476,
+          "mean_contact_steps": 26.524
+        },
+        "offset_bias": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.9368710050546551,
+          "mean_peak_contact_force_n": 0.5698378846571466,
+          "mean_contact_steps": 26.153999999999996
+        },
+        "noisy_force": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.9375004167854415,
+          "mean_peak_contact_force_n": 0.7845165221250638,
+          "mean_contact_steps": 26.226
+        }
+      }
+    },
+    {
+      "suite_name": "teacher_variable_fixed__repaired_mainline",
+      "display_name": "Teacher: variable motion + fixed impedance",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "teacher_preset_name": "teacher_variable_fixed",
+      "teacher_motion_rule": "contact_aware_variable_motion",
+      "teacher_impedance_rule": "fixed",
+      "five_profile_mean": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 7.519058558802021,
+        "mean_peak_contact_force_n": 0.31384714088219867,
+        "mean_contact_steps": 1.9948000000000001
+      },
+      "per_profile": {
+        "nominal": {
+          "success_rate": 0.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 7.518364774653078,
+          "mean_peak_contact_force_n": 0.29173967826447395,
+          "mean_contact_steps": 1.998
+        },
+        "tight_clearance": {
+          "success_rate": 0.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 7.5209401979597725,
+          "mean_peak_contact_force_n": 0.30105324291954244,
+          "mean_contact_steps": 1.9940000000000002
+        },
+        "high_friction": {
+          "success_rate": 0.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 7.519291408176905,
+          "mean_peak_contact_force_n": 0.31366173382124873,
+          "mean_contact_steps": 2.0
+        },
+        "offset_bias": {
+          "success_rate": 0.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 7.518386037757534,
+          "mean_peak_contact_force_n": 0.2986682563755392,
+          "mean_contact_steps": 1.986
+        },
+        "noisy_force": {
+          "success_rate": 0.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 7.518310375462814,
+          "mean_peak_contact_force_n": 0.36411279303018884,
+          "mean_contact_steps": 1.996
+        }
+      }
+    },
+    {
+      "suite_name": "teacher_pose_variable__repaired_mainline",
+      "display_name": "Teacher: pose motion + variable impedance",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "teacher_preset_name": "teacher_pose_variable",
+      "teacher_motion_rule": "pose_feedback",
+      "teacher_impedance_rule": "contact_aware_variable_impedance",
+      "five_profile_mean": {
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 0.8321468340668877,
+        "mean_peak_contact_force_n": 1.893247497405893,
+        "mean_contact_steps": 8.0
+      },
+      "per_profile": {
+        "nominal": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.8302561404136016,
+          "mean_peak_contact_force_n": 1.6671057143223798,
+          "mean_contact_steps": 8.0
+        },
+        "tight_clearance": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.829770613925725,
+          "mean_peak_contact_force_n": 1.6091333482131074,
+          "mean_contact_steps": 8.0
+        },
+        "high_friction": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.840786093959853,
+          "mean_peak_contact_force_n": 2.8556108975202847,
+          "mean_contact_steps": 8.0
+        },
+        "offset_bias": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.8298662066054566,
+          "mean_peak_contact_force_n": 1.630945326925263,
+          "mean_contact_steps": 8.0
+        },
+        "noisy_force": {
+          "success_rate": 1.0,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 0.8300551154298026,
+          "mean_peak_contact_force_n": 1.7034422000484308,
+          "mean_contact_steps": 8.0
+        }
+      }
+    },
+    {
+      "suite_name": "teacher_pose_fixed__repaired_mainline",
+      "display_name": "Teacher: pose motion + fixed impedance",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "teacher_preset_name": "teacher_pose_fixed",
+      "teacher_motion_rule": "pose_feedback",
+      "teacher_impedance_rule": "fixed",
+      "five_profile_mean": {
+        "success_rate": 0.2,
+        "jam_rate": 0.0,
+        "mean_final_distance_mm": 3.5541590692269125,
+        "mean_peak_contact_force_n": 1.022030766406478,
+        "mean_contact_steps": 19.013200000000005
+      },
+      "per_profile": {
+        "nominal": {
+          "success_rate": 0.2,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 3.5531747374950338,
+          "mean_peak_contact_force_n": 0.8737603292567891,
+          "mean_contact_steps": 18.954
+        },
+        "tight_clearance": {
+          "success_rate": 0.2,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 3.5554034103248586,
+          "mean_peak_contact_force_n": 1.0662142652377753,
+          "mean_contact_steps": 18.94
+        },
+        "high_friction": {
+          "success_rate": 0.2,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 3.5557591024116135,
+          "mean_peak_contact_force_n": 1.230148121592593,
+          "mean_contact_steps": 19.139999999999997
+        },
+        "offset_bias": {
+          "success_rate": 0.2,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 3.5534552655895557,
+          "mean_peak_contact_force_n": 0.9290808353209756,
+          "mean_contact_steps": 18.898000000000003
+        },
+        "noisy_force": {
+          "success_rate": 0.2,
+          "jam_rate": 0.0,
+          "mean_final_distance_mm": 3.5530028303135004,
+          "mean_peak_contact_force_n": 1.010950280624256,
+          "mean_contact_steps": 19.134
+        }
+      }
+    }
+  ],
+  "diagnostic_suite_order": [
+    "bc_only_stable_r32_p32",
+    "repaired_mainline_bc_to_ppo",
+    "dapg_lite_repaired_mainline",
+    "fixed_impedance_rl_stable_r32_p32"
+  ],
+  "diagnostic_rows": [
+    {
+      "suite_name": "bc_only_stable_r32_p32",
+      "display_name": "BC-only (stable 32/32)",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "diagnostics": {
+        "jam_rate": 0.0,
+        "force_threshold_termination_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "force_threshold_only_termination_rate": 0.0,
+        "blocked_contact_only_termination_rate": 0.0,
+        "force_and_blocked_termination_rate": 0.0,
+        "documented_force_jam_rate": 0.0
+      },
+      "per_profile_diagnostics": {
+        "nominal": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "tight_clearance": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "high_friction": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "offset_bias": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "noisy_force": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        }
+      }
+    },
+    {
+      "suite_name": "repaired_mainline_bc_to_ppo",
+      "display_name": "BC -> PPO",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "diagnostics": {
+        "jam_rate": 0.0,
+        "force_threshold_termination_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "force_threshold_only_termination_rate": 0.0,
+        "blocked_contact_only_termination_rate": 0.0,
+        "force_and_blocked_termination_rate": 0.0,
+        "documented_force_jam_rate": 0.0
+      },
+      "per_profile_diagnostics": {
+        "nominal": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "tight_clearance": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "high_friction": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "offset_bias": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "noisy_force": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        }
+      }
+    },
+    {
+      "suite_name": "dapg_lite_repaired_mainline",
+      "display_name": "DAPG-lite",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "diagnostics": {
+        "jam_rate": 0.0,
+        "force_threshold_termination_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "force_threshold_only_termination_rate": 0.0,
+        "blocked_contact_only_termination_rate": 0.0,
+        "force_and_blocked_termination_rate": 0.0,
+        "documented_force_jam_rate": 0.0
+      },
+      "per_profile_diagnostics": {
+        "nominal": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "tight_clearance": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "high_friction": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "offset_bias": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "noisy_force": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        }
+      }
+    },
+    {
+      "suite_name": "fixed_impedance_rl_stable_r32_p32",
+      "display_name": "Fixed-impedance RL (stable BC 32/32)",
+      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "diagnostics": {
+        "jam_rate": 0.0,
+        "force_threshold_termination_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "force_threshold_only_termination_rate": 0.0,
+        "blocked_contact_only_termination_rate": 0.0,
+        "force_and_blocked_termination_rate": 0.0,
+        "documented_force_jam_rate": 0.0
+      },
+      "per_profile_diagnostics": {
+        "nominal": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "tight_clearance": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "high_friction": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "offset_bias": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        },
+        "noisy_force": {
+          "jam_rate": 0.0,
+          "force_threshold_termination_rate": 0.0,
+          "blocked_contact_termination_rate": 0.0,
+          "force_threshold_only_termination_rate": 0.0,
+          "blocked_contact_only_termination_rate": 0.0,
+          "force_and_blocked_termination_rate": 0.0,
+          "documented_force_jam_rate": 0.0
+        }
+      }
+    }
+  ]
+}

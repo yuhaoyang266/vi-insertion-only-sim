@@ -36,6 +36,7 @@ Repository URL embedded in the manuscript:
 | Evidence block | Where to look | Role |
 | --- | --- | --- |
 | Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
+| Appendix teacher/termination package | `figures/appendix/figA3_*`, `figures/appendix/figA4_*`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.*` | Supplementary teacher-ablation and jam-diagnostics evidence |
 | Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
 | High-friction mechanics traces | `figures/main/fig3_*`, `supplement/figures/`, `artifacts/mechanics/` | Load/work interpretation |
 | PPO large-budget audit | `artifacts/stress_tests/three_dof_ppo_large_budget_ablation_20260413_full_cpu.json` | PPO-only non-contact check |

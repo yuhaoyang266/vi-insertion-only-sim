@@ -51,8 +51,8 @@ Slug rules:
 | Figure 3 companion | `fig3_high_friction_impedance_mechanism_success_only` | `supplement/figures/fig3_high_friction_impedance_mechanism_success_only.pdf` and `.png` | supplementary successful-only companion view for the high-friction mechanics traces | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
 | Figure A1 | `figA1_evaluation_class_mapping` | `figures/appendix/figA1_evaluation_class_mapping.pdf` and `.png` | appendix mapping from nominal profiles to evaluation classes | generated directly by `src/vi_full/paper_figures.py` | exported |
 | Figure A2 | `fig1_contact_transition_audit` | `figures/appendix/fig1_contact_transition_audit.pdf` and `.png` | appendix contact-transition audit retained under a legacy stem for compatibility | `artifacts/mechanics/latest_three_dof_contact_model_audit.json` | exported |
-| Figure A3 | `figA3_teacher_ablation_summary` | `figures/appendix/figA3_teacher_ablation_summary.pdf` and `.png` | appendix teacher 2x2 motion-versus-impedance summary | Phase C+ uncertainty benchmark artifact with the teacher ablation block | planned |
-| Figure A4 | `figA4_termination_diagnostics_summary` | `figures/appendix/figA4_termination_diagnostics_summary.pdf` and `.png` | appendix termination-diagnostics decomposition across learned suites | Phase C+ uncertainty benchmark artifact with termination diagnostics fields | planned |
+| Figure A3 | `figA3_teacher_ablation_summary` | `figures/appendix/figA3_teacher_ablation_summary.pdf` and `.png` | appendix teacher 2x2 motion-versus-impedance summary | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
+| Figure A4 | `figA4_termination_diagnostics_summary` | `figures/appendix/figA4_termination_diagnostics_summary.pdf` and `.png` | appendix termination-diagnostics decomposition across learned suites | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
 
 ## Panel Intent
 
