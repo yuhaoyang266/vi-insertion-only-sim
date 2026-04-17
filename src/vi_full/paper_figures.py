@@ -177,6 +177,53 @@ class FigureA2StrictCriterionDecompositionSummary:
     total_non_axial_failures: int
 
 
+@dataclass(frozen=True, slots=True)
+class TeacherAblationProfileSummary:
+    profile_name: str
+    success_rate: float
+    jam_rate: float
+    mean_final_distance_mm: float
+    mean_peak_contact_force_n: float
+    mean_contact_steps: float
+
+
+@dataclass(frozen=True, slots=True)
+class TeacherAblationSuiteSummary:
+    suite_name: str
+    display_name: str
+    teacher_motion_rule: str
+    teacher_impedance_rule: str
+    five_profile_success_rate: float
+    five_profile_jam_rate: float
+    mean_final_distance_mm: float
+    mean_peak_contact_force_n: float
+    mean_contact_steps: float
+    per_profile: tuple[TeacherAblationProfileSummary, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class FigureA3TeacherAblationSummary:
+    suites: tuple[TeacherAblationSuiteSummary, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class TerminationDiagnosticsSuiteSummary:
+    suite_name: str
+    display_name: str
+    jam_rate: float
+    force_threshold_termination_rate: float
+    blocked_contact_termination_rate: float
+    force_threshold_only_termination_rate: float
+    blocked_contact_only_termination_rate: float
+    force_and_blocked_termination_rate: float
+    documented_force_jam_rate: float
+
+
+@dataclass(frozen=True, slots=True)
+class FigureA4TerminationDiagnosticsSummary:
+    suites: tuple[TerminationDiagnosticsSuiteSummary, ...]
+
+
 def _m_to_mm(value_m: float) -> float:
     return float(value_m) * 1000.0
 
@@ -599,6 +646,97 @@ def load_figurea2_strict_criterion_decomposition_summary(
         total_axial_failures=figure3_summary.total_axial_failures,
         total_non_axial_failures=figure3_summary.total_non_axial_failures,
     )
+
+
+def load_figurea3_teacher_ablation_summary(
+    benchmark_report_path: Path,
+    fixed_impedance_report_path: Path | None = None,
+) -> FigureA3TeacherAblationSummary:
+    from vi_full.paper_tables import build_3dof_appendix_table_export
+
+    export_payload = build_3dof_appendix_table_export(
+        benchmark_report_path=Path(benchmark_report_path),
+        fixed_impedance_report_path=(
+            Path(fixed_impedance_report_path)
+            if fixed_impedance_report_path is not None
+            else None
+        ),
+    )
+    suites: list[TeacherAblationSuiteSummary] = []
+    for row in export_payload["teacher_rows"]:
+        per_profile = tuple(
+            TeacherAblationProfileSummary(
+                profile_name=str(profile_name),
+                success_rate=float(metrics["success_rate"]),
+                jam_rate=float(metrics["jam_rate"]),
+                mean_final_distance_mm=float(metrics["mean_final_distance_mm"]),
+                mean_peak_contact_force_n=float(metrics["mean_peak_contact_force_n"]),
+                mean_contact_steps=float(metrics["mean_contact_steps"]),
+            )
+            for profile_name, metrics in row["per_profile"].items()
+        )
+        suites.append(
+            TeacherAblationSuiteSummary(
+                suite_name=str(row["suite_name"]),
+                display_name=str(row["display_name"]),
+                teacher_motion_rule=str(row["teacher_motion_rule"]),
+                teacher_impedance_rule=str(row["teacher_impedance_rule"]),
+                five_profile_success_rate=float(row["five_profile_mean"]["success_rate"]),
+                five_profile_jam_rate=float(row["five_profile_mean"]["jam_rate"]),
+                mean_final_distance_mm=float(
+                    row["five_profile_mean"]["mean_final_distance_mm"]
+                ),
+                mean_peak_contact_force_n=float(
+                    row["five_profile_mean"]["mean_peak_contact_force_n"]
+                ),
+                mean_contact_steps=float(row["five_profile_mean"]["mean_contact_steps"]),
+                per_profile=per_profile,
+            )
+        )
+    return FigureA3TeacherAblationSummary(suites=tuple(suites))
+
+
+def load_figurea4_termination_diagnostics_summary(
+    benchmark_report_path: Path,
+    fixed_impedance_report_path: Path | None = None,
+) -> FigureA4TerminationDiagnosticsSummary:
+    from vi_full.paper_tables import build_3dof_appendix_table_export
+
+    export_payload = build_3dof_appendix_table_export(
+        benchmark_report_path=Path(benchmark_report_path),
+        fixed_impedance_report_path=(
+            Path(fixed_impedance_report_path)
+            if fixed_impedance_report_path is not None
+            else None
+        ),
+    )
+    suites = tuple(
+        TerminationDiagnosticsSuiteSummary(
+            suite_name=str(row["suite_name"]),
+            display_name=str(row["display_name"]),
+            jam_rate=float(row["diagnostics"]["jam_rate"]),
+            force_threshold_termination_rate=float(
+                row["diagnostics"]["force_threshold_termination_rate"]
+            ),
+            blocked_contact_termination_rate=float(
+                row["diagnostics"]["blocked_contact_termination_rate"]
+            ),
+            force_threshold_only_termination_rate=float(
+                row["diagnostics"]["force_threshold_only_termination_rate"]
+            ),
+            blocked_contact_only_termination_rate=float(
+                row["diagnostics"]["blocked_contact_only_termination_rate"]
+            ),
+            force_and_blocked_termination_rate=float(
+                row["diagnostics"]["force_and_blocked_termination_rate"]
+            ),
+            documented_force_jam_rate=float(
+                row["diagnostics"]["documented_force_jam_rate"]
+            ),
+        )
+        for row in export_payload["diagnostic_rows"]
+    )
+    return FigureA4TerminationDiagnosticsSummary(suites=suites)
 
 
 def _render_variant_panel(ax, variant: ContactWindowVariantSummary, x_max_mm: float) -> None:
@@ -1639,5 +1777,217 @@ def export_figurea1_pressure_class_mapping(
         ha="center",
         va="center",
         fontsize=9.5,
+    )
+    return _save_figure_bundle(fig, output_dir=output_dir, stem=stem)
+
+
+def export_figurea3_teacher_ablation_summary(
+    benchmark_report_path: Path,
+    output_dir: Path,
+    fixed_impedance_report_path: Path | None = None,
+    stem: str = "figA3_teacher_ablation_summary",
+) -> tuple[Path, Path]:
+    summary = load_figurea3_teacher_ablation_summary(
+        benchmark_report_path=benchmark_report_path,
+        fixed_impedance_report_path=fixed_impedance_report_path,
+    )
+    x_positions = np.arange(len(summary.suites), dtype=np.float64)
+    tick_labels = []
+    success_rates = []
+    peak_forces = []
+    final_distances = []
+    colors = []
+    hatches = []
+    for suite in summary.suites:
+        tick_labels.append(
+            "var/var"
+            if suite.teacher_motion_rule == "contact_aware_variable_motion"
+            and suite.teacher_impedance_rule == "contact_aware_variable_impedance"
+            else "var/fixed"
+            if suite.teacher_motion_rule == "contact_aware_variable_motion"
+            else "pose/var"
+            if suite.teacher_impedance_rule == "contact_aware_variable_impedance"
+            else "pose/fixed"
+        )
+        success_rates.append(suite.five_profile_success_rate)
+        peak_forces.append(suite.mean_peak_contact_force_n)
+        final_distances.append(suite.mean_final_distance_mm)
+        colors.append(
+            "#4F81BD"
+            if suite.teacher_motion_rule == "contact_aware_variable_motion"
+            else "#C0504D"
+        )
+        hatches.append("//" if suite.teacher_impedance_rule == "fixed" else "")
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.6), constrained_layout=True)
+    success_bars = axes[0].bar(
+        x_positions,
+        success_rates,
+        color=colors,
+        edgecolor="#333333",
+        linewidth=1.0,
+    )
+    for bar, hatch, value in zip(success_bars, hatches, success_rates, strict=True):
+        bar.set_hatch(hatch)
+        axes[0].text(
+            bar.get_x() + bar.get_width() / 2.0,
+            value + 0.015,
+            f"{value:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=8.8,
+        )
+    axes[0].set_xticks(x_positions, tick_labels)
+    axes[0].set_ylim(0.0, 1.08)
+    axes[0].set_ylabel("5-profile mean success rate")
+    axes[0].set_title("Teacher 2x2 success summary", fontsize=12, fontweight="bold")
+    axes[0].grid(axis="y", color="#DDDDDD", linewidth=0.8)
+    axes[0].set_axisbelow(True)
+
+    force_bars = axes[1].bar(
+        x_positions,
+        peak_forces,
+        color=colors,
+        edgecolor="#333333",
+        linewidth=1.0,
+        alpha=0.9,
+    )
+    for bar, hatch in zip(force_bars, hatches, strict=True):
+        bar.set_hatch(hatch)
+    axes[1].set_xticks(x_positions, tick_labels)
+    axes[1].set_ylabel("mean peak contact force (N)")
+    axes[1].set_title("Force and final-distance readout", fontsize=12, fontweight="bold")
+    axes[1].grid(axis="y", color="#DDDDDD", linewidth=0.8)
+    axes[1].set_axisbelow(True)
+    distance_axis = axes[1].twinx()
+    distance_axis.plot(
+        x_positions,
+        final_distances,
+        color="#6A3D9A",
+        marker="o",
+        linewidth=2.0,
+        label="mean final distance (mm)",
+    )
+    distance_axis.set_ylabel("mean final distance (mm)", color="#6A3D9A")
+    distance_axis.tick_params(axis="y", colors="#6A3D9A")
+
+    legend_handles = [
+        Patch(facecolor="#4F81BD", edgecolor="#333333", label="motion: contact-aware"),
+        Patch(facecolor="#C0504D", edgecolor="#333333", label="motion: pose feedback"),
+        Patch(facecolor="white", edgecolor="#333333", hatch="", label="impedance: variable"),
+        Patch(facecolor="white", edgecolor="#333333", hatch="//", label="impedance: fixed"),
+        Line2D(
+            [0],
+            [0],
+            color="#6A3D9A",
+            marker="o",
+            linewidth=2.0,
+            label="final distance",
+        ),
+    ]
+    fig.legend(
+        handles=legend_handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 1.03),
+        ncol=3,
+        frameon=False,
+        fontsize=8.8,
+    )
+    fig.suptitle(
+        "Appendix teacher ablation: motion x impedance",
+        fontsize=13,
+        fontweight="bold",
+    )
+    return _save_figure_bundle(fig, output_dir=output_dir, stem=stem)
+
+
+def export_figurea4_termination_diagnostics_summary(
+    benchmark_report_path: Path,
+    output_dir: Path,
+    fixed_impedance_report_path: Path | None = None,
+    stem: str = "figA4_termination_diagnostics_summary",
+) -> tuple[Path, Path]:
+    summary = load_figurea4_termination_diagnostics_summary(
+        benchmark_report_path=benchmark_report_path,
+        fixed_impedance_report_path=fixed_impedance_report_path,
+    )
+    x_positions = np.arange(len(summary.suites), dtype=np.float64)
+    tick_labels = [suite.display_name for suite in summary.suites]
+    force_only = np.asarray(
+        [suite.force_threshold_only_termination_rate for suite in summary.suites],
+        dtype=np.float64,
+    )
+    blocked_only = np.asarray(
+        [suite.blocked_contact_only_termination_rate for suite in summary.suites],
+        dtype=np.float64,
+    )
+    force_and_blocked = np.asarray(
+        [suite.force_and_blocked_termination_rate for suite in summary.suites],
+        dtype=np.float64,
+    )
+    jam_rates = np.asarray([suite.jam_rate for suite in summary.suites], dtype=np.float64)
+    documented_rates = np.asarray(
+        [suite.documented_force_jam_rate for suite in summary.suites],
+        dtype=np.float64,
+    )
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.8), constrained_layout=True)
+    axes[0].bar(x_positions, force_only, color="#F4A259", label="force only")
+    axes[0].bar(
+        x_positions,
+        blocked_only,
+        bottom=force_only,
+        color="#5B8E7D",
+        label="blocked only",
+    )
+    axes[0].bar(
+        x_positions,
+        force_and_blocked,
+        bottom=force_only + blocked_only,
+        color="#8C5E58",
+        label="force + blocked",
+    )
+    axes[0].set_xticks(x_positions, tick_labels, rotation=18, ha="right")
+    axes[0].set_ylabel("termination rate")
+    axes[0].set_title("Termination attribution split", fontsize=12, fontweight="bold")
+    axes[0].grid(axis="y", color="#DDDDDD", linewidth=0.8)
+    axes[0].set_axisbelow(True)
+    axes[0].legend(frameon=False, fontsize=8.8)
+
+    jam_bars = axes[1].bar(
+        x_positions,
+        jam_rates,
+        color="#AAB7C4",
+        edgecolor="#333333",
+        label="jam_rate",
+    )
+    axes[1].plot(
+        x_positions,
+        documented_rates,
+        color="#C0504D",
+        marker="o",
+        linewidth=2.0,
+        label="documented_force_jam_rate",
+    )
+    for bar, value in zip(jam_bars, jam_rates, strict=True):
+        axes[1].text(
+            bar.get_x() + bar.get_width() / 2.0,
+            value + 0.01,
+            f"{value:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=8.6,
+        )
+    axes[1].set_xticks(x_positions, tick_labels, rotation=18, ha="right")
+    axes[1].set_ylabel("rate")
+    axes[1].set_title("Jam vs documented 3-step force jam", fontsize=12, fontweight="bold")
+    axes[1].grid(axis="y", color="#DDDDDD", linewidth=0.8)
+    axes[1].set_axisbelow(True)
+    axes[1].legend(frameon=False, fontsize=8.8)
+
+    fig.suptitle(
+        "Appendix termination diagnostics across learned suites",
+        fontsize=13,
+        fontweight="bold",
     )
     return _save_figure_bundle(fig, output_dir=output_dir, stem=stem)

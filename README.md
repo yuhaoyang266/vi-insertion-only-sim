@@ -70,6 +70,17 @@ python scripts/export/export_paper_only_sim_figureA2.py
 The scripts are preserved with the source modules used to produce the paper assets. If running them
 outside the original working tree, verify paths before regenerating figures.
 
+Appendix-only teacher/termination assets are exported from a Phase C benchmark artifact:
+
+```bash
+python scripts/export/export_paper_only_sim_appendix_table.py --benchmark-input <phase_c_benchmark.json>
+python scripts/export/export_paper_only_sim_figureA3.py --benchmark-input <phase_c_benchmark.json>
+python scripts/export/export_paper_only_sim_figureA4.py --benchmark-input <phase_c_benchmark.json>
+```
+
+If a stable fixed-impedance override artifact is available, pass it with `--fixed-impedance-input`
+to keep the appendix diagnostics aligned with the paper-facing stable baseline.
+
 ## Reproduce Experiments
 
 The frozen artifacts used by the manuscript are included under `artifacts/`. The corresponding

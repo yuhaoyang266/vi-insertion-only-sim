@@ -15,6 +15,10 @@ SUITE_DISPLAY_NAMES = {
     "fixed_impedance_rl_stable_r32_p32": "Fixed-impedance RL (stable BC 32/32)",
     "repaired_mainline_bc_to_ppo": "BC -> PPO",
     "dapg_lite_repaired_mainline": "DAPG-lite",
+    "teacher_variable_variable__repaired_mainline": "Teacher: variable motion + variable impedance",
+    "teacher_variable_fixed__repaired_mainline": "Teacher: variable motion + fixed impedance",
+    "teacher_pose_variable__repaired_mainline": "Teacher: pose motion + variable impedance",
+    "teacher_pose_fixed__repaired_mainline": "Teacher: pose motion + fixed impedance",
     "dapg_lite_contact_old__reset_coverage_collapse": "DAPG-lite old reset (coverage collapse)",
     "dapg_lite_contact_old__reset_repaired": "DAPG-lite old reset (repaired)",
     "dapg_lite_contact_new__reset_coverage_collapse": "DAPG-lite new reset (coverage collapse)",
@@ -109,6 +113,76 @@ TABLE_METRICS = {
     },
 }
 
+APPENDIX_TEACHER_SUITE_ORDER = (
+    "teacher_variable_variable__repaired_mainline",
+    "teacher_variable_fixed__repaired_mainline",
+    "teacher_pose_variable__repaired_mainline",
+    "teacher_pose_fixed__repaired_mainline",
+)
+
+APPENDIX_TEACHER_TABLE_METRICS = {
+    metric_name: TABLE_METRICS[metric_name]
+    for metric_name in (
+        "success_rate",
+        "jam_rate",
+        "mean_final_distance_mm",
+        "mean_peak_contact_force_n",
+        "mean_contact_steps",
+    )
+}
+
+APPENDIX_TERMINATION_DIAGNOSTIC_METRICS = {
+    "jam_rate": TABLE_METRICS["jam_rate"],
+    "force_threshold_termination_rate": {
+        "raw_key": "force_threshold_exceeded",
+        "aggregate_mean_key": "force_threshold_termination_rate_mean",
+        "aggregate_std_key": "force_threshold_termination_rate_std",
+        "over_profile_mean_key": "force_threshold_termination_rate_mean_over_profiles",
+        "over_profile_std_key": "force_threshold_termination_rate_std_over_profiles",
+    },
+    "blocked_contact_termination_rate": {
+        "raw_key": "blocked_contact_failure",
+        "aggregate_mean_key": "blocked_contact_termination_rate_mean",
+        "aggregate_std_key": "blocked_contact_termination_rate_std",
+        "over_profile_mean_key": "blocked_contact_termination_rate_mean_over_profiles",
+        "over_profile_std_key": "blocked_contact_termination_rate_std_over_profiles",
+    },
+    "force_threshold_only_termination_rate": {
+        "raw_key": "force_threshold_only",
+        "aggregate_mean_key": "force_threshold_only_termination_rate_mean",
+        "aggregate_std_key": "force_threshold_only_termination_rate_std",
+        "over_profile_mean_key": "force_threshold_only_termination_rate_mean_over_profiles",
+        "over_profile_std_key": "force_threshold_only_termination_rate_std_over_profiles",
+    },
+    "blocked_contact_only_termination_rate": {
+        "raw_key": "blocked_contact_only",
+        "aggregate_mean_key": "blocked_contact_only_termination_rate_mean",
+        "aggregate_std_key": "blocked_contact_only_termination_rate_std",
+        "over_profile_mean_key": "blocked_contact_only_termination_rate_mean_over_profiles",
+        "over_profile_std_key": "blocked_contact_only_termination_rate_std_over_profiles",
+    },
+    "force_and_blocked_termination_rate": {
+        "raw_key": "force_and_blocked",
+        "aggregate_mean_key": "force_and_blocked_termination_rate_mean",
+        "aggregate_std_key": "force_and_blocked_termination_rate_std",
+        "over_profile_mean_key": "force_and_blocked_termination_rate_mean_over_profiles",
+        "over_profile_std_key": "force_and_blocked_termination_rate_std_over_profiles",
+    },
+    "documented_force_jam_rate": {
+        "raw_key": "meets_documented_force_jam",
+        "aggregate_mean_key": "documented_force_jam_rate_mean",
+        "aggregate_std_key": "documented_force_jam_rate_std",
+        "over_profile_mean_key": "documented_force_jam_rate_mean_over_profiles",
+        "over_profile_std_key": "documented_force_jam_rate_std_over_profiles",
+    },
+}
+
+APPENDIX_DIAGNOSTIC_SUITE_ORDER = (
+    "bc_only_stable_r32_p32",
+    "repaired_mainline_bc_to_ppo",
+    "dapg_lite_repaired_mainline",
+)
+
 DEFAULT_SELECTED_COMPARISONS = (
     {
         "reference_suite": "bc_only_stable_r32_p32",
@@ -161,6 +235,24 @@ def _extract_profile_metrics(raw: dict[str, Any]) -> dict[str, float]:
         metric_name: _scaled_value(raw[spec["aggregate_mean_key"]], spec)
         for metric_name, spec in TABLE_METRICS.items()
     }
+
+
+def _extract_metric_values(
+    raw: dict[str, Any],
+    metric_specs: dict[str, dict[str, Any]],
+    *,
+    over_profile: bool,
+    context_label: str,
+) -> dict[str, float]:
+    values: dict[str, float] = {}
+    for metric_name, spec in metric_specs.items():
+        key_name = (
+            spec["over_profile_mean_key"] if over_profile else spec["aggregate_mean_key"]
+        )
+        if key_name not in raw:
+            raise ValueError(f"Missing appendix metric '{metric_name}' in {context_label}.")
+        values[metric_name] = _scaled_value(raw[key_name], spec)
+    return values
 
 
 def _mean_metric_dicts(metric_dicts: list[dict[str, float]]) -> dict[str, float]:
@@ -248,6 +340,10 @@ def _resolve_suite_payloads(
             replaces_main_suite = original_suite_name
         else:
             suite_name = original_suite_name
+            if original_suite_name not in raw_benchmark["learned_results"]:
+                raise ValueError(
+                    f"Missing learned suite '{original_suite_name}' in benchmark artifact."
+                )
             suite_payload = raw_benchmark["learned_results"][original_suite_name]
             source_artifact = benchmark_report_path
             replaces_main_suite = None
@@ -778,6 +874,91 @@ def _build_suite_row(
     return row
 
 
+def _build_appendix_profile_rows(
+    eval_results: dict[str, Any],
+    metric_specs: dict[str, dict[str, Any]],
+    *,
+    suite_name: str,
+) -> dict[str, dict[str, float]]:
+    return {
+        str(profile_name): _extract_metric_values(
+            payload["aggregate"],
+            metric_specs,
+            over_profile=False,
+            context_label=f"suite '{suite_name}' profile '{profile_name}'",
+        )
+        for profile_name, payload in eval_results.items()
+    }
+
+
+def _resolve_appendix_suite_payload(
+    suite_payload_map: dict[str, dict[str, Any]],
+    suite_name: str,
+    *,
+    section_name: str,
+) -> dict[str, Any]:
+    if suite_name not in suite_payload_map:
+        raise ValueError(f"Missing {section_name} suite '{suite_name}' in benchmark artifact.")
+    return suite_payload_map[suite_name]
+
+
+def _build_appendix_teacher_row(suite_payload: dict[str, Any]) -> dict[str, Any]:
+    raw_suite_payload = suite_payload["suite_payload"]
+    suite_name = str(suite_payload["suite_name"])
+    teacher_motion_rule = raw_suite_payload.get("teacher_motion_rule")
+    teacher_impedance_rule = raw_suite_payload.get("teacher_impedance_rule")
+    if teacher_motion_rule is None or teacher_impedance_rule is None:
+        raise ValueError(
+            f"Missing teacher metadata for appendix teacher suite '{suite_name}'."
+        )
+
+    row = {
+        "suite_name": suite_name,
+        "display_name": suite_payload["display_name"],
+        "source_artifact": str(Path(suite_payload["source_artifact"]).resolve()),
+        "teacher_preset_name": raw_suite_payload.get("teacher_preset_name"),
+        "teacher_motion_rule": str(teacher_motion_rule),
+        "teacher_impedance_rule": str(teacher_impedance_rule),
+        "five_profile_mean": _extract_metric_values(
+            suite_payload["five_profile_mean"],
+            APPENDIX_TEACHER_TABLE_METRICS,
+            over_profile=True,
+            context_label=f"suite '{suite_name}' five-profile mean",
+        ),
+        "per_profile": _build_appendix_profile_rows(
+            suite_payload["eval_results"],
+            APPENDIX_TEACHER_TABLE_METRICS,
+            suite_name=suite_name,
+        ),
+    }
+    if suite_payload["replaces_main_suite"] is not None:
+        row["replaces_main_suite"] = suite_payload["replaces_main_suite"]
+    return row
+
+
+def _build_appendix_diagnostic_row(suite_payload: dict[str, Any]) -> dict[str, Any]:
+    suite_name = str(suite_payload["suite_name"])
+    row = {
+        "suite_name": suite_name,
+        "display_name": suite_payload["display_name"],
+        "source_artifact": str(Path(suite_payload["source_artifact"]).resolve()),
+        "diagnostics": _extract_metric_values(
+            suite_payload["five_profile_mean"],
+            APPENDIX_TERMINATION_DIAGNOSTIC_METRICS,
+            over_profile=True,
+            context_label=f"suite '{suite_name}' five-profile diagnostics",
+        ),
+        "per_profile_diagnostics": _build_appendix_profile_rows(
+            suite_payload["eval_results"],
+            APPENDIX_TERMINATION_DIAGNOSTIC_METRICS,
+            suite_name=suite_name,
+        ),
+    }
+    if suite_payload["replaces_main_suite"] is not None:
+        row["replaces_main_suite"] = suite_payload["replaces_main_suite"]
+    return row
+
+
 def build_3dof_paper_table_export(
     *,
     benchmark_report_path: Path,
@@ -958,6 +1139,166 @@ def export_3dof_paper_table(
         statistics_report_path=statistics_report_path,
     )
     markdown = render_3dof_paper_table_markdown(export_payload)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    json_path = output_dir / f"{stem}.json"
+    markdown_path = output_dir / f"{stem}.md"
+    json_path.write_text(
+        json.dumps(export_payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    markdown_path.write_text(markdown, encoding="utf-8")
+    return json_path, markdown_path
+
+
+def build_3dof_appendix_table_export(
+    *,
+    benchmark_report_path: Path,
+    fixed_impedance_report_path: Path | None = None,
+) -> dict[str, Any]:
+    suite_order, suite_payloads, _ = _resolve_suite_payloads(
+        benchmark_report_path=benchmark_report_path,
+        fixed_impedance_report_path=fixed_impedance_report_path,
+    )
+    suite_payload_map = {
+        str(suite_payload["suite_name"]): suite_payload for suite_payload in suite_payloads
+    }
+
+    teacher_rows = [
+        _build_appendix_teacher_row(
+            _resolve_appendix_suite_payload(
+                suite_payload_map,
+                suite_name,
+                section_name="teacher ablation",
+            )
+        )
+        for suite_name in APPENDIX_TEACHER_SUITE_ORDER
+    ]
+
+    diagnostic_suite_order = list(APPENDIX_DIAGNOSTIC_SUITE_ORDER)
+    fixed_impedance_suite_name = (
+        "fixed_impedance_rl_stable_r32_p32"
+        if fixed_impedance_report_path is not None
+        else "fixed_impedance_rl"
+    )
+    diagnostic_suite_order.append(fixed_impedance_suite_name)
+    diagnostic_rows = [
+        _build_appendix_diagnostic_row(
+            _resolve_appendix_suite_payload(
+                suite_payload_map,
+                suite_name,
+                section_name="termination diagnostics",
+            )
+        )
+        for suite_name in diagnostic_suite_order
+    ]
+
+    return {
+        "export_name": "three_dof_appendix_benchmark_table",
+        "source_artifacts": {
+            "benchmark_report": str(Path(benchmark_report_path).resolve()),
+            "fixed_impedance_report": (
+                str(Path(fixed_impedance_report_path).resolve())
+                if fixed_impedance_report_path is not None
+                else None
+            ),
+        },
+        "suite_order": suite_order,
+        "teacher_suite_order": list(APPENDIX_TEACHER_SUITE_ORDER),
+        "teacher_rows": teacher_rows,
+        "diagnostic_suite_order": diagnostic_suite_order,
+        "diagnostic_rows": diagnostic_rows,
+    }
+
+
+def render_3dof_appendix_table_markdown(export_payload: dict[str, Any]) -> str:
+    lines = [
+        "# 3DoF Appendix Benchmark Tables",
+        "",
+        f"Benchmark source: `{export_payload['source_artifacts']['benchmark_report']}`",
+    ]
+    fixed_source = export_payload["source_artifacts"]["fixed_impedance_report"]
+    if fixed_source is not None:
+        lines.append(f"Fixed-impedance override source: `{fixed_source}`")
+
+    lines.extend(
+        [
+            "",
+            "## Teacher Ablation",
+            "",
+            "| Suite | teacher_motion_rule | teacher_impedance_rule | success_rate | jam_rate | mean_final_distance_mm | mean_peak_contact_force_n | mean_contact_steps |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        ]
+    )
+    for row in export_payload["teacher_rows"]:
+        lines.append(
+            "| "
+            f"{row['display_name']} (`{row['suite_name']}`) | "
+            f"{row['teacher_motion_rule']} | "
+            f"{row['teacher_impedance_rule']} | "
+            f"{row['five_profile_mean']['success_rate']:.3f} | "
+            f"{row['five_profile_mean']['jam_rate']:.3f} | "
+            f"{row['five_profile_mean']['mean_final_distance_mm']:.3f} | "
+            f"{row['five_profile_mean']['mean_peak_contact_force_n']:.3f} | "
+            f"{row['five_profile_mean']['mean_contact_steps']:.3f} |"
+        )
+
+    lines.extend(["", "### Teacher Per-Profile Readout", ""])
+    for row in export_payload["teacher_rows"]:
+        lines.extend(
+            [
+                f"#### {row['display_name']} (`{row['suite_name']}`)",
+                "",
+                "| Profile | success_rate | jam_rate | mean_final_distance_mm | mean_peak_contact_force_n | mean_contact_steps |",
+                "| --- | --- | --- | --- | --- | --- |",
+            ]
+        )
+        for profile_name, profile_metrics in row["per_profile"].items():
+            lines.append(
+                "| "
+                f"{profile_name} | "
+                f"{profile_metrics['success_rate']:.3f} | "
+                f"{profile_metrics['jam_rate']:.3f} | "
+                f"{profile_metrics['mean_final_distance_mm']:.3f} | "
+                f"{profile_metrics['mean_peak_contact_force_n']:.3f} | "
+                f"{profile_metrics['mean_contact_steps']:.3f} |"
+            )
+        lines.append("")
+
+    diagnostic_headers = list(APPENDIX_TERMINATION_DIAGNOSTIC_METRICS)
+    lines.extend(
+        [
+            "## Termination Diagnostics",
+            "",
+            "| Suite | "
+            + " | ".join(diagnostic_headers)
+            + " |",
+            "| --- | "
+            + " | ".join("---" for _ in diagnostic_headers)
+            + " |",
+        ]
+    )
+    for row in export_payload["diagnostic_rows"]:
+        diagnostic_values = " | ".join(
+            f"{row['diagnostics'][metric_name]:.3f}" for metric_name in diagnostic_headers
+        )
+        lines.append(f"| {row['display_name']} | {diagnostic_values} |")
+
+    return "\n".join(lines) + "\n"
+
+
+def export_3dof_appendix_table(
+    *,
+    benchmark_report_path: Path,
+    fixed_impedance_report_path: Path | None = None,
+    output_dir: Path,
+    stem: str = "table_3dof_appendix_benchmark",
+) -> tuple[Path, Path]:
+    export_payload = build_3dof_appendix_table_export(
+        benchmark_report_path=benchmark_report_path,
+        fixed_impedance_report_path=fixed_impedance_report_path,
+    )
+    markdown = render_3dof_appendix_table_markdown(export_payload)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{stem}.json"

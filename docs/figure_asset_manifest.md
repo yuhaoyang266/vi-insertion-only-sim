@@ -7,7 +7,7 @@ to lock the file stems, output directory, and source-artifact mapping before act
 ## Scope
 
 - Main-body figures: `Figure 1`, `Figure 2`, `Figure 3`
-- Appendix figures: `Figure A1`, `Figure A2`
+- Appendix figures: `Figure A1`, `Figure A2`, `Figure A3`, `Figure A4`
 - Supporting MuJoCo demo clips remain supporting media and are not promoted to numbered paper
   figures in the current draft
 
@@ -51,6 +51,8 @@ Slug rules:
 | Figure 3 companion | `fig3_high_friction_impedance_mechanism_success_only` | `supplement/figures/fig3_high_friction_impedance_mechanism_success_only.pdf` and `.png` | supplementary successful-only companion view for the high-friction mechanics traces | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
 | Figure A1 | `figA1_evaluation_class_mapping` | `figures/appendix/figA1_evaluation_class_mapping.pdf` and `.png` | appendix mapping from nominal profiles to evaluation classes | generated directly by `src/vi_full/paper_figures.py` | exported |
 | Figure A2 | `fig1_contact_transition_audit` | `figures/appendix/fig1_contact_transition_audit.pdf` and `.png` | appendix contact-transition audit retained under a legacy stem for compatibility | `artifacts/mechanics/latest_three_dof_contact_model_audit.json` | exported |
+| Figure A3 | `figA3_teacher_ablation_summary` | `figures/appendix/figA3_teacher_ablation_summary.pdf` and `.png` | appendix teacher 2x2 motion-versus-impedance summary | Phase C+ uncertainty benchmark artifact with the teacher ablation block | planned |
+| Figure A4 | `figA4_termination_diagnostics_summary` | `figures/appendix/figA4_termination_diagnostics_summary.pdf` and `.png` | appendix termination-diagnostics decomposition across learned suites | Phase C+ uncertainty benchmark artifact with termination diagnostics fields | planned |
 
 ## Panel Intent
 
@@ -88,6 +90,18 @@ These panel intents are locked only to keep export work aligned with the current
 - appendix-only contact-model audit
 - keep the legacy stem `fig1_contact_transition_audit` for compatibility with existing exports
 - show the original vs repaired contact law and the safe-window widening from about `0.85 mm` to about `1.25 mm`
+
+### Figure A3
+
+- appendix-only teacher ablation view
+- keep the 2x2 structure explicit: motion rule by impedance rule
+- main panel shows five-profile mean success; auxiliary readout shows force and final-distance cost
+
+### Figure A4
+
+- appendix-only termination diagnostics view
+- split jammed outcomes into `force_only`, `blocked_only`, and `force_and_blocked`
+- keep `documented_force_jam_rate` separate from the stacked jam attribution bars
 
 ## Supporting Media Boundary
 

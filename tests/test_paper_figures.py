@@ -1,4 +1,5 @@
 import importlib.util
+import json
 from pathlib import Path
 import sys
 
@@ -136,6 +137,231 @@ def _load_paper_figures_module():
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def _appendix_suite_payload(
+    suite_name: str,
+    *,
+    success_rate: float,
+    jam_rate: float,
+    final_distance_m: float,
+    peak_force_n: float,
+    contact_steps: float,
+    teacher_motion_rule: str | None = None,
+    teacher_impedance_rule: str | None = None,
+    diagnostic_rates: dict[str, float] | None = None,
+) -> dict[str, object]:
+    profiles = ("nominal", "tight_clearance", "high_friction", "offset_bias", "noisy_force")
+    eval_results: dict[str, dict[str, object]] = {}
+    diagnostics = {
+        "jam_rate": jam_rate,
+        "force_threshold_termination_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "force_threshold_only_termination_rate": 0.0,
+        "blocked_contact_only_termination_rate": 0.0,
+        "force_and_blocked_termination_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+    }
+    diagnostics.update(diagnostic_rates or {})
+    for profile_name in profiles:
+        aggregate = {
+            "policy_name": "PPO",
+            "uncertainty_profile": profile_name,
+            "num_seeds": 3,
+            "seeds": [0, 1, 2],
+            "suite_name": suite_name,
+            "success_rate_mean": success_rate,
+            "success_rate_std": 0.0,
+            "jam_rate_mean": jam_rate,
+            "jam_rate_std": 0.0,
+            "mean_final_distance_mean": final_distance_m,
+            "mean_final_distance_std": 0.0,
+            "mean_peak_contact_force_mean": peak_force_n,
+            "mean_peak_contact_force_std": 0.0,
+            "mean_contact_steps_mean": contact_steps,
+            "mean_contact_steps_std": 0.0,
+        }
+        for metric_name, metric_value in diagnostics.items():
+            aggregate[f"{metric_name}_mean"] = float(metric_value)
+            aggregate[f"{metric_name}_std"] = 0.0
+        eval_results[profile_name] = {"aggregate": aggregate}
+
+    payload: dict[str, object] = {
+        "suite_run_kwargs": {"suite_name": suite_name},
+        "train_configs": [],
+        "training_summaries": [],
+        "eval_results": eval_results,
+        "five_profile_mean": {
+            "success_rate_mean_over_profiles": success_rate,
+            "success_rate_std_over_profiles": 0.0,
+            "jam_rate_mean_over_profiles": jam_rate,
+            "jam_rate_std_over_profiles": 0.0,
+            "mean_final_distance_mean_over_profiles": final_distance_m,
+            "mean_final_distance_std_over_profiles": 0.0,
+            "mean_peak_contact_force_mean_over_profiles": peak_force_n,
+            "mean_peak_contact_force_std_over_profiles": 0.0,
+            "mean_contact_steps_mean_over_profiles": contact_steps,
+            "mean_contact_steps_std_over_profiles": 0.0,
+            "p95_peak_contact_force_mean_over_profiles": peak_force_n + 0.25,
+            "p95_peak_contact_force_std_over_profiles": 0.0,
+        },
+    }
+    for metric_name, metric_value in diagnostics.items():
+        payload["five_profile_mean"][f"{metric_name}_mean_over_profiles"] = float(metric_value)
+        payload["five_profile_mean"][f"{metric_name}_std_over_profiles"] = 0.0
+
+    if teacher_motion_rule is not None:
+        payload["teacher_motion_rule"] = teacher_motion_rule
+    if teacher_impedance_rule is not None:
+        payload["teacher_impedance_rule"] = teacher_impedance_rule
+    return payload
+
+
+def _write_appendix_figure_sample_artifacts(tmp_path: Path) -> tuple[Path, Path]:
+    benchmark_report = {
+        "config": {
+            "suite_names": [
+                "bc_only_stable_r32_p32",
+                "fixed_impedance_rl",
+                "repaired_mainline_bc_to_ppo",
+                "dapg_lite_repaired_mainline",
+                "teacher_variable_variable__repaired_mainline",
+                "teacher_variable_fixed__repaired_mainline",
+                "teacher_pose_variable__repaired_mainline",
+                "teacher_pose_fixed__repaired_mainline",
+            ],
+            "uncertainty_profiles": [
+                "nominal",
+                "tight_clearance",
+                "high_friction",
+                "offset_bias",
+                "noisy_force",
+            ],
+        },
+        "handcrafted_results": {},
+        "learned_results": {
+            "bc_only_stable_r32_p32": _appendix_suite_payload(
+                "bc_only_stable_r32_p32",
+                success_rate=1.0,
+                jam_rate=0.0,
+                final_distance_m=0.0009,
+                peak_force_n=1.0,
+                contact_steps=31.0,
+            ),
+            "fixed_impedance_rl": _appendix_suite_payload(
+                "fixed_impedance_rl",
+                success_rate=0.35,
+                jam_rate=0.30,
+                final_distance_m=0.0022,
+                peak_force_n=1.60,
+                contact_steps=41.0,
+                diagnostic_rates={
+                    "force_threshold_termination_rate": 0.12,
+                    "blocked_contact_termination_rate": 0.20,
+                    "force_threshold_only_termination_rate": 0.07,
+                    "blocked_contact_only_termination_rate": 0.15,
+                    "force_and_blocked_termination_rate": 0.05,
+                    "documented_force_jam_rate": 0.04,
+                },
+            ),
+            "repaired_mainline_bc_to_ppo": _appendix_suite_payload(
+                "repaired_mainline_bc_to_ppo",
+                success_rate=0.98,
+                jam_rate=0.02,
+                final_distance_m=0.0010,
+                peak_force_n=0.98,
+                contact_steps=30.0,
+                diagnostic_rates={
+                    "force_threshold_termination_rate": 0.01,
+                    "blocked_contact_termination_rate": 0.01,
+                    "force_threshold_only_termination_rate": 0.01,
+                    "blocked_contact_only_termination_rate": 0.00,
+                    "force_and_blocked_termination_rate": 0.01,
+                    "documented_force_jam_rate": 0.01,
+                },
+            ),
+            "dapg_lite_repaired_mainline": _appendix_suite_payload(
+                "dapg_lite_repaired_mainline",
+                success_rate=0.97,
+                jam_rate=0.03,
+                final_distance_m=0.0011,
+                peak_force_n=1.02,
+                contact_steps=31.0,
+                diagnostic_rates={
+                    "force_threshold_termination_rate": 0.01,
+                    "blocked_contact_termination_rate": 0.02,
+                    "force_threshold_only_termination_rate": 0.01,
+                    "blocked_contact_only_termination_rate": 0.01,
+                    "force_and_blocked_termination_rate": 0.01,
+                    "documented_force_jam_rate": 0.01,
+                },
+            ),
+            "teacher_variable_variable__repaired_mainline": _appendix_suite_payload(
+                "teacher_variable_variable__repaired_mainline",
+                success_rate=0.99,
+                jam_rate=0.01,
+                final_distance_m=0.0009,
+                peak_force_n=0.95,
+                contact_steps=30.0,
+                teacher_motion_rule="contact_aware_variable_motion",
+                teacher_impedance_rule="contact_aware_variable_impedance",
+            ),
+            "teacher_variable_fixed__repaired_mainline": _appendix_suite_payload(
+                "teacher_variable_fixed__repaired_mainline",
+                success_rate=0.94,
+                jam_rate=0.03,
+                final_distance_m=0.0012,
+                peak_force_n=1.08,
+                contact_steps=32.0,
+                teacher_motion_rule="contact_aware_variable_motion",
+                teacher_impedance_rule="fixed",
+            ),
+            "teacher_pose_variable__repaired_mainline": _appendix_suite_payload(
+                "teacher_pose_variable__repaired_mainline",
+                success_rate=0.92,
+                jam_rate=0.05,
+                final_distance_m=0.0015,
+                peak_force_n=1.15,
+                contact_steps=35.0,
+                teacher_motion_rule="pose_feedback",
+                teacher_impedance_rule="contact_aware_variable_impedance",
+            ),
+            "teacher_pose_fixed__repaired_mainline": _appendix_suite_payload(
+                "teacher_pose_fixed__repaired_mainline",
+                success_rate=0.88,
+                jam_rate=0.09,
+                final_distance_m=0.0018,
+                peak_force_n=1.28,
+                contact_steps=38.0,
+                teacher_motion_rule="pose_feedback",
+                teacher_impedance_rule="fixed",
+            ),
+        },
+    }
+    fixed_override = {
+        "config": {"suite_name": "fixed_impedance_rl_stable_r32_p32"},
+        **_appendix_suite_payload(
+            "fixed_impedance_rl_stable_r32_p32",
+            success_rate=0.91,
+            jam_rate=0.08,
+            final_distance_m=0.0014,
+            peak_force_n=1.32,
+            contact_steps=37.0,
+            diagnostic_rates={
+                "force_threshold_termination_rate": 0.03,
+                "blocked_contact_termination_rate": 0.06,
+                "force_threshold_only_termination_rate": 0.02,
+                "blocked_contact_only_termination_rate": 0.05,
+                "force_and_blocked_termination_rate": 0.01,
+                "documented_force_jam_rate": 0.02,
+            },
+        ),
+    }
+    benchmark_path = tmp_path / "appendix_benchmark.json"
+    fixed_override_path = tmp_path / "appendix_fixed_override.json"
+    benchmark_path.write_text(json.dumps(benchmark_report), encoding="utf-8")
+    fixed_override_path.write_text(json.dumps(fixed_override), encoding="utf-8")
+    return benchmark_path, fixed_override_path
 
 
 def test_load_figure1_contact_transition_summary_uses_paper_facing_variants() -> None:
@@ -414,6 +640,91 @@ def test_export_figurea2_strict_criterion_decomposition_writes_pdf_and_png(
 
     assert pdf_path.name == "figA2_strict_criterion_decomposition.pdf"
     assert png_path.name == "figA2_strict_criterion_decomposition.png"
+    assert pdf_path.exists()
+    assert png_path.exists()
+    assert pdf_path.stat().st_size > 0
+    assert png_path.stat().st_size > 0
+
+
+def test_load_figurea3_teacher_ablation_summary_reads_teacher_block(tmp_path: Path) -> None:
+    module = _load_paper_figures_module()
+    benchmark_path, fixed_override_path = _write_appendix_figure_sample_artifacts(tmp_path)
+
+    summary = module.load_figurea3_teacher_ablation_summary(
+        benchmark_report_path=benchmark_path,
+        fixed_impedance_report_path=fixed_override_path,
+    )
+
+    assert [suite.suite_name for suite in summary.suites] == [
+        "teacher_variable_variable__repaired_mainline",
+        "teacher_variable_fixed__repaired_mainline",
+        "teacher_pose_variable__repaired_mainline",
+        "teacher_pose_fixed__repaired_mainline",
+    ]
+    assert summary.suites[0].teacher_motion_rule == "contact_aware_variable_motion"
+    assert summary.suites[0].teacher_impedance_rule == "contact_aware_variable_impedance"
+    assert summary.suites[0].five_profile_success_rate == pytest.approx(0.99)
+    assert summary.suites[0].per_profile[0].profile_name == "nominal"
+
+
+def test_export_figurea3_teacher_ablation_summary_writes_pdf_and_png(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_figures_module()
+    benchmark_path, fixed_override_path = _write_appendix_figure_sample_artifacts(tmp_path)
+
+    pdf_path, png_path = module.export_figurea3_teacher_ablation_summary(
+        benchmark_report_path=benchmark_path,
+        fixed_impedance_report_path=fixed_override_path,
+        output_dir=tmp_path,
+    )
+
+    assert pdf_path.name == "figA3_teacher_ablation_summary.pdf"
+    assert png_path.name == "figA3_teacher_ablation_summary.png"
+    assert pdf_path.exists()
+    assert png_path.exists()
+    assert pdf_path.stat().st_size > 0
+    assert png_path.stat().st_size > 0
+
+
+def test_load_figurea4_termination_diagnostics_summary_reads_diagnostic_rates(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_figures_module()
+    benchmark_path, fixed_override_path = _write_appendix_figure_sample_artifacts(tmp_path)
+
+    summary = module.load_figurea4_termination_diagnostics_summary(
+        benchmark_report_path=benchmark_path,
+        fixed_impedance_report_path=fixed_override_path,
+    )
+
+    assert [suite.suite_name for suite in summary.suites] == [
+        "bc_only_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+        "fixed_impedance_rl_stable_r32_p32",
+    ]
+    fixed_suite = summary.suites[-1]
+    assert fixed_suite.force_threshold_only_termination_rate == pytest.approx(0.02)
+    assert fixed_suite.blocked_contact_only_termination_rate == pytest.approx(0.05)
+    assert fixed_suite.force_and_blocked_termination_rate == pytest.approx(0.01)
+    assert fixed_suite.documented_force_jam_rate == pytest.approx(0.02)
+
+
+def test_export_figurea4_termination_diagnostics_summary_writes_pdf_and_png(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_figures_module()
+    benchmark_path, fixed_override_path = _write_appendix_figure_sample_artifacts(tmp_path)
+
+    pdf_path, png_path = module.export_figurea4_termination_diagnostics_summary(
+        benchmark_report_path=benchmark_path,
+        fixed_impedance_report_path=fixed_override_path,
+        output_dir=tmp_path,
+    )
+
+    assert pdf_path.name == "figA4_termination_diagnostics_summary.pdf"
+    assert png_path.name == "figA4_termination_diagnostics_summary.png"
     assert pdf_path.exists()
     assert png_path.exists()
     assert pdf_path.stat().st_size > 0

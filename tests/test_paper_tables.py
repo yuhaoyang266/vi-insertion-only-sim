@@ -6,6 +6,16 @@ import sys
 import numpy as np
 import pytest
 
+APPENDIX_DIAGNOSTIC_METRICS = (
+    "jam_rate",
+    "force_threshold_termination_rate",
+    "blocked_contact_termination_rate",
+    "force_threshold_only_termination_rate",
+    "blocked_contact_only_termination_rate",
+    "force_and_blocked_termination_rate",
+    "documented_force_jam_rate",
+)
+
 
 def _load_paper_tables_module():
     module_path = (
@@ -148,6 +158,54 @@ def _suite_payload(
             contact_steps=contact_steps,
         ),
     }
+
+
+def _appendix_suite_payload(
+    suite_name: str,
+    *,
+    success_rate: float,
+    jam_rate: float,
+    final_distance_m: float,
+    peak_force_n: float,
+    p95_force_n: float,
+    contact_steps: float,
+    teacher_motion_rule: str | None = None,
+    teacher_impedance_rule: str | None = None,
+    teacher_preset_name: str | None = None,
+    diagnostic_over_profile_rates: dict[str, float] | None = None,
+) -> dict[str, object]:
+    payload = _suite_payload(
+        suite_name,
+        success_rate=success_rate,
+        jam_rate=jam_rate,
+        final_distance_m=final_distance_m,
+        peak_force_n=peak_force_n,
+        p95_force_n=p95_force_n,
+        contact_steps=contact_steps,
+    )
+    if teacher_motion_rule is not None:
+        payload["teacher_motion_rule"] = teacher_motion_rule
+    if teacher_impedance_rule is not None:
+        payload["teacher_impedance_rule"] = teacher_impedance_rule
+    if teacher_preset_name is not None:
+        payload["teacher_preset_name"] = teacher_preset_name
+
+    diagnostics = {
+        metric_name: float(
+            (diagnostic_over_profile_rates or {}).get(
+                metric_name,
+                0.0 if metric_name != "jam_rate" else jam_rate,
+            )
+        )
+        for metric_name in APPENDIX_DIAGNOSTIC_METRICS
+    }
+    for metric_name, value in diagnostics.items():
+        payload["five_profile_mean"][f"{metric_name}_mean_over_profiles"] = value
+        payload["five_profile_mean"][f"{metric_name}_std_over_profiles"] = 0.0
+        for profile_payload in payload["eval_results"].values():
+            profile_payload["aggregate"][f"{metric_name}_mean"] = value
+            profile_payload["aggregate"][f"{metric_name}_std"] = 0.0
+    return payload
 
 
 def _handcrafted_policy_payload(
@@ -825,6 +883,316 @@ def test_paper_table_export_can_embed_statistics_report_and_render_notes(tmp_pat
     assert "selected_comparisons" in export["statistics_report"]
     assert "95% CI" in markdown
     assert "negligible under ceiling saturation" in markdown
+
+
+def _write_appendix_sample_artifacts(tmp_path: Path) -> tuple[Path, Path]:
+    teacher_suites = {
+        "teacher_variable_variable__repaired_mainline": _appendix_suite_payload(
+            "teacher_variable_variable__repaired_mainline",
+            success_rate=0.99,
+            jam_rate=0.01,
+            final_distance_m=0.0009,
+            peak_force_n=0.95,
+            p95_force_n=1.20,
+            contact_steps=30.0,
+            teacher_preset_name="teacher_variable_variable",
+            teacher_motion_rule="contact_aware_variable_motion",
+            teacher_impedance_rule="contact_aware_variable_impedance",
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.01,
+                "force_threshold_termination_rate": 0.01,
+                "blocked_contact_termination_rate": 0.00,
+                "force_threshold_only_termination_rate": 0.01,
+                "blocked_contact_only_termination_rate": 0.00,
+                "force_and_blocked_termination_rate": 0.00,
+                "documented_force_jam_rate": 0.00,
+            },
+        ),
+        "teacher_variable_fixed__repaired_mainline": _appendix_suite_payload(
+            "teacher_variable_fixed__repaired_mainline",
+            success_rate=0.94,
+            jam_rate=0.03,
+            final_distance_m=0.0012,
+            peak_force_n=1.08,
+            p95_force_n=1.34,
+            contact_steps=32.0,
+            teacher_preset_name="teacher_variable_fixed",
+            teacher_motion_rule="contact_aware_variable_motion",
+            teacher_impedance_rule="fixed",
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.03,
+                "force_threshold_termination_rate": 0.01,
+                "blocked_contact_termination_rate": 0.02,
+                "force_threshold_only_termination_rate": 0.01,
+                "blocked_contact_only_termination_rate": 0.02,
+                "force_and_blocked_termination_rate": 0.00,
+                "documented_force_jam_rate": 0.00,
+            },
+        ),
+        "teacher_pose_variable__repaired_mainline": _appendix_suite_payload(
+            "teacher_pose_variable__repaired_mainline",
+            success_rate=0.92,
+            jam_rate=0.05,
+            final_distance_m=0.0015,
+            peak_force_n=1.15,
+            p95_force_n=1.42,
+            contact_steps=35.0,
+            teacher_preset_name="teacher_pose_variable",
+            teacher_motion_rule="pose_feedback",
+            teacher_impedance_rule="contact_aware_variable_impedance",
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.05,
+                "force_threshold_termination_rate": 0.02,
+                "blocked_contact_termination_rate": 0.03,
+                "force_threshold_only_termination_rate": 0.01,
+                "blocked_contact_only_termination_rate": 0.02,
+                "force_and_blocked_termination_rate": 0.01,
+                "documented_force_jam_rate": 0.01,
+            },
+        ),
+        "teacher_pose_fixed__repaired_mainline": _appendix_suite_payload(
+            "teacher_pose_fixed__repaired_mainline",
+            success_rate=0.88,
+            jam_rate=0.09,
+            final_distance_m=0.0018,
+            peak_force_n=1.28,
+            p95_force_n=1.60,
+            contact_steps=38.0,
+            teacher_preset_name="teacher_pose_fixed",
+            teacher_motion_rule="pose_feedback",
+            teacher_impedance_rule="fixed",
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.09,
+                "force_threshold_termination_rate": 0.04,
+                "blocked_contact_termination_rate": 0.06,
+                "force_threshold_only_termination_rate": 0.02,
+                "blocked_contact_only_termination_rate": 0.04,
+                "force_and_blocked_termination_rate": 0.02,
+                "documented_force_jam_rate": 0.02,
+            },
+        ),
+    }
+    diagnostic_suites = {
+        "bc_only_stable_r32_p32": _appendix_suite_payload(
+            "bc_only_stable_r32_p32",
+            success_rate=1.0,
+            jam_rate=0.0,
+            final_distance_m=0.0009,
+            peak_force_n=1.0,
+            p95_force_n=1.3,
+            contact_steps=31.0,
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.0,
+                "force_threshold_termination_rate": 0.0,
+                "blocked_contact_termination_rate": 0.0,
+                "force_threshold_only_termination_rate": 0.0,
+                "blocked_contact_only_termination_rate": 0.0,
+                "force_and_blocked_termination_rate": 0.0,
+                "documented_force_jam_rate": 0.0,
+            },
+        ),
+        "fixed_impedance_rl": _appendix_suite_payload(
+            "fixed_impedance_rl",
+            success_rate=0.4,
+            jam_rate=0.3,
+            final_distance_m=0.0022,
+            peak_force_n=1.6,
+            p95_force_n=1.95,
+            contact_steps=40.0,
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.3,
+                "force_threshold_termination_rate": 0.12,
+                "blocked_contact_termination_rate": 0.20,
+                "force_threshold_only_termination_rate": 0.07,
+                "blocked_contact_only_termination_rate": 0.15,
+                "force_and_blocked_termination_rate": 0.05,
+                "documented_force_jam_rate": 0.04,
+            },
+        ),
+        "repaired_mainline_bc_to_ppo": _appendix_suite_payload(
+            "repaired_mainline_bc_to_ppo",
+            success_rate=0.98,
+            jam_rate=0.02,
+            final_distance_m=0.0010,
+            peak_force_n=0.98,
+            p95_force_n=1.24,
+            contact_steps=30.0,
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.02,
+                "force_threshold_termination_rate": 0.01,
+                "blocked_contact_termination_rate": 0.01,
+                "force_threshold_only_termination_rate": 0.01,
+                "blocked_contact_only_termination_rate": 0.00,
+                "force_and_blocked_termination_rate": 0.01,
+                "documented_force_jam_rate": 0.01,
+            },
+        ),
+        "dapg_lite_repaired_mainline": _appendix_suite_payload(
+            "dapg_lite_repaired_mainline",
+            success_rate=0.97,
+            jam_rate=0.03,
+            final_distance_m=0.0011,
+            peak_force_n=1.02,
+            p95_force_n=1.28,
+            contact_steps=31.0,
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.03,
+                "force_threshold_termination_rate": 0.01,
+                "blocked_contact_termination_rate": 0.02,
+                "force_threshold_only_termination_rate": 0.01,
+                "blocked_contact_only_termination_rate": 0.01,
+                "force_and_blocked_termination_rate": 0.01,
+                "documented_force_jam_rate": 0.01,
+            },
+        ),
+    }
+    benchmark_report = {
+        "config": {
+            "suite_names": [
+                "bc_only_stable_r32_p32",
+                "fixed_impedance_rl",
+                "repaired_mainline_bc_to_ppo",
+                "dapg_lite_repaired_mainline",
+                "teacher_variable_variable__repaired_mainline",
+                "teacher_variable_fixed__repaired_mainline",
+                "teacher_pose_variable__repaired_mainline",
+                "teacher_pose_fixed__repaired_mainline",
+            ],
+            "uncertainty_profiles": [
+                "nominal",
+                "tight_clearance",
+                "high_friction",
+                "offset_bias",
+                "noisy_force",
+            ],
+        },
+        "handcrafted_results": {},
+        "learned_results": {**diagnostic_suites, **teacher_suites},
+    }
+    fixed_impedance_override = {
+        "config": {"suite_name": "fixed_impedance_rl_stable_r32_p32"},
+        **_appendix_suite_payload(
+            "fixed_impedance_rl_stable_r32_p32",
+            success_rate=0.91,
+            jam_rate=0.08,
+            final_distance_m=0.0014,
+            peak_force_n=1.32,
+            p95_force_n=1.66,
+            contact_steps=37.0,
+            diagnostic_over_profile_rates={
+                "jam_rate": 0.08,
+                "force_threshold_termination_rate": 0.03,
+                "blocked_contact_termination_rate": 0.06,
+                "force_threshold_only_termination_rate": 0.02,
+                "blocked_contact_only_termination_rate": 0.05,
+                "force_and_blocked_termination_rate": 0.01,
+                "documented_force_jam_rate": 0.02,
+            },
+        ),
+    }
+    benchmark_path = tmp_path / "appendix_benchmark.json"
+    fixed_override_path = tmp_path / "appendix_fixed.json"
+    benchmark_path.write_text(json.dumps(benchmark_report), encoding="utf-8")
+    fixed_override_path.write_text(json.dumps(fixed_impedance_override), encoding="utf-8")
+    return benchmark_path, fixed_override_path
+
+
+def test_build_3dof_appendix_table_export_includes_teacher_and_diagnostics(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    benchmark_path, fixed_override_path = _write_appendix_sample_artifacts(tmp_path)
+
+    export = module.build_3dof_appendix_table_export(
+        benchmark_report_path=benchmark_path,
+        fixed_impedance_report_path=fixed_override_path,
+    )
+
+    assert export["teacher_suite_order"] == [
+        "teacher_variable_variable__repaired_mainline",
+        "teacher_variable_fixed__repaired_mainline",
+        "teacher_pose_variable__repaired_mainline",
+        "teacher_pose_fixed__repaired_mainline",
+    ]
+    assert export["diagnostic_suite_order"] == [
+        "bc_only_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+        "fixed_impedance_rl_stable_r32_p32",
+    ]
+    teacher_row = export["teacher_rows"][0]
+    assert teacher_row["teacher_motion_rule"] == "contact_aware_variable_motion"
+    assert teacher_row["teacher_impedance_rule"] == "contact_aware_variable_impedance"
+    assert teacher_row["five_profile_mean"]["success_rate"] == pytest.approx(0.99)
+
+    diagnostic_row = next(
+        row
+        for row in export["diagnostic_rows"]
+        if row["suite_name"] == "fixed_impedance_rl_stable_r32_p32"
+    )
+    assert diagnostic_row["diagnostics"]["force_threshold_termination_rate"] == pytest.approx(0.03)
+    assert diagnostic_row["diagnostics"]["blocked_contact_termination_rate"] == pytest.approx(0.06)
+    assert diagnostic_row["diagnostics"]["documented_force_jam_rate"] == pytest.approx(0.02)
+
+    markdown = module.render_3dof_appendix_table_markdown(export)
+    assert "## Teacher Ablation" in markdown
+    assert "## Termination Diagnostics" in markdown
+    assert "documented_force_jam_rate" in markdown
+
+
+def test_build_3dof_appendix_table_export_rejects_missing_teacher_suite(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    benchmark_path, fixed_override_path = _write_appendix_sample_artifacts(tmp_path)
+    benchmark_report = json.loads(benchmark_path.read_text(encoding="utf-8"))
+    del benchmark_report["learned_results"]["teacher_pose_fixed__repaired_mainline"]
+    benchmark_path.write_text(json.dumps(benchmark_report), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="teacher_pose_fixed__repaired_mainline"):
+        module.build_3dof_appendix_table_export(
+            benchmark_report_path=benchmark_path,
+            fixed_impedance_report_path=fixed_override_path,
+        )
+
+
+def test_build_3dof_appendix_table_export_rejects_missing_diagnostic_metric(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    benchmark_path, fixed_override_path = _write_appendix_sample_artifacts(tmp_path)
+    benchmark_report = json.loads(benchmark_path.read_text(encoding="utf-8"))
+    del benchmark_report["learned_results"]["repaired_mainline_bc_to_ppo"]["five_profile_mean"][
+        "force_threshold_termination_rate_mean_over_profiles"
+    ]
+    benchmark_path.write_text(json.dumps(benchmark_report), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="force_threshold_termination_rate"):
+        module.build_3dof_appendix_table_export(
+            benchmark_report_path=benchmark_path,
+            fixed_impedance_report_path=fixed_override_path,
+        )
+
+
+def test_export_3dof_appendix_table_writes_json_and_markdown(tmp_path: Path) -> None:
+    module = _load_paper_tables_module()
+    benchmark_path, fixed_override_path = _write_appendix_sample_artifacts(tmp_path)
+
+    json_path, markdown_path = module.export_3dof_appendix_table(
+        benchmark_report_path=benchmark_path,
+        fixed_impedance_report_path=fixed_override_path,
+        output_dir=tmp_path,
+        stem="appendix_table",
+    )
+
+    exported_json = json.loads(json_path.read_text(encoding="utf-8"))
+    markdown = markdown_path.read_text(encoding="utf-8")
+
+    assert json_path.name == "appendix_table.json"
+    assert markdown_path.name == "appendix_table.md"
+    assert exported_json["teacher_rows"][0]["suite_name"] == "teacher_variable_variable__repaired_mainline"
+    assert "teacher_variable_fixed__repaired_mainline" in markdown
+    assert "force_and_blocked_termination_rate" in markdown
 
 
 def test_manuscript_section_order_matches_upgraded_evidence_hierarchy() -> None:
