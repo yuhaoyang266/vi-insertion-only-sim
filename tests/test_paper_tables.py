@@ -1201,6 +1201,42 @@ def test_export_3dof_appendix_table_writes_json_and_markdown(tmp_path: Path) -> 
     assert "force_and_blocked_termination_rate" in markdown
 
 
+def test_build_3dof_appendix_table_export_accepts_stable_fixed_suite_in_main_benchmark(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    benchmark_path, _ = _write_appendix_sample_artifacts(tmp_path)
+    benchmark_report = json.loads(benchmark_path.read_text(encoding="utf-8"))
+    benchmark_report["config"]["suite_names"] = [
+        "bc_only_stable_r32_p32",
+        "fixed_impedance_rl_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+        "teacher_variable_variable__repaired_mainline",
+        "teacher_variable_fixed__repaired_mainline",
+        "teacher_pose_variable__repaired_mainline",
+        "teacher_pose_fixed__repaired_mainline",
+    ]
+    benchmark_report["learned_results"]["fixed_impedance_rl_stable_r32_p32"] = benchmark_report[
+        "learned_results"
+    ].pop("fixed_impedance_rl")
+    benchmark_report["learned_results"]["fixed_impedance_rl_stable_r32_p32"][
+        "suite_run_kwargs"
+    ]["suite_name"] = "fixed_impedance_rl_stable_r32_p32"
+    benchmark_path.write_text(json.dumps(benchmark_report), encoding="utf-8")
+
+    export = module.build_3dof_appendix_table_export(
+        benchmark_report_path=benchmark_path,
+    )
+
+    assert export["diagnostic_suite_order"] == [
+        "bc_only_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+        "fixed_impedance_rl_stable_r32_p32",
+    ]
+
+
 def test_manuscript_section_order_matches_upgraded_evidence_hierarchy() -> None:
     manuscript = _require_test_asset(
         (

@@ -1176,11 +1176,12 @@ def build_3dof_appendix_table_export(
     ]
 
     diagnostic_suite_order = list(APPENDIX_DIAGNOSTIC_SUITE_ORDER)
-    fixed_impedance_suite_name = (
-        "fixed_impedance_rl_stable_r32_p32"
-        if fixed_impedance_report_path is not None
-        else "fixed_impedance_rl"
-    )
+    if fixed_impedance_report_path is not None:
+        fixed_impedance_suite_name = "fixed_impedance_rl_stable_r32_p32"
+    elif "fixed_impedance_rl_stable_r32_p32" in suite_payload_map:
+        fixed_impedance_suite_name = "fixed_impedance_rl_stable_r32_p32"
+    else:
+        fixed_impedance_suite_name = "fixed_impedance_rl"
     diagnostic_suite_order.append(fixed_impedance_suite_name)
     diagnostic_rows = [
         _build_appendix_diagnostic_row(
