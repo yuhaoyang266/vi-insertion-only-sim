@@ -5,116 +5,165 @@ import sys
 
 import pytest
 
+
+def _require_test_asset(path: Path, description: str) -> Path:
+    if not path.exists():
+        pytest.skip(f"missing {description}: {path}")
+    return path
+
 def _contact_audit_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "latest_three_dof_contact_model_audit.json"
+        ),
+        "contact audit artifact",
     )
 
 
 def _phase2_demo_coverage_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "three_dof_factor_sweep_demonstration_coverage_20260411_172516.json"
+        ),
+        "phase2 demonstration coverage artifact",
     )
 
 
 def _phase2_reset_coverage_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "three_dof_factor_sweep_reset_coverage_20260411_172635.json"
+        ),
+        "phase2 reset coverage artifact",
     )
 
 
 def _phase2_bc_optimization_depth_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "three_dof_factor_sweep_bc_optimization_depth_20260411_172923.json"
+        ),
+        "phase2 BC optimization artifact",
     )
 
 
 def _phase2_algorithm_budget_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "three_dof_algorithm_budget_comparison_20260411_175606.json"
+        ),
+        "phase2 algorithm budget artifact",
     )
 
 
 def _stage3_benchmark_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+        ),
+        "stage3 benchmark artifact",
     )
 
 
 def _stage3_statistics_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "paper_only_sim_tables"
         / "three_dof_statistics_report_stage3_20260412.json"
+        ),
+        "stage3 statistics artifact",
     )
 
 
 def _paper_manifest_path() -> Path:
-    return (
+    primary_path = (
         Path(__file__).resolve().parents[1]
         / "docs"
         / "paper_only_sim_figure_asset_manifest.md"
     )
+    if primary_path.exists():
+        return primary_path
+    fallback_path = primary_path.with_name("figure_asset_manifest.md")
+    return _require_test_asset(fallback_path, "paper figure asset manifest")
 
 
 def _paper_manuscript_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "docs"
         / "paper_manuscript_only_sim_final.tex"
+        ),
+        "paper manuscript asset",
     )
 
 
 def _axial_tolerance_sweep_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "latest_three_dof_axial_tolerance_sweep_seed012.json"
+        ),
+        "axial tolerance sweep artifact",
     )
 
 
 def _failure_bucket_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "latest_three_dof_failure_bucket_axial2p0_lateral1p5_seed012.json"
+        ),
+        "failure bucket artifact",
     )
 
 
 def _axial_tail_sweep_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "latest_three_dof_axial_tail_sweep_lateral1p5_seed012.json"
+        ),
+        "axial tail sweep artifact",
     )
 
 
 def _success_tolerance_sweep_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "latest_three_dof_success_tolerance_sweep_seed012.json"
+        ),
+        "success tolerance sweep artifact",
     )
 
 
 def _speed_tolerance_sweep_artifact_path() -> Path:
-    return (
+    return _require_test_asset(
+        (
         Path(__file__).resolve().parents[1]
         / "outputs"
         / "latest_three_dof_speed_tolerance_sweep_axial2p0_seed012.json"
+        ),
+        "speed tolerance sweep artifact",
     )
 
 

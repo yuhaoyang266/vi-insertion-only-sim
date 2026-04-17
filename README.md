@@ -105,6 +105,12 @@ by a variable-impedance teacher. The repository should therefore be read as a be
 teacher-coupled learnability study rather than a hardware validation, a 6DoF insertion benchmark, or
 a teacher-independent causal theorem.
 
+Phase C+ benchmark artifacts also report two force-jam diagnostics with intentionally different
+semantics: `jam_rate` keeps the legacy termination rule (`single-step force threshold exceedance OR
+persistent blocked contact`), while `documented_force_jam_rate` isolates the stricter paper-facing
+diagnostic (`three consecutive force-threshold violations`). Both are retained so historical
+benchmark numbers remain reproducible while the paper-facing force-jam criterion stays auditable.
+
 ## Repository Hygiene
 
 The repository intentionally separates manuscript files, figures, supplementary views, result

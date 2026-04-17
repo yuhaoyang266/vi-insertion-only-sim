@@ -497,6 +497,8 @@ def build_3dof_documented_recipe_config(
         learning_rate=1e-4,
         gamma=0.95,
         seed=seed,
+        # This documented recipe is an abridged debugging/probe configuration, not the
+        # main 64-step benchmark contract used by the paper-facing benchmark runners.
         max_episode_steps=32,
         verbose=0,
         bc_rollout_episodes=2,
