@@ -19,14 +19,16 @@ from vi_full.three_dof_benchmark import (
 )
 from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_policies import (
+    build_3dof_teacher_metadata,
     build_3dof_handcrafted_policy_registry,
-    resolve_3dof_teacher_spec,
 )
 from vi_full.three_dof_training import (
     build_3dof_mainline_train_config,
     serialize_3dof_train_config,
     train_3dof_ppo_agent,
 )
+
+UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION = 1
 
 
 def parse_args() -> argparse.Namespace:
@@ -114,7 +116,10 @@ def _build_suite_run_kwargs(
 
 def _build_run_signature(suite_run_kwargs: dict[str, Any]) -> str:
     signature_payload = json.dumps(
-        _json_safe(suite_run_kwargs),
+        {
+            "artifact_schema_version": UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION,
+            "suite_run_kwargs": _json_safe(suite_run_kwargs),
+        },
         sort_keys=True,
         separators=(",", ":"),
     )
@@ -131,19 +136,10 @@ def _suite_result_matches_signature(
 
 
 def _build_teacher_metadata(suite_run_kwargs: dict[str, Any]) -> dict[str, Any]:
-    teacher_spec = resolve_3dof_teacher_spec(
+    return build_3dof_teacher_metadata(
         policy_name=str(suite_run_kwargs.get("bc_demo_policy_name", "variable_impedance")),
         teacher_spec=suite_run_kwargs.get("bc_demo_teacher_spec"),
     )
-    return {
-        "bc_demo_policy_name": str(
-            suite_run_kwargs.get("bc_demo_policy_name", "variable_impedance")
-        ),
-        "bc_demo_teacher_spec": asdict(teacher_spec),
-        "teacher_preset_name": teacher_spec.preset_name,
-        "teacher_motion_rule": teacher_spec.motion_rule,
-        "teacher_impedance_rule": teacher_spec.impedance_rule,
-    }
 
 
 def _build_train_config(seed: int, suite_run_kwargs: dict[str, Any]) -> Any:
@@ -330,6 +326,7 @@ def _build_report_config(
         "base_bc_batch_size": int(args.bc_batch_size),
         "suite_names": suite_name_order,
         "handcrafted_policy_names": list(build_3dof_handcrafted_policy_registry().keys()),
+        "artifact_schema_version": UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION,
         "benchmark_contract": asdict(DEFAULT_3DOF_BENCHMARK_CONTRACT),
     }
 

@@ -46,6 +46,12 @@ THREE_DOF_NUMERIC_METRICS = (
     "mean_contact_steps",
     "mean_settling_steps_after_contact",
     "jam_rate",
+    "force_threshold_termination_rate",
+    "blocked_contact_termination_rate",
+    "force_threshold_only_termination_rate",
+    "blocked_contact_only_termination_rate",
+    "force_and_blocked_termination_rate",
+    "documented_force_jam_rate",
 )
 
 CONTACT_THRESHOLD_N = 0.05
@@ -64,6 +70,37 @@ def trace_3dof_policy_rollout(
         act_fn=policy.act,
         seed=seed,
     )
+
+
+def _extract_3dof_termination_details(info: dict[str, Any]) -> dict[str, bool]:
+    details = info.get("termination_details")
+    if isinstance(details, dict):
+        return {
+            "success": bool(details.get("success", False)),
+            "force_threshold_exceeded": bool(
+                details.get("force_threshold_exceeded", False)
+            ),
+            "blocked_contact_failure": bool(
+                details.get("blocked_contact_failure", False)
+            ),
+            "meets_documented_force_jam": bool(
+                details.get("meets_documented_force_jam", False)
+            ),
+            "jammed": bool(details.get("jammed", info.get("is_jammed", False))),
+        }
+
+    termination_reason = str(info.get("termination_reason", "running"))
+    is_success = bool(info.get("is_success", False))
+    is_jammed = bool(info.get("is_jammed", False))
+    return {
+        "success": is_success,
+        "force_threshold_exceeded": termination_reason == "force_threshold",
+        "blocked_contact_failure": termination_reason == "blocked_contact",
+        "meets_documented_force_jam": bool(
+            info.get("meets_documented_force_jam", False)
+        ),
+        "jammed": is_jammed,
+    }
 
 
 def trace_3dof_predictor_rollout(
@@ -93,6 +130,7 @@ def _trace_3dof_rollout(
     while not (terminated or truncated):
         action = np.asarray(act_fn(observation), dtype=np.float32)
         observation, reward, terminated, truncated, info = env.step(action)
+        termination_details = _extract_3dof_termination_details(info)
         xy_error = float(np.linalg.norm(np.asarray(observation[:2], dtype=np.float64)))
         surface_height = float(max(observation[2] + env.target_position[2], 0.0))
         trace.append(
@@ -151,6 +189,16 @@ def _trace_3dof_rollout(
                 "truncated": bool(truncated),
                 "is_success": bool(info["is_success"]),
                 "is_jammed": bool(info["is_jammed"]),
+                "termination_reason": str(info["termination_reason"]),
+                "force_threshold_exceeded": bool(
+                    termination_details["force_threshold_exceeded"]
+                ),
+                "blocked_contact_failure": bool(
+                    termination_details["blocked_contact_failure"]
+                ),
+                "meets_documented_force_jam": bool(
+                    termination_details["meets_documented_force_jam"]
+                ),
             }
         )
     return trace
@@ -243,6 +291,12 @@ def evaluate_3dof_policy(
     contact_steps_per_episode: list[float] = []
     settling_steps_after_contact: list[float] = []
     jam_flags: list[float] = []
+    force_threshold_termination_flags: list[float] = []
+    blocked_contact_termination_flags: list[float] = []
+    force_threshold_only_termination_flags: list[float] = []
+    blocked_contact_only_termination_flags: list[float] = []
+    force_and_blocked_termination_flags: list[float] = []
+    documented_force_jam_flags: list[float] = []
 
     for episode_index in range(episodes):
         observation, _ = env.reset(seed=seed + episode_index)
@@ -304,6 +358,27 @@ def evaluate_3dof_policy(
             if settling_delay is not None
             else float(max(step_count - (first_contact_step or step_count), 0))
         )
+        termination_details = _extract_3dof_termination_details(final_info)
+        force_threshold_exceeded = bool(
+            termination_details["force_threshold_exceeded"]
+        )
+        blocked_contact_failure = bool(
+            termination_details["blocked_contact_failure"]
+        )
+        force_threshold_termination_flags.append(float(force_threshold_exceeded))
+        blocked_contact_termination_flags.append(float(blocked_contact_failure))
+        force_threshold_only_termination_flags.append(
+            float(force_threshold_exceeded and not blocked_contact_failure)
+        )
+        blocked_contact_only_termination_flags.append(
+            float(blocked_contact_failure and not force_threshold_exceeded)
+        )
+        force_and_blocked_termination_flags.append(
+            float(force_threshold_exceeded and blocked_contact_failure)
+        )
+        documented_force_jam_flags.append(
+            float(termination_details["meets_documented_force_jam"])
+        )
 
     return {
         "policy_name": getattr(policy, "name", policy.__class__.__name__),
@@ -320,6 +395,22 @@ def evaluate_3dof_policy(
         "mean_contact_steps": float(np.mean(contact_steps_per_episode)),
         "mean_settling_steps_after_contact": float(np.mean(settling_steps_after_contact)),
         "jam_rate": float(np.mean(jam_flags)),
+        "force_threshold_termination_rate": float(
+            np.mean(force_threshold_termination_flags)
+        ),
+        "blocked_contact_termination_rate": float(
+            np.mean(blocked_contact_termination_flags)
+        ),
+        "force_threshold_only_termination_rate": float(
+            np.mean(force_threshold_only_termination_flags)
+        ),
+        "blocked_contact_only_termination_rate": float(
+            np.mean(blocked_contact_only_termination_flags)
+        ),
+        "force_and_blocked_termination_rate": float(
+            np.mean(force_and_blocked_termination_flags)
+        ),
+        "documented_force_jam_rate": float(np.mean(documented_force_jam_flags)),
     }
 
 

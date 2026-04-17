@@ -329,6 +329,129 @@ def test_runner_reruns_suite_when_run_signature_mismatches(
     assert written["learned_results"][suite_name]["run_signature"] == "fresh-signature"
 
 
+def test_artifact_schema_version_changes_run_signature(monkeypatch) -> None:
+    module = _load_runner_module()
+    suite_run_kwargs = {
+        "suite_name": "learned_ppo_3dof_bc",
+        "seeds": [0],
+        "total_timesteps": 128,
+        "episodes_per_seed": 1,
+        "max_episode_steps": 64,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "uncertainty_profiles": ["nominal"],
+        "bc_rollout_episodes": 32,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_demo_policy_name": "variable_impedance",
+    }
+
+    current_signature = module._build_run_signature(suite_run_kwargs)
+    monkeypatch.setattr(module, "UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION", 0)
+    previous_signature = module._build_run_signature(suite_run_kwargs)
+
+    assert current_signature != previous_signature
+
+
+def test_runner_reruns_suite_when_artifact_schema_version_changes(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    output_path = tmp_path / "benchmark.json"
+    suite_name = "learned_ppo_3dof_bc"
+    suite_run_kwargs = {
+        "suite_name": suite_name,
+        "seeds": [0, 1, 2, 3, 4],
+        "total_timesteps": 128,
+        "episodes_per_seed": 100,
+        "max_episode_steps": 64,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "uncertainty_profiles": ["nominal", "high_friction"],
+        "bc_rollout_episodes": 32,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_demo_policy_name": "variable_impedance",
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_freeze_pose_head": False,
+        "contact_bc_after_finetune": False,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+    }
+    monkeypatch.setattr(module, "UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION", 0)
+    old_signature = module._build_run_signature(suite_run_kwargs)
+    monkeypatch.setattr(module, "UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION", 1)
+    output_path.write_text(
+        json.dumps(
+            {
+                "config": {"suite_names": [suite_name]},
+                "handcrafted_results": {},
+                "learned_results": {
+                    suite_name: {
+                        "run_signature": old_signature,
+                        "suite_run_kwargs": {"suite_name": suite_name},
+                        "train_configs": [],
+                        "training_summaries": [],
+                        "eval_results": {},
+                        "five_profile_mean": {
+                            "success_rate_mean_over_profiles": 0.0,
+                            "jam_rate_mean_over_profiles": 0.0,
+                        },
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(module, "run_3dof_handcrafted_uncertainty_suite", lambda **_: {})
+    calls: list[dict[str, object]] = []
+
+    def _fake_run_3dof_suite_across_profiles(run_kwargs):
+        calls.append(dict(run_kwargs))
+        return {
+            "run_signature": "fresh-signature",
+            "suite_run_kwargs": {"suite_name": run_kwargs["suite_name"]},
+            "train_configs": [],
+            "training_summaries": [],
+            "eval_results": {},
+            "five_profile_mean": {
+                "success_rate_mean_over_profiles": 1.0,
+                "jam_rate_mean_over_profiles": 0.0,
+            },
+        }
+
+    monkeypatch.setattr(module, "_run_3dof_suite_across_profiles", _fake_run_3dof_suite_across_profiles)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_3dof_uncertainty_benchmark.py",
+            "--include-learned",
+            "--profiles",
+            "nominal",
+            "high_friction",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    module.main()
+    written = json.loads(output_path.read_text(encoding="utf-8"))
+
+    assert [call["suite_name"] for call in calls] == [suite_name]
+    assert (
+        written["config"]["artifact_schema_version"]
+        == module.UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION
+    )
+
+
 def test_runner_teacher_ablation_block_adds_expected_suites(
     monkeypatch,
     tmp_path: Path,
@@ -474,3 +597,50 @@ def test_run_suite_across_profiles_exposes_teacher_metadata(monkeypatch) -> None
         suite_result["eval_results"]["nominal"]["aggregate"]["teacher_impedance_rule"]
         == "contact_aware_variable_impedance"
     )
+
+
+def test_five_profile_mean_includes_termination_diagnostic_rates() -> None:
+    module = _load_runner_module()
+    aggregate_defaults = {
+        f"{metric_name}_mean": 0.0 for metric_name in module.THREE_DOF_NUMERIC_METRICS
+    }
+
+    five_profile_mean = module._build_five_profile_mean(
+        {
+            "nominal": {
+                "aggregate": {
+                    **aggregate_defaults,
+                    "force_threshold_termination_rate_mean": 0.5,
+                    "blocked_contact_termination_rate_mean": 0.0,
+                    "force_threshold_only_termination_rate_mean": 0.5,
+                    "blocked_contact_only_termination_rate_mean": 0.0,
+                    "force_and_blocked_termination_rate_mean": 0.0,
+                    "documented_force_jam_rate_mean": 0.25,
+                }
+            },
+            "high_friction": {
+                "aggregate": {
+                    **aggregate_defaults,
+                    "force_threshold_termination_rate_mean": 0.0,
+                    "blocked_contact_termination_rate_mean": 0.5,
+                    "force_threshold_only_termination_rate_mean": 0.0,
+                    "blocked_contact_only_termination_rate_mean": 0.25,
+                    "force_and_blocked_termination_rate_mean": 0.25,
+                    "documented_force_jam_rate_mean": 0.0,
+                }
+            },
+        }
+    )
+
+    assert five_profile_mean["force_threshold_termination_rate_mean_over_profiles"] == 0.25
+    assert five_profile_mean["blocked_contact_termination_rate_mean_over_profiles"] == 0.25
+    assert (
+        five_profile_mean["force_threshold_only_termination_rate_mean_over_profiles"]
+        == 0.25
+    )
+    assert (
+        five_profile_mean["blocked_contact_only_termination_rate_mean_over_profiles"]
+        == 0.125
+    )
+    assert five_profile_mean["force_and_blocked_termination_rate_mean_over_profiles"] == 0.125
+    assert five_profile_mean["documented_force_jam_rate_mean_over_profiles"] == 0.125

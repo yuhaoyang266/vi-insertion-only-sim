@@ -636,6 +636,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
             "is_success": self._is_success(),
             "is_jammed": self._is_jammed(),
             "termination_reason": self._termination_reason(),
+            "termination_details": self._termination_details(),
             "force_over_threshold_steps": int(self.force_over_threshold_steps),
             "blocked_contact_steps": int(self.blocked_contact_steps),
             "meets_documented_force_jam": self._meets_documented_force_jam(),
@@ -727,6 +728,20 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         if self._is_blocked_contact_failure():
             return "blocked_contact"
         return "running"
+
+    def _termination_details(self) -> dict[str, bool]:
+        success = self._is_success()
+        force_threshold_exceeded = self._force_threshold_exceeded()
+        blocked_contact_failure = self._is_blocked_contact_failure()
+        meets_documented_force_jam = self._meets_documented_force_jam()
+        jammed = force_threshold_exceeded or blocked_contact_failure
+        return {
+            "success": success,
+            "force_threshold_exceeded": force_threshold_exceeded,
+            "blocked_contact_failure": blocked_contact_failure,
+            "meets_documented_force_jam": meets_documented_force_jam,
+            "jammed": jammed,
+        }
 
     def _is_success(self) -> bool:
         rel_pos = self.position - self.contact_target_position

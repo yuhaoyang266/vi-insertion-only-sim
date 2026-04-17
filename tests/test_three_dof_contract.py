@@ -45,6 +45,13 @@ def test_force_threshold_termination_reason_is_exposed(monkeypatch) -> None:
     assert info["termination_reason"] == "force_threshold"
     assert info["force_over_threshold_steps"] == 1
     assert info["meets_documented_force_jam"] is False
+    assert info["termination_details"] == {
+        "success": False,
+        "force_threshold_exceeded": True,
+        "blocked_contact_failure": False,
+        "meets_documented_force_jam": False,
+        "jammed": True,
+    }
 
 
 def test_blocked_contact_termination_reason_is_separate(monkeypatch) -> None:
@@ -76,6 +83,13 @@ def test_blocked_contact_termination_reason_is_separate(monkeypatch) -> None:
     assert info["termination_reason"] == "blocked_contact"
     assert info["blocked_contact_steps"] == env.config.jam_persistence_steps
     assert info["meets_documented_force_jam"] is False
+    assert info["termination_details"] == {
+        "success": False,
+        "force_threshold_exceeded": False,
+        "blocked_contact_failure": True,
+        "meets_documented_force_jam": False,
+        "jammed": True,
+    }
 
 
 def test_meets_documented_force_jam_turns_true_after_consecutive_force_violations(
@@ -105,3 +119,43 @@ def test_meets_documented_force_jam_turns_true_after_consecutive_force_violation
     assert info["termination_reason"] == "force_threshold"
     assert info["force_over_threshold_steps"] == env.config.jam_persistence_steps
     assert info["meets_documented_force_jam"] is True
+    assert info["termination_details"] == {
+        "success": False,
+        "force_threshold_exceeded": True,
+        "blocked_contact_failure": False,
+        "meets_documented_force_jam": True,
+        "jammed": True,
+    }
+
+
+def test_force_threshold_keeps_priority_when_blocked_contact_also_fails(
+    monkeypatch,
+) -> None:
+    env = ThreeDoFInsertionEnv(ThreeDoFInsertionConfig())
+    env.reset(seed=0)
+
+    def _fake_contact_dynamics(**kwargs):
+        del kwargs
+        return (
+            env.position.copy(),
+            np.array([env.config.jam_force_threshold_n + 0.5, 0.0, 0.0], dtype=np.float64),
+            True,
+            env._empty_contact_debug(),
+            np.array([env.config.jam_force_threshold_n + 0.5, 0.0, 0.0], dtype=np.float64),
+        )
+
+    monkeypatch.setattr(env, "_apply_contact_dynamics", _fake_contact_dynamics)
+    monkeypatch.setattr(env, "_is_success", lambda: False)
+
+    info = {}
+    for _ in range(env.config.jam_persistence_steps):
+        _, _, _, _, info = env.step(np.zeros(env.action_space.shape, dtype=np.float32))
+
+    assert info["termination_reason"] == "force_threshold"
+    assert info["termination_details"] == {
+        "success": False,
+        "force_threshold_exceeded": True,
+        "blocked_contact_failure": True,
+        "meets_documented_force_jam": True,
+        "jammed": True,
+    }

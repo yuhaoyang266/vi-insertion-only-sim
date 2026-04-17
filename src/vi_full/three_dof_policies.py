@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from typing import Literal
 
 import numpy as np
@@ -116,6 +116,25 @@ def resolve_3dof_teacher_spec(
     if preset_name not in registry:
         raise ValueError(f"Unknown 3DoF teacher preset: {resolved_policy_name}")
     return registry[preset_name]
+
+
+def build_3dof_teacher_metadata(
+    *,
+    policy_name: str | None = None,
+    teacher_spec: ThreeDoFTeacherSpec | None = None,
+) -> dict[str, object]:
+    resolved_policy_name = "variable_impedance" if policy_name is None else policy_name
+    resolved_teacher_spec = resolve_3dof_teacher_spec(
+        policy_name=resolved_policy_name,
+        teacher_spec=teacher_spec,
+    )
+    return {
+        "bc_demo_policy_name": resolved_policy_name,
+        "bc_demo_teacher_spec": asdict(resolved_teacher_spec),
+        "teacher_preset_name": resolved_teacher_spec.preset_name,
+        "teacher_motion_rule": resolved_teacher_spec.motion_rule,
+        "teacher_impedance_rule": resolved_teacher_spec.impedance_rule,
+    }
 
 
 def compute_3dof_teacher_motion_action(

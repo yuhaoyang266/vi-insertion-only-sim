@@ -1,8 +1,10 @@
 import numpy as np
+import pytest
 
 from vi_full.three_dof_policies import (
     ThreeDoFFixedImpedancePolicy,
     ThreeDoFVariableImpedancePolicy,
+    build_3dof_teacher_metadata,
     compose_3dof_teacher_action,
     resolve_3dof_teacher_spec,
 )
@@ -176,6 +178,24 @@ def test_resolve_3dof_teacher_spec_prefers_explicit_teacher_spec() -> None:
     )
 
     assert resolved_spec == explicit_spec
+
+
+def test_resolve_3dof_teacher_spec_rejects_unknown_preset() -> None:
+    with pytest.raises(ValueError, match="Unknown 3DoF teacher preset"):
+        resolve_3dof_teacher_spec(policy_name="teacher_unknown")
+
+
+def test_build_3dof_teacher_metadata_prefers_explicit_teacher_spec() -> None:
+    metadata = build_3dof_teacher_metadata(
+        policy_name="fixed_impedance",
+        teacher_spec=resolve_3dof_teacher_spec(policy_name="teacher_pose_variable"),
+    )
+
+    assert metadata["bc_demo_policy_name"] == "fixed_impedance"
+    assert metadata["teacher_preset_name"] == "teacher_pose_variable"
+    assert metadata["teacher_motion_rule"] == "pose_feedback"
+    assert metadata["teacher_impedance_rule"] == "contact_aware_variable_impedance"
+    assert metadata["bc_demo_teacher_spec"]["preset_name"] == "teacher_pose_variable"
 
 
 def test_teacher_variable_variable_matches_legacy_variable_impedance_policy_actions() -> None:

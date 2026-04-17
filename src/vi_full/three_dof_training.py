@@ -17,6 +17,7 @@ from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_env import ThreeDoFInsertionEnv
 from vi_full.three_dof_policies import (
     ThreeDoFTeacherSpec,
+    build_3dof_teacher_metadata,
     compose_3dof_teacher_action,
     resolve_3dof_teacher_spec,
 )
@@ -908,14 +909,10 @@ def _resolve_3dof_bc_demo_teacher_spec(
 def _build_3dof_teacher_metadata(
     config: ThreeDoFPPOTrainConfig,
 ) -> dict[str, object]:
-    teacher_spec = _resolve_3dof_bc_demo_teacher_spec(config)
-    return {
-        "bc_demo_policy_name": config.bc_demo_policy_name,
-        "bc_demo_teacher_spec": asdict(teacher_spec),
-        "teacher_preset_name": teacher_spec.preset_name,
-        "teacher_motion_rule": teacher_spec.motion_rule,
-        "teacher_impedance_rule": teacher_spec.impedance_rule,
-    }
+    return build_3dof_teacher_metadata(
+        policy_name=config.bc_demo_policy_name,
+        teacher_spec=config.bc_demo_teacher_spec,
+    )
 
 
 def _build_3dof_demo_policy(config: ThreeDoFPPOTrainConfig):
