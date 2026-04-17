@@ -5,6 +5,7 @@ from typing import Any
 
 import numpy as np
 
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_config import ThreeDoFInsertionConfig
 
 
@@ -26,7 +27,7 @@ POSE_PERTURBATION_PROFILES = (
 def build_3dof_profile_config(
     profile_name: str,
     *,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
 ) -> ThreeDoFInsertionConfig:
     base = ThreeDoFInsertionConfig(max_episode_steps=max_episode_steps)
     if profile_name == "nominal":

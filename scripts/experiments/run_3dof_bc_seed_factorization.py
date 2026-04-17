@@ -9,6 +9,7 @@ from vi_full.three_dof_benchmark import (
     DEFAULT_UNCERTAINTY_PROFILES,
     run_3dof_bc_seed_factorization_suite,
 )
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 
 
 def parse_args() -> argparse.Namespace:
@@ -19,7 +20,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--demo-seeds", type=int, nargs="+", default=[0, 1])
     parser.add_argument("--eval-seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--episodes", type=int, default=50)
-    parser.add_argument("--max-episode-steps", type=int, default=64)
+    parser.add_argument(
+        "--max-episode-steps",
+        type=int,
+        default=DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+    )
     parser.add_argument(
         "--profiles",
         type=str,

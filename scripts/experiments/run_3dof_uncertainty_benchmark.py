@@ -4,6 +4,7 @@ import argparse
 import json
 from dataclasses import asdict, is_dataclass, replace
 from datetime import datetime
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +17,11 @@ from vi_full.three_dof_benchmark import (
     run_3dof_handcrafted_uncertainty_suite,
     summarize_3dof_seed_runs,
 )
-from vi_full.three_dof_policies import build_3dof_handcrafted_policy_registry
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
+from vi_full.three_dof_policies import (
+    build_3dof_handcrafted_policy_registry,
+    resolve_3dof_teacher_spec,
+)
 from vi_full.three_dof_training import (
     build_3dof_mainline_train_config,
     serialize_3dof_train_config,
@@ -30,10 +35,15 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4])
     parser.add_argument("--episodes", type=int, default=100)
-    parser.add_argument("--max-episode-steps", type=int, default=64)
+    parser.add_argument(
+        "--max-episode-steps",
+        type=int,
+        default=DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+    )
     parser.add_argument("--include-learned", action="store_true")
     parser.add_argument("--include-paper-learned-block", action="store_true")
     parser.add_argument("--include-dapg-mechanism-block", action="store_true")
+    parser.add_argument("--include-teacher-ablation-block", action="store_true")
     parser.add_argument("--timesteps", type=int, default=128)
     parser.add_argument("--train-profile", type=str, default="nominal")
     parser.add_argument("--eval-profile", type=str, default="nominal")
@@ -102,6 +112,40 @@ def _build_suite_run_kwargs(
     }
 
 
+def _build_run_signature(suite_run_kwargs: dict[str, Any]) -> str:
+    signature_payload = json.dumps(
+        _json_safe(suite_run_kwargs),
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(signature_payload.encode("utf-8")).hexdigest()
+
+
+def _suite_result_matches_signature(
+    existing_suite_result: dict[str, Any],
+    suite_run_kwargs: dict[str, Any],
+) -> bool:
+    return existing_suite_result.get("run_signature") == _build_run_signature(
+        suite_run_kwargs
+    )
+
+
+def _build_teacher_metadata(suite_run_kwargs: dict[str, Any]) -> dict[str, Any]:
+    teacher_spec = resolve_3dof_teacher_spec(
+        policy_name=str(suite_run_kwargs.get("bc_demo_policy_name", "variable_impedance")),
+        teacher_spec=suite_run_kwargs.get("bc_demo_teacher_spec"),
+    )
+    return {
+        "bc_demo_policy_name": str(
+            suite_run_kwargs.get("bc_demo_policy_name", "variable_impedance")
+        ),
+        "bc_demo_teacher_spec": asdict(teacher_spec),
+        "teacher_preset_name": teacher_spec.preset_name,
+        "teacher_motion_rule": teacher_spec.motion_rule,
+        "teacher_impedance_rule": teacher_spec.impedance_rule,
+    }
+
+
 def _build_train_config(seed: int, suite_run_kwargs: dict[str, Any]) -> Any:
     total_timesteps = int(suite_run_kwargs["total_timesteps"])
     train_config = build_3dof_mainline_train_config(
@@ -121,6 +165,7 @@ def _build_train_config(seed: int, suite_run_kwargs: dict[str, Any]) -> Any:
         bc_pretrain_steps=int(suite_run_kwargs["bc_pretrain_steps"]),
         bc_batch_size=int(suite_run_kwargs["bc_batch_size"]),
         bc_demo_policy_name=str(suite_run_kwargs["bc_demo_policy_name"]),
+        bc_demo_teacher_spec=suite_run_kwargs.get("bc_demo_teacher_spec"),
     )
     replace_kwargs: dict[str, Any] = {
         key: value
@@ -139,6 +184,7 @@ def _build_train_config(seed: int, suite_run_kwargs: dict[str, Any]) -> Any:
             "bc_pretrain_steps",
             "bc_batch_size",
             "bc_demo_policy_name",
+            "bc_demo_teacher_spec",
         }
     }
     if "base_env_overrides" in replace_kwargs:
@@ -163,6 +209,8 @@ def _build_five_profile_mean(eval_results: dict[str, Any]) -> dict[str, float]:
 def _run_3dof_suite_across_profiles(
     suite_run_kwargs: dict[str, Any],
 ) -> dict[str, Any]:
+    run_signature = _build_run_signature(suite_run_kwargs)
+    teacher_metadata = _build_teacher_metadata(suite_run_kwargs)
     eval_results: dict[str, dict[str, Any]] = {
         profile_name: {"per_seed": []}
         for profile_name in suite_run_kwargs["uncertainty_profiles"]
@@ -181,30 +229,43 @@ def _run_3dof_suite_across_profiles(
         training_summary = {"seed": int(seed), **dict(artifacts.training_summary)}
         training_summaries.append(training_summary)
 
-        for profile_index, profile_name in enumerate(suite_run_kwargs["uncertainty_profiles"]):
-            eval_seed = int(seed) + 10_000 + profile_index * 1_000
-            env = artifacts.make_eval_env(seed=eval_seed, uncertainty_profile=profile_name)
-            try:
-                summary = evaluate_3dof_predictor(
-                    env,
-                    predictor,
-                    episodes=int(suite_run_kwargs["episodes_per_seed"]),
+        try:
+            for profile_index, profile_name in enumerate(
+                suite_run_kwargs["uncertainty_profiles"]
+            ):
+                eval_seed = int(seed) + 10_000 + profile_index * 1_000
+                env = artifacts.make_eval_env(
                     seed=eval_seed,
                     uncertainty_profile=profile_name,
                 )
-            finally:
-                env.close()
-            summary["seed"] = int(seed)
-            summary["training_summary"] = dict(artifacts.training_summary)
-            eval_results[profile_name]["per_seed"].append(summary)
+                try:
+                    summary = evaluate_3dof_predictor(
+                        env,
+                        predictor,
+                        episodes=int(suite_run_kwargs["episodes_per_seed"]),
+                        seed=eval_seed,
+                        uncertainty_profile=profile_name,
+                    )
+                finally:
+                    env.close()
+                summary["seed"] = int(seed)
+                summary["training_summary"] = dict(artifacts.training_summary)
+                eval_results[profile_name]["per_seed"].append(summary)
+        finally:
+            artifacts.vec_normalize.close()
 
     for profile_name, payload in eval_results.items():
         payload["aggregate"] = summarize_3dof_seed_runs(payload["per_seed"])
         payload["aggregate"]["suite_name"] = suite_run_kwargs["suite_name"]
-        payload["aggregate"]["train_uncertainty_profile"] = suite_run_kwargs["train_uncertainty_profile"]
+        payload["aggregate"]["train_uncertainty_profile"] = suite_run_kwargs[
+            "train_uncertainty_profile"
+        ]
         payload["aggregate"]["eval_uncertainty_profile"] = profile_name
+        payload["aggregate"].update(teacher_metadata)
 
     return {
+        "run_signature": run_signature,
+        **teacher_metadata,
         "suite_run_kwargs": {
             key: value
             for key, value in suite_run_kwargs.items()
@@ -269,6 +330,7 @@ def _build_report_config(
         "base_bc_batch_size": int(args.bc_batch_size),
         "suite_names": suite_name_order,
         "handcrafted_policy_names": list(build_3dof_handcrafted_policy_registry().keys()),
+        "benchmark_contract": asdict(DEFAULT_3DOF_BENCHMARK_CONTRACT),
     }
 
 
@@ -304,16 +366,18 @@ def main() -> None:
         if args.contact_finetune_anchor_bc_steps > 0:
             suite_name_parts.append("anchor")
         suite_name = "_".join(suite_name_parts)
+        suite_run_kwargs = _build_suite_run_kwargs(
+            args,
+            suite_name=suite_name,
+            total_timesteps=args.timesteps,
+        )
         if suite_name not in suite_name_order:
             suite_name_order.append(suite_name)
-        if suite_name not in learned_results:
+        existing_suite_result = learned_results.get(suite_name)
+        if existing_suite_result is None:
             print(f"running_suite {suite_name}", flush=True)
             learned_results[suite_name] = _run_3dof_suite_across_profiles(
-                _build_suite_run_kwargs(
-                    args,
-                    suite_name=suite_name,
-                    total_timesteps=args.timesteps,
-                )
+                suite_run_kwargs
             )
             _write_report(
                 output_path,
@@ -323,8 +387,21 @@ def main() -> None:
                     "learned_results": learned_results,
                 },
             )
-        else:
+        elif _suite_result_matches_signature(existing_suite_result, suite_run_kwargs):
             print(f"skipping_suite {suite_name}", flush=True)
+        else:
+            print(f"rerunning_suite {suite_name}", flush=True)
+            learned_results[suite_name] = _run_3dof_suite_across_profiles(
+                suite_run_kwargs
+            )
+            _write_report(
+                output_path,
+                {
+                    "config": _build_report_config(args, suite_name_order=suite_name_order),
+                    "handcrafted_results": handcrafted_results,
+                    "learned_results": learned_results,
+                },
+            )
 
     registry = build_3dof_dapg_baseline_registry()
     selected_registry_names: list[str] = []
@@ -347,6 +424,15 @@ def main() -> None:
                 "dapg_lite_contact_new__reset_repaired",
             ]
         )
+    if args.include_teacher_ablation_block:
+        selected_registry_names.extend(
+            [
+                "teacher_variable_variable__repaired_mainline",
+                "teacher_variable_fixed__repaired_mainline",
+                "teacher_pose_variable__repaired_mainline",
+                "teacher_pose_fixed__repaired_mainline",
+            ]
+        )
 
     for suite_name in dict.fromkeys(selected_registry_names):
         suite_kwargs = dict(registry[suite_name])
@@ -359,10 +445,17 @@ def main() -> None:
         suite_run_kwargs.update(suite_kwargs)
         if suite_name not in suite_name_order:
             suite_name_order.append(suite_name)
-        if suite_name in learned_results:
+        existing_suite_result = learned_results.get(suite_name)
+        if existing_suite_result is not None and _suite_result_matches_signature(
+            existing_suite_result,
+            suite_run_kwargs,
+        ):
             print(f"skipping_suite {suite_name}", flush=True)
             continue
-        print(f"running_suite {suite_name}", flush=True)
+        action_label = (
+            "rerunning_suite" if existing_suite_result is not None else "running_suite"
+        )
+        print(f"{action_label} {suite_name}", flush=True)
         learned_results[suite_name] = _run_3dof_suite_across_profiles(suite_run_kwargs)
         _write_report(
             output_path,

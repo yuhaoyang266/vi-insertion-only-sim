@@ -8,11 +8,12 @@ from pathlib import Path
 import sys
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_benchmark import (
     DEFAULT_UNCERTAINTY_PROFILES,
     build_3dof_ppo_large_budget_ablation_registry,
@@ -34,7 +35,11 @@ def _parse_args() -> argparse.Namespace:
         nargs="+",
         default=list(DEFAULT_UNCERTAINTY_PROFILES),
     )
-    parser.add_argument("--max-episode-steps", type=int, default=64)
+    parser.add_argument(
+        "--max-episode-steps",
+        type=int,
+        default=DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+    )
     parser.add_argument(
         "--conditions",
         type=str,
@@ -142,6 +147,7 @@ def main() -> None:
             "profiles": list(args.profiles),
             "episodes_per_seed": int(args.episodes),
             "max_episode_steps": int(args.max_episode_steps),
+            "benchmark_contract": asdict(DEFAULT_3DOF_BENCHMARK_CONTRACT),
         },
         "conditions": condition_results,
     }

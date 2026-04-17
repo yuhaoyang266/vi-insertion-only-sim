@@ -9,6 +9,7 @@ def _load_runner_module():
     module_path = (
         Path(__file__).resolve().parents[1]
         / "scripts"
+        / "experiments"
         / "run_3dof_ppo_large_budget_ablation.py"
     )
     spec = importlib.util.spec_from_file_location(
@@ -77,7 +78,9 @@ def test_ppo_large_budget_runner_writes_condition_budget_grid(
 
 def test_ppo_large_budget_runner_help_works_from_repo_root() -> None:
     repo_root = Path(__file__).resolve().parents[1]
-    script_path = repo_root / "scripts" / "run_3dof_ppo_large_budget_ablation.py"
+    script_path = (
+        repo_root / "scripts" / "experiments" / "run_3dof_ppo_large_budget_ablation.py"
+    )
 
     completed = subprocess.run(
         [sys.executable, str(script_path), "--help"],

@@ -16,7 +16,7 @@ import numpy as np  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")
 if str(SRC) not in sys.path:
@@ -29,6 +29,7 @@ from vi_full.three_dof_benchmark import (  # noqa: E402
     trace_3dof_predictor_rollout,
 )
 from vi_full.three_dof_env import ThreeDoFInsertionEnv  # noqa: E402
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT  # noqa: E402
 from vi_full.three_dof_policies import (  # noqa: E402
     ThreeDoFFixedImpedancePolicy,
     ThreeDoFVariableImpedancePolicy,
@@ -76,7 +77,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--trace-episodes-per-seed", type=int, default=50)
     parser.add_argument("--timesteps", type=int, default=128)
-    parser.add_argument("--max-episode-steps", type=int, default=64)
+    parser.add_argument(
+        "--max-episode-steps",
+        type=int,
+        default=DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+    )
     parser.add_argument(
         "--train-profile",
         type=str,

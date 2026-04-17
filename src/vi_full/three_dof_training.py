@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from copy import deepcopy
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import asdict, dataclass, field, is_dataclass, replace
 import hashlib
 import json
 import math
@@ -13,11 +13,12 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 from vi_full.training import VecNormalizePredictor
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_env import ThreeDoFInsertionEnv
 from vi_full.three_dof_policies import (
-    ThreeDoFFixedImpedancePolicy,
-    ThreeDoFPoseOnlyPolicy,
-    ThreeDoFVariableImpedancePolicy,
+    ThreeDoFTeacherSpec,
+    compose_3dof_teacher_action,
+    resolve_3dof_teacher_spec,
 )
 from vi_full.three_dof_profiles import build_3dof_profile_config
 from vi_full.three_dof_config import ThreeDoFResetConfig, ThreeDoFResetStage
@@ -223,7 +224,7 @@ class ThreeDoFPPOTrainConfig:
     clip_range: float = 0.2
     seed: int = 0
     demo_seed: int | None = None
-    max_episode_steps: int = 64
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps
     norm_obs: bool = True
     norm_reward: bool = True
     verbose: int = 0
@@ -234,6 +235,7 @@ class ThreeDoFPPOTrainConfig:
     bc_batch_size: int = 32
     bc_learning_rate: float = 1e-3
     bc_demo_policy_name: str = "variable_impedance"
+    bc_demo_teacher_spec: ThreeDoFTeacherSpec | None = None
     dapg_enabled: bool = False
     dapg_mini_updates_per_chunk: int = 1
     dapg_demo_batch_size: int = 64
@@ -344,7 +346,7 @@ def build_3dof_mainline_train_config(
     *,
     seed: int = 0,
     total_timesteps: int = 128,
-    max_episode_steps: int = 32,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     train_uncertainty_profile: str = "nominal",
     eval_uncertainty_profile: str = "nominal",
     n_envs: int = 1,
@@ -358,6 +360,7 @@ def build_3dof_mainline_train_config(
     bc_pretrain_steps: int = 32,
     bc_batch_size: int = 64,
     bc_demo_policy_name: str = "variable_impedance",
+    bc_demo_teacher_spec: ThreeDoFTeacherSpec | None = None,
 ) -> ThreeDoFPPOTrainConfig:
     return ThreeDoFPPOTrainConfig(
         total_timesteps=total_timesteps,
@@ -376,6 +379,7 @@ def build_3dof_mainline_train_config(
         bc_pretrain_steps=bc_pretrain_steps,
         bc_batch_size=bc_batch_size,
         bc_demo_policy_name=bc_demo_policy_name,
+        bc_demo_teacher_spec=bc_demo_teacher_spec,
         approach_bc_rollout_episodes=0,
         approach_bc_pretrain_steps=0,
         contact_bc_rollout_episodes=0,
@@ -430,8 +434,9 @@ def build_3dof_factorized_train_config(
     reset_coverage: str = "reset_repaired",
     train_uncertainty_profile: str = "nominal",
     eval_uncertainty_profile: str = "nominal",
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     bc_demo_policy_name: str = "variable_impedance",
+    bc_demo_teacher_spec: ThreeDoFTeacherSpec | None = None,
 ) -> ThreeDoFPPOTrainConfig:
     base_config = build_3dof_mainline_train_config(
         seed=seed,
@@ -450,6 +455,7 @@ def build_3dof_factorized_train_config(
         bc_pretrain_steps=bc_pretrain_steps,
         bc_batch_size=bc_batch_size,
         bc_demo_policy_name=bc_demo_policy_name,
+        bc_demo_teacher_spec=bc_demo_teacher_spec,
     )
     return replace(
         base_config,
@@ -693,6 +699,8 @@ def build_3dof_stabilization_history_probe_config(
 
 
 def _sanitize_3dof_serializable(value: object) -> object:
+    if is_dataclass(value):
+        return _sanitize_3dof_serializable(asdict(value))
     if isinstance(value, dict):
         return {str(key): _sanitize_3dof_serializable(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):
@@ -880,14 +888,38 @@ def _run_3dof_contact_finetune_stage(
     return current_vec_env
 
 
-def _build_3dof_demo_policy(policy_name: str):
-    if policy_name == "variable_impedance":
-        return ThreeDoFVariableImpedancePolicy()
-    if policy_name == "fixed_impedance":
-        return ThreeDoFFixedImpedancePolicy()
-    if policy_name == "pose_only":
-        return ThreeDoFPoseOnlyPolicy()
-    raise ValueError(f"Unknown bc_demo_policy_name: {policy_name}")
+@dataclass(frozen=True, slots=True)
+class _ThreeDoFResolvedTeacherPolicy:
+    spec: ThreeDoFTeacherSpec
+
+    def act(self, observation: np.ndarray) -> np.ndarray:
+        return compose_3dof_teacher_action(self.spec, observation)
+
+
+def _resolve_3dof_bc_demo_teacher_spec(
+    config: ThreeDoFPPOTrainConfig,
+) -> ThreeDoFTeacherSpec:
+    return resolve_3dof_teacher_spec(
+        policy_name=config.bc_demo_policy_name,
+        teacher_spec=config.bc_demo_teacher_spec,
+    )
+
+
+def _build_3dof_teacher_metadata(
+    config: ThreeDoFPPOTrainConfig,
+) -> dict[str, object]:
+    teacher_spec = _resolve_3dof_bc_demo_teacher_spec(config)
+    return {
+        "bc_demo_policy_name": config.bc_demo_policy_name,
+        "bc_demo_teacher_spec": asdict(teacher_spec),
+        "teacher_preset_name": teacher_spec.preset_name,
+        "teacher_motion_rule": teacher_spec.motion_rule,
+        "teacher_impedance_rule": teacher_spec.impedance_rule,
+    }
+
+
+def _build_3dof_demo_policy(config: ThreeDoFPPOTrainConfig):
+    return _ThreeDoFResolvedTeacherPolicy(_resolve_3dof_bc_demo_teacher_spec(config))
 
 
 def _resolve_3dof_demo_seed(config: ThreeDoFPPOTrainConfig) -> int:
@@ -900,7 +932,7 @@ def collect_3dof_demonstrations(
     *,
     reset_config: ThreeDoFResetConfig | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
-    policy = _build_3dof_demo_policy(config.bc_demo_policy_name)
+    policy = _build_3dof_demo_policy(config)
     env = ThreeDoFInsertionEnv(
         replace(
             build_3dof_profile_config(
@@ -955,7 +987,7 @@ def _build_3dof_demo_dataset_metadata(
     config: ThreeDoFPPOTrainConfig,
     *,
     reset_config: ThreeDoFResetConfig,
-) -> dict[str, str]:
+) -> dict[str, object]:
     dataset_id = (
         f"{_infer_3dof_contact_law_label(config.base_env_overrides)}__"
         f"{infer_3dof_reset_coverage_label(reset_config)}"
@@ -963,7 +995,7 @@ def _build_3dof_demo_dataset_metadata(
     hash_payload = _sanitize_3dof_serializable(
         {
             "train_uncertainty_profile": config.train_uncertainty_profile,
-            "bc_demo_policy_name": config.bc_demo_policy_name,
+            "bc_demo_teacher_spec": _resolve_3dof_bc_demo_teacher_spec(config),
             "demo_seed": _resolve_3dof_demo_seed(config),
             "base_env_overrides": config.base_env_overrides,
             "bc_reset_config": asdict(reset_config),
@@ -972,10 +1004,12 @@ def _build_3dof_demo_dataset_metadata(
     dataset_hash = hashlib.sha256(
         json.dumps(hash_payload, sort_keys=True).encode("utf-8")
     ).hexdigest()[:12]
+    teacher_metadata = _build_3dof_teacher_metadata(config)
     return {
         "dataset_id": dataset_id,
         "dataset_path": f"generated://three_dof/{dataset_id}/{dataset_hash}",
         "dataset_hash": dataset_hash,
+        **teacher_metadata,
     }
 
 
@@ -1028,7 +1062,7 @@ def collect_3dof_bc_demo_dataset_audit(
     low_force_onset_threshold_n: float = 2.0,
     low_force_onset_max_contact_steps: int = 3,
 ) -> dict[str, object]:
-    policy = _build_3dof_demo_policy(config.bc_demo_policy_name)
+    policy = _build_3dof_demo_policy(config)
     env = ThreeDoFInsertionEnv(
         replace(
             build_3dof_profile_config(
@@ -1080,10 +1114,11 @@ def collect_3dof_bc_demo_dataset_audit(
     finally:
         env.close()
 
+    teacher_metadata = _build_3dof_teacher_metadata(config)
+
     if not observations:
         return {
             "episodes": int(episodes),
-            "bc_demo_policy_name": config.bc_demo_policy_name,
             "num_rows": 0,
             "contact_sample_count": 0,
             "contact_sample_ratio": 0.0,
@@ -1099,6 +1134,7 @@ def collect_3dof_bc_demo_dataset_audit(
                 observations=np.zeros((0, env.observation_space.shape[0]), dtype=np.float32),
                 actions=np.zeros((0, env.action_space.shape[0]), dtype=np.float32),
             ),
+            **teacher_metadata,
         }
 
     observations_array = np.stack(observations).astype(np.float32)
@@ -1120,7 +1156,6 @@ def collect_3dof_bc_demo_dataset_audit(
     }
     return {
         "episodes": int(episodes),
-        "bc_demo_policy_name": config.bc_demo_policy_name,
         "num_rows": int(observations_array.shape[0]),
         "contact_sample_count": int(np.sum(has_contact)),
         "contact_sample_ratio": float(np.mean(has_contact)),
@@ -1138,6 +1173,7 @@ def collect_3dof_bc_demo_dataset_audit(
             observations=observations_array,
             actions=actions_array,
         ),
+        **teacher_metadata,
     }
 
 
@@ -1699,7 +1735,7 @@ def collect_3dof_intent_lift_demonstrations(
     *,
     reset_config: ThreeDoFResetConfig | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    policy = _build_3dof_demo_policy(config.bc_demo_policy_name)
+    policy = _build_3dof_demo_policy(config)
     env = ThreeDoFInsertionEnv(
         replace(
             build_3dof_profile_config(
@@ -1845,7 +1881,7 @@ def collect_3dof_contact_stabilization_demonstrations(
     *,
     reset_config: ThreeDoFResetConfig | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    policy = _build_3dof_demo_policy(config.bc_demo_policy_name)
+    policy = _build_3dof_demo_policy(config)
     env = ThreeDoFInsertionEnv(
         replace(
             build_3dof_profile_config(
@@ -2134,6 +2170,7 @@ def _build_3dof_training_summary(
         "demo_dataset_id": demo_dataset.dataset_id,
         "demo_dataset_path": demo_dataset.dataset_path,
         "demo_dataset_hash": demo_dataset.dataset_hash,
+        **_build_3dof_teacher_metadata(config),
     }
     if dapg_summary:
         summary.update(dapg_summary)

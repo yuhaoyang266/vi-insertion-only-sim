@@ -9,10 +9,12 @@ from typing import Any
 import numpy as np
 
 from vi_full.training import VecNormalizePredictor
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_config import ThreeDoFInsertionConfig
 from vi_full.three_dof_env import ThreeDoFInsertionEnv
 from vi_full.three_dof_policies import (
     build_3dof_handcrafted_policy_registry,
+    resolve_3dof_teacher_spec,
 )
 from vi_full.three_dof_profiles import (
     DEFAULT_UNCERTAINTY_PROFILES,
@@ -325,7 +327,7 @@ def run_3dof_handcrafted_uncertainty_suite(
     *,
     seeds: list[int],
     episodes_per_seed: int = 5,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     uncertainty_profiles: list[str] | None = None,
 ) -> dict[str, dict[str, Any]]:
     profiles = uncertainty_profiles or list(DEFAULT_UNCERTAINTY_PROFILES)
@@ -408,7 +410,7 @@ def run_3dof_bc_reset_gap_audit(
     seed: int = 0,
     total_timesteps: int = 0,
     episodes: int = 5,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     train_uncertainty_profile: str = "nominal",
     eval_uncertainty_profile: str = "nominal",
     bc_rollout_episodes: int = 2,
@@ -565,6 +567,30 @@ def build_3dof_dapg_baseline_registry() -> dict[str, dict[str, Any]]:
             "base_env_overrides": fixed_impedance_overrides,
         },
         "repaired_mainline_bc_to_ppo": {},
+        "teacher_variable_variable__repaired_mainline": {
+            "bc_demo_policy_name": "teacher_variable_variable",
+            "bc_demo_teacher_spec": resolve_3dof_teacher_spec(
+                policy_name="teacher_variable_variable"
+            ),
+        },
+        "teacher_variable_fixed__repaired_mainline": {
+            "bc_demo_policy_name": "teacher_variable_fixed",
+            "bc_demo_teacher_spec": resolve_3dof_teacher_spec(
+                policy_name="teacher_variable_fixed"
+            ),
+        },
+        "teacher_pose_variable__repaired_mainline": {
+            "bc_demo_policy_name": "teacher_pose_variable",
+            "bc_demo_teacher_spec": resolve_3dof_teacher_spec(
+                policy_name="teacher_pose_variable"
+            ),
+        },
+        "teacher_pose_fixed__repaired_mainline": {
+            "bc_demo_policy_name": "teacher_pose_fixed",
+            "bc_demo_teacher_spec": resolve_3dof_teacher_spec(
+                policy_name="teacher_pose_fixed"
+            ),
+        },
         "dapg_lite_repaired_mainline": {
             "dapg_enabled": True,
         },
@@ -795,6 +821,7 @@ def _build_3dof_condition_train_config(
         bc_pretrain_steps=int(overrides.pop("bc_pretrain_steps", 32)),
         bc_batch_size=int(overrides.pop("bc_batch_size", 64)),
         bc_demo_policy_name=str(overrides.pop("bc_demo_policy_name", "variable_impedance")),
+        bc_demo_teacher_spec=overrides.pop("bc_demo_teacher_spec", None),
     )
     if "base_env_overrides" in overrides:
         overrides["base_env_overrides"] = dict(overrides["base_env_overrides"])
@@ -1021,7 +1048,7 @@ def run_3dof_algorithm_budget_comparison(
     *,
     train_seeds: list[int],
     episodes_per_seed: int = 5,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     uncertainty_profiles: list[str] | None = None,
     budget_points: list[int] | None = None,
 ) -> dict[str, Any]:
@@ -1086,7 +1113,7 @@ def run_3dof_factor_sweep_suite(
     sweep_name: str,
     train_seeds: list[int],
     episodes_per_seed: int = 5,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     uncertainty_profiles: list[str] | None = None,
 ) -> dict[str, Any]:
     registry = build_3dof_factor_sweep_registry()
@@ -1184,7 +1211,7 @@ def run_3dof_bc_seed_factorization_suite(
     demo_seeds: list[int],
     eval_seeds: list[int],
     episodes_per_eval_seed: int = 50,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     uncertainty_profiles: list[str] | None = None,
     coverage_condition: str = "reset_repaired",
     bc_rollout_episodes: int = 8,
@@ -1285,7 +1312,7 @@ def run_3dof_learned_suite(
     seeds: list[int],
     total_timesteps: int = 256,
     episodes_per_seed: int = 5,
-    max_episode_steps: int = 64,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
     suite_name: str = "learned_ppo_3dof",
     train_uncertainty_profile: str = "nominal",
     eval_uncertainty_profile: str = "nominal",

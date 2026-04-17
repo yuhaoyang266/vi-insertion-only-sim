@@ -47,6 +47,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         self.contact_force_history: deque[float] = deque(maxlen=16)
         self.episode_step = 0
         self.peak_contact_force = 0.0
+        self.force_over_threshold_steps = 0
         self.blocked_contact_steps = 0
         self.cumulative_contact_work = 0.0
         self.cumulative_contact_impulse = 0.0
@@ -70,6 +71,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
 
         self.episode_step = 0
         self.peak_contact_force = 0.0
+        self.force_over_threshold_steps = 0
         self.blocked_contact_steps = 0
         self.cumulative_contact_work = 0.0
         self.cumulative_contact_impulse = 0.0
@@ -193,6 +195,11 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         force_norm = float(np.linalg.norm(self.force_sensor))
         self.contact_force_history.append(force_norm)
         self.peak_contact_force = max(self.peak_contact_force, force_norm)
+        self.force_over_threshold_steps = (
+            self.force_over_threshold_steps + 1
+            if force_norm >= self.config.jam_force_threshold_n
+            else 0
+        )
         self.blocked_contact_steps = (
             self.blocked_contact_steps + 1 if blocked_contact else 0
         )
@@ -209,10 +216,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         )
 
         is_success = self._is_success()
-        is_jammed = bool(
-            force_norm >= self.config.jam_force_threshold_n
-            or self.blocked_contact_steps >= self.config.jam_persistence_steps
-        )
+        is_jammed = self._is_jammed()
         contact_debug["decoded_k_xy"] = float(stiffness_xy)
         contact_debug["decoded_k_z"] = float(stiffness_z)
         contact_debug["contact_work_increment"] = self._compute_contact_work_increment(
@@ -630,11 +634,11 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
             ),
             "contact_phase_label": str(self.last_contact_debug["contact_phase_label"]),
             "is_success": self._is_success(),
-            "is_jammed": bool(
-                self.blocked_contact_steps >= self.config.jam_persistence_steps
-                or float(np.linalg.norm(self.force_sensor))
-                >= self.config.jam_force_threshold_n
-            ),
+            "is_jammed": self._is_jammed(),
+            "termination_reason": self._termination_reason(),
+            "force_over_threshold_steps": int(self.force_over_threshold_steps),
+            "blocked_contact_steps": int(self.blocked_contact_steps),
+            "meets_documented_force_jam": self._meets_documented_force_jam(),
         }
 
     def _update_contact_component_debug(
@@ -702,6 +706,27 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         if surface_height > 0.0:
             return "approach"
         return "free_insertion"
+
+    def _force_threshold_exceeded(self) -> bool:
+        return float(np.linalg.norm(self.force_sensor)) >= self.config.jam_force_threshold_n
+
+    def _meets_documented_force_jam(self) -> bool:
+        return self.force_over_threshold_steps >= self.config.jam_persistence_steps
+
+    def _is_blocked_contact_failure(self) -> bool:
+        return self.blocked_contact_steps >= self.config.jam_persistence_steps
+
+    def _is_jammed(self) -> bool:
+        return self._force_threshold_exceeded() or self._is_blocked_contact_failure()
+
+    def _termination_reason(self) -> str:
+        if self._is_success():
+            return "success"
+        if self._force_threshold_exceeded():
+            return "force_threshold"
+        if self._is_blocked_contact_failure():
+            return "blocked_contact"
+        return "running"
 
     def _is_success(self) -> bool:
         rel_pos = self.position - self.contact_target_position

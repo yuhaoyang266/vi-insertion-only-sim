@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
@@ -18,6 +18,7 @@ from vi_full.three_dof_benchmark import (
     run_3dof_condition_across_profiles,
     select_top_3dof_tuned_fixed_configs,
 )
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_training import build_3dof_fixed_impedance_env_overrides_for
 
 
@@ -48,7 +49,11 @@ def _parse_args() -> argparse.Namespace:
         nargs="+",
         default=list(DEFAULT_UNCERTAINTY_PROFILES),
     )
-    parser.add_argument("--max-episode-steps", type=int, default=64)
+    parser.add_argument(
+        "--max-episode-steps",
+        type=int,
+        default=DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+    )
     parser.add_argument("--total-timesteps", type=int, default=128)
     parser.add_argument(
         "--output",
