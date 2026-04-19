@@ -50,6 +50,10 @@ def _default_3dof_train_reset_config() -> ThreeDoFResetConfig:
     )
 
 
+def build_3dof_default_train_reset_config() -> ThreeDoFResetConfig:
+    return _default_3dof_train_reset_config()
+
+
 def _default_3dof_bc_reset_config() -> ThreeDoFResetConfig:
     return ThreeDoFResetConfig(
         curriculum_stages=(
