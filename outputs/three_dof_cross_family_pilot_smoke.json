@@ -1,0 +1,846 @@
+{
+  "experiment_name": "three_dof_cross_family_pilot",
+  "config": {
+    "seed_list": [
+      0
+    ],
+    "budget_points": [
+      8
+    ],
+    "train_profile": "nominal",
+    "profiles": [
+      "nominal"
+    ],
+    "episodes_per_seed": 1,
+    "max_episode_steps": 64,
+    "method_names": [
+      "ppo_no_bc",
+      "sac_no_bc",
+      "td3_no_bc"
+    ],
+    "benchmark_contract": {
+      "max_episode_steps": 64,
+      "jam_force_threshold_n": 8.0,
+      "jam_persistence_steps": 3
+    }
+  },
+  "methods": [
+    {
+      "method_name": "ppo_no_bc",
+      "label": "PPO w/o BC",
+      "algorithm": "ppo",
+      "train_overrides": {
+        "n_envs": 4,
+        "n_steps": 256,
+        "batch_size": 256,
+        "n_epochs": 4,
+        "learning_rate": 0.0003,
+        "gamma": 0.99,
+        "gae_lambda": 0.95,
+        "ent_coef": 0.01
+      },
+      "points": [
+        {
+          "method_name": "ppo_no_bc",
+          "algorithm": "ppo",
+          "factor_value": 8,
+          "training_budget": {
+            "total_timesteps": 8
+          },
+          "train_config_snapshot": {
+            "method_name": "ppo_no_bc",
+            "algorithm": "ppo",
+            "total_timesteps": 8,
+            "seed": 0,
+            "max_episode_steps": 64,
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "policy_name": "MlpPolicy",
+            "policy_kwargs": {},
+            "n_envs": 4,
+            "batch_size": 256,
+            "learning_rate": 0.0003,
+            "gamma": 0.99,
+            "norm_obs": true,
+            "norm_reward": true,
+            "verbose": 0,
+            "device": "cpu",
+            "base_env_overrides": {},
+            "train_reset_config": {
+              "curriculum_stages": [
+                {
+                  "start_xy_noise_m": 0.0008,
+                  "start_depth_fraction_range": [
+                    0.0,
+                    0.15
+                  ],
+                  "weight": 0.35
+                },
+                {
+                  "start_xy_noise_m": 0.0005,
+                  "start_depth_fraction_range": [
+                    0.35,
+                    0.65
+                  ],
+                  "weight": 0.4
+                },
+                {
+                  "start_xy_noise_m": 0.0002,
+                  "start_depth_fraction_range": [
+                    0.75,
+                    0.88
+                  ],
+                  "weight": 0.25
+                }
+              ]
+            },
+            "algorithm_kwargs": {
+              "n_steps": 256,
+              "n_epochs": 4,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.01
+            },
+            "action_noise_std": null
+          },
+          "train_configs": [
+            {
+              "method_name": "ppo_no_bc",
+              "algorithm": "ppo",
+              "total_timesteps": 8,
+              "seed": 0,
+              "max_episode_steps": 64,
+              "train_uncertainty_profile": "nominal",
+              "eval_uncertainty_profile": "nominal",
+              "policy_name": "MlpPolicy",
+              "policy_kwargs": {},
+              "n_envs": 4,
+              "batch_size": 256,
+              "learning_rate": 0.0003,
+              "gamma": 0.99,
+              "norm_obs": true,
+              "norm_reward": true,
+              "verbose": 0,
+              "device": "cpu",
+              "base_env_overrides": {},
+              "train_reset_config": {
+                "curriculum_stages": [
+                  {
+                    "start_xy_noise_m": 0.0008,
+                    "start_depth_fraction_range": [
+                      0.0,
+                      0.15
+                    ],
+                    "weight": 0.35
+                  },
+                  {
+                    "start_xy_noise_m": 0.0005,
+                    "start_depth_fraction_range": [
+                      0.35,
+                      0.65
+                    ],
+                    "weight": 0.4
+                  },
+                  {
+                    "start_xy_noise_m": 0.0002,
+                    "start_depth_fraction_range": [
+                      0.75,
+                      0.88
+                    ],
+                    "weight": 0.25
+                  }
+                ]
+              },
+              "algorithm_kwargs": {
+                "n_steps": 256,
+                "n_epochs": 4,
+                "gae_lambda": 0.95,
+                "ent_coef": 0.01
+              },
+              "action_noise_std": null
+            }
+          ],
+          "training_summaries": [
+            {
+              "seed": 0,
+              "method_name": "ppo_no_bc",
+              "algorithm": "ppo",
+              "total_timesteps": 8,
+              "train_uncertainty_profile": "nominal",
+              "n_envs": 4
+            }
+          ],
+          "per_profile_metrics": {
+            "nominal": {
+              "per_seed": [
+                {
+                  "policy_name": "PPO",
+                  "uncertainty_profile": "nominal",
+                  "episodes": 1,
+                  "success_rate": 0.0,
+                  "mean_episode_return": -1.1748824350938163,
+                  "mean_final_distance": 0.015792497897134054,
+                  "mean_episode_length": 64.0,
+                  "mean_peak_contact_force": 0.0,
+                  "p95_peak_contact_force": 0.0,
+                  "mean_force_std": 0.0,
+                  "mean_first_contact_step": 64.0,
+                  "mean_contact_steps": 0.0,
+                  "mean_settling_steps_after_contact": 0.0,
+                  "jam_rate": 0.0,
+                  "force_threshold_termination_rate": 0.0,
+                  "blocked_contact_termination_rate": 0.0,
+                  "force_threshold_only_termination_rate": 0.0,
+                  "blocked_contact_only_termination_rate": 0.0,
+                  "force_and_blocked_termination_rate": 0.0,
+                  "documented_force_jam_rate": 0.0,
+                  "seed": 0,
+                  "training_summary": {
+                    "method_name": "ppo_no_bc",
+                    "algorithm": "ppo",
+                    "seed": 0,
+                    "total_timesteps": 8,
+                    "train_uncertainty_profile": "nominal",
+                    "n_envs": 4
+                  }
+                }
+              ],
+              "aggregate": {
+                "policy_name": "PPO",
+                "uncertainty_profile": "nominal",
+                "num_seeds": 1,
+                "seeds": [
+                  0
+                ],
+                "success_rate_mean": 0.0,
+                "success_rate_std": 0.0,
+                "mean_episode_return_mean": -1.1748824350938163,
+                "mean_episode_return_std": 0.0,
+                "mean_final_distance_mean": 0.015792497897134054,
+                "mean_final_distance_std": 0.0,
+                "mean_episode_length_mean": 64.0,
+                "mean_episode_length_std": 0.0,
+                "mean_peak_contact_force_mean": 0.0,
+                "mean_peak_contact_force_std": 0.0,
+                "p95_peak_contact_force_mean": 0.0,
+                "p95_peak_contact_force_std": 0.0,
+                "mean_force_std_mean": 0.0,
+                "mean_force_std_std": 0.0,
+                "mean_first_contact_step_mean": 64.0,
+                "mean_first_contact_step_std": 0.0,
+                "mean_contact_steps_mean": 0.0,
+                "mean_contact_steps_std": 0.0,
+                "mean_settling_steps_after_contact_mean": 0.0,
+                "mean_settling_steps_after_contact_std": 0.0,
+                "jam_rate_mean": 0.0,
+                "jam_rate_std": 0.0,
+                "force_threshold_termination_rate_mean": 0.0,
+                "force_threshold_termination_rate_std": 0.0,
+                "blocked_contact_termination_rate_mean": 0.0,
+                "blocked_contact_termination_rate_std": 0.0,
+                "force_threshold_only_termination_rate_mean": 0.0,
+                "force_threshold_only_termination_rate_std": 0.0,
+                "blocked_contact_only_termination_rate_mean": 0.0,
+                "blocked_contact_only_termination_rate_std": 0.0,
+                "force_and_blocked_termination_rate_mean": 0.0,
+                "force_and_blocked_termination_rate_std": 0.0,
+                "documented_force_jam_rate_mean": 0.0,
+                "documented_force_jam_rate_std": 0.0,
+                "method_name": "ppo_no_bc",
+                "algorithm": "ppo",
+                "train_uncertainty_profile": "nominal",
+                "eval_uncertainty_profile": "nominal"
+              }
+            }
+          },
+          "five_profile_mean": {
+            "success_rate_mean_over_profiles": 0.0,
+            "success_rate_std_over_profiles": 0.0,
+            "mean_episode_return_mean_over_profiles": -1.1748824350938163,
+            "mean_episode_return_std_over_profiles": 0.0,
+            "mean_final_distance_mean_over_profiles": 0.015792497897134054,
+            "mean_final_distance_std_over_profiles": 0.0,
+            "mean_episode_length_mean_over_profiles": 64.0,
+            "mean_episode_length_std_over_profiles": 0.0,
+            "mean_peak_contact_force_mean_over_profiles": 0.0,
+            "mean_peak_contact_force_std_over_profiles": 0.0,
+            "p95_peak_contact_force_mean_over_profiles": 0.0,
+            "p95_peak_contact_force_std_over_profiles": 0.0,
+            "mean_force_std_mean_over_profiles": 0.0,
+            "mean_force_std_std_over_profiles": 0.0,
+            "mean_first_contact_step_mean_over_profiles": 64.0,
+            "mean_first_contact_step_std_over_profiles": 0.0,
+            "mean_contact_steps_mean_over_profiles": 0.0,
+            "mean_contact_steps_std_over_profiles": 0.0,
+            "mean_settling_steps_after_contact_mean_over_profiles": 0.0,
+            "mean_settling_steps_after_contact_std_over_profiles": 0.0,
+            "jam_rate_mean_over_profiles": 0.0,
+            "jam_rate_std_over_profiles": 0.0,
+            "force_threshold_termination_rate_mean_over_profiles": 0.0,
+            "force_threshold_termination_rate_std_over_profiles": 0.0,
+            "blocked_contact_termination_rate_mean_over_profiles": 0.0,
+            "blocked_contact_termination_rate_std_over_profiles": 0.0,
+            "force_threshold_only_termination_rate_mean_over_profiles": 0.0,
+            "force_threshold_only_termination_rate_std_over_profiles": 0.0,
+            "blocked_contact_only_termination_rate_mean_over_profiles": 0.0,
+            "blocked_contact_only_termination_rate_std_over_profiles": 0.0,
+            "force_and_blocked_termination_rate_mean_over_profiles": 0.0,
+            "force_and_blocked_termination_rate_std_over_profiles": 0.0,
+            "documented_force_jam_rate_mean_over_profiles": 0.0,
+            "documented_force_jam_rate_std_over_profiles": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "method_name": "sac_no_bc",
+      "label": "SAC w/o BC",
+      "algorithm": "sac",
+      "train_overrides": {
+        "n_envs": 1,
+        "batch_size": 256,
+        "learning_rate": 0.0003,
+        "gamma": 0.99,
+        "buffer_size": 200000,
+        "learning_starts": 1024,
+        "train_freq": 1,
+        "gradient_steps": 1,
+        "tau": 0.005,
+        "ent_coef": "auto"
+      },
+      "points": [
+        {
+          "method_name": "sac_no_bc",
+          "algorithm": "sac",
+          "factor_value": 8,
+          "training_budget": {
+            "total_timesteps": 8
+          },
+          "train_config_snapshot": {
+            "method_name": "sac_no_bc",
+            "algorithm": "sac",
+            "total_timesteps": 8,
+            "seed": 0,
+            "max_episode_steps": 64,
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "policy_name": "MlpPolicy",
+            "policy_kwargs": {},
+            "n_envs": 1,
+            "batch_size": 256,
+            "learning_rate": 0.0003,
+            "gamma": 0.99,
+            "norm_obs": true,
+            "norm_reward": true,
+            "verbose": 0,
+            "device": "cpu",
+            "base_env_overrides": {},
+            "train_reset_config": {
+              "curriculum_stages": [
+                {
+                  "start_xy_noise_m": 0.0008,
+                  "start_depth_fraction_range": [
+                    0.0,
+                    0.15
+                  ],
+                  "weight": 0.35
+                },
+                {
+                  "start_xy_noise_m": 0.0005,
+                  "start_depth_fraction_range": [
+                    0.35,
+                    0.65
+                  ],
+                  "weight": 0.4
+                },
+                {
+                  "start_xy_noise_m": 0.0002,
+                  "start_depth_fraction_range": [
+                    0.75,
+                    0.88
+                  ],
+                  "weight": 0.25
+                }
+              ]
+            },
+            "algorithm_kwargs": {
+              "buffer_size": 200000,
+              "learning_starts": 1024,
+              "train_freq": 1,
+              "gradient_steps": 1,
+              "tau": 0.005,
+              "ent_coef": "auto"
+            },
+            "action_noise_std": null
+          },
+          "train_configs": [
+            {
+              "method_name": "sac_no_bc",
+              "algorithm": "sac",
+              "total_timesteps": 8,
+              "seed": 0,
+              "max_episode_steps": 64,
+              "train_uncertainty_profile": "nominal",
+              "eval_uncertainty_profile": "nominal",
+              "policy_name": "MlpPolicy",
+              "policy_kwargs": {},
+              "n_envs": 1,
+              "batch_size": 256,
+              "learning_rate": 0.0003,
+              "gamma": 0.99,
+              "norm_obs": true,
+              "norm_reward": true,
+              "verbose": 0,
+              "device": "cpu",
+              "base_env_overrides": {},
+              "train_reset_config": {
+                "curriculum_stages": [
+                  {
+                    "start_xy_noise_m": 0.0008,
+                    "start_depth_fraction_range": [
+                      0.0,
+                      0.15
+                    ],
+                    "weight": 0.35
+                  },
+                  {
+                    "start_xy_noise_m": 0.0005,
+                    "start_depth_fraction_range": [
+                      0.35,
+                      0.65
+                    ],
+                    "weight": 0.4
+                  },
+                  {
+                    "start_xy_noise_m": 0.0002,
+                    "start_depth_fraction_range": [
+                      0.75,
+                      0.88
+                    ],
+                    "weight": 0.25
+                  }
+                ]
+              },
+              "algorithm_kwargs": {
+                "buffer_size": 200000,
+                "learning_starts": 1024,
+                "train_freq": 1,
+                "gradient_steps": 1,
+                "tau": 0.005,
+                "ent_coef": "auto"
+              },
+              "action_noise_std": null
+            }
+          ],
+          "training_summaries": [
+            {
+              "seed": 0,
+              "method_name": "sac_no_bc",
+              "algorithm": "sac",
+              "total_timesteps": 8,
+              "train_uncertainty_profile": "nominal",
+              "n_envs": 1
+            }
+          ],
+          "per_profile_metrics": {
+            "nominal": {
+              "per_seed": [
+                {
+                  "policy_name": "SAC",
+                  "uncertainty_profile": "nominal",
+                  "episodes": 1,
+                  "success_rate": 0.0,
+                  "mean_episode_return": -1.0980509595800885,
+                  "mean_final_distance": 0.013871711009290855,
+                  "mean_episode_length": 64.0,
+                  "mean_peak_contact_force": 0.0,
+                  "p95_peak_contact_force": 0.0,
+                  "mean_force_std": 0.0,
+                  "mean_first_contact_step": 64.0,
+                  "mean_contact_steps": 0.0,
+                  "mean_settling_steps_after_contact": 0.0,
+                  "jam_rate": 0.0,
+                  "force_threshold_termination_rate": 0.0,
+                  "blocked_contact_termination_rate": 0.0,
+                  "force_threshold_only_termination_rate": 0.0,
+                  "blocked_contact_only_termination_rate": 0.0,
+                  "force_and_blocked_termination_rate": 0.0,
+                  "documented_force_jam_rate": 0.0,
+                  "seed": 0,
+                  "training_summary": {
+                    "method_name": "sac_no_bc",
+                    "algorithm": "sac",
+                    "seed": 0,
+                    "total_timesteps": 8,
+                    "train_uncertainty_profile": "nominal",
+                    "n_envs": 1
+                  }
+                }
+              ],
+              "aggregate": {
+                "policy_name": "SAC",
+                "uncertainty_profile": "nominal",
+                "num_seeds": 1,
+                "seeds": [
+                  0
+                ],
+                "success_rate_mean": 0.0,
+                "success_rate_std": 0.0,
+                "mean_episode_return_mean": -1.0980509595800885,
+                "mean_episode_return_std": 0.0,
+                "mean_final_distance_mean": 0.013871711009290855,
+                "mean_final_distance_std": 0.0,
+                "mean_episode_length_mean": 64.0,
+                "mean_episode_length_std": 0.0,
+                "mean_peak_contact_force_mean": 0.0,
+                "mean_peak_contact_force_std": 0.0,
+                "p95_peak_contact_force_mean": 0.0,
+                "p95_peak_contact_force_std": 0.0,
+                "mean_force_std_mean": 0.0,
+                "mean_force_std_std": 0.0,
+                "mean_first_contact_step_mean": 64.0,
+                "mean_first_contact_step_std": 0.0,
+                "mean_contact_steps_mean": 0.0,
+                "mean_contact_steps_std": 0.0,
+                "mean_settling_steps_after_contact_mean": 0.0,
+                "mean_settling_steps_after_contact_std": 0.0,
+                "jam_rate_mean": 0.0,
+                "jam_rate_std": 0.0,
+                "force_threshold_termination_rate_mean": 0.0,
+                "force_threshold_termination_rate_std": 0.0,
+                "blocked_contact_termination_rate_mean": 0.0,
+                "blocked_contact_termination_rate_std": 0.0,
+                "force_threshold_only_termination_rate_mean": 0.0,
+                "force_threshold_only_termination_rate_std": 0.0,
+                "blocked_contact_only_termination_rate_mean": 0.0,
+                "blocked_contact_only_termination_rate_std": 0.0,
+                "force_and_blocked_termination_rate_mean": 0.0,
+                "force_and_blocked_termination_rate_std": 0.0,
+                "documented_force_jam_rate_mean": 0.0,
+                "documented_force_jam_rate_std": 0.0,
+                "method_name": "sac_no_bc",
+                "algorithm": "sac",
+                "train_uncertainty_profile": "nominal",
+                "eval_uncertainty_profile": "nominal"
+              }
+            }
+          },
+          "five_profile_mean": {
+            "success_rate_mean_over_profiles": 0.0,
+            "success_rate_std_over_profiles": 0.0,
+            "mean_episode_return_mean_over_profiles": -1.0980509595800885,
+            "mean_episode_return_std_over_profiles": 0.0,
+            "mean_final_distance_mean_over_profiles": 0.013871711009290855,
+            "mean_final_distance_std_over_profiles": 0.0,
+            "mean_episode_length_mean_over_profiles": 64.0,
+            "mean_episode_length_std_over_profiles": 0.0,
+            "mean_peak_contact_force_mean_over_profiles": 0.0,
+            "mean_peak_contact_force_std_over_profiles": 0.0,
+            "p95_peak_contact_force_mean_over_profiles": 0.0,
+            "p95_peak_contact_force_std_over_profiles": 0.0,
+            "mean_force_std_mean_over_profiles": 0.0,
+            "mean_force_std_std_over_profiles": 0.0,
+            "mean_first_contact_step_mean_over_profiles": 64.0,
+            "mean_first_contact_step_std_over_profiles": 0.0,
+            "mean_contact_steps_mean_over_profiles": 0.0,
+            "mean_contact_steps_std_over_profiles": 0.0,
+            "mean_settling_steps_after_contact_mean_over_profiles": 0.0,
+            "mean_settling_steps_after_contact_std_over_profiles": 0.0,
+            "jam_rate_mean_over_profiles": 0.0,
+            "jam_rate_std_over_profiles": 0.0,
+            "force_threshold_termination_rate_mean_over_profiles": 0.0,
+            "force_threshold_termination_rate_std_over_profiles": 0.0,
+            "blocked_contact_termination_rate_mean_over_profiles": 0.0,
+            "blocked_contact_termination_rate_std_over_profiles": 0.0,
+            "force_threshold_only_termination_rate_mean_over_profiles": 0.0,
+            "force_threshold_only_termination_rate_std_over_profiles": 0.0,
+            "blocked_contact_only_termination_rate_mean_over_profiles": 0.0,
+            "blocked_contact_only_termination_rate_std_over_profiles": 0.0,
+            "force_and_blocked_termination_rate_mean_over_profiles": 0.0,
+            "force_and_blocked_termination_rate_std_over_profiles": 0.0,
+            "documented_force_jam_rate_mean_over_profiles": 0.0,
+            "documented_force_jam_rate_std_over_profiles": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "method_name": "td3_no_bc",
+      "label": "TD3 w/o BC",
+      "algorithm": "td3",
+      "train_overrides": {
+        "n_envs": 1,
+        "batch_size": 256,
+        "learning_rate": 0.0003,
+        "gamma": 0.99,
+        "buffer_size": 200000,
+        "learning_starts": 1024,
+        "train_freq": 1,
+        "gradient_steps": 1,
+        "tau": 0.005,
+        "policy_delay": 2,
+        "target_policy_noise": 0.2,
+        "target_noise_clip": 0.5,
+        "action_noise_std": 0.1
+      },
+      "points": [
+        {
+          "method_name": "td3_no_bc",
+          "algorithm": "td3",
+          "factor_value": 8,
+          "training_budget": {
+            "total_timesteps": 8
+          },
+          "train_config_snapshot": {
+            "method_name": "td3_no_bc",
+            "algorithm": "td3",
+            "total_timesteps": 8,
+            "seed": 0,
+            "max_episode_steps": 64,
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "policy_name": "MlpPolicy",
+            "policy_kwargs": {},
+            "n_envs": 1,
+            "batch_size": 256,
+            "learning_rate": 0.0003,
+            "gamma": 0.99,
+            "norm_obs": true,
+            "norm_reward": true,
+            "verbose": 0,
+            "device": "cpu",
+            "base_env_overrides": {},
+            "train_reset_config": {
+              "curriculum_stages": [
+                {
+                  "start_xy_noise_m": 0.0008,
+                  "start_depth_fraction_range": [
+                    0.0,
+                    0.15
+                  ],
+                  "weight": 0.35
+                },
+                {
+                  "start_xy_noise_m": 0.0005,
+                  "start_depth_fraction_range": [
+                    0.35,
+                    0.65
+                  ],
+                  "weight": 0.4
+                },
+                {
+                  "start_xy_noise_m": 0.0002,
+                  "start_depth_fraction_range": [
+                    0.75,
+                    0.88
+                  ],
+                  "weight": 0.25
+                }
+              ]
+            },
+            "algorithm_kwargs": {
+              "buffer_size": 200000,
+              "learning_starts": 1024,
+              "train_freq": 1,
+              "gradient_steps": 1,
+              "tau": 0.005,
+              "policy_delay": 2,
+              "target_policy_noise": 0.2,
+              "target_noise_clip": 0.5
+            },
+            "action_noise_std": 0.1
+          },
+          "train_configs": [
+            {
+              "method_name": "td3_no_bc",
+              "algorithm": "td3",
+              "total_timesteps": 8,
+              "seed": 0,
+              "max_episode_steps": 64,
+              "train_uncertainty_profile": "nominal",
+              "eval_uncertainty_profile": "nominal",
+              "policy_name": "MlpPolicy",
+              "policy_kwargs": {},
+              "n_envs": 1,
+              "batch_size": 256,
+              "learning_rate": 0.0003,
+              "gamma": 0.99,
+              "norm_obs": true,
+              "norm_reward": true,
+              "verbose": 0,
+              "device": "cpu",
+              "base_env_overrides": {},
+              "train_reset_config": {
+                "curriculum_stages": [
+                  {
+                    "start_xy_noise_m": 0.0008,
+                    "start_depth_fraction_range": [
+                      0.0,
+                      0.15
+                    ],
+                    "weight": 0.35
+                  },
+                  {
+                    "start_xy_noise_m": 0.0005,
+                    "start_depth_fraction_range": [
+                      0.35,
+                      0.65
+                    ],
+                    "weight": 0.4
+                  },
+                  {
+                    "start_xy_noise_m": 0.0002,
+                    "start_depth_fraction_range": [
+                      0.75,
+                      0.88
+                    ],
+                    "weight": 0.25
+                  }
+                ]
+              },
+              "algorithm_kwargs": {
+                "buffer_size": 200000,
+                "learning_starts": 1024,
+                "train_freq": 1,
+                "gradient_steps": 1,
+                "tau": 0.005,
+                "policy_delay": 2,
+                "target_policy_noise": 0.2,
+                "target_noise_clip": 0.5
+              },
+              "action_noise_std": 0.1
+            }
+          ],
+          "training_summaries": [
+            {
+              "seed": 0,
+              "method_name": "td3_no_bc",
+              "algorithm": "td3",
+              "total_timesteps": 8,
+              "train_uncertainty_profile": "nominal",
+              "n_envs": 1
+            }
+          ],
+          "per_profile_metrics": {
+            "nominal": {
+              "per_seed": [
+                {
+                  "policy_name": "TD3",
+                  "uncertainty_profile": "nominal",
+                  "episodes": 1,
+                  "success_rate": 0.0,
+                  "mean_episode_return": -1.7370441456292398,
+                  "mean_final_distance": 0.029846540660519623,
+                  "mean_episode_length": 64.0,
+                  "mean_peak_contact_force": 0.0,
+                  "p95_peak_contact_force": 0.0,
+                  "mean_force_std": 0.0,
+                  "mean_first_contact_step": 64.0,
+                  "mean_contact_steps": 0.0,
+                  "mean_settling_steps_after_contact": 0.0,
+                  "jam_rate": 0.0,
+                  "force_threshold_termination_rate": 0.0,
+                  "blocked_contact_termination_rate": 0.0,
+                  "force_threshold_only_termination_rate": 0.0,
+                  "blocked_contact_only_termination_rate": 0.0,
+                  "force_and_blocked_termination_rate": 0.0,
+                  "documented_force_jam_rate": 0.0,
+                  "seed": 0,
+                  "training_summary": {
+                    "method_name": "td3_no_bc",
+                    "algorithm": "td3",
+                    "seed": 0,
+                    "total_timesteps": 8,
+                    "train_uncertainty_profile": "nominal",
+                    "n_envs": 1
+                  }
+                }
+              ],
+              "aggregate": {
+                "policy_name": "TD3",
+                "uncertainty_profile": "nominal",
+                "num_seeds": 1,
+                "seeds": [
+                  0
+                ],
+                "success_rate_mean": 0.0,
+                "success_rate_std": 0.0,
+                "mean_episode_return_mean": -1.7370441456292398,
+                "mean_episode_return_std": 0.0,
+                "mean_final_distance_mean": 0.029846540660519623,
+                "mean_final_distance_std": 0.0,
+                "mean_episode_length_mean": 64.0,
+                "mean_episode_length_std": 0.0,
+                "mean_peak_contact_force_mean": 0.0,
+                "mean_peak_contact_force_std": 0.0,
+                "p95_peak_contact_force_mean": 0.0,
+                "p95_peak_contact_force_std": 0.0,
+                "mean_force_std_mean": 0.0,
+                "mean_force_std_std": 0.0,
+                "mean_first_contact_step_mean": 64.0,
+                "mean_first_contact_step_std": 0.0,
+                "mean_contact_steps_mean": 0.0,
+                "mean_contact_steps_std": 0.0,
+                "mean_settling_steps_after_contact_mean": 0.0,
+                "mean_settling_steps_after_contact_std": 0.0,
+                "jam_rate_mean": 0.0,
+                "jam_rate_std": 0.0,
+                "force_threshold_termination_rate_mean": 0.0,
+                "force_threshold_termination_rate_std": 0.0,
+                "blocked_contact_termination_rate_mean": 0.0,
+                "blocked_contact_termination_rate_std": 0.0,
+                "force_threshold_only_termination_rate_mean": 0.0,
+                "force_threshold_only_termination_rate_std": 0.0,
+                "blocked_contact_only_termination_rate_mean": 0.0,
+                "blocked_contact_only_termination_rate_std": 0.0,
+                "force_and_blocked_termination_rate_mean": 0.0,
+                "force_and_blocked_termination_rate_std": 0.0,
+                "documented_force_jam_rate_mean": 0.0,
+                "documented_force_jam_rate_std": 0.0,
+                "method_name": "td3_no_bc",
+                "algorithm": "td3",
+                "train_uncertainty_profile": "nominal",
+                "eval_uncertainty_profile": "nominal"
+              }
+            }
+          },
+          "five_profile_mean": {
+            "success_rate_mean_over_profiles": 0.0,
+            "success_rate_std_over_profiles": 0.0,
+            "mean_episode_return_mean_over_profiles": -1.7370441456292398,
+            "mean_episode_return_std_over_profiles": 0.0,
+            "mean_final_distance_mean_over_profiles": 0.029846540660519623,
+            "mean_final_distance_std_over_profiles": 0.0,
+            "mean_episode_length_mean_over_profiles": 64.0,
+            "mean_episode_length_std_over_profiles": 0.0,
+            "mean_peak_contact_force_mean_over_profiles": 0.0,
+            "mean_peak_contact_force_std_over_profiles": 0.0,
+            "p95_peak_contact_force_mean_over_profiles": 0.0,
+            "p95_peak_contact_force_std_over_profiles": 0.0,
+            "mean_force_std_mean_over_profiles": 0.0,
+            "mean_force_std_std_over_profiles": 0.0,
+            "mean_first_contact_step_mean_over_profiles": 64.0,
+            "mean_first_contact_step_std_over_profiles": 0.0,
+            "mean_contact_steps_mean_over_profiles": 0.0,
+            "mean_contact_steps_std_over_profiles": 0.0,
+            "mean_settling_steps_after_contact_mean_over_profiles": 0.0,
+            "mean_settling_steps_after_contact_std_over_profiles": 0.0,
+            "jam_rate_mean_over_profiles": 0.0,
+            "jam_rate_std_over_profiles": 0.0,
+            "force_threshold_termination_rate_mean_over_profiles": 0.0,
+            "force_threshold_termination_rate_std_over_profiles": 0.0,
+            "blocked_contact_termination_rate_mean_over_profiles": 0.0,
+            "blocked_contact_termination_rate_std_over_profiles": 0.0,
+            "force_threshold_only_termination_rate_mean_over_profiles": 0.0,
+            "force_threshold_only_termination_rate_std_over_profiles": 0.0,
+            "blocked_contact_only_termination_rate_mean_over_profiles": 0.0,
+            "blocked_contact_only_termination_rate_std_over_profiles": 0.0,
+            "force_and_blocked_termination_rate_mean_over_profiles": 0.0,
+            "force_and_blocked_termination_rate_std_over_profiles": 0.0,
+            "documented_force_jam_rate_mean_over_profiles": 0.0,
+            "documented_force_jam_rate_std_over_profiles": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}

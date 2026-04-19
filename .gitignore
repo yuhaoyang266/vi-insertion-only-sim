@@ -22,6 +22,7 @@ __pycache__/
 .venv/
 venv/
 .env
+.claude/
 .DS_Store
 Thumbs.db
 

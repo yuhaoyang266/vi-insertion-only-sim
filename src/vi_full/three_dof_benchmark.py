@@ -843,6 +843,29 @@ def build_3dof_algorithm_budget_comparison_registry() -> dict[str, Any]:
     }
 
 
+_PPO_ONLY_PROTOCOL_FREEZE_OVERRIDES: dict[str, Any] = {
+    "bc_rollout_episodes": 0,
+    "bc_pretrain_steps": 0,
+    "approach_bc_rollout_episodes": 0,
+    "approach_bc_pretrain_steps": 0,
+    "contact_bc_rollout_episodes": 0,
+    "contact_bc_pretrain_steps": 0,
+    "contact_bc_after_finetune": False,
+    "contact_finetune_timesteps": 0,
+    "contact_finetune_anchor_rollout_episodes": 0,
+    "contact_finetune_anchor_bc_steps": 0,
+    "contact_finetune_anchor_interval_timesteps": 0,
+    "phase_bias_distill_rollout_episodes": 0,
+    "phase_bias_distill_pretrain_steps": 0,
+    "intent_lift_bc_rollout_episodes": 0,
+    "intent_lift_bc_pretrain_steps": 0,
+    "intent_lift_bc_after_stabilization": False,
+    "stabilization_bc_rollout_episodes": 0,
+    "stabilization_bc_pretrain_steps": 0,
+    "dapg_enabled": False,
+}
+
+
 def build_3dof_ppo_large_budget_ablation_registry() -> dict[str, Any]:
     return {
         "experiment_name": "three_dof_ppo_large_budget_ablation",
@@ -852,8 +875,6 @@ def build_3dof_ppo_large_budget_ablation_registry() -> dict[str, Any]:
                 "condition_name": "ppo_only_paper_matched",
                 "label": "PPO-only paper-matched",
                 "train_overrides": {
-                    "bc_rollout_episodes": 0,
-                    "bc_pretrain_steps": 0,
                     "bc_batch_size": 64,
                     "n_envs": 1,
                     "n_steps": 64,
@@ -863,14 +884,13 @@ def build_3dof_ppo_large_budget_ablation_registry() -> dict[str, Any]:
                     "gamma": 0.95,
                     "gae_lambda": 0.95,
                     "ent_coef": 0.0,
+                    **_PPO_ONLY_PROTOCOL_FREEZE_OVERRIDES,
                 },
             },
             {
                 "condition_name": "ppo_only_reviewer_fair",
                 "label": "PPO-only reviewer-fair",
                 "train_overrides": {
-                    "bc_rollout_episodes": 0,
-                    "bc_pretrain_steps": 0,
                     "bc_batch_size": 64,
                     "n_envs": 4,
                     "n_steps": 256,
@@ -880,6 +900,7 @@ def build_3dof_ppo_large_budget_ablation_registry() -> dict[str, Any]:
                     "gamma": 0.99,
                     "gae_lambda": 0.95,
                     "ent_coef": 0.01,
+                    **_PPO_ONLY_PROTOCOL_FREEZE_OVERRIDES,
                 },
             },
         ],

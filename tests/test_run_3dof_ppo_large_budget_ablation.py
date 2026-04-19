@@ -76,6 +76,64 @@ def test_ppo_large_budget_runner_writes_condition_budget_grid(
     assert calls[0]["uncertainty_profiles"] == ["nominal"]
 
 
+def test_ppo_only_protocol_disables_all_auxiliary_stages() -> None:
+    from vi_full.three_dof_benchmark import build_3dof_ppo_large_budget_ablation_registry
+
+    expected_disabled_overrides = {
+        "bc_rollout_episodes": 0,
+        "bc_pretrain_steps": 0,
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_after_finetune": False,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+        "phase_bias_distill_rollout_episodes": 0,
+        "phase_bias_distill_pretrain_steps": 0,
+        "intent_lift_bc_rollout_episodes": 0,
+        "intent_lift_bc_pretrain_steps": 0,
+        "intent_lift_bc_after_stabilization": False,
+        "stabilization_bc_rollout_episodes": 0,
+        "stabilization_bc_pretrain_steps": 0,
+        "dapg_enabled": False,
+    }
+    registry = build_3dof_ppo_large_budget_ablation_registry()
+    assert [condition["condition_name"] for condition in registry["conditions"]] == [
+        "ppo_only_paper_matched",
+        "ppo_only_reviewer_fair",
+    ]
+
+    paper_condition = next(
+        condition
+        for condition in registry["conditions"]
+        if condition["condition_name"] == "ppo_only_paper_matched"
+    )
+    assert paper_condition["train_overrides"]["n_envs"] == 1
+    assert paper_condition["train_overrides"]["n_steps"] == 64
+    assert paper_condition["train_overrides"]["n_epochs"] == 1
+    assert paper_condition["train_overrides"]["learning_rate"] == 1e-4
+
+    reviewer_condition = next(
+        condition
+        for condition in registry["conditions"]
+        if condition["condition_name"] == "ppo_only_reviewer_fair"
+    )
+    assert reviewer_condition["train_overrides"]["n_envs"] == 4
+    assert reviewer_condition["train_overrides"]["n_steps"] == 256
+    assert reviewer_condition["train_overrides"]["n_epochs"] == 4
+    assert reviewer_condition["train_overrides"]["learning_rate"] == 3e-4
+
+    for condition in registry["conditions"]:
+        observed_overrides = {
+            key: condition["train_overrides"].get(key)
+            for key in expected_disabled_overrides
+        }
+        assert observed_overrides == expected_disabled_overrides
+
+
 def test_ppo_large_budget_runner_help_works_from_repo_root() -> None:
     repo_root = Path(__file__).resolve().parents[1]
     script_path = (
