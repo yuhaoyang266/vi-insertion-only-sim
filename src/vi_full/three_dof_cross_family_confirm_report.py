@@ -229,14 +229,19 @@ def export_distance_proxy_csv(
             best_budget = int(summary["best_budget"])
             for budget_text, distance_mm in summary["final_distance_by_budget_mm"].items():
                 budget = int(budget_text)
-                is_best_proxy_cell = bool(summary["is_best_distance_proxy"]) and budget == best_budget
+                is_best_proxy_cell = (
+                    bool(summary["is_best_distance_proxy"]) and budget == best_budget
+                )
+                entered_contact_cell = _as_float(
+                    summary["contact_steps_by_budget"][budget_text]
+                ) > 0.0
                 writer.writerow(
                     [
                         summary["method_name"],
                         summary["label"],
                         budget,
                         _format_float(distance_mm),
-                        str(bool(summary["entered_contact"])).lower(),
+                        str(entered_contact_cell).lower(),
                         str(is_best_proxy_cell).lower(),
                     ]
                 )
@@ -249,23 +254,35 @@ def export_contact_gate_table(
     filename: str = "three_dof_cross_family_confirm_contact_gate_table.md",
 ) -> Path:
     output_path = Path(output_dir) / filename
+    contact_rows: list[tuple[dict[str, Any], str, object, bool]] = []
+    for summary in confirm["method_summaries"]:
+        for budget_text, distance_mm in summary["final_distance_by_budget_mm"].items():
+            entered_contact_cell = _as_float(
+                summary["contact_steps_by_budget"][budget_text]
+            ) > 0.0
+            contact_rows.append(
+                (summary, budget_text, distance_mm, entered_contact_cell)
+            )
+    zero_contact_count = sum(
+        1 for _, _, _, entered_contact in contact_rows if not entered_contact
+    )
     rows: list[str] = [
         "# 3DoF Cross-Family Confirm Contact Gate",
         "",
-        "9/9 zero-contact method-budget cells.",
+        f"{zero_contact_count}/{len(contact_rows)} zero-contact method-budget cells.",
         "",
         "| method | budget | final_distance_mm | contact? |",
         "| --- | ---: | ---: | --- |",
     ]
-    for summary in confirm["method_summaries"]:
-        for budget_text, distance_mm in summary["final_distance_by_budget_mm"].items():
-            rows.append(
-                "| "
-                f"{summary['label']} | "
-                f"{int(budget_text)} | "
-                f"{_format_float(distance_mm)} | "
-                "no |"
-            )
+    for summary, budget_text, distance_mm, entered_contact_cell in contact_rows:
+        contact_text = "yes" if entered_contact_cell else "no"
+        rows.append(
+            "| "
+            f"{summary['label']} | "
+            f"{int(budget_text)} | "
+            f"{_format_float(distance_mm)} | "
+            f"{contact_text} |"
+        )
     rows.extend(
         [
             "",

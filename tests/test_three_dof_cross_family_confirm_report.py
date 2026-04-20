@@ -150,3 +150,23 @@ def test_confirm_report_rejects_success_claim_when_contact_steps_are_zero(
         "success" not in allowed_claim.lower()
         for allowed_claim in confirm["paper_claim_boundary"]["allowed"]
     )
+
+
+def test_contact_gate_table_counts_zero_contact_cells(tmp_path: Path) -> None:
+    from vi_full.three_dof_cross_family_confirm_report import (
+        build_confirm_report,
+        export_contact_gate_table,
+    )
+
+    payload = _complete_pilot_report()
+    for row in payload["summary_rows"]:
+        if row["method_name"] == "sac_no_bc" and row["budget"] == 100_000:
+            row["mean_contact_steps"] = 2.0
+            break
+    confirm = build_confirm_report(_write_report(tmp_path, payload))
+
+    table_path = export_contact_gate_table(confirm, tmp_path)
+    table_text = table_path.read_text(encoding="utf-8")
+
+    assert "8/9 zero-contact method-budget cells" in table_text
+    assert "| SAC w/o BC | 100000 | 17.58 | yes |" in table_text

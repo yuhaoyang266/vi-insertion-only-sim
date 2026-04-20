@@ -1,6 +1,6 @@
 {
   "report_name": "three_dof_cross_family_confirm_report",
-  "generated_at": "2026-04-21T03:38:12",
+  "generated_at": "2026-04-21T03:41:58",
   "source_report": "outputs/pilot_report/three_dof_cross_family_pilot_report.json",
   "grid_complete": true,
   "expected_grid": {
