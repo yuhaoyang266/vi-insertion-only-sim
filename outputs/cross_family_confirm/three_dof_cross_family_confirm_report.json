@@ -1,0 +1,106 @@
+{
+  "report_name": "three_dof_cross_family_confirm_report",
+  "generated_at": "2026-04-21T03:38:12",
+  "source_report": "outputs/pilot_report/three_dof_cross_family_pilot_report.json",
+  "grid_complete": true,
+  "expected_grid": {
+    "method_names": [
+      "ppo_no_bc",
+      "sac_no_bc",
+      "td3_no_bc"
+    ],
+    "budget_points": [
+      50000,
+      100000,
+      200000
+    ],
+    "expected_chunk_count": 9,
+    "completed_chunk_count": 9,
+    "missing_chunk_count": 0
+  },
+  "selected_branch": "branch_a",
+  "branch_rationale": "All pure-RL families have zero success and zero useful-contact steps under the frozen grid.",
+  "best_distance_proxy_method": "sac_no_bc",
+  "method_summaries": [
+    {
+      "method_name": "ppo_no_bc",
+      "label": "PPO w/o BC",
+      "algorithm": "ppo",
+      "best_budget": 200000,
+      "best_final_distance_mm": 25.48189483120263,
+      "distance_improvement_50k_to_200k_mm": 5.537495306709015,
+      "entered_contact": false,
+      "mean_success_across_budgets": 0.0,
+      "mean_contact_steps_across_budgets": 0.0,
+      "max_success_across_budgets": 0.0,
+      "final_distance_by_budget_mm": {
+        "50000": 31.019390137911646,
+        "100000": 29.473707375726704,
+        "200000": 25.48189483120263
+      },
+      "contact_steps_by_budget": {
+        "50000": 0.0,
+        "100000": 0.0,
+        "200000": 0.0
+      },
+      "is_best_distance_proxy": false
+    },
+    {
+      "method_name": "sac_no_bc",
+      "label": "SAC w/o BC",
+      "algorithm": "sac",
+      "best_budget": 200000,
+      "best_final_distance_mm": 16.67404817601289,
+      "distance_improvement_50k_to_200k_mm": 6.600664781653155,
+      "entered_contact": false,
+      "mean_success_across_budgets": 0.0,
+      "mean_contact_steps_across_budgets": 0.0,
+      "max_success_across_budgets": 0.0,
+      "final_distance_by_budget_mm": {
+        "50000": 23.274712957666043,
+        "100000": 17.58137706746945,
+        "200000": 16.67404817601289
+      },
+      "contact_steps_by_budget": {
+        "50000": 0.0,
+        "100000": 0.0,
+        "200000": 0.0
+      },
+      "is_best_distance_proxy": true
+    },
+    {
+      "method_name": "td3_no_bc",
+      "label": "TD3 w/o BC",
+      "algorithm": "td3",
+      "best_budget": 200000,
+      "best_final_distance_mm": 25.555508885197465,
+      "distance_improvement_50k_to_200k_mm": 5.229436992889447,
+      "entered_contact": false,
+      "mean_success_across_budgets": 0.0,
+      "mean_contact_steps_across_budgets": 0.0,
+      "max_success_across_budgets": 0.0,
+      "final_distance_by_budget_mm": {
+        "50000": 30.784945878086912,
+        "100000": 28.61537898879284,
+        "200000": 25.555508885197465
+      },
+      "contact_steps_by_budget": {
+        "50000": 0.0,
+        "100000": 0.0,
+        "200000": 0.0
+      },
+      "is_best_distance_proxy": false
+    }
+  ],
+  "paper_claim_boundary": {
+    "allowed": [
+      "pure RL remains outside useful contact",
+      "SAC reduces terminal distance"
+    ],
+    "not_allowed": [
+      "SAC solves insertion",
+      "off-policy reaches useful contact",
+      "pure RL can never solve insertion"
+    ]
+  }
+}

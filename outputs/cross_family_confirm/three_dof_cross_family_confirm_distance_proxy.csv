@@ -1,0 +1,10 @@
+method_name,label,budget,mean_final_distance_mm,entered_contact,is_best_distance_proxy
+ppo_no_bc,PPO w/o BC,50000,31.02,false,false
+ppo_no_bc,PPO w/o BC,100000,29.47,false,false
+ppo_no_bc,PPO w/o BC,200000,25.48,false,false
+sac_no_bc,SAC w/o BC,50000,23.27,false,false
+sac_no_bc,SAC w/o BC,100000,17.58,false,false
+sac_no_bc,SAC w/o BC,200000,16.67,false,true
+td3_no_bc,TD3 w/o BC,50000,30.78,false,false
+td3_no_bc,TD3 w/o BC,100000,28.62,false,false
+td3_no_bc,TD3 w/o BC,200000,25.56,false,false
