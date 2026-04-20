@@ -1,0 +1,178 @@
+from __future__ import annotations
+
+from datetime import datetime
+import json
+from pathlib import Path
+from statistics import mean
+from typing import Any
+
+
+EXPECTED_METHOD_COUNT = 3
+EXPECTED_BUDGET_COUNT = 3
+EXPECTED_CHUNK_COUNT = EXPECTED_METHOD_COUNT * EXPECTED_BUDGET_COUNT
+
+
+def _load_json(path: Path) -> dict[str, Any]:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _as_float(value: object) -> float:
+    if value is None:
+        return 0.0
+    return float(value)
+
+
+def _validate_complete_grid(report: dict[str, Any]) -> dict[str, Any]:
+    expected_grid = dict(report.get("expected_grid", {}))
+    expected_count = int(expected_grid.get("expected_chunk_count", 0))
+    completed_count = int(expected_grid.get("completed_chunk_count", 0))
+    missing_count = int(expected_grid.get("missing_chunk_count", 0))
+    if (
+        expected_count != EXPECTED_CHUNK_COUNT
+        or completed_count != EXPECTED_CHUNK_COUNT
+        or missing_count != 0
+    ):
+        raise ValueError(
+            "Confirm report requires a complete 9-chunk grid "
+            f"(expected={expected_count}, completed={completed_count}, missing={missing_count})."
+        )
+    return expected_grid
+
+
+def _rows_by_method(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        grouped.setdefault(str(row["method_name"]), []).append(dict(row))
+    for method_rows in grouped.values():
+        method_rows.sort(key=lambda row: int(row["budget"]))
+    return grouped
+
+
+def _budget_value(rows: list[dict[str, Any]], budget: int, metric: str) -> float | None:
+    for row in rows:
+        if int(row["budget"]) == budget:
+            return _as_float(row.get(metric))
+    return None
+
+
+def _method_summary(method_name: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    best_row = min(rows, key=lambda row: _as_float(row.get("mean_final_distance_mm")))
+    first_distance = _budget_value(rows, 50_000, "mean_final_distance_mm")
+    final_distance = _budget_value(rows, 200_000, "mean_final_distance_mm")
+    if first_distance is None or final_distance is None:
+        distance_improvement = None
+    else:
+        distance_improvement = first_distance - final_distance
+
+    contact_steps = [_as_float(row.get("mean_contact_steps")) for row in rows]
+    success_rates = [_as_float(row.get("success_rate")) for row in rows]
+    entered_contact = any(value > 0.0 for value in contact_steps)
+
+    return {
+        "method_name": method_name,
+        "label": str(rows[0].get("label", method_name)),
+        "algorithm": str(rows[0].get("algorithm", "")),
+        "best_budget": int(best_row["budget"]),
+        "best_final_distance_mm": _as_float(best_row.get("mean_final_distance_mm")),
+        "distance_improvement_50k_to_200k_mm": distance_improvement,
+        "entered_contact": entered_contact,
+        "mean_success_across_budgets": mean(success_rates),
+        "mean_contact_steps_across_budgets": mean(contact_steps),
+        "max_success_across_budgets": max(success_rates),
+        "final_distance_by_budget_mm": {
+            str(int(row["budget"])): _as_float(row.get("mean_final_distance_mm"))
+            for row in rows
+        },
+        "contact_steps_by_budget": {
+            str(int(row["budget"])): _as_float(row.get("mean_contact_steps"))
+            for row in rows
+        },
+        "is_best_distance_proxy": False,
+    }
+
+
+def _select_branch(method_summaries: list[dict[str, Any]]) -> tuple[str, str]:
+    all_zero_success = all(
+        _as_float(summary["mean_success_across_budgets"]) == 0.0
+        for summary in method_summaries
+    )
+    all_zero_contact = all(
+        _as_float(summary["mean_contact_steps_across_budgets"]) == 0.0
+        for summary in method_summaries
+    )
+    any_contact = any(bool(summary["entered_contact"]) for summary in method_summaries)
+    max_success = max(
+        _as_float(summary["max_success_across_budgets"])
+        for summary in method_summaries
+    )
+
+    if all_zero_success and all_zero_contact:
+        return (
+            "branch_a",
+            "All pure-RL families have zero success and zero useful-contact steps under the frozen grid.",
+        )
+    if any_contact and max_success < 0.5:
+        return (
+            "branch_b",
+            "At least one off-policy family reaches contact, but success remains low.",
+        )
+    return (
+        "branch_c_candidate",
+        "At least one pure-RL family has non-trivial success and should be compared against demo-supported anchors.",
+    )
+
+
+def _mark_best_distance_proxy(method_summaries: list[dict[str, Any]]) -> str:
+    best_summary = min(
+        method_summaries,
+        key=lambda summary: _as_float(summary["best_final_distance_mm"]),
+    )
+    best_method = str(best_summary["method_name"])
+    for summary in method_summaries:
+        summary["is_best_distance_proxy"] = summary["method_name"] == best_method
+    return best_method
+
+
+def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
+    pilot_report = Path(pilot_report)
+    source = _load_json(pilot_report)
+    expected_grid = _validate_complete_grid(source)
+    summary_rows = [dict(row) for row in source.get("summary_rows", [])]
+    grouped_rows = _rows_by_method(summary_rows)
+
+    method_names = [str(name) for name in expected_grid.get("method_names", [])]
+    method_summaries = [
+        _method_summary(method_name, grouped_rows[method_name])
+        for method_name in method_names
+    ]
+    best_distance_proxy_method = _mark_best_distance_proxy(method_summaries)
+    selected_branch, branch_rationale = _select_branch(method_summaries)
+
+    return {
+        "report_name": "three_dof_cross_family_confirm_report",
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "source_report": str(pilot_report).replace("\\", "/"),
+        "grid_complete": True,
+        "expected_grid": {
+            "method_names": method_names,
+            "budget_points": [int(value) for value in expected_grid.get("budget_points", [])],
+            "expected_chunk_count": int(expected_grid["expected_chunk_count"]),
+            "completed_chunk_count": int(expected_grid["completed_chunk_count"]),
+            "missing_chunk_count": int(expected_grid["missing_chunk_count"]),
+        },
+        "selected_branch": selected_branch,
+        "branch_rationale": branch_rationale,
+        "best_distance_proxy_method": best_distance_proxy_method,
+        "method_summaries": method_summaries,
+        "paper_claim_boundary": {
+            "allowed": [
+                "pure RL remains outside useful contact",
+                "SAC reduces terminal distance",
+            ],
+            "not_allowed": [
+                "SAC solves insertion",
+                "off-policy reaches useful contact",
+                "pure RL can never solve insertion",
+            ],
+        },
+    }
