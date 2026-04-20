@@ -193,3 +193,19 @@ Rationale for the off-policy freeze:
 Scope note:
 
 - The runner now exposes `--train-profile`, but the frozen Sprint 1 default remains `nominal` train and `nominal` eval unless a later protocol update says otherwise.
+
+## Cross-Family Confirm Interpretation Boundary
+
+Sprint 1 full pilot completed: 9/9 chunks.
+
+Selected narrative branch: A.
+
+No pure-RL method reached contact under the frozen 3DoF contract. SAC shows the strongest
+terminal-distance proxy but still remains zero-contact.
+
+- This pilot does not prove pure RL can never solve insertion.
+- It shows that under the frozen 3DoF nominal-train, nominal-eval, 50k/100k/200k contract, PPO/SAC/TD3 do not enter useful contact.
+- Distance-to-contact may be used as a secondary diagnostic proxy, not as a success metric.
+
+Next Sprint 2 direction: the confirm benchmark should compare Branch-A pure-RL failure against
+demo-supported anchors, not oversell SAC.

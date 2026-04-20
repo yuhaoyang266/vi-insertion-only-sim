@@ -186,3 +186,19 @@
 - Narrative implication:
   - Sprint 1 supports Branch A ("pure RL across families cannot reach useful contact")
   - the weaker but still useful nuance is that off-policy training can shrink terminal distance without crossing the contact gate
+
+## Sprint 2A Confirm Benchmark Boundary
+
+- `narrative_branches.md` now locks the selected branch as Branch A with the 2026-04-20 Asia/Shanghai selection date.
+- Sprint 1 full pilot completed: 9/9 chunks.
+- No pure-RL method reached contact under the frozen 3DoF nominal-train, nominal-eval, 50k/100k/200k contract.
+- SAC shows strongest terminal-distance proxy but still zero-contact:
+  - `23.27 mm @50k`
+  - `17.58 mm @100k`
+  - `16.67 mm @200k`
+- Paper-facing boundary:
+  - Allowed: pure RL remains outside useful contact; SAC reduces terminal distance.
+  - Not allowed: SAC solves insertion; off-policy reaches useful contact; this proves pure RL can never solve insertion.
+
+Next Sprint 2 direction: confirm benchmark should compare Branch-A pure-RL failure against
+demo-supported anchors, not oversell SAC.
