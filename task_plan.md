@@ -181,7 +181,7 @@ _B-category preventive refactor. Phase 2.5 锁定平台方向后立即启动;可
 - [x] Add `scripts/experiments/run_3dof_cross_family_pilot.py` with default `50k/100k/200k` budgets and nominal-only pilot profiles
 - [x] Add contract tests for the new registry, TD3 action-noise path, and runner JSON grid
 - [x] Run a real smoke artifact at `outputs/three_dof_cross_family_pilot_smoke.json`
-- [ ] Next Sprint 1 milestone: execute the full 27-run pilot grid and generate the two internal pilot figures
+- [x] Sprint 1 milestone completed: execute the full method-budget pilot grid and generate the two internal pilot figures
 
 ## Sprint 2A: Branch-A Confirm Benchmark Pack
 
@@ -189,8 +189,8 @@ _B-category preventive refactor. Phase 2.5 锁定平台方向后立即启动;可
 - [x] Selected narrative branch: A.
 - [x] No pure-RL method reached contact under the frozen 3DoF contract.
 - [x] SAC shows strongest terminal-distance proxy but still zero-contact.
-- [ ] Export paper-facing confirm JSON/CSV/table/figure artifacts under `outputs/cross_family_confirm/`.
-- [ ] Add contract tests for the confirm report module and CLI exporter.
+- [x] Export paper-facing confirm JSON/CSV/table/figure artifacts under `outputs/cross_family_confirm/`.
+- [x] Add contract tests for the confirm report module and CLI exporter.
 
 Next Sprint 2 direction: confirm benchmark should compare Branch-A pure-RL failure against
 demo-supported anchors, not oversell SAC.

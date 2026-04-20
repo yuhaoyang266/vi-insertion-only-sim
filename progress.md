@@ -1,12 +1,14 @@
 # Progress Log
 
 ### Phase 3: Sprint 2A Branch-A Confirm Benchmark Pack
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - Created `narrative_branches.md` and locked Branch A on 2026-04-20 Asia/Shanghai.
   - Updated `protocol_freeze.md` with the Cross-Family Confirm Interpretation Boundary.
   - Updated planning notes to record: Sprint 1 full pilot completed 9/9 chunks; selected narrative branch A; no pure-RL method reached contact; SAC is only a terminal-distance proxy advantage.
   - Recorded the next Sprint 2 direction: compare Branch-A pure-RL failure against demo-supported anchors, not oversell SAC.
+  - Added confirm report module, CLI exporter, contract tests, and paper-facing artifacts.
+  - Verified the focused confirm test suite with `7 passed in 14.44s`.
 - Files created/modified:
   - `F:\edge download\learning\vi-insertion-only-sim\narrative_branches.md`
   - `F:\edge download\learning\vi-insertion-only-sim\protocol_freeze.md`
