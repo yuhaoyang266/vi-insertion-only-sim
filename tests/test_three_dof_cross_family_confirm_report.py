@@ -102,6 +102,21 @@ def test_confirm_report_requires_complete_9_chunk_grid(tmp_path: Path) -> None:
         build_confirm_report(pilot_report)
 
 
+def test_confirm_report_requires_complete_summary_row_grid(tmp_path: Path) -> None:
+    from vi_full.three_dof_cross_family_confirm_report import build_confirm_report
+
+    payload = _complete_pilot_report()
+    payload["summary_rows"] = [
+        row
+        for row in payload["summary_rows"]
+        if not (row["method_name"] == "td3_no_bc" and row["budget"] == 100_000)
+    ]
+    pilot_report = _write_report(tmp_path, payload)
+
+    with pytest.raises(ValueError, match="summary_rows must cover"):
+        build_confirm_report(pilot_report)
+
+
 def test_confirm_report_selects_branch_a_when_all_methods_have_zero_contact(
     tmp_path: Path,
 ) -> None:

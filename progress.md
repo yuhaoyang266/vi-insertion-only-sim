@@ -8,7 +8,8 @@
   - Updated planning notes to record: Sprint 1 full pilot completed 9/9 chunks; selected narrative branch A; no pure-RL method reached contact; SAC is only a terminal-distance proxy advantage.
   - Recorded the next Sprint 2 direction: compare Branch-A pure-RL failure against demo-supported anchors, not oversell SAC.
   - Added confirm report module, CLI exporter, contract tests, and paper-facing artifacts.
-  - Verified the focused confirm test suite with `7 passed in 14.44s`.
+  - Hardened the confirm report contract so `summary_rows` must cover the full method-budget grid, not only report complete metadata.
+  - Verified the focused confirm test suite with `8 passed in 12.18s`.
 - Files created/modified:
   - `F:\edge download\learning\vi-insertion-only-sim\narrative_branches.md`
   - `F:\edge download\learning\vi-insertion-only-sim\protocol_freeze.md`

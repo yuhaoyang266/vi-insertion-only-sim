@@ -55,6 +55,35 @@ def _rows_by_method(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]
     return grouped
 
 
+def _validate_summary_row_grid(
+    rows: list[dict[str, Any]],
+    expected_grid: dict[str, Any],
+) -> None:
+    method_names = [str(name) for name in expected_grid.get("method_names", [])]
+    budget_points = [int(value) for value in expected_grid.get("budget_points", [])]
+    expected_cells = {
+        (method_name, budget)
+        for method_name in method_names
+        for budget in budget_points
+    }
+    actual_counts: dict[tuple[str, int], int] = {}
+    for row in rows:
+        key = (str(row["method_name"]), int(row["budget"]))
+        actual_counts[key] = actual_counts.get(key, 0) + 1
+
+    actual_cells = set(actual_counts)
+    missing_cells = sorted(expected_cells - actual_cells)
+    extra_cells = sorted(actual_cells - expected_cells)
+    duplicate_cells = sorted(
+        cell for cell, count in actual_counts.items() if count > 1
+    )
+    if missing_cells or extra_cells or duplicate_cells:
+        raise ValueError(
+            "summary_rows must cover the complete method-budget grid "
+            f"(missing={missing_cells}, extra={extra_cells}, duplicates={duplicate_cells})."
+        )
+
+
 def _budget_value(rows: list[dict[str, Any]], budget: int, metric: str) -> float | None:
     for row in rows:
         if int(row["budget"]) == budget:
@@ -145,6 +174,7 @@ def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
     source = _load_json(pilot_report)
     expected_grid = _validate_complete_grid(source)
     summary_rows = [dict(row) for row in source.get("summary_rows", [])]
+    _validate_summary_row_grid(summary_rows, expected_grid)
     grouped_rows = _rows_by_method(summary_rows)
 
     method_names = [str(name) for name in expected_grid.get("method_names", [])]
