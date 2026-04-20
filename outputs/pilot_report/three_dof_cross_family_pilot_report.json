@@ -1,6 +1,6 @@
 {
   "experiment_name": "three_dof_cross_family_pilot",
-  "generated_at": "2026-04-19T17:50:00",
+  "generated_at": "2026-04-20T17:05:50",
   "chunk_dir": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\pilot_chunks",
   "expected_grid": {
     "method_names": [
@@ -14,8 +14,8 @@
       200000
     ],
     "expected_chunk_count": 9,
-    "completed_chunk_count": 6,
-    "missing_chunk_count": 3
+    "completed_chunk_count": 9,
+    "missing_chunk_count": 0
   },
   "completed_chunks": [
     {
@@ -39,14 +39,12 @@
       "budget": 100000
     },
     {
-      "method_name": "td3_no_bc",
-      "budget": 50000
-    }
-  ],
-  "missing_chunks": [
-    {
       "method_name": "sac_no_bc",
       "budget": 200000
+    },
+    {
+      "method_name": "td3_no_bc",
+      "budget": 50000
     },
     {
       "method_name": "td3_no_bc",
@@ -57,6 +55,7 @@
       "budget": 200000
     }
   ],
+  "missing_chunks": [],
   "methods": [
     {
       "method_name": "ppo_no_bc",
@@ -169,6 +168,26 @@
             "mean_peak_contact_force_n": 0.0,
             "jam_rate": 0.0
           }
+        },
+        {
+          "budget": 200000,
+          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__200000.json",
+          "five_profile_mean": {
+            "success_rate": 0.0,
+            "mean_first_contact_step": 64.0,
+            "mean_final_distance_mm": 16.67404817601289,
+            "mean_contact_steps": 0.0,
+            "mean_peak_contact_force_n": 0.0,
+            "jam_rate": 0.0
+          },
+          "nominal": {
+            "success_rate": 0.0,
+            "mean_first_contact_step": 64.0,
+            "mean_final_distance_mm": 16.67404817601289,
+            "mean_contact_steps": 0.0,
+            "mean_peak_contact_force_n": 0.0,
+            "jam_rate": 0.0
+          }
         }
       ]
     },
@@ -192,6 +211,46 @@
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
             "mean_final_distance_mm": 30.784945878086912,
+            "mean_contact_steps": 0.0,
+            "mean_peak_contact_force_n": 0.0,
+            "jam_rate": 0.0
+          }
+        },
+        {
+          "budget": 100000,
+          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__100000.json",
+          "five_profile_mean": {
+            "success_rate": 0.0,
+            "mean_first_contact_step": 64.0,
+            "mean_final_distance_mm": 28.61537898879284,
+            "mean_contact_steps": 0.0,
+            "mean_peak_contact_force_n": 0.0,
+            "jam_rate": 0.0
+          },
+          "nominal": {
+            "success_rate": 0.0,
+            "mean_first_contact_step": 64.0,
+            "mean_final_distance_mm": 28.61537898879284,
+            "mean_contact_steps": 0.0,
+            "mean_peak_contact_force_n": 0.0,
+            "jam_rate": 0.0
+          }
+        },
+        {
+          "budget": 200000,
+          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__200000.json",
+          "five_profile_mean": {
+            "success_rate": 0.0,
+            "mean_first_contact_step": 64.0,
+            "mean_final_distance_mm": 25.555508885197465,
+            "mean_contact_steps": 0.0,
+            "mean_peak_contact_force_n": 0.0,
+            "jam_rate": 0.0
+          },
+          "nominal": {
+            "success_rate": 0.0,
+            "mean_first_contact_step": 64.0,
+            "mean_final_distance_mm": 25.555508885197465,
             "mean_contact_steps": 0.0,
             "mean_peak_contact_force_n": 0.0,
             "jam_rate": 0.0
@@ -267,6 +326,19 @@
       "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__100000.json"
     },
     {
+      "method_name": "sac_no_bc",
+      "label": "SAC w/o BC",
+      "algorithm": "sac",
+      "budget": 200000,
+      "success_rate": 0.0,
+      "mean_first_contact_step": 64.0,
+      "mean_final_distance_mm": 16.67404817601289,
+      "mean_contact_steps": 0.0,
+      "mean_peak_contact_force_n": 0.0,
+      "jam_rate": 0.0,
+      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__200000.json"
+    },
+    {
       "method_name": "td3_no_bc",
       "label": "TD3 w/o BC",
       "algorithm": "td3",
@@ -278,6 +350,32 @@
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
       "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__50000.json"
+    },
+    {
+      "method_name": "td3_no_bc",
+      "label": "TD3 w/o BC",
+      "algorithm": "td3",
+      "budget": 100000,
+      "success_rate": 0.0,
+      "mean_first_contact_step": 64.0,
+      "mean_final_distance_mm": 28.61537898879284,
+      "mean_contact_steps": 0.0,
+      "mean_peak_contact_force_n": 0.0,
+      "jam_rate": 0.0,
+      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__100000.json"
+    },
+    {
+      "method_name": "td3_no_bc",
+      "label": "TD3 w/o BC",
+      "algorithm": "td3",
+      "budget": 200000,
+      "success_rate": 0.0,
+      "mean_first_contact_step": 64.0,
+      "mean_final_distance_mm": 25.555508885197465,
+      "mean_contact_steps": 0.0,
+      "mean_peak_contact_force_n": 0.0,
+      "jam_rate": 0.0,
+      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__200000.json"
     }
   ]
 }

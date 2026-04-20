@@ -122,29 +122,38 @@
 | Sprint 0 + Sprint 1 targeted regression suite | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q .\\tests\\test_three_dof_contract.py .\\tests\\test_run_3dof_ppo_large_budget_ablation.py .\\tests\\test_three_dof_cross_family_baselines.py .\\tests\\test_run_3dof_cross_family_pilot.py` | New pilot scaffolding does not regress Sprint 0 contracts | `14 passed in 9.91s` | pass |
 | Cross-family pilot smoke | `python .\\scripts\\experiments\\run_3dof_cross_family_pilot.py --seeds 0 --episodes 1 --budgets 8 --profiles nominal --output .\\outputs\\three_dof_cross_family_pilot_smoke.json` | All three methods write a pilot artifact | `ppo_no_bc/sac_no_bc/td3_no_bc` all completed and wrote JSON | pass |
 
-### Phase 3: Sprint 1 Reporting & Partial Pilot Execution
-- **Status:** in_progress
+### Phase 3: Sprint 1 Reporting & Full Pilot Execution
+- **Status:** complete
 - Actions taken:
   - Added `src/vi_full/three_dof_cross_family_pilot_report.py` to merge per-method per-budget chunk artifacts, detect missing grid cells, and flatten pilot-facing metrics.
   - Added `scripts/experiments/export_3dof_cross_family_pilot_report.py` to export a merged JSON report plus two internal figures (`success_vs_budget`, `first_contact_step_vs_budget`).
   - Wrote and passed new tests for report merge/export contracts and CLI execution.
-  - Exported the live report to `outputs/pilot_report/three_dof_cross_family_pilot_report.json`.
-  - Completed one more real pilot chunk during this session: `td3_no_bc@50k`.
-  - Kept `sac_no_bc@200k` and `td3_no_bc@100k/200k` running in background queues because wall-clock runtime is substantially longer than the earlier pilot chunks.
+  - Exported the final Sprint 1 report to `outputs/pilot_report/three_dof_cross_family_pilot_report.json`.
+  - Completed and merged the full 9/9 method-budget pilot grid:
+    `ppo_no_bc@50k/100k/200k`, `sac_no_bc@50k/100k/200k`, and `td3_no_bc@50k/100k/200k`.
+  - Refreshed both internal figure pairs from the final merged report.
+  - Recorded Branch A evidence: all pure-RL rows have `success_rate=0`, `mean_contact_steps=0`, and `mean_first_contact_step=64`; SAC only improves the terminal-distance proxy.
 - Files created/modified:
   - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_cross_family_pilot_report.py`
   - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_3dof_cross_family_pilot_report.py`
   - `F:\edge download\learning\vi-insertion-only-sim\tests\test_three_dof_cross_family_pilot_report.py`
   - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_3dof_cross_family_pilot_report.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_chunks\three_dof_cross_family_pilot__sac_no_bc__200000.json`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_chunks\three_dof_cross_family_pilot__td3_no_bc__200000.json`
   - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_report\three_dof_cross_family_pilot_report.json`
   - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_report\three_dof_cross_family_pilot_success_vs_budget.pdf`
   - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_report\three_dof_cross_family_pilot_success_vs_budget.png`
   - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_report\three_dof_cross_family_pilot_first_contact_step_vs_budget.pdf`
   - `F:\edge download\learning\vi-insertion-only-sim\outputs\pilot_report\three_dof_cross_family_pilot_first_contact_step_vs_budget.png`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\findings.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
 
-## Sprint 1 Reporting & Partial Pilot Test Results
+## Sprint 1 Reporting & Full Pilot Test Results
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
-| Cross-family report + CLI contract suite | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q .\\tests\\test_three_dof_cross_family_baselines.py .\\tests\\test_run_3dof_cross_family_pilot.py .\\tests\\test_three_dof_cross_family_pilot_report.py .\\tests\\test_run_3dof_cross_family_pilot_report.py` | Runner, report merge/export, and CLI stay green together | `9 passed in 13.78s` | pass |
-| Live pilot report export | `python .\\scripts\\experiments\\export_3dof_cross_family_pilot_report.py --chunk-dir .\\outputs\\pilot_chunks --output-dir .\\outputs\\pilot_report` | Merge current chunks and refresh two internal figures | Wrote JSON + 4 figure files; stderr only showed the existing `gym` deprecation warning and a `fontTools` deprecation warning during matplotlib export | pass |
+| Cross-family report + CLI contract suite | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q .\\tests\\test_three_dof_cross_family_baselines.py .\\tests\\test_run_3dof_cross_family_pilot.py .\\tests\\test_three_dof_cross_family_pilot_report.py .\\tests\\test_run_3dof_cross_family_pilot_report.py` | Runner, report merge/export, and CLI stay green together | `9 passed, 1 fontTools warning in 12.98s` | pass |
+| Full pilot report export | `python .\\scripts\\experiments\\export_3dof_cross_family_pilot_report.py --chunk-dir .\\outputs\\pilot_chunks --output-dir .\\outputs\\pilot_report` | Merge all 9 chunks and refresh two internal figures | Wrote JSON + 4 figure files; merged report records `completed_chunk_count=9`, `missing_chunk_count=0`; stderr only showed the existing `gym` deprecation warning and a `fontTools` deprecation warning during matplotlib export | pass |
+| Merged report invariant check | PowerShell JSON assertion over `outputs\\pilot_report\\three_dof_cross_family_pilot_report.json` | `completed=9`, `missing=0`, `summary_rows=9`, all rows preserve Branch A contact invariants | `report_json_ok completed=9 missing=0 branch_a_rows=9` | pass |
+| Internal figure artifact check | PowerShell file-size assertion over the 2 PDF + 2 PNG report figures | All refreshed figure files exist and are non-empty | Success figure: `18256`/`55150` bytes; first-contact figure: `18651`/`58337` bytes | pass |
 | Real pilot chunk: TD3 50k | background queue invoking `python .\\scripts\\experiments\\run_3dof_cross_family_pilot.py --methods td3_no_bc --budgets 50000 --output .\\outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__50000.json` | Materialize the missing `td3_no_bc@50k` chunk | Wrote JSON; `success_mean_over_profiles=0.0`; `mean_final_distance≈30.78 mm`; `mean_first_contact_step=64` | pass |

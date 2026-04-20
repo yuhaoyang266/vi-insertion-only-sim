@@ -155,7 +155,7 @@
 - `action_noise_std` is now treated as TD3-only; non-TD3 baselines fail fast instead of silently swallowing the field
 - `three_dof_cross_family_baselines.py` no longer imports the private `_default_3dof_train_reset_config`; the reset factory is promoted to the public `build_3dof_default_train_reset_config()`
 
-## Sprint 1 Pilot Execution Snapshot (2026-04-19 17:50 Asia/Shanghai)
+## Sprint 1 Full Pilot Execution Snapshot (2026-04-20 17:05 Asia/Shanghai)
 - `outputs/pilot_report/three_dof_cross_family_pilot_report.json` now acts as the live progress ledger for Sprint 1.
 - Report/export layer is in place:
   - `src/vi_full/three_dof_cross_family_pilot_report.py`
@@ -163,26 +163,26 @@
   - exported figures:
     - `outputs/pilot_report/three_dof_cross_family_pilot_success_vs_budget.{pdf,png}`
     - `outputs/pilot_report/three_dof_cross_family_pilot_first_contact_step_vs_budget.{pdf,png}`
-- Completed pilot chunks: 6 / 9
+- Completed pilot chunks: 9 / 9
   - `ppo_no_bc@50k/100k/200k`
-  - `sac_no_bc@50k/100k`
-  - `td3_no_bc@50k`
-- In-flight pilot chunks at the time of this snapshot:
-  - `sac_no_bc@200k`
-  - `td3_no_bc@100k`
-  - `td3_no_bc@200k`
-- Current partial trend:
-  - all completed pure-RL chunks still show `success_rate=0`, `mean_first_contact_step=64`, and `mean_contact_steps=0`
-  - the observable separation so far is **distance-to-contact**, not successful insertion
-  - `sac_no_bc` is the strongest partial family on this proxy:
+  - `sac_no_bc@50k/100k/200k`
+  - `td3_no_bc@50k/100k/200k`
+- Missing pilot chunks: 0 / 9
+- Full pilot trend:
+  - all pure-RL chunks show `success_rate=0`, `mean_first_contact_step=64`, `mean_contact_steps=0`, `mean_peak_contact_force_n=0`, and `jam_rate=0`
+  - the observable separation is **distance-to-contact**, not successful insertion or contact mechanics
+  - `sac_no_bc` is the strongest family on this proxy:
     - `23.27 mm @50k`
     - `17.58 mm @100k`
+    - `16.67 mm @200k`
   - `ppo_no_bc` improves with budget but remains worse on the same proxy:
     - `31.02 mm @50k`
     - `29.47 mm @100k`
     - `25.48 mm @200k`
-  - `td3_no_bc@50k` currently looks PPO-like rather than SAC-like:
-    - `30.78 mm`, still no contact
-- Narrative implication if the remaining 3 chunks stay zero-contact:
-  - Sprint 1 will still support Branch A ("pure RL across families cannot reach useful contact")
-  - the weaker but still useful nuance is that off-policy training may shrink the terminal distance without crossing the contact gate
+  - `td3_no_bc` also improves with budget but remains PPO-like rather than SAC-like:
+    - `30.78 mm @50k`
+    - `28.62 mm @100k`
+    - `25.56 mm @200k`
+- Narrative implication:
+  - Sprint 1 supports Branch A ("pure RL across families cannot reach useful contact")
+  - the weaker but still useful nuance is that off-policy training can shrink terminal distance without crossing the contact gate

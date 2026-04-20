@@ -66,9 +66,9 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 
 - [x] Sprint 0: PPO-only 200k 复现 + `protocol_freeze.md`
   → Deliverable: 复现 JSON + 3 个 regression tests(force_jam consecutive、blocked_contact separate reason、ppo-only disables auxiliary stages)passing
-- [ ] Sprint 1: SAC / TD3 训练入口 + cross-family pilot
+- [x] Sprint 1: SAC / TD3 训练入口 + cross-family pilot
   → Deliverable: `src/vi_full/three_dof_cross_family_baselines.py` + `scripts/experiments/run_3dof_cross_family_pilot.py` + `src/vi_full/three_dof_cross_family_pilot_report.py` + `scripts/experiments/export_3dof_cross_family_pilot_report.py`;27 runs(3 methods × 3 seeds × 3 budgets);2 张内部图(success vs budget、first_contact_step vs budget)
-  → 2026-04-19 17:50 Asia/Shanghai snapshot:`outputs/pilot_report/three_dof_cross_family_pilot_report.json` 已汇总 6/9 method-budget chunks；已完成 `ppo_no_bc@50k/100k/200k`、`sac_no_bc@50k/100k`、`td3_no_bc@50k`；剩余 `sac_no_bc@200k`、`td3_no_bc@100k/200k` 仍在运行
+  → 2026-04-20 17:05 Asia/Shanghai full pilot completed / Branch A evidence: `outputs/pilot_report/three_dof_cross_family_pilot_report.json` 已汇总 9/9 method-budget chunks，missing=0；已完成 `ppo_no_bc@50k/100k/200k`、`sac_no_bc@50k/100k/200k`、`td3_no_bc@50k/100k/200k`；三族 pure-RL 仍为 `success_rate=0`、`mean_contact_steps=0`、`mean_first_contact_step=64`，支持 Branch A（pure RL across families cannot reach useful contact）
 - [ ] Sprint 1-End: 按预注册 A/B/C 选定 narrative 分支
   → Deliverable: 1-page outline 钉死已选分支;同步修改 abstract/intro 占位
 - [ ] Sprint 2: Cross-family main table + learning curves(confirm benchmark)
