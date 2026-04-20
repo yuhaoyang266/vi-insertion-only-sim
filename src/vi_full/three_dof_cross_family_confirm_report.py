@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 from datetime import datetime
+import csv
 import json
 from pathlib import Path
 from statistics import mean
 from typing import Any
+
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 
 
 EXPECTED_METHOD_COUNT = 3
@@ -175,4 +182,156 @@ def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
                 "pure RL can never solve insertion",
             ],
         },
+    }
+
+
+def _write_json(path: Path, payload: dict[str, Any]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return path
+
+
+def _format_float(value: object) -> str:
+    return f"{_as_float(value):.2f}"
+
+
+def export_confirm_report_json(
+    *,
+    pilot_report: Path,
+    output_dir: Path,
+    stem: str = "three_dof_cross_family_confirm_report",
+) -> tuple[Path, dict[str, Any]]:
+    confirm = build_confirm_report(pilot_report)
+    json_path = Path(output_dir) / f"{stem}.json"
+    return _write_json(json_path, confirm), confirm
+
+
+def export_distance_proxy_csv(
+    confirm: dict[str, Any],
+    output_dir: Path,
+    filename: str = "three_dof_cross_family_confirm_distance_proxy.csv",
+) -> Path:
+    output_path = Path(output_dir) / filename
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(
+            [
+                "method_name",
+                "label",
+                "budget",
+                "mean_final_distance_mm",
+                "entered_contact",
+                "is_best_distance_proxy",
+            ]
+        )
+        for summary in confirm["method_summaries"]:
+            best_budget = int(summary["best_budget"])
+            for budget_text, distance_mm in summary["final_distance_by_budget_mm"].items():
+                budget = int(budget_text)
+                is_best_proxy_cell = bool(summary["is_best_distance_proxy"]) and budget == best_budget
+                writer.writerow(
+                    [
+                        summary["method_name"],
+                        summary["label"],
+                        budget,
+                        _format_float(distance_mm),
+                        str(bool(summary["entered_contact"])).lower(),
+                        str(is_best_proxy_cell).lower(),
+                    ]
+                )
+    return output_path
+
+
+def export_contact_gate_table(
+    confirm: dict[str, Any],
+    output_dir: Path,
+    filename: str = "three_dof_cross_family_confirm_contact_gate_table.md",
+) -> Path:
+    output_path = Path(output_dir) / filename
+    rows: list[str] = [
+        "# 3DoF Cross-Family Confirm Contact Gate",
+        "",
+        "9/9 zero-contact method-budget cells.",
+        "",
+        "| method | budget | final_distance_mm | contact? |",
+        "| --- | ---: | ---: | --- |",
+    ]
+    for summary in confirm["method_summaries"]:
+        for budget_text, distance_mm in summary["final_distance_by_budget_mm"].items():
+            rows.append(
+                "| "
+                f"{summary['label']} | "
+                f"{int(budget_text)} | "
+                f"{_format_float(distance_mm)} | "
+                "no |"
+            )
+    rows.extend(
+        [
+            "",
+            "Interpretation: distance-to-contact is a secondary diagnostic proxy, not a success metric.",
+        ]
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    return output_path
+
+
+def export_distance_vs_budget_figure(
+    confirm: dict[str, Any],
+    output_dir: Path,
+    stem: str = "three_dof_cross_family_confirm_distance_vs_budget",
+) -> tuple[Path, Path]:
+    fig, ax = plt.subplots(figsize=(6.0, 4.0), constrained_layout=True)
+    for summary in confirm["method_summaries"]:
+        points = sorted(
+            (
+                (int(budget_text), _as_float(distance_mm))
+                for budget_text, distance_mm in summary["final_distance_by_budget_mm"].items()
+            ),
+            key=lambda item: item[0],
+        )
+        budgets = [budget for budget, _ in points]
+        distances = [distance for _, distance in points]
+        ax.plot(
+            budgets,
+            distances,
+            marker="o",
+            linewidth=2.0,
+            label=str(summary["label"]),
+        )
+
+    ax.set_title("3DoF cross-family confirm: distance proxy")
+    ax.set_xlabel("Training budget (timesteps)")
+    ax.set_ylabel("Mean final distance to contact (mm)")
+    ax.grid(True, alpha=0.3)
+    ax.legend()
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    png_path = output_dir / f"{stem}.png"
+    pdf_path = output_dir / f"{stem}.pdf"
+    fig.savefig(png_path, dpi=200)
+    fig.savefig(pdf_path)
+    plt.close(fig)
+    return png_path, pdf_path
+
+
+def export_confirm_report_artifacts(
+    *,
+    pilot_report: Path,
+    output_dir: Path,
+) -> dict[str, Path | tuple[Path, Path]]:
+    json_path, confirm = export_confirm_report_json(
+        pilot_report=pilot_report,
+        output_dir=output_dir,
+    )
+    csv_path = export_distance_proxy_csv(confirm, output_dir)
+    markdown_path = export_contact_gate_table(confirm, output_dir)
+    figure_paths = export_distance_vs_budget_figure(confirm, output_dir)
+    return {
+        "json": json_path,
+        "csv": csv_path,
+        "markdown": markdown_path,
+        "distance_vs_budget": figure_paths,
     }
