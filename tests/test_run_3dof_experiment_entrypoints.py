@@ -139,3 +139,61 @@ def test_paper_export_entrypoints_run_from_repo_root(
     assert completed.returncode == 0, completed.stderr
     for output_name in expected_outputs:
         assert (output_dir / output_name).is_file()
+
+
+@pytest.mark.parametrize(
+    ("script_name", "expected_outputs"),
+    [
+        (
+            "export_paper_only_sim_appendix_table.py",
+            ("appendix_cli_probe.json", "appendix_cli_probe.md"),
+        ),
+        (
+            "export_paper_only_sim_figureA3.py",
+            ("figA3_cli_probe.pdf", "figA3_cli_probe.png"),
+        ),
+        (
+            "export_paper_only_sim_figureA4.py",
+            ("figA4_cli_probe.pdf", "figA4_cli_probe.png"),
+        ),
+    ],
+)
+def test_appendix_export_entrypoints_run_from_repo_root(
+    tmp_path: Path,
+    script_name: str,
+    expected_outputs: tuple[str, str],
+) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = repo_root / "scripts" / "export" / script_name
+    output_dir = tmp_path / script_name.replace(".py", "")
+    benchmark_path = (
+        repo_root
+        / "artifacts"
+        / "main_benchmark"
+        / "three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
+    )
+    stem = expected_outputs[0].rsplit(".", 1)[0]
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script_path),
+            "--benchmark-input",
+            str(benchmark_path),
+            "--output-dir",
+            str(output_dir),
+            "--stem",
+            stem,
+        ],
+        cwd=repo_root,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    for output_name in expected_outputs:
+        assert (output_dir / output_name).is_file()
