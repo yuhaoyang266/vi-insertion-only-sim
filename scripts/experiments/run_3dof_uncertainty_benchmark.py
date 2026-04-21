@@ -141,6 +141,7 @@ def _build_run_signature(suite_run_kwargs: dict[str, Any]) -> str:
     signature_payload = json.dumps(
         {
             "artifact_schema_version": UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION,
+            "support_metric_config": _support_metric_config_payload(),
             "suite_run_kwargs": _json_safe(suite_run_kwargs),
         },
         sort_keys=True,

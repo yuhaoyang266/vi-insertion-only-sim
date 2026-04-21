@@ -470,6 +470,113 @@ def test_runner_reruns_suite_when_artifact_schema_version_changes(
     )
 
 
+def test_runner_reruns_suite_when_support_metric_config_changes(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    output_path = tmp_path / "benchmark.json"
+    suite_name = "learned_ppo_3dof_bc"
+    suite_run_kwargs = {
+        "suite_name": suite_name,
+        "seeds": [0, 1, 2, 3, 4],
+        "total_timesteps": 128,
+        "episodes_per_seed": 100,
+        "max_episode_steps": 64,
+        "train_uncertainty_profile": "nominal",
+        "eval_uncertainty_profile": "nominal",
+        "uncertainty_profiles": ["nominal", "high_friction"],
+        "bc_rollout_episodes": 32,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64,
+        "bc_demo_policy_name": "variable_impedance",
+        "approach_bc_rollout_episodes": 0,
+        "approach_bc_pretrain_steps": 0,
+        "contact_bc_rollout_episodes": 0,
+        "contact_bc_pretrain_steps": 0,
+        "contact_bc_freeze_pose_head": False,
+        "contact_bc_after_finetune": False,
+        "contact_finetune_timesteps": 0,
+        "contact_finetune_anchor_rollout_episodes": 0,
+        "contact_finetune_anchor_bc_steps": 0,
+        "contact_finetune_anchor_interval_timesteps": 0,
+    }
+    monkeypatch.setattr(
+        module,
+        "SUPPORT_METRIC_CONFIG",
+        module.ThreeDoFSupportMetricConfig(obs_xy_norm_bin_m=1e-3),
+    )
+    old_signature = module._build_run_signature(suite_run_kwargs)
+    output_path.write_text(
+        json.dumps(
+            {
+                "config": {"suite_names": [suite_name]},
+                "handcrafted_results": {},
+                "learned_results": {
+                    suite_name: {
+                        "run_signature": old_signature,
+                        "suite_run_kwargs": {"suite_name": suite_name},
+                        "train_configs": [],
+                        "training_summaries": [],
+                        "eval_results": {},
+                        "five_profile_mean": {
+                            "success_rate_mean_over_profiles": 0.0,
+                            "jam_rate_mean_over_profiles": 0.0,
+                        },
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(module, "run_3dof_handcrafted_uncertainty_suite", lambda **_: {})
+    calls: list[dict[str, object]] = []
+
+    def _fake_run_3dof_suite_across_profiles(run_kwargs):
+        calls.append(dict(run_kwargs))
+        return {
+            "run_signature": "fresh-signature",
+            "suite_run_kwargs": {"suite_name": run_kwargs["suite_name"]},
+            "train_configs": [],
+            "training_summaries": [],
+            "eval_results": {},
+            "five_profile_mean": {
+                "success_rate_mean_over_profiles": 1.0,
+                "jam_rate_mean_over_profiles": 0.0,
+            },
+        }
+
+    monkeypatch.setattr(module, "_run_3dof_suite_across_profiles", _fake_run_3dof_suite_across_profiles)
+    monkeypatch.setattr(
+        module,
+        "SUPPORT_METRIC_CONFIG",
+        module.ThreeDoFSupportMetricConfig(obs_xy_norm_bin_m=2e-3),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_3dof_uncertainty_benchmark.py",
+            "--include-learned",
+            "--profiles",
+            "nominal",
+            "high_friction",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    module.main()
+    written = json.loads(output_path.read_text(encoding="utf-8"))
+
+    assert [call["suite_name"] for call in calls] == [suite_name]
+    assert (
+        written["config"]["support_metric_config"]["obs_xy_norm_bin_m"]
+        == module.SUPPORT_METRIC_CONFIG.obs_xy_norm_bin_m
+    )
+
+
 def test_runner_teacher_ablation_block_adds_expected_suites(
     monkeypatch,
     tmp_path: Path,
