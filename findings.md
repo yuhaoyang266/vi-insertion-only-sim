@@ -218,3 +218,8 @@ demo-supported anchors, not oversell SAC.
   - allowed: contact-gate contrast across contracts
   - not allowed: mixed-contract leaderboard reading
 - SAC should be written as the strongest distance proxy among pure-RL rows, never as insertion success.
+- The repo currently has two parallel paper-facing benchmark artifact lines:
+  - stage3 main-table/statistics artifacts for the manuscript's learned-method table
+  - schema2 teacher/termination benchmark artifact for appendix-style benchmark anchors
+- The Sprint 2B matrix uses the schema2 benchmark artifact for anchor rows, so row-level `source_report`
+  should cite the direct confirm/benchmark JSON inputs rather than upstream pilot reports or separate paper-table exports.

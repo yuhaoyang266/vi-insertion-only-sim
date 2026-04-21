@@ -131,10 +131,15 @@ def _anchor_not_allowed_claim(method_name: str) -> str:
     return "Do not compare this row as a mixed-contract leaderboard winner against nominal-only pure-RL pilot rows."
 
 
-def _build_pure_rl_rows(confirm: dict[str, Any]) -> list[dict[str, Any]]:
+def _build_pure_rl_rows(
+    confirm: dict[str, Any],
+    *,
+    confirm_report_path: Path,
+) -> list[dict[str, Any]]:
     summaries = {
         str(row["method_name"]): row for row in confirm.get("method_summaries", [])
     }
+    direct_source = str(Path(confirm_report_path).resolve())
     rows: list[dict[str, Any]] = []
     for method_name in PURE_RL_METHOD_ORDER:
         summary = summaries[method_name]
@@ -161,7 +166,7 @@ def _build_pure_rl_rows(confirm: dict[str, Any]) -> list[dict[str, Any]]:
                 "evidence_role": "contact_gate_negative",
                 "allowed_claim": _pure_rl_allowed_claim(method_name),
                 "not_allowed_claim": _pure_rl_not_allowed_claim(method_name),
-                "source_report": str(confirm.get("source_report", "")),
+                "source_report": direct_source,
             }
         )
     return rows
@@ -243,7 +248,10 @@ def build_3dof_evidence_matrix(
     _validate_confirm_report(confirm)
     _validate_benchmark_report(benchmark)
 
-    rows = _build_pure_rl_rows(confirm) + _build_anchor_rows(
+    rows = _build_pure_rl_rows(
+        confirm,
+        confirm_report_path=confirm_report_path,
+    ) + _build_anchor_rows(
         benchmark,
         benchmark_report_path=benchmark_report_path,
     )
@@ -261,6 +269,10 @@ def build_3dof_evidence_matrix(
             ),
             "not_allowed": (
                 "Do not read this matrix as a mixed-contract leaderboard or direct across-row ranking."
+            ),
+            "row_source_rule": (
+                "Each row cites the direct confirm or benchmark JSON input passed to the exporter; "
+                "do not infer row provenance from separate paper table exports."
             ),
         },
         "row_count": len(rows),
@@ -316,6 +328,7 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
         "",
         f"- Allowed: {payload['matrix_contract']['allowed']}",
         f"- Not allowed: {payload['matrix_contract']['not_allowed']}",
+        f"- Row sources: {payload['matrix_contract']['row_source_rule']}",
         "",
         "## Matrix",
         "",

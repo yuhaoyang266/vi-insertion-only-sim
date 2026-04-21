@@ -244,6 +244,10 @@ Frozen interpretation boundary:
 - `source_contract` must stay explicit:
   - pure-RL rows use `nominal-only pilot`
   - anchor rows use `five-profile benchmark`
+- row-level `source_report` must point to the matrix's direct JSON inputs:
+  - pure-RL rows cite the exported confirm report JSON directly
+  - anchor rows cite `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json` directly
+  - do not infer row provenance from separate stage3 paper-table exports
 - Allowed:
   - contact-gate contrast across contracts
   - stating that pure RL stays outside useful contact under the nominal-only pilot

@@ -8,6 +8,7 @@
   - Wrote new contract tests for the matrix builder and CLI exporter.
   - Generated `outputs/evidence_matrix/three_dof_evidence_matrix.{json,csv,md}` and `outputs/evidence_matrix/three_dof_contact_gate_matrix.{png,pdf}` from the real confirm and benchmark artifacts.
   - Updated `protocol_freeze.md`, `task_plan.md`, `findings.md`, and `paper/main.tex` so the mixed-contract boundary is explicit and SAC stays framed as a distance proxy rather than a success baseline.
+  - Tightened row-level provenance after review: matrix rows now cite the direct confirm JSON or schema2 benchmark JSON inputs, rather than indirect upstream pilot/table exports.
 - Files created/modified:
   - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_evidence_matrix.py`
   - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_3dof_evidence_matrix.py`

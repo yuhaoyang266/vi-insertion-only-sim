@@ -251,3 +251,34 @@ def test_evidence_matrix_rejects_leaderboard_claim_across_mixed_contracts(
     assert "leaderboard" in matrix["matrix_contract"]["not_allowed"].lower()
     assert "leaderboard" in matrix["rows"][0]["not_allowed_claim"].lower()
     assert matrix["row_count"] >= 7
+
+
+def test_evidence_matrix_rows_point_to_direct_input_artifacts(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm_path = _write_json(
+        tmp_path / "three_dof_cross_family_confirm_report.json",
+        _confirm_report_payload(),
+    )
+    benchmark_path = _write_json(
+        tmp_path / "three_dof_benchmark_schema2_paper_teacher.json",
+        _benchmark_report_payload(),
+    )
+
+    matrix = build_3dof_evidence_matrix(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+    )
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+    for method_name in ("ppo_no_bc", "sac_no_bc", "td3_no_bc"):
+        assert rows_by_method[method_name]["source_report"] == str(confirm_path.resolve())
+    for method_name in (
+        "bc_only_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+        "fixed_impedance_rl_stable_r32_p32",
+    ):
+        assert rows_by_method[method_name]["source_report"] == str(
+            benchmark_path.resolve()
+        )

@@ -7,6 +7,7 @@ Benchmark source: `F:\edge download\learning\vi-insertion-only-sim\artifacts\mai
 
 - Allowed: Use only for contact-gate contrast across nominal-only pilot and five-profile benchmark evidence.
 - Not allowed: Do not read this matrix as a mixed-contract leaderboard or direct across-row ranking.
+- Row sources: Each row cites the direct confirm or benchmark JSON input passed to the exporter; do not infer row provenance from separate paper table exports.
 
 ## Matrix
 
