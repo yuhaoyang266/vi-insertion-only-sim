@@ -165,6 +165,17 @@ def _validate_confirm_report(confirm: dict[str, Any]) -> None:
                 field_name,
                 context=f"confirm summary '{method_name}'",
             )
+        entered_contact = bool(summary["entered_contact"])
+        mean_success = _as_float(summary["mean_success_across_budgets"])
+        mean_contact_steps = _as_float(summary["mean_contact_steps_across_budgets"])
+        if entered_contact or mean_success != 0.0 or mean_contact_steps != 0.0:
+            raise ValueError(
+                "Evidence matrix requires Branch A confirm rows to remain "
+                "zero-contact and zero-success, but "
+                f"'{method_name}' reported entered_contact={entered_contact}, "
+                f"mean_success_across_budgets={mean_success}, "
+                f"mean_contact_steps_across_budgets={mean_contact_steps}."
+            )
 
 
 def _validate_benchmark_report(benchmark: dict[str, Any]) -> None:

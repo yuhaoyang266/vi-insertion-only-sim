@@ -424,6 +424,41 @@ def test_evidence_matrix_rejects_null_confirm_metrics(tmp_path: Path) -> None:
         )
 
 
+def test_evidence_matrix_rejects_branch_a_confirm_with_contact_entry(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    confirm["method_summaries"][1]["entered_contact"] = True
+    confirm["method_summaries"][1]["mean_contact_steps_across_budgets"] = 3.0
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    with pytest.raises(ValueError, match="zero-contact and zero-success"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
+def test_evidence_matrix_rejects_branch_a_confirm_with_nonzero_success(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    confirm["method_summaries"][1]["mean_success_across_budgets"] = 0.05
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    with pytest.raises(ValueError, match="zero-contact and zero-success"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
 def test_evidence_matrix_rejects_missing_anchor_metrics(tmp_path: Path) -> None:
     from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
 
