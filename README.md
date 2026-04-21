@@ -13,9 +13,11 @@ constructive layer packages the main recipe as Support-Gated Variable-Impedance 
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
 implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
-teacher-coupled rather than general sim-to-real claims. The main 3DoF uncertainty benchmark JSON
-artifacts now also record per-seed, per-profile, and per-suite SCI summaries under the same
-benchmark-local quantization contract.
+teacher-coupled rather than general sim-to-real claims. Newly generated schema-3 uncertainty
+benchmark JSON artifacts can also record per-seed, per-profile, and per-suite SCI summaries under
+the same benchmark-local quantization contract; the currently tracked frozen main benchmark JSON in
+`artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json` predates
+that export path.
 
 Repository URL embedded in the manuscript:
 
@@ -101,6 +103,9 @@ python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input
 When the input benchmark JSON includes `support_metrics`, the supplementary statistics report also
 exports Support Coverage Index (SCI) and support-cell-coverage summaries alongside the main table
 confidence intervals.
+
+The bundled frozen benchmark JSON under `artifacts/main_benchmark/` is currently schema 2, so this
+SCI support-diagnostics section appears only after regenerating a newer schema-3 benchmark artifact.
 
 ## Reproduce Experiments
 
