@@ -67,6 +67,28 @@ PDF_METADATA = {
     "ModDate": None,
 }
 
+CONFIRM_SUMMARY_REQUIRED_FIELDS = (
+    "best_budget",
+    "best_final_distance_mm",
+    "entered_contact",
+    "mean_success_across_budgets",
+    "mean_contact_steps_across_budgets",
+)
+
+BENCHMARK_CONFIG_REQUIRED_FIELDS = (
+    "timesteps",
+    "base_bc_rollout_episodes",
+    "base_bc_pretrain_steps",
+)
+
+BENCHMARK_FIVE_PROFILE_REQUIRED_FIELDS = (
+    "success_rate_mean_over_profiles",
+    "mean_final_distance_mean_over_profiles",
+    "jam_rate_mean_over_profiles",
+    "mean_peak_contact_force_mean_over_profiles",
+    "mean_contact_steps_mean_over_profiles",
+)
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -90,6 +112,14 @@ def _round_metric(value: object) -> float:
     return round(_as_float(value), 2)
 
 
+def _require_field(mapping: dict[str, Any], field_name: str, *, context: str) -> Any:
+    if field_name not in mapping:
+        raise ValueError(
+            f"Evidence matrix missing required field '{field_name}' in {context}."
+        )
+    return mapping[field_name]
+
+
 def _validate_confirm_report(confirm: dict[str, Any]) -> None:
     if not bool(confirm.get("grid_complete")):
         raise ValueError("Evidence matrix requires a complete Branch A confirm report.")
@@ -105,6 +135,27 @@ def _validate_confirm_report(confirm: dict[str, Any]) -> None:
     if missing_methods:
         raise ValueError("Evidence matrix requires a complete Branch A confirm report.")
 
+    best_distance_proxy_method = str(
+        _require_field(
+            confirm,
+            "best_distance_proxy_method",
+            context="confirm report",
+        )
+    )
+    if best_distance_proxy_method not in PURE_RL_METHOD_ORDER:
+        raise ValueError(
+            "Evidence matrix requires best_distance_proxy_method to name one of the pure-RL rows."
+        )
+
+    for method_name in PURE_RL_METHOD_ORDER:
+        summary = summaries[method_name]
+        for field_name in CONFIRM_SUMMARY_REQUIRED_FIELDS:
+            _require_field(
+                summary,
+                field_name,
+                context=f"confirm summary '{method_name}'",
+            )
+
 
 def _validate_benchmark_report(benchmark: dict[str, Any]) -> None:
     learned_results = dict(benchmark.get("learned_results", {}))
@@ -116,18 +167,54 @@ def _validate_benchmark_report(benchmark: dict[str, Any]) -> None:
             "Evidence matrix requires all demo-supported anchors in the benchmark report."
         )
 
+    config = dict(benchmark.get("config", {}))
+    for field_name in BENCHMARK_CONFIG_REQUIRED_FIELDS:
+        _require_field(
+            config,
+            field_name,
+            context="benchmark config",
+        )
 
-def _pure_rl_allowed_claim(method_name: str) -> str:
-    if method_name == "sac_no_bc":
+    for suite_name in ANCHOR_SPECS:
+        suite_payload = dict(learned_results[suite_name])
+        metrics = dict(
+            _require_field(
+                suite_payload,
+                "five_profile_mean",
+                context=f"benchmark suite '{suite_name}'",
+            )
+        )
+        for field_name in BENCHMARK_FIVE_PROFILE_REQUIRED_FIELDS:
+            _require_field(
+                metrics,
+                field_name,
+                context=f"benchmark suite '{suite_name}'",
+            )
+
+
+def _pure_rl_allowed_claim(
+    method_name: str,
+    *,
+    best_distance_proxy_method: str,
+) -> str:
+    if method_name == best_distance_proxy_method:
         return (
             "Best pure-RL distance proxy under the nominal-only pilot contract, but still zero-contact."
         )
     return "Pure RL stays outside the useful-contact gate under the nominal-only pilot contract."
 
 
-def _pure_rl_not_allowed_claim(method_name: str) -> str:
-    if method_name == "sac_no_bc":
-        return "Do not claim SAC solves insertion, enters useful contact, or wins a mixed-contract leaderboard."
+def _pure_rl_not_allowed_claim(
+    method_name: str,
+    *,
+    best_distance_proxy_method: str,
+    label: str,
+) -> str:
+    if method_name == best_distance_proxy_method:
+        return (
+            f"Do not claim {label} solves insertion, enters useful contact, "
+            "or wins a mixed-contract leaderboard."
+        )
     return "Do not claim this method reaches useful contact or compare it as a mixed-contract leaderboard winner."
 
 
@@ -153,14 +240,16 @@ def _build_pure_rl_rows(
     summaries = {
         str(row["method_name"]): row for row in confirm.get("method_summaries", [])
     }
+    best_distance_proxy_method = str(confirm["best_distance_proxy_method"])
     direct_source = _provenance_path(confirm_report_path)
     rows: list[dict[str, Any]] = []
     for method_name in PURE_RL_METHOD_ORDER:
         summary = summaries[method_name]
+        label = str(summary.get("label", method_name))
         rows.append(
             {
                 "method_name": method_name,
-                "label": str(summary.get("label", method_name)),
+                "label": label,
                 "method_family": "pure_rl",
                 "source_contract": "nominal-only pilot",
                 "benchmark": "3dof_cross_family_confirm",
@@ -178,8 +267,15 @@ def _build_pure_rl_rows(
                 "jam_rate": 0.0,
                 "mean_peak_contact_force_n": 0.0,
                 "evidence_role": "contact_gate_negative",
-                "allowed_claim": _pure_rl_allowed_claim(method_name),
-                "not_allowed_claim": _pure_rl_not_allowed_claim(method_name),
+                "allowed_claim": _pure_rl_allowed_claim(
+                    method_name,
+                    best_distance_proxy_method=best_distance_proxy_method,
+                ),
+                "not_allowed_claim": _pure_rl_not_allowed_claim(
+                    method_name,
+                    best_distance_proxy_method=best_distance_proxy_method,
+                    label=label,
+                ),
                 "source_report": direct_source,
             }
         )
@@ -187,26 +283,71 @@ def _build_pure_rl_rows(
 
 
 def _extract_benchmark_metrics(suite_payload: dict[str, Any]) -> dict[str, float]:
-    metrics = dict(suite_payload.get("five_profile_mean", {}))
+    metrics = dict(
+        _require_field(
+            suite_payload,
+            "five_profile_mean",
+            context="benchmark suite payload",
+        )
+    )
     return {
-        "success_rate": _round_metric(metrics.get("success_rate_mean_over_profiles", 0.0)),
-        "mean_final_distance_mm": _round_metric(
-            1000.0 * _as_float(metrics.get("mean_final_distance_mean_over_profiles", 0.0))
+        "success_rate": _round_metric(
+            _require_field(
+                metrics,
+                "success_rate_mean_over_profiles",
+                context="benchmark five_profile_mean",
+            )
         ),
-        "jam_rate": _round_metric(metrics.get("jam_rate_mean_over_profiles", 0.0)),
+        "mean_final_distance_mm": _round_metric(
+            1000.0
+            * _as_float(
+                _require_field(
+                    metrics,
+                    "mean_final_distance_mean_over_profiles",
+                    context="benchmark five_profile_mean",
+                )
+            )
+        ),
+        "jam_rate": _round_metric(
+            _require_field(
+                metrics,
+                "jam_rate_mean_over_profiles",
+                context="benchmark five_profile_mean",
+            )
+        ),
         "mean_peak_contact_force_n": _round_metric(
-            metrics.get("mean_peak_contact_force_mean_over_profiles", 0.0)
+            _require_field(
+                metrics,
+                "mean_peak_contact_force_mean_over_profiles",
+                context="benchmark five_profile_mean",
+            )
         ),
         "mean_contact_steps": _round_metric(
-            metrics.get("mean_contact_steps_mean_over_profiles", 0.0)
+            _require_field(
+                metrics,
+                "mean_contact_steps_mean_over_profiles",
+                context="benchmark five_profile_mean",
+            )
         ),
     }
 
 
 def _benchmark_train_budget(suite_name: str, config: dict[str, Any]) -> str:
-    bc_rollouts = int(config.get("base_bc_rollout_episodes", 0))
-    bc_pretrain = int(config.get("base_bc_pretrain_steps", 0))
-    timesteps = int(config.get("timesteps", 0))
+    bc_rollouts = int(
+        _require_field(
+            config,
+            "base_bc_rollout_episodes",
+            context="benchmark config",
+        )
+    )
+    bc_pretrain = int(
+        _require_field(
+            config,
+            "base_bc_pretrain_steps",
+            context="benchmark config",
+        )
+    )
+    timesteps = int(_require_field(config, "timesteps", context="benchmark config"))
     bc_text = f"BC {bc_rollouts}/{bc_pretrain}"
     if suite_name == "bc_only_stable_r32_p32":
         return bc_text

@@ -1,5 +1,21 @@
 # Progress Log
 
+### Phase 3: Sprint 2B Strict-Review Contract Hardening
+- **Status:** complete
+- Actions taken:
+  - Tightened the evidence-matrix builder so the pure-RL distance-proxy claim now follows `best_distance_proxy_method` from the direct confirm JSON rather than a hardcoded SAC assumption.
+  - Added fail-fast validation for reviewer-facing confirm summary fields and anchor `five_profile_mean` metrics, preventing incomplete inputs from silently exporting zero-valued evidence rows.
+  - Added regression tests for dynamic distance-proxy attribution and missing-field rejection.
+  - Re-exported the tracked JSON / CSV / Markdown evidence-matrix artifacts from the real confirm + schema2 benchmark inputs.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_evidence_matrix.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_three_dof_evidence_matrix.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_evidence_matrix.json`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_evidence_matrix.csv`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_evidence_matrix.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\findings.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Phase 3: Sprint 2B Anchor-Integrated Evidence Matrix
 - **Status:** complete
 - Actions taken:

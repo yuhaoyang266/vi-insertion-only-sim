@@ -26,7 +26,7 @@ Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_te
 - `ppo_no_bc` allowed: Pure RL stays outside the useful-contact gate under the nominal-only pilot contract.
 - `ppo_no_bc` not allowed: Do not claim this method reaches useful contact or compare it as a mixed-contract leaderboard winner.
 - `sac_no_bc` allowed: Best pure-RL distance proxy under the nominal-only pilot contract, but still zero-contact.
-- `sac_no_bc` not allowed: Do not claim SAC solves insertion, enters useful contact, or wins a mixed-contract leaderboard.
+- `sac_no_bc` not allowed: Do not claim SAC w/o BC solves insertion, enters useful contact, or wins a mixed-contract leaderboard.
 - `td3_no_bc` allowed: Pure RL stays outside the useful-contact gate under the nominal-only pilot contract.
 - `td3_no_bc` not allowed: Do not claim this method reaches useful contact or compare it as a mixed-contract leaderboard winner.
 - `bc_only_stable_r32_p32` allowed: Demonstration support alone reopens contact and near-ceiling success under the five-profile benchmark.

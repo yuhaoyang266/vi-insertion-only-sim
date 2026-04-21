@@ -223,3 +223,6 @@ demo-supported anchors, not oversell SAC.
   - schema2 teacher/termination benchmark artifact for appendix-style benchmark anchors
 - The Sprint 2B matrix uses the schema2 benchmark artifact for anchor rows, so row-level `source_report`
   should cite the direct confirm/benchmark JSON inputs rather than upstream pilot reports or separate paper-table exports.
+- Strict review follow-up:
+  - the reviewer-facing distance-proxy claim must follow `best_distance_proxy_method` from the confirm JSON, not a hardcoded SAC assumption in the exporter
+  - missing confirm/benchmark metrics must fail fast instead of silently degrading into `0.0`, or the matrix can fabricate false negative evidence from incomplete inputs

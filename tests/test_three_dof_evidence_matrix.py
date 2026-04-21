@@ -231,6 +231,28 @@ def test_evidence_matrix_marks_sac_as_distance_proxy_not_success(tmp_path: Path)
     assert "solves insertion" in sac_row["not_allowed_claim"].lower()
 
 
+def test_evidence_matrix_uses_confirm_report_best_distance_proxy_method(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    confirm["best_distance_proxy_method"] = "ppo_no_bc"
+    confirm["method_summaries"][0]["best_final_distance_mm"] = 15.25
+    confirm["method_summaries"][1]["best_final_distance_mm"] = 16.67
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    matrix = build_3dof_evidence_matrix(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+    )
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+    assert "distance proxy" in rows_by_method["ppo_no_bc"]["allowed_claim"].lower()
+    assert "distance proxy" not in rows_by_method["sac_no_bc"]["allowed_claim"].lower()
+
+
 def test_evidence_matrix_separates_nominal_pilot_from_five_profile_benchmark(
     tmp_path: Path,
 ) -> None:
@@ -318,6 +340,38 @@ def test_evidence_matrix_uses_repo_relative_provenance_for_repo_local_inputs() -
         assert rows_by_method["bc_only_stable_r32_p32"]["source_report"] == expected_benchmark
     finally:
         shutil.rmtree(staging_dir, ignore_errors=True)
+
+
+def test_evidence_matrix_rejects_missing_confirm_metrics(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    del confirm["method_summaries"][1]["best_final_distance_mm"]
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    with pytest.raises(ValueError, match="best_final_distance_mm"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
+def test_evidence_matrix_rejects_missing_anchor_metrics(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    benchmark = _benchmark_report_payload()
+    del benchmark["learned_results"]["bc_only_stable_r32_p32"]["five_profile_mean"][
+        "mean_contact_steps_mean_over_profiles"
+    ]
+    confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
+    benchmark_path = _write_json(tmp_path / "benchmark.json", benchmark)
+
+    with pytest.raises(ValueError, match="mean_contact_steps_mean_over_profiles"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
 
 
 def test_evidence_matrix_exports_are_deterministic_across_identical_reruns(

@@ -54,7 +54,7 @@
       "mean_peak_contact_force_n": 0.0,
       "evidence_role": "contact_gate_negative",
       "allowed_claim": "Best pure-RL distance proxy under the nominal-only pilot contract, but still zero-contact.",
-      "not_allowed_claim": "Do not claim SAC solves insertion, enters useful contact, or wins a mixed-contract leaderboard.",
+      "not_allowed_claim": "Do not claim SAC w/o BC solves insertion, enters useful contact, or wins a mixed-contract leaderboard.",
       "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json"
     },
     {
