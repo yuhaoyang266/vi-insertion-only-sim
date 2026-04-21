@@ -6,9 +6,15 @@ from dataclasses import asdict, is_dataclass, replace
 from datetime import datetime
 import hashlib
 from pathlib import Path
+import sys
 from typing import Any
 
 import numpy as np
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SRC_ROOT = REPO_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
 
 from vi_full.training import VecNormalizePredictor
 from vi_full.three_dof_benchmark import (
