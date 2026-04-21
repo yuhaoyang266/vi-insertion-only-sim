@@ -278,6 +278,23 @@ def test_evidence_matrix_rejects_leaderboard_claim_across_mixed_contracts(
     assert matrix["row_count"] >= 7
 
 
+def test_markdown_exposes_row_level_provenance_and_train_budget(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import render_3dof_evidence_matrix_markdown
+
+    matrix = _build_matrix(tmp_path)
+    markdown = render_3dof_evidence_matrix_markdown(matrix)
+
+    assert "| Method | Family | Source contract | Train budget | Source report |" in markdown
+    assert (
+        "| PPO w/o BC | pure_rl | nominal-only pilot | 200000 | "
+        f"{matrix['rows'][0]['source_report']} |"
+    ) in markdown
+    assert (
+        "| BC-only (stable 32/32) | imitation_anchor | five-profile benchmark | "
+        f"BC 32/32 | {matrix['rows'][3]['source_report']} |"
+    ) in markdown
+
+
 def test_evidence_matrix_rows_point_to_direct_input_artifacts(tmp_path: Path) -> None:
     from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
 

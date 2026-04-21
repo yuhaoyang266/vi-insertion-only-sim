@@ -491,8 +491,8 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
         "",
         "## Matrix",
         "",
-        "| Method | Family | Source contract | Contact? | Success | Final dist (mm) | Contact steps | Role |",
-        "| --- | --- | --- | --- | ---: | ---: | ---: | --- |",
+        "| Method | Family | Source contract | Train budget | Source report | Contact? | Success | Final dist (mm) | Contact steps | Role |",
+        "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
     ]
     for row in payload["rows"]:
         lines.append(
@@ -500,6 +500,8 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
             f"{row['label']} | "
             f"{row['method_family']} | "
             f"{row['source_contract']} | "
+            f"{row['train_budget']} | "
+            f"{row['source_report']} | "
             f"{'yes' if row['entered_contact'] else 'no'} | "
             f"{row['success_rate']:.2f} | "
             f"{row['mean_final_distance_mm']:.2f} | "
