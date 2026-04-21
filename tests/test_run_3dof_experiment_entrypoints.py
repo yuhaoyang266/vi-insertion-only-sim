@@ -35,6 +35,32 @@ def test_experiment_entrypoint_help_works_from_repo_root(script_name: str) -> No
     assert "usage:" in completed.stdout
 
 
+@pytest.mark.parametrize(
+    "script_name",
+    [
+        "export_paper_only_sim_high_friction_trace_figure.py",
+        "export_paper_only_sim_figure3.py",
+    ],
+)
+def test_trace_export_entrypoint_help_works_from_repo_root(script_name: str) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = repo_root / "scripts" / "export" / script_name
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+
+    completed = subprocess.run(
+        [sys.executable, str(script_path), "--help"],
+        cwd=repo_root,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert "usage:" in completed.stdout
+
+
 def test_statistics_report_entrypoint_runs_from_repo_root(tmp_path: Path) -> None:
     repo_root = Path(__file__).resolve().parents[1]
     script_path = repo_root / "scripts" / "experiments" / "run_3dof_statistics_report.py"
