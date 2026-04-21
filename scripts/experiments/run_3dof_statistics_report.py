@@ -7,7 +7,7 @@ import sys
 
 
 def _load_paper_tables_module():
-    module_path = Path(__file__).resolve().parents[1] / "src" / "vi_full" / "paper_tables.py"
+    module_path = Path(__file__).resolve().parents[2] / "src" / "vi_full" / "paper_tables.py"
     spec = importlib.util.spec_from_file_location("paper_tables_statistics_cli", module_path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load paper table module from {module_path}")
