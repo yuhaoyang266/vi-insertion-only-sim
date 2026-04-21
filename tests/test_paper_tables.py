@@ -1035,6 +1035,29 @@ def test_paper_table_export_can_embed_statistics_report_and_render_notes(tmp_pat
     assert "negligible under ceiling saturation" in markdown
 
 
+def test_build_3dof_paper_table_export_rejects_mismatched_statistics_report(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    main_path, fixed_path = _write_statistics_sample_artifacts(tmp_path)
+    other_benchmark_path = tmp_path / "other_benchmark.json"
+    other_benchmark_path.write_text(main_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    statistics_json_path, _ = module.export_3dof_statistics_report(
+        benchmark_report_path=main_path,
+        fixed_impedance_report_path=fixed_path,
+        output_dir=tmp_path,
+        stem="three_dof_stats",
+    )
+
+    with pytest.raises(ValueError, match="Statistics report benchmark source does not match"):
+        module.build_3dof_paper_table_export(
+            benchmark_report_path=other_benchmark_path,
+            fixed_impedance_report_path=fixed_path,
+            statistics_report_path=statistics_json_path,
+        )
+
+
 def _write_appendix_sample_artifacts(tmp_path: Path) -> tuple[Path, Path]:
     teacher_suites = {
         "teacher_variable_variable__repaired_mainline": _appendix_suite_payload(

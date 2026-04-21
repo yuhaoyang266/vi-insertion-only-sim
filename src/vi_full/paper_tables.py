@@ -224,6 +224,35 @@ def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
+def _resolved_source_path(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    return str(Path(path).resolve())
+
+
+def _validate_statistics_report_alignment(
+    *,
+    statistics_report: dict[str, Any],
+    benchmark_report_path: Path,
+    fixed_impedance_report_path: Path | None,
+) -> None:
+    source_artifacts = statistics_report.get("source_artifacts")
+    if not isinstance(source_artifacts, dict):
+        raise ValueError("Statistics report is missing source-artifact provenance.")
+
+    expected_benchmark_source = _resolved_source_path(benchmark_report_path)
+    if source_artifacts.get("benchmark_report") != expected_benchmark_source:
+        raise ValueError(
+            "Statistics report benchmark source does not match the requested benchmark artifact."
+        )
+
+    expected_fixed_source = _resolved_source_path(fixed_impedance_report_path)
+    if source_artifacts.get("fixed_impedance_report") != expected_fixed_source:
+        raise ValueError(
+            "Statistics report fixed-impedance source does not match the requested fixed-impedance artifact."
+        )
+
+
 def _m_to_mm(value_m: float) -> float:
     return float(value_m) * 1000.0
 
@@ -1137,6 +1166,9 @@ def build_3dof_paper_table_export(
     fixed_impedance_report_path: Path | None = None,
     statistics_report_path: Path | None = None,
 ) -> dict[str, Any]:
+    resolved_benchmark_source = _resolved_source_path(benchmark_report_path)
+    resolved_fixed_source = _resolved_source_path(fixed_impedance_report_path)
+    resolved_statistics_source = _resolved_source_path(statistics_report_path)
     suite_order, suite_payloads, raw_benchmark = _resolve_suite_payloads(
         benchmark_report_path=benchmark_report_path,
         fixed_impedance_report_path=fixed_impedance_report_path,
@@ -1150,6 +1182,12 @@ def build_3dof_paper_table_export(
         if statistics_report_path is not None
         else None
     )
+    if statistics_report is not None:
+        _validate_statistics_report_alignment(
+            statistics_report=statistics_report,
+            benchmark_report_path=benchmark_report_path,
+            fixed_impedance_report_path=fixed_impedance_report_path,
+        )
 
     suite_rows = [
         _build_suite_row(
@@ -1189,17 +1227,9 @@ def build_3dof_paper_table_export(
     return {
         "export_name": "three_dof_paper_benchmark_table",
         "source_artifacts": {
-            "benchmark_report": str(Path(benchmark_report_path).resolve()),
-            "fixed_impedance_report": (
-                str(Path(fixed_impedance_report_path).resolve())
-                if fixed_impedance_report_path is not None
-                else None
-            ),
-            "statistics_report": (
-                str(Path(statistics_report_path).resolve())
-                if statistics_report_path is not None
-                else None
-            ),
+            "benchmark_report": resolved_benchmark_source,
+            "fixed_impedance_report": resolved_fixed_source,
+            "statistics_report": resolved_statistics_source,
         },
         "suite_order": suite_order,
         "suite_rows": suite_rows,

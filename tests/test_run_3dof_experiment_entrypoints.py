@@ -120,16 +120,6 @@ def test_statistics_report_entrypoint_runs_from_repo_root(tmp_path: Path) -> Non
             [],
             ("figA2_cli_probe.pdf", "figA2_cli_probe.png"),
         ),
-        (
-            "export_paper_only_sim_benchmark_table.py",
-            [
-                "--benchmark-input",
-                "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
-                "--statistics-report-input",
-                "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json",
-            ],
-            ("table_cli_probe.json", "table_cli_probe.md"),
-        ),
     ],
 )
 def test_paper_export_entrypoints_run_from_repo_root(
@@ -165,6 +155,70 @@ def test_paper_export_entrypoints_run_from_repo_root(
     assert completed.returncode == 0, completed.stderr
     for output_name in expected_outputs:
         assert (output_dir / output_name).is_file()
+
+
+def test_paper_table_entrypoint_runs_from_repo_root_with_matching_statistics_report(
+    tmp_path: Path,
+) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    benchmark_path = (
+        repo_root
+        / "artifacts"
+        / "main_benchmark"
+        / "three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
+    )
+    stats_script_path = repo_root / "scripts" / "experiments" / "run_3dof_statistics_report.py"
+    table_script_path = repo_root / "scripts" / "export" / "export_paper_only_sim_benchmark_table.py"
+    stats_output_dir = tmp_path / "statistics_report"
+    table_output_dir = tmp_path / "paper_table"
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+
+    stats_completed = subprocess.run(
+        [
+            sys.executable,
+            str(stats_script_path),
+            "--input",
+            str(benchmark_path),
+            "--output-dir",
+            str(stats_output_dir),
+            "--stem",
+            "cli_probe_stats",
+        ],
+        cwd=repo_root,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert stats_completed.returncode == 0, stats_completed.stderr
+    statistics_report_path = stats_output_dir / "cli_probe_stats.json"
+    assert statistics_report_path.is_file()
+
+    table_completed = subprocess.run(
+        [
+            sys.executable,
+            str(table_script_path),
+            "--benchmark-input",
+            str(benchmark_path),
+            "--statistics-report-input",
+            str(statistics_report_path),
+            "--output-dir",
+            str(table_output_dir),
+            "--stem",
+            "table_cli_probe",
+        ],
+        cwd=repo_root,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert table_completed.returncode == 0, table_completed.stderr
+    assert (table_output_dir / "table_cli_probe.json").is_file()
+    assert (table_output_dir / "table_cli_probe.md").is_file()
 
 
 @pytest.mark.parametrize(
