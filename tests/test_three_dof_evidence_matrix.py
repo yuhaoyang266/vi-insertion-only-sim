@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+import shutil
+import tempfile
 import time
 
 import pytest
@@ -271,18 +273,51 @@ def test_evidence_matrix_rows_point_to_direct_input_artifacts(tmp_path: Path) ->
         benchmark_report_path=benchmark_path,
     )
     rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+    expected_confirm = confirm_path.resolve().as_posix()
+    expected_benchmark = benchmark_path.resolve().as_posix()
 
     for method_name in ("ppo_no_bc", "sac_no_bc", "td3_no_bc"):
-        assert rows_by_method[method_name]["source_report"] == str(confirm_path.resolve())
+        assert rows_by_method[method_name]["source_report"] == expected_confirm
     for method_name in (
         "bc_only_stable_r32_p32",
         "repaired_mainline_bc_to_ppo",
         "dapg_lite_repaired_mainline",
         "fixed_impedance_rl_stable_r32_p32",
     ):
-        assert rows_by_method[method_name]["source_report"] == str(
-            benchmark_path.resolve()
+        assert rows_by_method[method_name]["source_report"] == expected_benchmark
+
+
+def test_evidence_matrix_uses_repo_relative_provenance_for_repo_local_inputs() -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    repo_root = Path(__file__).resolve().parents[1]
+    staging_dir = Path(
+        tempfile.mkdtemp(prefix="evidence-matrix-", dir=repo_root / "tmp")
+    )
+    try:
+        confirm_path = _write_json(
+            staging_dir / "confirm.json",
+            _confirm_report_payload(),
         )
+        benchmark_path = _write_json(
+            staging_dir / "benchmark.json",
+            _benchmark_report_payload(),
+        )
+
+        matrix = build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+        rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+        expected_confirm = confirm_path.relative_to(repo_root).as_posix()
+        expected_benchmark = benchmark_path.relative_to(repo_root).as_posix()
+        assert matrix["source_artifacts"]["confirm_report"] == expected_confirm
+        assert matrix["source_artifacts"]["benchmark_report"] == expected_benchmark
+        assert rows_by_method["ppo_no_bc"]["source_report"] == expected_confirm
+        assert rows_by_method["bc_only_stable_r32_p32"]["source_report"] == expected_benchmark
+    finally:
+        shutil.rmtree(staging_dir, ignore_errors=True)
 
 
 def test_evidence_matrix_exports_are_deterministic_across_identical_reruns(

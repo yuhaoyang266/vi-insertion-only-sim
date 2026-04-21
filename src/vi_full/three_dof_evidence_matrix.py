@@ -12,6 +12,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 PURE_RL_METHOD_ORDER = (
     "ppo_no_bc",
     "sac_no_bc",
@@ -68,6 +70,14 @@ PDF_METADATA = {
 
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _provenance_path(path: Path) -> str:
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return resolved.as_posix()
 
 
 def _as_float(value: object) -> float:
@@ -143,7 +153,7 @@ def _build_pure_rl_rows(
     summaries = {
         str(row["method_name"]): row for row in confirm.get("method_summaries", [])
     }
-    direct_source = str(Path(confirm_report_path).resolve())
+    direct_source = _provenance_path(confirm_report_path)
     rows: list[dict[str, Any]] = []
     for method_name in PURE_RL_METHOD_ORDER:
         summary = summaries[method_name]
@@ -233,7 +243,7 @@ def _build_anchor_rows(
                 "evidence_role": spec["evidence_role"],
                 "allowed_claim": _anchor_allowed_claim(method_name),
                 "not_allowed_claim": _anchor_not_allowed_claim(method_name),
-                "source_report": str(Path(benchmark_report_path).resolve()),
+                "source_report": _provenance_path(benchmark_report_path),
             }
         )
     return rows
@@ -262,8 +272,8 @@ def build_3dof_evidence_matrix(
     return {
         "report_name": "three_dof_evidence_matrix",
         "source_artifacts": {
-            "confirm_report": str(confirm_report_path.resolve()),
-            "benchmark_report": str(benchmark_report_path.resolve()),
+            "confirm_report": _provenance_path(confirm_report_path),
+            "benchmark_report": _provenance_path(benchmark_report_path),
         },
         "matrix_contract": {
             "mixed_contracts": True,

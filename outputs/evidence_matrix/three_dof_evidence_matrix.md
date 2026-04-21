@@ -1,7 +1,7 @@
 # 3DoF Evidence Matrix
 
-Confirm source: `F:\edge download\learning\vi-insertion-only-sim\outputs\cross_family_confirm\three_dof_cross_family_confirm_report.json`
-Benchmark source: `F:\edge download\learning\vi-insertion-only-sim\artifacts\main_benchmark\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`
+Confirm source: `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`
+Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`
 
 ## Mixed-Contract Boundary
 
