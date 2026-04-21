@@ -67,6 +67,11 @@ PDF_METADATA = {
     "ModDate": None,
 }
 
+CONTACT_GATE_FIGURE_TITLE = (
+    "3DoF contact gate evidence matrix\n"
+    "Mixed-contract contrast only; not a leaderboard."
+)
+
 CONFIRM_SUMMARY_REQUIRED_FIELDS = (
     "best_budget",
     "best_final_distance_mm",
@@ -521,6 +526,13 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _contact_gate_figure_row_label(row: dict[str, Any]) -> str:
+    return (
+        f"{row['label']}\n"
+        f"[{row['source_contract']}; {row['train_budget']}]"
+    )
+
+
 def export_3dof_evidence_matrix_markdown(
     payload: dict[str, Any],
     output_dir: Path,
@@ -545,14 +557,14 @@ def export_contact_gate_matrix_figure(
         [1.0 if row["entered_contact"] else 0.0, _as_float(row["success_rate"])]
         for row in rows
     ]
-    fig_height = max(4.0, 0.6 * len(rows))
-    fig, ax = plt.subplots(figsize=(7.5, fig_height), constrained_layout=True)
+    fig_height = max(4.8, 0.8 * len(rows))
+    fig, ax = plt.subplots(figsize=(7.8, fig_height), constrained_layout=True)
     image = ax.imshow(matrix, aspect="auto", cmap="YlGn", vmin=0.0, vmax=1.0)
-    ax.set_title("3DoF contact gate evidence matrix")
+    ax.set_title(CONTACT_GATE_FIGURE_TITLE)
     ax.set_xticks([0, 1], ["Entered contact", "Success rate"])
     ax.set_yticks(
         list(range(len(rows))),
-        [f"{row['label']} [{row['source_contract']}]" for row in rows],
+        [_contact_gate_figure_row_label(row) for row in rows],
     )
     for row_index, row in enumerate(rows):
         ax.text(

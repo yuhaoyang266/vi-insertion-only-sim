@@ -295,6 +295,41 @@ def test_markdown_exposes_row_level_provenance_and_train_budget(tmp_path: Path) 
     ) in markdown
 
 
+def test_contact_gate_figure_exposes_mixed_contract_boundary_and_train_budget(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import matplotlib.axes
+
+    from vi_full.three_dof_evidence_matrix import export_contact_gate_matrix_figure
+
+    matrix = _build_matrix(tmp_path)
+    captured: dict[str, object] = {}
+
+    original_set_title = matplotlib.axes.Axes.set_title
+    original_set_yticks = matplotlib.axes.Axes.set_yticks
+
+    def _capture_title(self, label, *args, **kwargs):
+        captured["title"] = label
+        return original_set_title(self, label, *args, **kwargs)
+
+    def _capture_yticks(self, ticks, labels=None, *args, **kwargs):
+        if labels is not None:
+            captured["ytick_labels"] = list(labels)
+        return original_set_yticks(self, ticks, labels, *args, **kwargs)
+
+    monkeypatch.setattr(matplotlib.axes.Axes, "set_title", _capture_title)
+    monkeypatch.setattr(matplotlib.axes.Axes, "set_yticks", _capture_yticks)
+
+    export_contact_gate_matrix_figure(matrix, tmp_path)
+
+    assert "mixed-contract contrast only" in str(captured["title"]).lower()
+    assert "not a leaderboard" in str(captured["title"]).lower()
+    ytick_labels = [str(label) for label in captured["ytick_labels"]]
+    assert "nominal-only pilot; 200000" in ytick_labels[0]
+    assert "five-profile benchmark; BC 32/32" in ytick_labels[3]
+
+
 def test_evidence_matrix_rows_point_to_direct_input_artifacts(tmp_path: Path) -> None:
     from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
 
