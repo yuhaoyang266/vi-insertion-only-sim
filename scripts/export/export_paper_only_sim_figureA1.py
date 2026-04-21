@@ -7,7 +7,7 @@ import sys
 
 
 def _load_paper_figures_module():
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
     src_root = repo_root / "src"
     if str(src_root) not in sys.path:
         sys.path.insert(0, str(src_root))

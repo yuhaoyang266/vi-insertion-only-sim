@@ -7,7 +7,7 @@ import sys
 
 
 def _load_paper_figures_module():
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
     src_root = repo_root / "src"
     if str(src_root) not in sys.path:
         sys.path.insert(0, str(src_root))
@@ -27,16 +27,14 @@ def parse_args() -> argparse.Namespace:
         "--benchmark-input",
         type=Path,
         default=Path(
-            "outputs/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+            "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
         ),
         help="Path to the final benchmark JSON.",
     )
     parser.add_argument(
         "--statistics-report-input",
         type=Path,
-        default=Path(
-            "outputs/paper_only_sim_tables/three_dof_statistics_report_stage3_20260412.json"
-        ),
+        default=None,
         help="Optional paper-facing statistics report for comparison notes.",
     )
     parser.add_argument(

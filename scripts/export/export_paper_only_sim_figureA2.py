@@ -7,7 +7,7 @@ import sys
 
 
 def _load_paper_figures_module():
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
     src_root = repo_root / "src"
     if str(src_root) not in sys.path:
         sys.path.insert(0, str(src_root))
@@ -26,7 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--input",
         type=Path,
-        default=Path("outputs/latest_three_dof_contact_model_audit.json"),
+        default=Path("artifacts/mechanics/latest_three_dof_contact_model_audit.json"),
         help="Path to the frozen three-dof contact-model audit JSON.",
     )
     parser.add_argument(

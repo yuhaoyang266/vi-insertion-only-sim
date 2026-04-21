@@ -7,7 +7,11 @@ import sys
 
 
 def _load_paper_tables_module():
-    module_path = Path(__file__).resolve().parents[1] / "src" / "vi_full" / "paper_tables.py"
+    repo_root = Path(__file__).resolve().parents[2]
+    src_root = repo_root / "src"
+    if str(src_root) not in sys.path:
+        sys.path.insert(0, str(src_root))
+    module_path = src_root / "vi_full" / "paper_tables.py"
     spec = importlib.util.spec_from_file_location("paper_tables_cli", module_path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load paper table module from {module_path}")
@@ -23,7 +27,7 @@ def parse_args() -> argparse.Namespace:
         "--benchmark-input",
         type=Path,
         default=Path(
-            "outputs/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+            "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
         ),
         help="Path to the main 9-suite 3DoF benchmark JSON.",
     )
@@ -42,9 +46,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--statistics-report-input",
         type=Path,
-        default=Path(
-            "outputs/paper_only_sim_tables/three_dof_statistics_report_stage3_20260412.json"
-        ),
+        default=None,
         help="Optional paper-facing statistics report JSON for CI and comparison notes.",
     )
     parser.add_argument(
