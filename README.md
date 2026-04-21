@@ -90,6 +90,18 @@ python scripts/export/export_paper_only_sim_figureA4.py --benchmark-input <phase
 If a stable fixed-impedance override artifact is available, pass it with `--fixed-impedance-input`
 to keep the appendix diagnostics aligned with the paper-facing stable baseline.
 
+Supplementary benchmark statistics and the main paper table can also be regenerated from the same
+benchmark artifact:
+
+```bash
+python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json>
+python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json> --statistics-report-input <statistics_report.json>
+```
+
+When the input benchmark JSON includes `support_metrics`, the supplementary statistics report also
+exports Support Coverage Index (SCI) and support-cell-coverage summaries alongside the main table
+confidence intervals.
+
 ## Reproduce Experiments
 
 The frozen artifacts used by the manuscript are included under `artifacts/`. The corresponding
@@ -101,6 +113,7 @@ python scripts/experiments/run_3dof_factor_sweeps.py
 python scripts/experiments/run_3dof_ppo_large_budget_ablation.py
 python scripts/experiments/run_3dof_tuned_fixed_impedance_sweep.py
 python scripts/experiments/run_3dof_pose_perturbation_study.py
+python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchmark.json>
 ```
 
 These runs can be computationally slower than figure export. For manuscript inspection, the frozen

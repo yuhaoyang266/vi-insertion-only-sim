@@ -113,6 +113,15 @@ TABLE_METRICS = {
     },
 }
 
+SUPPORT_STATISTICS_METRICS = {
+    "support_coverage_index": {
+        "display_name": "Support Coverage Index",
+    },
+    "support_cell_coverage": {
+        "display_name": "Support Cell Coverage",
+    },
+}
+
 APPENDIX_TEACHER_SUITE_ORDER = (
     "teacher_variable_variable__repaired_mainline",
     "teacher_variable_fixed__repaired_mainline",
@@ -459,6 +468,50 @@ def _collect_profile_metric_samples(
     ]
 
 
+def _collect_support_seed_metric_samples(
+    eval_results: dict[str, Any],
+    *,
+    metric_name: str,
+) -> tuple[list[int], list[float]] | None:
+    profile_names = list(eval_results.keys())
+    seed_maps: list[dict[int, dict[str, Any]]] = []
+    for profile_name in profile_names:
+        per_seed = eval_results[profile_name].get("per_seed", [])
+        if not per_seed:
+            return None
+        if any(
+            "support_metrics" not in item or metric_name not in item["support_metrics"]
+            for item in per_seed
+        ):
+            return None
+        seed_maps.append({int(item["seed"]): item for item in per_seed})
+
+    common_seeds = sorted(set.intersection(*(set(seed_map) for seed_map in seed_maps)))
+    samples: list[float] = []
+    for seed in common_seeds:
+        profile_values = [
+            float(seed_map[seed]["support_metrics"][metric_name]) for seed_map in seed_maps
+        ]
+        samples.append(float(np.mean(np.asarray(profile_values, dtype=np.float64))))
+    return common_seeds, samples
+
+
+def _collect_support_profile_metric_samples(
+    profile_payload: dict[str, Any],
+    *,
+    metric_name: str,
+) -> list[float] | None:
+    per_seed = profile_payload.get("per_seed", [])
+    if not per_seed:
+        return None
+    if any(
+        "support_metrics" not in item or metric_name not in item["support_metrics"]
+        for item in per_seed
+    ):
+        return None
+    return [float(item["support_metrics"][metric_name]) for item in per_seed]
+
+
 def _bootstrap_ci(
     values: list[float] | np.ndarray,
     *,
@@ -736,6 +789,49 @@ def build_3dof_statistics_report(
             "five_profile_statistics": five_profile_statistics,
             "per_profile_statistics": per_profile_statistics,
         }
+        five_profile_support_statistics: dict[str, Any] = {}
+        per_profile_support_statistics: dict[str, Any] = {}
+        support_metrics_available = True
+        for metric_index, metric_name in enumerate(SUPPORT_STATISTICS_METRICS):
+            seed_samples = _collect_support_seed_metric_samples(
+                eval_results,
+                metric_name=metric_name,
+            )
+            if seed_samples is None:
+                support_metrics_available = False
+                break
+            _, samples = seed_samples
+            five_profile_support_statistics[metric_name] = _build_metric_statistics(
+                samples,
+                rng_seed=index * 10_000 + metric_index,
+            )
+
+        if support_metrics_available:
+            for profile_index, (profile_name, profile_payload) in enumerate(eval_results.items()):
+                profile_stats: dict[str, Any] = {}
+                for metric_index, metric_name in enumerate(SUPPORT_STATISTICS_METRICS):
+                    samples = _collect_support_profile_metric_samples(
+                        profile_payload,
+                        metric_name=metric_name,
+                    )
+                    if samples is None:
+                        support_metrics_available = False
+                        break
+                    profile_stats[metric_name] = _build_metric_statistics(
+                        samples,
+                        rng_seed=index * 100_000 + profile_index * 1_000 + metric_index,
+                    )
+                if not support_metrics_available:
+                    break
+                per_profile_support_statistics[profile_name] = profile_stats
+
+        if support_metrics_available and five_profile_support_statistics:
+            suite_statistics[suite_name]["five_profile_support_statistics"] = (
+                five_profile_support_statistics
+            )
+            suite_statistics[suite_name]["per_profile_support_statistics"] = (
+                per_profile_support_statistics
+            )
 
     benchmark_config = raw_benchmark["config"]
     observed_seeds = benchmark_config.get("seeds", [])
@@ -803,6 +899,39 @@ def render_3dof_statistics_report_markdown(report: dict[str, Any]) -> str:
             f"p = {comparison['p_value']:.3f}, "
             f"{comparison['practical_interpretation']}."
         )
+
+    support_suite_rows = [
+        (
+            suite_name,
+            report["suite_statistics"][suite_name],
+        )
+        for suite_name in report["suite_order"]
+        if suite_name in report["suite_statistics"]
+        and "five_profile_support_statistics" in report["suite_statistics"][suite_name]
+    ]
+    if support_suite_rows:
+        lines.extend(
+            [
+                "",
+                "## Support Diagnostics",
+                "",
+                "| Suite | Support Coverage Index | Support Cell Coverage |",
+                "| --- | --- | --- |",
+            ]
+        )
+        for suite_name, suite_payload in support_suite_rows:
+            display_name = SUITE_DISPLAY_NAMES.get(suite_name, suite_name)
+            support_cells: list[str] = []
+            for metric_name in SUPPORT_STATISTICS_METRICS:
+                stats = suite_payload["five_profile_support_statistics"][metric_name]
+                ci = stats["ci"]
+                support_cells.append(
+                    f"{stats['mean']:.3f} +- {stats['std']:.3f} "
+                    f"(95% CI [{ci['lower']:.3f}, {ci['upper']:.3f}])"
+                )
+            lines.append(
+                f"| {display_name} | {support_cells[0]} | {support_cells[1]} |"
+            )
     return "\n".join(lines) + "\n"
 
 

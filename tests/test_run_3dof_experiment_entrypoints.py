@@ -12,6 +12,7 @@ import pytest
         "run_3dof_bc_seed_factorization.py",
         "run_3dof_factor_sweeps.py",
         "run_3dof_pose_perturbation_study.py",
+        "run_3dof_statistics_report.py",
         "run_3dof_uncertainty_benchmark.py",
     ],
 )

@@ -707,6 +707,65 @@ def _write_statistics_sample_artifacts(tmp_path: Path) -> tuple[Path, Path]:
     return main_path, fixed_path
 
 
+def _inject_statistics_support_metrics(main_path: Path, fixed_path: Path) -> None:
+    suite_support_values = {
+        "bc_only_stable_r32_p32": {
+            "support_coverage_index": 0.92,
+            "support_cell_coverage": 0.78,
+        },
+        "repaired_mainline_bc_to_ppo": {
+            "support_coverage_index": 0.95,
+            "support_cell_coverage": 0.82,
+        },
+        "fixed_impedance_rl_stable_r32_p32": {
+            "support_coverage_index": 0.41,
+            "support_cell_coverage": 0.33,
+        },
+    }
+
+    def _decorate_suite_payload(payload: dict[str, object], suite_name: str) -> None:
+        suite_metrics = suite_support_values[suite_name]
+        eval_results = payload["eval_results"]
+        for profile_payload in eval_results.values():
+            per_seed = profile_payload["per_seed"]
+            for seed_payload in per_seed:
+                seed_payload["support_metrics"] = {
+                    **suite_metrics,
+                    "covered_rollout_sample_count": 92,
+                    "rollout_sample_count": 100,
+                    "demo_unique_cell_count": 40,
+                    "rollout_unique_cell_count": 25,
+                    "shared_unique_cell_count": 20,
+                }
+            profile_payload["support_metrics"] = {
+                "support_coverage_index_mean": suite_metrics["support_coverage_index"],
+                "support_coverage_index_std": 0.0,
+                "support_cell_coverage_mean": suite_metrics["support_cell_coverage"],
+                "support_cell_coverage_std": 0.0,
+            }
+        payload["support_metrics"] = {
+            "support_coverage_index_mean_over_profiles": suite_metrics["support_coverage_index"],
+            "support_coverage_index_std_over_profiles": 0.0,
+            "support_cell_coverage_mean_over_profiles": suite_metrics["support_cell_coverage"],
+            "support_cell_coverage_std_over_profiles": 0.0,
+        }
+
+    main_report = json.loads(main_path.read_text(encoding="utf-8"))
+    _decorate_suite_payload(
+        main_report["learned_results"]["bc_only_stable_r32_p32"],
+        "bc_only_stable_r32_p32",
+    )
+    _decorate_suite_payload(
+        main_report["learned_results"]["repaired_mainline_bc_to_ppo"],
+        "repaired_mainline_bc_to_ppo",
+    )
+    main_path.write_text(json.dumps(main_report), encoding="utf-8")
+
+    fixed_report = json.loads(fixed_path.read_text(encoding="utf-8"))
+    _decorate_suite_payload(fixed_report, "fixed_impedance_rl_stable_r32_p32")
+    fixed_path.write_text(json.dumps(fixed_report), encoding="utf-8")
+
+
 def test_build_3dof_paper_table_export_replaces_fixed_impedance_with_stable_override(
     tmp_path: Path,
 ) -> None:
@@ -862,6 +921,46 @@ def test_build_3dof_statistics_report_adds_ci_effect_size_and_ceiling_note(
     assert "absolute_mean_difference" in comparison["effect_size"]
     assert comparison["practical_interpretation"] == "negligible under ceiling saturation"
     assert "ceiling-saturated" in comparison["practical_note"]
+
+
+def test_build_3dof_statistics_report_exports_support_diagnostics_when_available(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    main_path, fixed_path = _write_statistics_sample_artifacts(tmp_path)
+    _inject_statistics_support_metrics(main_path, fixed_path)
+
+    report = module.build_3dof_statistics_report(
+        benchmark_report_path=main_path,
+        fixed_impedance_report_path=fixed_path,
+    )
+    markdown = module.render_3dof_statistics_report_markdown(report)
+
+    repaired_support_stats = report["suite_statistics"]["repaired_mainline_bc_to_ppo"][
+        "five_profile_support_statistics"
+    ]["support_coverage_index"]
+    assert repaired_support_stats["mean"] == pytest.approx(0.95)
+    assert repaired_support_stats["std"] == pytest.approx(0.0)
+    assert "per_profile_support_statistics" in report["suite_statistics"]["bc_only_stable_r32_p32"]
+    assert "## Support Diagnostics" in markdown
+    assert "Support Coverage Index" in markdown
+
+
+def test_build_3dof_statistics_report_skips_support_diagnostics_for_legacy_artifacts(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    main_path, fixed_path = _write_statistics_sample_artifacts(tmp_path)
+
+    report = module.build_3dof_statistics_report(
+        benchmark_report_path=main_path,
+        fixed_impedance_report_path=fixed_path,
+    )
+    markdown = module.render_3dof_statistics_report_markdown(report)
+
+    assert "five_profile_support_statistics" not in report["suite_statistics"]["bc_only_stable_r32_p32"]
+    assert "per_profile_support_statistics" not in report["suite_statistics"]["bc_only_stable_r32_p32"]
+    assert "## Support Diagnostics" not in markdown
 
 
 def test_paper_table_export_can_embed_statistics_report_and_render_notes(tmp_path: Path) -> None:
