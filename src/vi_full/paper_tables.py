@@ -281,7 +281,13 @@ def _build_effective_pressure_classes(
 ) -> dict[str, dict[str, Any]]:
     effective_classes: dict[str, dict[str, Any]] = {}
     for class_spec in PROFILE_EQUIVALENCE_CLASSES:
-        profiles = list(class_spec["profiles"])
+        profiles = [
+            str(profile_name)
+            for profile_name in class_spec["profiles"]
+            if profile_name in eval_results
+        ]
+        if not profiles:
+            continue
         profile_metrics = [
             _extract_profile_metrics(eval_results[profile_name]["aggregate"])
             for profile_name in profiles
@@ -304,24 +310,61 @@ def _build_profile_rows(eval_results: dict[str, Any]) -> dict[str, dict[str, Any
     profile_rows: dict[str, dict[str, Any]] = {}
     for profile_name, payload in eval_results.items():
         profile_rows[str(profile_name)] = {
-            "equivalence_class": profile_to_class[str(profile_name)],
+            "equivalence_class": profile_to_class.get(str(profile_name), "unclassified"),
             "metrics": _extract_profile_metrics(payload["aggregate"]),
         }
     return profile_rows
 
 
-def _annotation_payload() -> dict[str, Any]:
-    return {
-        "summary": ANNOTATION_SUMMARY,
-        "equivalence_classes": [
+def _annotation_payload(
+    available_profiles: list[str] | None = None,
+) -> dict[str, Any]:
+    available_profile_list = (
+        list(dict.fromkeys(str(profile_name) for profile_name in available_profiles))
+        if available_profiles is not None
+        else None
+    )
+    available_profile_set = (
+        set(available_profile_list) if available_profile_list is not None else None
+    )
+    equivalence_classes = []
+    for class_spec in PROFILE_EQUIVALENCE_CLASSES:
+        profiles = list(class_spec["profiles"])
+        if available_profile_set is not None:
+            profiles = [
+                str(profile_name)
+                for profile_name in profiles
+                if profile_name in available_profile_set
+            ]
+            if not profiles:
+                continue
+        equivalence_classes.append(
             {
                 "class_name": str(class_spec["class_name"]),
-                "profiles": list(class_spec["profiles"]),
+                "profiles": profiles,
                 "pressure_source": str(class_spec["pressure_source"]),
                 "design_rationale": list(class_spec["design_rationale"]),
             }
-            for class_spec in PROFILE_EQUIVALENCE_CLASSES
-        ],
+        )
+
+    summary = ANNOTATION_SUMMARY
+    canonical_profiles = [
+        str(profile_name)
+        for class_spec in PROFILE_EQUIVALENCE_CLASSES
+        for profile_name in class_spec["profiles"]
+    ]
+    if available_profile_list is not None and (
+        len(available_profile_list) != len(canonical_profiles)
+        or set(available_profile_list) != set(canonical_profiles)
+    ):
+        summary = (
+            "Current artifact includes a subset of the benchmark eval profiles: "
+            + ", ".join(available_profile_list)
+            + "."
+        )
+    return {
+        "summary": summary,
+        "equivalence_classes": equivalence_classes,
     }
 
 
@@ -1131,6 +1174,17 @@ def build_3dof_paper_table_export(
         )
         for handcrafted_payload in handcrafted_payloads
     ]
+    available_annotation_profiles = list(
+        raw_benchmark.get("config", {}).get("uncertainty_profiles", [])
+    )
+    if not available_annotation_profiles:
+        available_annotation_profiles = list(
+            dict.fromkeys(
+                str(profile_name)
+                for suite_payload in suite_payloads
+                for profile_name in suite_payload["eval_results"]
+            )
+        )
 
     return {
         "export_name": "three_dof_paper_benchmark_table",
@@ -1151,7 +1205,9 @@ def build_3dof_paper_table_export(
         "suite_rows": suite_rows,
         "handcrafted_policy_order": handcrafted_policy_order,
         "handcrafted_rows": handcrafted_rows,
-        "profile_equivalence_annotation": _annotation_payload(),
+        "profile_equivalence_annotation": _annotation_payload(
+            available_annotation_profiles
+        ),
         "statistics_report": statistics_report,
     }
 
@@ -1240,7 +1296,7 @@ def render_3dof_paper_table_markdown(export_payload: dict[str, Any]) -> str:
             "",
             "## Annotation",
             "",
-            ANNOTATION_SUMMARY,
+            export_payload["profile_equivalence_annotation"]["summary"],
             "",
         ]
     )

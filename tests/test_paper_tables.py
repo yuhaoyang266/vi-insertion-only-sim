@@ -798,6 +798,51 @@ def test_build_3dof_paper_table_export_replaces_fixed_impedance_with_stable_over
     assert export["profile_equivalence_annotation"]["equivalence_classes"][0]["class_name"] == "baseline"
 
 
+def test_build_3dof_paper_table_export_tolerates_partial_profile_benchmarks(
+    tmp_path: Path,
+) -> None:
+    module = _load_paper_tables_module()
+    main_path, _ = _write_sample_artifacts(tmp_path)
+    main_report = json.loads(main_path.read_text(encoding="utf-8"))
+    main_report["config"]["suite_names"] = ["bc_only_stable_r32_p32"]
+    main_report["config"]["uncertainty_profiles"] = ["nominal"]
+    suite_payload = main_report["learned_results"]["bc_only_stable_r32_p32"]
+    suite_payload["eval_results"] = {
+        "nominal": suite_payload["eval_results"]["nominal"],
+    }
+    main_report["learned_results"] = {
+        "bc_only_stable_r32_p32": suite_payload,
+    }
+    main_path.write_text(json.dumps(main_report), encoding="utf-8")
+
+    export = module.build_3dof_paper_table_export(benchmark_report_path=main_path)
+    markdown = module.render_3dof_paper_table_markdown(export)
+
+    assert export["suite_order"] == ["bc_only_stable_r32_p32"]
+    assert len(export["suite_rows"]) == 1
+    row = export["suite_rows"][0]
+    assert list(row["effective_pressure_classes"]) == ["baseline"]
+    assert row["effective_pressure_classes"]["baseline"]["profiles"] == ["nominal"]
+    assert (
+        row["effective_pressure_classes"]["baseline"]["metrics"]["success_rate"]
+        == pytest.approx(1.0)
+    )
+    assert list(row["per_profile"]) == ["nominal"]
+    assert [
+        item["class_name"] for item in export["profile_equivalence_annotation"]["equivalence_classes"]
+    ] == ["baseline"]
+    assert (
+        export["profile_equivalence_annotation"]["summary"]
+        == "Current artifact includes a subset of the benchmark eval profiles: nominal."
+    )
+    assert (
+        "Current artifact includes a subset of the benchmark eval profiles: nominal."
+        in markdown
+    )
+    assert "- `baseline`: nominal." in markdown
+    assert "`high_friction`" not in markdown
+
+
 def test_export_3dof_paper_table_writes_json_and_markdown(tmp_path: Path) -> None:
     module = _load_paper_tables_module()
     main_path, fixed_path = _write_sample_artifacts(tmp_path)
