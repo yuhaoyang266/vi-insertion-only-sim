@@ -13,7 +13,9 @@ constructive layer packages the main recipe as Support-Gated Variable-Impedance 
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
 implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
-teacher-coupled rather than general sim-to-real claims.
+teacher-coupled rather than general sim-to-real claims. The main 3DoF uncertainty benchmark JSON
+artifacts now also record per-seed, per-profile, and per-suite SCI summaries under the same
+benchmark-local quantization contract.
 
 Repository URL embedded in the manuscript:
 

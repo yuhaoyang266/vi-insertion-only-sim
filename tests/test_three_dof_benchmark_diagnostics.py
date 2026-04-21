@@ -3,6 +3,7 @@ import numpy as np
 from vi_full.three_dof_benchmark import (
     THREE_DOF_NUMERIC_METRICS,
     evaluate_3dof_policy,
+    evaluate_3dof_predictor_with_rollout_samples,
     summarize_3dof_seed_runs,
     trace_3dof_policy_rollout,
 )
@@ -14,6 +15,14 @@ class _NoOpPolicy:
     def act(self, observation: np.ndarray) -> np.ndarray:
         del observation
         return np.zeros(5, dtype=np.float32)
+
+
+class _ConstantPredictor:
+    name = "constant_predictor"
+
+    def predict(self, observation: np.ndarray, deterministic: bool = True):
+        del observation, deterministic
+        return np.full(5, 0.25, dtype=np.float32), None
 
 
 class _ScriptedEpisodeEnv:
@@ -236,6 +245,83 @@ def test_trace_3dof_policy_rollout_includes_termination_diagnostics() -> None:
     assert trace[0]["force_threshold_exceeded"] is True
     assert trace[0]["blocked_contact_failure"] is True
     assert trace[0]["meets_documented_force_jam"] is True
+
+
+def test_evaluate_3dof_predictor_with_rollout_samples_returns_summary_and_rows() -> None:
+    env = _ScriptedEpisodeEnv(
+        [
+            [
+                {
+                    "reward": 0.5,
+                    "terminated": False,
+                    "truncated": False,
+                    "info": _base_info(
+                        is_success=False,
+                        is_jammed=False,
+                        termination_reason="running",
+                        termination_details={
+                            "success": False,
+                            "force_threshold_exceeded": False,
+                            "blocked_contact_failure": False,
+                            "meets_documented_force_jam": False,
+                            "jammed": False,
+                        },
+                    ),
+                },
+                {
+                    "reward": 1.0,
+                    "terminated": True,
+                    "truncated": False,
+                    "info": _base_info(
+                        is_success=True,
+                        is_jammed=False,
+                        termination_reason="success",
+                        termination_details={
+                            "success": True,
+                            "force_threshold_exceeded": False,
+                            "blocked_contact_failure": False,
+                            "meets_documented_force_jam": False,
+                            "jammed": False,
+                        },
+                    ),
+                },
+            ],
+            [
+                {
+                    "reward": 0.25,
+                    "terminated": True,
+                    "truncated": False,
+                    "info": _base_info(
+                        is_success=False,
+                        is_jammed=False,
+                        termination_reason="timeout",
+                        termination_details={
+                            "success": False,
+                            "force_threshold_exceeded": False,
+                            "blocked_contact_failure": False,
+                            "meets_documented_force_jam": False,
+                            "jammed": False,
+                        },
+                        contact_force_norm=0.0,
+                    ),
+                }
+            ],
+        ]
+    )
+
+    summary, observations, actions = evaluate_3dof_predictor_with_rollout_samples(
+        env,
+        _ConstantPredictor(),
+        episodes=2,
+        seed=0,
+        uncertainty_profile="nominal",
+    )
+
+    assert summary["episodes"] == 2
+    assert summary["mean_episode_length"] == 1.5
+    assert observations.shape == (3, 14)
+    assert actions.shape == (3, 5)
+    assert actions[:, 0].tolist() == [0.25, 0.25, 0.25]
 
 
 def test_summarize_3dof_seed_runs_aggregates_termination_diagnostic_rates() -> None:

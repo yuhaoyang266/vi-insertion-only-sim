@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import sys
 
+import numpy as np
+
 from vi_full.three_dof_config import ThreeDoFResetConfig, ThreeDoFResetStage
 from vi_full.three_dof_benchmark import build_3dof_dapg_baseline_registry
 from vi_full.three_dof_policies import resolve_3dof_teacher_spec
@@ -211,11 +213,27 @@ def test_run_suite_across_profiles_closes_vec_normalize(monkeypatch) -> None:
     monkeypatch.setattr(module, "serialize_3dof_train_config", lambda config: {})
     monkeypatch.setattr(
         module,
-        "evaluate_3dof_predictor",
-        lambda env, predictor, episodes, seed, uncertainty_profile: {
+        "_collect_demo_support_dataset",
+        lambda train_config: (
+            np.zeros((0, 14), dtype=np.float32),
+            np.zeros((0, 5), dtype=np.float32),
+        ),
+    )
+    monkeypatch.setattr(
+        module,
+        "_evaluate_predictor_profile_with_support",
+        lambda **kwargs: {
             "policy_name": "ppo",
-            "uncertainty_profile": uncertainty_profile,
-            "seed": seed,
+            "uncertainty_profile": kwargs["profile_name"],
+            "support_metrics": {
+                "support_coverage_index": 0.0,
+                "covered_rollout_sample_count": 0,
+                "rollout_sample_count": 0,
+                "demo_unique_cell_count": 0,
+                "rollout_unique_cell_count": 0,
+                "shared_unique_cell_count": 0,
+                "support_cell_coverage": 0.0,
+            },
         },
     )
     monkeypatch.setattr(module, "summarize_3dof_seed_runs", lambda per_seed: {})
@@ -561,11 +579,27 @@ def test_run_suite_across_profiles_exposes_teacher_metadata(monkeypatch) -> None
     monkeypatch.setattr(module, "serialize_3dof_train_config", lambda config: {})
     monkeypatch.setattr(
         module,
-        "evaluate_3dof_predictor",
-        lambda env, predictor, episodes, seed, uncertainty_profile: {
+        "_collect_demo_support_dataset",
+        lambda train_config: (
+            np.zeros((0, 14), dtype=np.float32),
+            np.zeros((0, 5), dtype=np.float32),
+        ),
+    )
+    monkeypatch.setattr(
+        module,
+        "_evaluate_predictor_profile_with_support",
+        lambda **kwargs: {
             "policy_name": "ppo",
-            "uncertainty_profile": uncertainty_profile,
-            "seed": seed,
+            "uncertainty_profile": kwargs["profile_name"],
+            "support_metrics": {
+                "support_coverage_index": 0.0,
+                "covered_rollout_sample_count": 0,
+                "rollout_sample_count": 0,
+                "demo_unique_cell_count": 0,
+                "rollout_unique_cell_count": 0,
+                "shared_unique_cell_count": 0,
+                "support_cell_coverage": 0.0,
+            },
         },
     )
     monkeypatch.setattr(module, "summarize_3dof_seed_runs", lambda per_seed: {})
@@ -644,3 +678,120 @@ def test_five_profile_mean_includes_termination_diagnostic_rates() -> None:
     )
     assert five_profile_mean["force_and_blocked_termination_rate_mean_over_profiles"] == 0.125
     assert five_profile_mean["documented_force_jam_rate_mean_over_profiles"] == 0.125
+
+
+def test_run_suite_across_profiles_records_support_metrics(monkeypatch) -> None:
+    module = _load_runner_module()
+
+    class _FakeVecNormalize:
+        def close(self) -> None:
+            return None
+
+    class _FakeArtifacts:
+        def __init__(self) -> None:
+            self.model = object()
+            self.vec_normalize = _FakeVecNormalize()
+            self.training_summary = {}
+
+    def _fake_seed_summary(per_seed):
+        aggregate = {
+            "policy_name": "ppo",
+            "uncertainty_profile": per_seed[0]["uncertainty_profile"],
+            "num_seeds": len(per_seed),
+            "seeds": [int(item["seed"]) for item in per_seed],
+        }
+        for metric_name in module.THREE_DOF_NUMERIC_METRICS:
+            aggregate[f"{metric_name}_mean"] = float(per_seed[0].get(metric_name, 0.0))
+            aggregate[f"{metric_name}_std"] = 0.0
+        return aggregate
+
+    def _fake_profile_summary(*, profile_name: str, eval_seed: int, **kwargs):
+        del kwargs
+        support_coverage = 0.25 if profile_name == "nominal" else 0.75
+        cell_coverage = 0.5 if profile_name == "nominal" else 1.0
+        return {
+            "policy_name": "ppo",
+            "uncertainty_profile": profile_name,
+            "episodes": 2,
+            "success_rate": 0.0,
+            "mean_episode_return": 0.0,
+            "mean_final_distance": 0.01,
+            "mean_episode_length": 2.0,
+            "mean_peak_contact_force": 0.0,
+            "p95_peak_contact_force": 0.0,
+            "mean_force_std": 0.0,
+            "mean_first_contact_step": 2.0,
+            "mean_contact_steps": 0.0,
+            "mean_settling_steps_after_contact": 0.0,
+            "jam_rate": 0.0,
+            "force_threshold_termination_rate": 0.0,
+            "blocked_contact_termination_rate": 0.0,
+            "force_threshold_only_termination_rate": 0.0,
+            "blocked_contact_only_termination_rate": 0.0,
+            "force_and_blocked_termination_rate": 0.0,
+            "documented_force_jam_rate": 0.0,
+            "seed": eval_seed,
+            "support_metrics": {
+                "support_coverage_index": support_coverage,
+                "covered_rollout_sample_count": 2,
+                "rollout_sample_count": 4,
+                "demo_unique_cell_count": 3,
+                "rollout_unique_cell_count": 2,
+                "shared_unique_cell_count": 1,
+                "support_cell_coverage": cell_coverage,
+            },
+        }
+
+    monkeypatch.setattr(module, "_build_train_config", lambda seed, suite_run_kwargs: object())
+    monkeypatch.setattr(module, "train_3dof_ppo_agent", lambda config: _FakeArtifacts())
+    monkeypatch.setattr(module, "VecNormalizePredictor", lambda model, vec_normalize: object())
+    monkeypatch.setattr(module, "serialize_3dof_train_config", lambda config: {})
+    monkeypatch.setattr(
+        module,
+        "_collect_demo_support_dataset",
+        lambda train_config: (
+            np.zeros((2, 14), dtype=np.float32),
+            np.zeros((2, 5), dtype=np.float32),
+        ),
+    )
+    monkeypatch.setattr(
+        module,
+        "_evaluate_predictor_profile_with_support",
+        _fake_profile_summary,
+    )
+    monkeypatch.setattr(module, "summarize_3dof_seed_runs", _fake_seed_summary)
+
+    suite_result = module._run_3dof_suite_across_profiles(
+        {
+            "suite_name": "learned_ppo_3dof_bc",
+            "seeds": [0],
+            "total_timesteps": 128,
+            "episodes_per_seed": 2,
+            "max_episode_steps": 64,
+            "train_uncertainty_profile": "nominal",
+            "eval_uncertainty_profile": "nominal",
+            "uncertainty_profiles": ["nominal", "high_friction"],
+            "bc_rollout_episodes": 32,
+            "bc_pretrain_steps": 32,
+            "bc_batch_size": 64,
+            "bc_demo_policy_name": "variable_impedance",
+        }
+    )
+
+    assert suite_result["support_metric_config"]["obs_xy_norm_bin_m"] == 5e-4
+    assert (
+        suite_result["eval_results"]["nominal"]["per_seed"][0]["support_metrics"][
+            "support_coverage_index"
+        ]
+        == 0.25
+    )
+    assert (
+        suite_result["eval_results"]["nominal"]["support_metrics"][
+            "support_coverage_index_mean"
+        ]
+        == 0.25
+    )
+    assert (
+        suite_result["support_metrics"]["support_coverage_index_mean_over_profiles"] == 0.5
+    )
+    assert suite_result["support_metrics"]["support_cell_coverage_mean_over_profiles"] == 0.75

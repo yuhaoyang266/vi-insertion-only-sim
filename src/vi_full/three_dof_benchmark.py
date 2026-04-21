@@ -338,14 +338,36 @@ def summarize_3dof_seed_runs(run_summaries: list[dict[str, Any]]) -> dict[str, A
     return aggregate
 
 
-def evaluate_3dof_policy(
+def _empty_3dof_rollout_sample_arrays(env) -> tuple[np.ndarray, np.ndarray]:
+    observation_space = getattr(env, "observation_space", None)
+    action_space = getattr(env, "action_space", None)
+    obs_shape = (
+        tuple(int(dim) for dim in observation_space.shape)
+        if observation_space is not None and getattr(observation_space, "shape", None) is not None
+        else (0,)
+    )
+    act_shape = (
+        tuple(int(dim) for dim in action_space.shape)
+        if action_space is not None and getattr(action_space, "shape", None) is not None
+        else (0,)
+    )
+    return (
+        np.zeros((0, *obs_shape), dtype=np.float32),
+        np.zeros((0, *act_shape), dtype=np.float32),
+    )
+
+
+def _evaluate_3dof_policy_rollouts(
     env: ThreeDoFInsertionEnv,
     policy,
     *,
-    episodes: int = 5,
-    seed: int = 0,
-    uncertainty_profile: str = "nominal",
-) -> dict[str, float | int | str]:
+    episodes: int,
+    seed: int,
+    uncertainty_profile: str,
+    collect_rollout_samples: bool,
+) -> tuple[dict[str, float | int | str], np.ndarray | None, np.ndarray | None]:
+    rollout_observations: list[np.ndarray] = []
+    rollout_actions: list[np.ndarray] = []
     episode_returns: list[float] = []
     final_distances: list[float] = []
     successes: list[float] = []
@@ -379,6 +401,10 @@ def evaluate_3dof_policy(
 
         while not (terminated or truncated):
             action = policy.act(observation)
+            action_array = np.asarray(action, dtype=np.float32)
+            if collect_rollout_samples:
+                rollout_observations.append(np.asarray(observation, dtype=np.float32).copy())
+                rollout_actions.append(action_array.copy())
             observation, reward, terminated, truncated, final_info = env.step(action)
             total_return += float(reward)
             step_count += 1
@@ -445,7 +471,7 @@ def evaluate_3dof_policy(
             float(termination_details["meets_documented_force_jam"])
         )
 
-    return {
+    summary: dict[str, float | int | str] = {
         "policy_name": getattr(policy, "name", policy.__class__.__name__),
         "uncertainty_profile": uncertainty_profile,
         "episodes": episodes,
@@ -477,6 +503,56 @@ def evaluate_3dof_policy(
         ),
         "documented_force_jam_rate": float(np.mean(documented_force_jam_flags)),
     }
+    if not collect_rollout_samples:
+        return summary, None, None
+    if not rollout_observations:
+        empty_observations, empty_actions = _empty_3dof_rollout_sample_arrays(env)
+        return summary, empty_observations, empty_actions
+    return (
+        summary,
+        np.stack(rollout_observations).astype(np.float32),
+        np.stack(rollout_actions).astype(np.float32),
+    )
+
+
+def evaluate_3dof_policy(
+    env: ThreeDoFInsertionEnv,
+    policy,
+    *,
+    episodes: int = 5,
+    seed: int = 0,
+    uncertainty_profile: str = "nominal",
+) -> dict[str, float | int | str]:
+    summary, _, _ = _evaluate_3dof_policy_rollouts(
+        env,
+        policy,
+        episodes=episodes,
+        seed=seed,
+        uncertainty_profile=uncertainty_profile,
+        collect_rollout_samples=False,
+    )
+    return summary
+
+
+def evaluate_3dof_policy_with_rollout_samples(
+    env: ThreeDoFInsertionEnv,
+    policy,
+    *,
+    episodes: int = 5,
+    seed: int = 0,
+    uncertainty_profile: str = "nominal",
+) -> tuple[dict[str, float | int | str], np.ndarray, np.ndarray]:
+    summary, observations, actions = _evaluate_3dof_policy_rollouts(
+        env,
+        policy,
+        episodes=episodes,
+        seed=seed,
+        uncertainty_profile=uncertainty_profile,
+        collect_rollout_samples=True,
+    )
+    assert observations is not None
+    assert actions is not None
+    return summary, observations, actions
 
 
 def run_3dof_handcrafted_uncertainty_suite(
@@ -535,6 +611,30 @@ def evaluate_3dof_predictor(
             return np.asarray(action, dtype=np.float32)
 
     return evaluate_3dof_policy(
+        env,
+        _PredictorPolicy(),
+        episodes=episodes,
+        seed=seed,
+        uncertainty_profile=uncertainty_profile,
+    )
+
+
+def evaluate_3dof_predictor_with_rollout_samples(
+    env: ThreeDoFInsertionEnv,
+    predictor,
+    *,
+    episodes: int = 5,
+    seed: int = 0,
+    uncertainty_profile: str = "nominal",
+) -> tuple[dict[str, float | int | str], np.ndarray, np.ndarray]:
+    class _PredictorPolicy:
+        name = getattr(predictor, "name", predictor.__class__.__name__)
+
+        def act(self, observation: np.ndarray) -> np.ndarray:
+            action, _ = predictor.predict(observation, deterministic=True)
+            return np.asarray(action, dtype=np.float32)
+
+    return evaluate_3dof_policy_with_rollout_samples(
         env,
         _PredictorPolicy(),
         episodes=episodes,

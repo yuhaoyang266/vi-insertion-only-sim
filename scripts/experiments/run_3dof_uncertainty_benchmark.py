@@ -8,12 +8,14 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from vi_full.training import VecNormalizePredictor
 from vi_full.three_dof_benchmark import (
     DEFAULT_UNCERTAINTY_PROFILES,
     THREE_DOF_NUMERIC_METRICS,
     build_3dof_dapg_baseline_registry,
-    evaluate_3dof_predictor,
+    evaluate_3dof_predictor_with_rollout_samples,
     run_3dof_handcrafted_uncertainty_suite,
     summarize_3dof_seed_runs,
 )
@@ -24,11 +26,26 @@ from vi_full.three_dof_policies import (
 )
 from vi_full.three_dof_training import (
     build_3dof_mainline_train_config,
+    collect_3dof_demonstrations,
     serialize_3dof_train_config,
     train_3dof_ppo_agent,
 )
+from vi_full.three_dof_support_metrics import (
+    ThreeDoFSupportMetricConfig,
+    compute_3dof_support_coverage_index,
+)
 
-UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION = 2
+UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION = 3
+SUPPORT_METRIC_CONFIG = ThreeDoFSupportMetricConfig()
+SUPPORT_METRIC_NAMES = (
+    "support_coverage_index",
+    "covered_rollout_sample_count",
+    "rollout_sample_count",
+    "demo_unique_cell_count",
+    "rollout_unique_cell_count",
+    "shared_unique_cell_count",
+    "support_cell_coverage",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -126,6 +143,10 @@ def _build_run_signature(suite_run_kwargs: dict[str, Any]) -> str:
     return hashlib.sha256(signature_payload.encode("utf-8")).hexdigest()
 
 
+def _support_metric_config_payload() -> dict[str, float]:
+    return asdict(SUPPORT_METRIC_CONFIG)
+
+
 def _suite_result_matches_signature(
     existing_suite_result: dict[str, Any],
     suite_run_kwargs: dict[str, Any],
@@ -202,6 +223,83 @@ def _build_five_profile_mean(eval_results: dict[str, Any]) -> dict[str, float]:
     return summary
 
 
+def _collect_demo_support_dataset(train_config: Any) -> tuple[Any, Any]:
+    if not hasattr(train_config, "bc_rollout_episodes"):
+        return (
+            np.zeros((0, 0), dtype=np.float32),
+            np.zeros((0, 0), dtype=np.float32),
+        )
+    return collect_3dof_demonstrations(
+        train_config,
+        episodes=int(train_config.bc_rollout_episodes),
+        reset_config=train_config.bc_reset_config,
+    )
+
+
+def _evaluate_predictor_profile_with_support(
+    *,
+    artifacts: Any,
+    predictor: Any,
+    profile_name: str,
+    eval_seed: int,
+    episodes_per_seed: int,
+    demo_observations: Any,
+    demo_actions: Any,
+) -> dict[str, Any]:
+    env = artifacts.make_eval_env(
+        seed=eval_seed,
+        uncertainty_profile=profile_name,
+    )
+    try:
+        summary, rollout_observations, rollout_actions = (
+            evaluate_3dof_predictor_with_rollout_samples(
+                env,
+                predictor,
+                episodes=episodes_per_seed,
+                seed=eval_seed,
+                uncertainty_profile=profile_name,
+            )
+        )
+    finally:
+        env.close()
+    summary["support_metrics"] = compute_3dof_support_coverage_index(
+        demo_observations=demo_observations,
+        demo_actions=demo_actions,
+        rollout_observations=rollout_observations,
+        rollout_actions=rollout_actions,
+        config=SUPPORT_METRIC_CONFIG,
+    )
+    return summary
+
+
+def _build_support_metric_summary(per_seed: list[dict[str, Any]]) -> dict[str, float]:
+    if not per_seed:
+        return {}
+    summary: dict[str, float] = {}
+    for metric_name in SUPPORT_METRIC_NAMES:
+        values = [
+            float(item["support_metrics"][metric_name])
+            for item in per_seed
+        ]
+        summary[f"{metric_name}_mean"] = float(np.mean(values))
+        summary[f"{metric_name}_std"] = float(np.std(values))
+    return summary
+
+
+def _build_support_profile_mean(eval_results: dict[str, Any]) -> dict[str, float]:
+    if not eval_results:
+        return {}
+    summary: dict[str, float] = {}
+    for metric_name in SUPPORT_METRIC_NAMES:
+        values = [
+            float(payload["support_metrics"][f"{metric_name}_mean"])
+            for payload in eval_results.values()
+        ]
+        summary[f"{metric_name}_mean_over_profiles"] = float(np.mean(values))
+        summary[f"{metric_name}_std_over_profiles"] = float(np.std(values))
+    return summary
+
+
 def _run_3dof_suite_across_profiles(
     suite_run_kwargs: dict[str, Any],
 ) -> dict[str, Any]:
@@ -221,6 +319,7 @@ def _run_3dof_suite_across_profiles(
             model=artifacts.model,
             vec_normalize=artifacts.vec_normalize,
         )
+        demo_observations, demo_actions = _collect_demo_support_dataset(train_config)
         train_configs.append(serialize_3dof_train_config(train_config))
         training_summary = {"seed": int(seed), **dict(artifacts.training_summary)}
         training_summaries.append(training_summary)
@@ -230,20 +329,15 @@ def _run_3dof_suite_across_profiles(
                 suite_run_kwargs["uncertainty_profiles"]
             ):
                 eval_seed = int(seed) + 10_000 + profile_index * 1_000
-                env = artifacts.make_eval_env(
-                    seed=eval_seed,
-                    uncertainty_profile=profile_name,
+                summary = _evaluate_predictor_profile_with_support(
+                    artifacts=artifacts,
+                    predictor=predictor,
+                    profile_name=profile_name,
+                    eval_seed=eval_seed,
+                    episodes_per_seed=int(suite_run_kwargs["episodes_per_seed"]),
+                    demo_observations=demo_observations,
+                    demo_actions=demo_actions,
                 )
-                try:
-                    summary = evaluate_3dof_predictor(
-                        env,
-                        predictor,
-                        episodes=int(suite_run_kwargs["episodes_per_seed"]),
-                        seed=eval_seed,
-                        uncertainty_profile=profile_name,
-                    )
-                finally:
-                    env.close()
                 summary["seed"] = int(seed)
                 summary["training_summary"] = dict(artifacts.training_summary)
                 eval_results[profile_name]["per_seed"].append(summary)
@@ -258,10 +352,12 @@ def _run_3dof_suite_across_profiles(
         ]
         payload["aggregate"]["eval_uncertainty_profile"] = profile_name
         payload["aggregate"].update(teacher_metadata)
+        payload["support_metrics"] = _build_support_metric_summary(payload["per_seed"])
 
     return {
         "run_signature": run_signature,
         **teacher_metadata,
+        "support_metric_config": _support_metric_config_payload(),
         "suite_run_kwargs": {
             key: value
             for key, value in suite_run_kwargs.items()
@@ -271,6 +367,7 @@ def _run_3dof_suite_across_profiles(
         "training_summaries": training_summaries,
         "eval_results": eval_results,
         "five_profile_mean": _build_five_profile_mean(eval_results),
+        "support_metrics": _build_support_profile_mean(eval_results),
     }
 
 
@@ -328,6 +425,7 @@ def _build_report_config(
         "handcrafted_policy_names": list(build_3dof_handcrafted_policy_registry().keys()),
         "artifact_schema_version": UNCERTAINTY_BENCHMARK_ARTIFACT_SCHEMA_VERSION,
         "benchmark_contract": asdict(DEFAULT_3DOF_BENCHMARK_CONTRACT),
+        "support_metric_config": _support_metric_config_payload(),
     }
 
 
