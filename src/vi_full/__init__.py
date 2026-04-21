@@ -49,6 +49,8 @@ from vi_full.three_dof_profiles import (
 )
 from vi_full.three_dof_benchmark import (
     build_3dof_benchmark_report,
+    collect_3dof_policy_rollout_samples,
+    collect_3dof_predictor_rollout_samples,
     evaluate_3dof_predictor,
     evaluate_3dof_policy,
     run_3dof_learned_suite,
@@ -73,6 +75,12 @@ from vi_full.three_dof_training import (
     collect_3dof_demonstrations,
     create_3dof_training_vec_env,
     train_3dof_ppo_agent,
+)
+from vi_full.three_dof_support_metrics import (
+    ThreeDoFSupportMetricConfig,
+    compute_3dof_support_coverage_index,
+    project_3dof_support_signature,
+    quantize_3dof_support_signature,
 )
 
 __all__ = [
@@ -116,6 +124,8 @@ __all__ = [
     "summarize_3dof_seed_runs",
     "evaluate_3dof_policy",
     "evaluate_3dof_predictor",
+    "collect_3dof_policy_rollout_samples",
+    "collect_3dof_predictor_rollout_samples",
     "run_3dof_handcrafted_uncertainty_suite",
     "run_3dof_learned_suite",
     "build_3dof_benchmark_report",
@@ -134,4 +144,8 @@ __all__ = [
     "collect_3dof_demonstrations",
     "create_3dof_training_vec_env",
     "train_3dof_ppo_agent",
+    "ThreeDoFSupportMetricConfig",
+    "project_3dof_support_signature",
+    "quantize_3dof_support_signature",
+    "compute_3dof_support_coverage_index",
 ]

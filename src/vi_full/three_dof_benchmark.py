@@ -72,6 +72,21 @@ def trace_3dof_policy_rollout(
     )
 
 
+def collect_3dof_policy_rollout_samples(
+    env,
+    policy,
+    *,
+    episodes: int = 1,
+    seed: int = 0,
+) -> tuple[np.ndarray, np.ndarray]:
+    return _collect_3dof_rollout_samples(
+        env,
+        act_fn=policy.act,
+        episodes=episodes,
+        seed=seed,
+    )
+
+
 def _extract_3dof_termination_details(info: dict[str, Any]) -> dict[str, bool]:
     details = info.get("termination_details")
     if isinstance(details, dict):
@@ -114,6 +129,25 @@ def trace_3dof_predictor_rollout(
         return np.asarray(action, dtype=np.float32)
 
     return _trace_3dof_rollout(env, act_fn=_act, seed=seed)
+
+
+def collect_3dof_predictor_rollout_samples(
+    env,
+    predictor,
+    *,
+    episodes: int = 1,
+    seed: int = 0,
+) -> tuple[np.ndarray, np.ndarray]:
+    def _act(observation: np.ndarray) -> np.ndarray:
+        action, _ = predictor.predict(observation, deterministic=True)
+        return np.asarray(action, dtype=np.float32)
+
+    return _collect_3dof_rollout_samples(
+        env,
+        act_fn=_act,
+        episodes=episodes,
+        seed=seed,
+    )
 
 
 def _trace_3dof_rollout(
@@ -202,6 +236,37 @@ def _trace_3dof_rollout(
             }
         )
     return trace
+
+
+def _collect_3dof_rollout_samples(
+    env,
+    *,
+    act_fn: Callable[[np.ndarray], np.ndarray],
+    episodes: int,
+    seed: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    observations: list[np.ndarray] = []
+    actions: list[np.ndarray] = []
+    for episode_index in range(episodes):
+        observation, _ = env.reset(seed=seed + episode_index)
+        terminated = False
+        truncated = False
+        while not (terminated or truncated):
+            action = np.asarray(act_fn(observation), dtype=np.float32)
+            observations.append(np.asarray(observation, dtype=np.float32).copy())
+            actions.append(action.copy())
+            observation, _, terminated, truncated, _ = env.step(action)
+    if not observations:
+        obs_shape = tuple(int(dim) for dim in env.observation_space.shape)
+        act_shape = tuple(int(dim) for dim in env.action_space.shape)
+        return (
+            np.zeros((0, *obs_shape), dtype=np.float32),
+            np.zeros((0, *act_shape), dtype=np.float32),
+        )
+    return (
+        np.stack(observations).astype(np.float32),
+        np.stack(actions).astype(np.float32),
+    )
 
 
 def summarize_3dof_rollout_trace(
