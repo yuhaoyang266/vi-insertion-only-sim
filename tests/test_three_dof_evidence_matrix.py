@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import time
 
 import pytest
 
@@ -282,3 +283,40 @@ def test_evidence_matrix_rows_point_to_direct_input_artifacts(tmp_path: Path) ->
         assert rows_by_method[method_name]["source_report"] == str(
             benchmark_path.resolve()
         )
+
+
+def test_evidence_matrix_exports_are_deterministic_across_identical_reruns(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import export_3dof_evidence_matrix_artifacts
+
+    confirm_path = _write_json(
+        tmp_path / "three_dof_cross_family_confirm_report.json",
+        _confirm_report_payload(),
+    )
+    benchmark_path = _write_json(
+        tmp_path / "three_dof_benchmark_schema2_paper_teacher.json",
+        _benchmark_report_payload(),
+    )
+    output_dir = tmp_path / "evidence_matrix"
+
+    export_3dof_evidence_matrix_artifacts(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+        output_dir=output_dir,
+    )
+    first_json = (output_dir / "three_dof_evidence_matrix.json").read_bytes()
+    first_pdf = (output_dir / "three_dof_contact_gate_matrix.pdf").read_bytes()
+
+    time.sleep(1.1)
+
+    export_3dof_evidence_matrix_artifacts(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+        output_dir=output_dir,
+    )
+    second_json = (output_dir / "three_dof_evidence_matrix.json").read_bytes()
+    second_pdf = (output_dir / "three_dof_contact_gate_matrix.pdf").read_bytes()
+
+    assert second_json == first_json
+    assert second_pdf == first_pdf

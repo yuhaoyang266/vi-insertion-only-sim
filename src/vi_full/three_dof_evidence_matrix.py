@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-from datetime import datetime
 import json
 from pathlib import Path
 from typing import Any
@@ -60,6 +59,11 @@ ROW_FIELD_ORDER = [
     "not_allowed_claim",
     "source_report",
 ]
+
+PDF_METADATA = {
+    "CreationDate": None,
+    "ModDate": None,
+}
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -257,7 +261,6 @@ def build_3dof_evidence_matrix(
     )
     return {
         "report_name": "three_dof_evidence_matrix",
-        "generated_at": datetime.now().isoformat(timespec="seconds"),
         "source_artifacts": {
             "confirm_report": str(confirm_report_path.resolve()),
             "benchmark_report": str(benchmark_report_path.resolve()),
@@ -419,7 +422,7 @@ def export_contact_gate_matrix_figure(
     png_path = output_dir / f"{stem}.png"
     pdf_path = output_dir / f"{stem}.pdf"
     fig.savefig(png_path, dpi=200)
-    fig.savefig(pdf_path)
+    fig.savefig(pdf_path, metadata=PDF_METADATA)
     plt.close(fig)
     return png_path, pdf_path
 
