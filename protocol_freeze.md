@@ -209,3 +209,48 @@ terminal-distance proxy but still remains zero-contact.
 
 Next Sprint 2 direction: the confirm benchmark should compare Branch-A pure-RL failure against
 demo-supported anchors, not oversell SAC.
+
+## Sprint 2B Evidence Matrix Boundary
+
+Canonical exporter:
+
+```powershell
+python .\scripts\experiments\export_3dof_evidence_matrix.py `
+  --confirm-report .\outputs\cross_family_confirm\three_dof_cross_family_confirm_report.json `
+  --benchmark-report .\artifacts\main_benchmark\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json `
+  --output-dir .\outputs\evidence_matrix
+```
+
+Paper-facing artifacts:
+
+- `outputs/evidence_matrix/three_dof_evidence_matrix.json`
+- `outputs/evidence_matrix/three_dof_evidence_matrix.csv`
+- `outputs/evidence_matrix/three_dof_evidence_matrix.md`
+- `outputs/evidence_matrix/three_dof_contact_gate_matrix.png`
+- `outputs/evidence_matrix/three_dof_contact_gate_matrix.pdf`
+
+Frozen row roster:
+
+- `ppo_no_bc`
+- `sac_no_bc`
+- `td3_no_bc`
+- `bc_only_stable_r32_p32`
+- `repaired_mainline_bc_to_ppo`
+- `dapg_lite_repaired_mainline`
+- `fixed_impedance_rl_stable_r32_p32`
+
+Frozen interpretation boundary:
+
+- `source_contract` must stay explicit:
+  - pure-RL rows use `nominal-only pilot`
+  - anchor rows use `five-profile benchmark`
+- Allowed:
+  - contact-gate contrast across contracts
+  - stating that pure RL stays outside useful contact under the nominal-only pilot
+  - stating that demo-supported anchors reopen contact and non-zero success under the five-profile benchmark
+  - stating that SAC is the best distance proxy among pure-RL rows without contact entry
+- Not allowed:
+  - mixed-contract leaderboard ranking
+  - claiming SAC solves insertion
+  - claiming off-policy pure RL entered useful contact
+  - claiming fixed-impedance success makes impedance irrelevant

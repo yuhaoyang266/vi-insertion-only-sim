@@ -466,6 +466,16 @@ separated explicitly.
   \end{tabular}}
 \end{table}
 
+To keep the cross-family negative evidence tied to the main benchmark without collapsing them into
+one leaderboard, we export a separate mixed-contract evidence matrix. Its role is reviewer-facing
+claim control, not a new ranking table: the nominal-only pure-RL pilot rows
+(\code{PPO w/o BC}, \code{SAC w/o BC}, \code{TD3 w/o BC}) remain explicit
+\emph{contact-gate negatives}, while the five-profile benchmark rows
+(\code{BC-only}, \code{BC$\rightarrow$PPO}, \code{DAPG-lite}, and the fixed-impedance learned anchor)
+show that demonstration-supported methods reopen contact and non-zero success. In that matrix,
+\code{SAC w/o BC} is retained only as the strongest \emph{distance proxy} among the pure-RL rows;
+it is not a success baseline, and the mixed-contract matrix is not read as a direct leaderboard.
+
 The supplementary statistics report reinforces the same reading: within the ceiling-saturated
 BC-based band, the informative differences are modest contact-load shifts rather than success-rate
 separation.

@@ -202,3 +202,19 @@
 
 Next Sprint 2 direction: confirm benchmark should compare Branch-A pure-RL failure against
 demo-supported anchors, not oversell SAC.
+
+## Sprint 2B Evidence Matrix Findings (2026-04-21)
+
+- The cleanest way to connect Branch A and the main benchmark is a mixed-contract evidence matrix, not a merged ranking table.
+- Confirm rows should stay method-level, not budget-level:
+  - use the best pure-RL budget as `train_budget`
+  - preserve `entered_contact = false`, `success_rate = 0`, and best distance proxy values
+- Anchor rows should come from the canonical five-profile benchmark artifact and keep their own contract:
+  - `bc_only_stable_r32_p32`: contact reopened, near-ceiling success
+  - `repaired_mainline_bc_to_ppo`: contact reopened, success reopened
+  - `dapg_lite_repaired_mainline`: contact reopened, non-zero success
+  - `fixed_impedance_rl_stable_r32_p32`: contact reopened; useful as a mechanics anchor, not a gate-failure row
+- The matrix-level claim boundary is now explicit:
+  - allowed: contact-gate contrast across contracts
+  - not allowed: mixed-contract leaderboard reading
+- SAC should be written as the strongest distance proxy among pure-RL rows, never as insertion success.

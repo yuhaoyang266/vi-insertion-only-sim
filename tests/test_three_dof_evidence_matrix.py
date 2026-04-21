@@ -1,0 +1,253 @@
+import json
+from pathlib import Path
+
+import pytest
+
+
+PURE_RL_CONFIRM_ROWS = {
+    "ppo_no_bc": {
+        "label": "PPO w/o BC",
+        "best_budget": 200_000,
+        "best_final_distance_mm": 25.48,
+    },
+    "sac_no_bc": {
+        "label": "SAC w/o BC",
+        "best_budget": 200_000,
+        "best_final_distance_mm": 16.67,
+    },
+    "td3_no_bc": {
+        "label": "TD3 w/o BC",
+        "best_budget": 200_000,
+        "best_final_distance_mm": 25.56,
+    },
+}
+
+
+def _confirm_report_payload() -> dict[str, object]:
+    return {
+        "report_name": "three_dof_cross_family_confirm_report",
+        "grid_complete": True,
+        "selected_branch": "branch_a",
+        "branch_rationale": "All pure-RL families stay outside useful contact.",
+        "source_report": "outputs/pilot_report/three_dof_cross_family_pilot_report.json",
+        "best_distance_proxy_method": "sac_no_bc",
+        "method_summaries": [
+            {
+                "method_name": method_name,
+                "label": spec["label"],
+                "best_budget": spec["best_budget"],
+                "best_final_distance_mm": spec["best_final_distance_mm"],
+                "entered_contact": False,
+                "mean_success_across_budgets": 0.0,
+                "mean_contact_steps_across_budgets": 0.0,
+                "max_success_across_budgets": 0.0,
+            }
+            for method_name, spec in PURE_RL_CONFIRM_ROWS.items()
+        ],
+    }
+
+
+def _benchmark_suite_payload(
+    *,
+    success_rate: float,
+    final_distance_mm: float,
+    peak_force_n: float,
+    contact_steps: float,
+    jam_rate: float = 0.0,
+) -> dict[str, object]:
+    profiles = (
+        "nominal",
+        "tight_clearance",
+        "high_friction",
+        "offset_bias",
+        "noisy_force",
+    )
+    aggregate = {
+        "success_rate_mean": success_rate,
+        "success_rate_std": 0.0,
+        "jam_rate_mean": jam_rate,
+        "jam_rate_std": 0.0,
+        "mean_final_distance_mean": final_distance_mm / 1000.0,
+        "mean_final_distance_std": 0.0,
+        "mean_peak_contact_force_mean": peak_force_n,
+        "mean_peak_contact_force_std": 0.0,
+        "p95_peak_contact_force_mean": peak_force_n + 0.2,
+        "p95_peak_contact_force_std": 0.0,
+        "mean_contact_steps_mean": contact_steps,
+        "mean_contact_steps_std": 0.0,
+    }
+    return {
+        "five_profile_mean": {
+            "success_rate_mean_over_profiles": success_rate,
+            "success_rate_std_over_profiles": 0.0,
+            "jam_rate_mean_over_profiles": jam_rate,
+            "jam_rate_std_over_profiles": 0.0,
+            "mean_final_distance_mean_over_profiles": final_distance_mm / 1000.0,
+            "mean_final_distance_std_over_profiles": 0.0,
+            "mean_peak_contact_force_mean_over_profiles": peak_force_n,
+            "mean_peak_contact_force_std_over_profiles": 0.0,
+            "p95_peak_contact_force_mean_over_profiles": peak_force_n + 0.2,
+            "p95_peak_contact_force_std_over_profiles": 0.0,
+            "mean_contact_steps_mean_over_profiles": contact_steps,
+            "mean_contact_steps_std_over_profiles": 0.0,
+        },
+        "eval_results": {
+            profile_name: {"aggregate": dict(aggregate)} for profile_name in profiles
+        },
+    }
+
+
+def _benchmark_report_payload() -> dict[str, object]:
+    return {
+        "config": {
+            "suite_names": [
+                "ppo_no_bc",
+                "bc_only_stable_r32_p32",
+                "fixed_impedance_rl_stable_r32_p32",
+                "repaired_mainline_bc_to_ppo",
+                "dapg_lite_repaired_mainline",
+            ],
+            "timesteps": 128,
+            "base_bc_rollout_episodes": 32,
+            "base_bc_pretrain_steps": 32,
+            "base_bc_batch_size": 64,
+        },
+        "handcrafted_results": {},
+        "learned_results": {
+            "ppo_no_bc": _benchmark_suite_payload(
+                success_rate=0.0,
+                final_distance_mm=25.48,
+                peak_force_n=0.0,
+                contact_steps=0.0,
+            ),
+            "bc_only_stable_r32_p32": _benchmark_suite_payload(
+                success_rate=1.0,
+                final_distance_mm=0.90,
+                peak_force_n=0.93,
+                contact_steps=29.97,
+            ),
+            "fixed_impedance_rl_stable_r32_p32": _benchmark_suite_payload(
+                success_rate=0.80,
+                final_distance_mm=1.10,
+                peak_force_n=0.90,
+                contact_steps=36.22,
+            ),
+            "repaired_mainline_bc_to_ppo": _benchmark_suite_payload(
+                success_rate=1.0,
+                final_distance_mm=0.94,
+                peak_force_n=0.68,
+                contact_steps=26.28,
+            ),
+            "dapg_lite_repaired_mainline": _benchmark_suite_payload(
+                success_rate=0.60,
+                final_distance_mm=1.17,
+                peak_force_n=0.85,
+                contact_steps=27.55,
+            ),
+        },
+    }
+
+
+def _write_json(path: Path, payload: dict[str, object]) -> Path:
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
+def _build_matrix(tmp_path: Path) -> dict[str, object]:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm_path = _write_json(
+        tmp_path / "three_dof_cross_family_confirm_report.json",
+        _confirm_report_payload(),
+    )
+    benchmark_path = _write_json(
+        tmp_path / "three_dof_benchmark_schema2_paper_teacher.json",
+        _benchmark_report_payload(),
+    )
+    return build_3dof_evidence_matrix(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+    )
+
+
+def test_evidence_matrix_requires_complete_branch_a_confirm_report(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    confirm["selected_branch"] = "branch_b"
+    confirm["method_summaries"] = confirm["method_summaries"][:-1]
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    with pytest.raises(ValueError, match="complete Branch A confirm report"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
+def test_evidence_matrix_includes_all_three_pure_rl_families(tmp_path: Path) -> None:
+    matrix = _build_matrix(tmp_path)
+
+    pure_rl_rows = [row for row in matrix["rows"] if row["method_family"] == "pure_rl"]
+    assert [row["method_name"] for row in pure_rl_rows] == [
+        "ppo_no_bc",
+        "sac_no_bc",
+        "td3_no_bc",
+    ]
+    assert all(row["source_contract"] == "nominal-only pilot" for row in pure_rl_rows)
+    assert all(row["entered_contact"] is False for row in pure_rl_rows)
+
+
+def test_evidence_matrix_includes_demo_supported_anchors(tmp_path: Path) -> None:
+    matrix = _build_matrix(tmp_path)
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+    assert rows_by_method["bc_only_stable_r32_p32"]["method_family"] == "imitation_anchor"
+    assert (
+        rows_by_method["repaired_mainline_bc_to_ppo"]["method_family"]
+        == "demo_augmented_rl"
+    )
+    assert (
+        rows_by_method["dapg_lite_repaired_mainline"]["method_family"]
+        == "demo_augmented_rl"
+    )
+    assert rows_by_method["bc_only_stable_r32_p32"]["entered_contact"] is True
+    assert rows_by_method["repaired_mainline_bc_to_ppo"]["success_rate"] == pytest.approx(1.0)
+
+
+def test_evidence_matrix_marks_sac_as_distance_proxy_not_success(tmp_path: Path) -> None:
+    matrix = _build_matrix(tmp_path)
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+    sac_row = rows_by_method["sac_no_bc"]
+    assert sac_row["mean_final_distance_mm"] == pytest.approx(16.67)
+    assert sac_row["entered_contact"] is False
+    assert sac_row["evidence_role"] == "contact_gate_negative"
+    assert "distance proxy" in sac_row["allowed_claim"].lower()
+    assert "solves insertion" in sac_row["not_allowed_claim"].lower()
+
+
+def test_evidence_matrix_separates_nominal_pilot_from_five_profile_benchmark(
+    tmp_path: Path,
+) -> None:
+    matrix = _build_matrix(tmp_path)
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+    assert rows_by_method["ppo_no_bc"]["source_contract"] == "nominal-only pilot"
+    assert (
+        rows_by_method["bc_only_stable_r32_p32"]["source_contract"]
+        == "five-profile benchmark"
+    )
+    assert matrix["matrix_contract"]["mixed_contracts"] is True
+    assert "contact-gate contrast" in matrix["matrix_contract"]["allowed"]
+
+
+def test_evidence_matrix_rejects_leaderboard_claim_across_mixed_contracts(
+    tmp_path: Path,
+) -> None:
+    matrix = _build_matrix(tmp_path)
+
+    assert "leaderboard" in matrix["matrix_contract"]["not_allowed"].lower()
+    assert "leaderboard" in matrix["rows"][0]["not_allowed_claim"].lower()
+    assert matrix["row_count"] >= 7

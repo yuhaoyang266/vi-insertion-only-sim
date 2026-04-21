@@ -194,3 +194,16 @@ _B-category preventive refactor. Phase 2.5 锁定平台方向后立即启动;可
 
 Next Sprint 2 direction: confirm benchmark should compare Branch-A pure-RL failure against
 demo-supported anchors, not oversell SAC.
+
+## Sprint 2B Execution Note (2026-04-21)
+- Added a dedicated reviewer-facing evidence-matrix layer instead of overloading the confirm report.
+- New implementation/export entrypoints:
+  - `src/vi_full/three_dof_evidence_matrix.py`
+  - `scripts/experiments/export_3dof_evidence_matrix.py`
+- Frozen matrix roster:
+  - pure RL: `ppo_no_bc`, `sac_no_bc`, `td3_no_bc`
+  - anchors: `bc_only_stable_r32_p32`, `repaired_mainline_bc_to_ppo`, `dapg_lite_repaired_mainline`, `fixed_impedance_rl_stable_r32_p32`
+- Mixed-contract rule is now explicit in the artifacts:
+  - pure-RL rows stay tagged as `nominal-only pilot`
+  - anchor rows stay tagged as `five-profile benchmark`
+  - the matrix allows contact-gate contrast, not leaderboard ranking

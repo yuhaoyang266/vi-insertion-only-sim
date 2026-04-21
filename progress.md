@@ -1,5 +1,28 @@
 # Progress Log
 
+### Phase 3: Sprint 2B Anchor-Integrated Evidence Matrix
+- **Status:** complete
+- Actions taken:
+  - Added `src/vi_full/three_dof_evidence_matrix.py` to merge Branch-A confirm evidence with canonical five-profile benchmark anchors.
+  - Added `scripts/experiments/export_3dof_evidence_matrix.py` to export JSON, CSV, Markdown, and contact-gate PNG/PDF artifacts.
+  - Wrote new contract tests for the matrix builder and CLI exporter.
+  - Generated `outputs/evidence_matrix/three_dof_evidence_matrix.{json,csv,md}` and `outputs/evidence_matrix/three_dof_contact_gate_matrix.{png,pdf}` from the real confirm and benchmark artifacts.
+  - Updated `protocol_freeze.md`, `task_plan.md`, `findings.md`, and `paper/main.tex` so the mixed-contract boundary is explicit and SAC stays framed as a distance proxy rather than a success baseline.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_evidence_matrix.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_3dof_evidence_matrix.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_three_dof_evidence_matrix.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_3dof_evidence_matrix.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_evidence_matrix.json`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_evidence_matrix.csv`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_evidence_matrix.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_contact_gate_matrix.png`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\evidence_matrix\three_dof_contact_gate_matrix.pdf`
+  - `F:\edge download\learning\vi-insertion-only-sim\protocol_freeze.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\findings.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Phase 3: Sprint 2A Branch-A Confirm Benchmark Pack
 - **Status:** complete
 - Actions taken:
