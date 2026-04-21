@@ -57,7 +57,7 @@
   }%
 }
 
-\title{Demonstration Support Gates Learnability in a 3DoF Variable-Impedance Insertion Benchmark}
+\title{Support-Gated Variable-Impedance Learning in a 3DoF Insertion Benchmark}
 \author{Yu Haoyang\\Shanghai University\\Shanghai Institute of Applied Mathematics and Mechanics\\\texttt{yuhaoyang@shu.edu.cn}}
 \date{\small Project repository: \repositoryurl}
 
@@ -66,16 +66,22 @@
 \maketitle
 
 \begin{abstract}
-We study learnability in a simulation-only 3DoF final-stage insertion benchmark with a structured
-variable-impedance action space $(\Delta x, \Delta y, \Delta z, K_{xy}, K_z)$. Under the matched
-training and evaluation protocol, PPO without behavior-cloning warm-start does not reach useful
-contact, and a PPO-only audit up to 200k environment steps preserves this non-contact failure.
-A smaller factorized diagnostic sweep identifies BC demonstration support as the cleanest gate:
-removing it drives useful-contact success to zero, whereas reset coverage, BC depth, and PPO budget
-show protocol-sensitive and partly non-monotone effects. Variable impedance retains localized physical value under high-friction contact:
-tuned fixed stiffness can nearly saturate success, but same-interface mechanics traces show lower
-contact load and work for variable stiffness. The claim is benchmark-local and teacher-coupled, not
-a general robotics or teacher-independent algorithm-ranking result.
+We study Support-Gated Variable-Impedance Learning (SG-VI) in a simulation-only 3DoF final-stage
+insertion benchmark with a structured variable-impedance action space
+$(\Delta x, \Delta y, \Delta z, K_{xy}, K_z)$. In this paper SG-VI denotes a benchmark-local
+recipe that combines explicit variable-impedance commands, behavior-cloning warm-start, and
+factorized support controls over demonstrations, resets, and PPO budget. To make the gate
+measurable, we define a Support Coverage Index (SCI), a quantized rollout-to-demonstration
+state-action overlap diagnostic under the same relative-frame interface. Under the matched training
+and evaluation protocol, PPO without behavior-cloning warm-start does not reach useful contact, and
+a PPO-only audit up to 200k environment steps preserves this non-contact failure. A smaller
+factorized diagnostic sweep identifies BC demonstration support as the cleanest gate: removing it
+drives useful-contact success to zero, whereas reset coverage, BC depth, and PPO budget show
+protocol-sensitive and partly non-monotone effects. Variable impedance retains localized physical
+value under high-friction contact: tuned fixed stiffness can nearly saturate success, but
+same-interface mechanics traces show lower contact load and work for variable stiffness. The claim
+is benchmark-local and teacher-coupled, not a general robotics or teacher-independent
+algorithm-ranking result.
 \end{abstract}
 
 \section{Introduction}
@@ -103,19 +109,24 @@ reached. This leads to a narrow claim: in the matched teacher-coupled setup, lea
 dominated by upstream interface design, while the physical value of variable impedance is localized
 to lower-load high-friction contact rather than broad algorithmic superiority.
 
-Our contributions are therefore fourfold. First, we provide a controlled simulation-only benchmark
-for auditing 3DoF variable-impedance insertion with relative observations and explicit impedance
-commands. Second, we show that PPO without BC warm-start does not reach contact-relevant behavior
-under the matched protocol, and remains at zero success in an additional 50k--200k-step PPO-only
-audit, whereas a stable behavior-cloning base reopens the task.
-Third, we show with factorized controls that BC-based demonstration support is necessary to reopen
-the task, that train-reset coverage has a protocol-local direction under the matched sweep, and
-that BC optimization depth and PPO fine-tune budget induce non-monotone algorithm rankings rather
-than a universal ``fine-tuning helps'' pattern. Fourth, we show that the main learned
-fixed-impedance baseline underperforms primarily
-in the \code{high\_friction} evaluation class, supporting a concrete load-efficiency role
-and a more robust learned interface under the matched teacher-coupled setup rather than a purely
-algorithmic one.
+We package that interface-level view as Support-Gated Variable-Impedance Learning (SG-VI): a
+benchmark-local recipe that keeps impedance explicit in the action space, uses BC to reopen
+contact-relevant support, and then studies what policy optimization changes once that support is
+available. To keep the gate measurable rather than only rhetorical, we also define a Support
+Coverage Index (SCI), a discretized rollout-to-demo support-overlap diagnostic under the same
+relative-frame interface.
+
+Our contributions are therefore fourfold. First, we propose Support-Gated Variable-Impedance
+Learning (SG-VI), a benchmark-local methodology for auditing 3DoF insertion learnability through
+explicit impedance commands, BC warm-start, and factorized support controls. Second, we propose
+Support Coverage Index (SCI), a benchmark-local discretized state-action support diagnostic that
+measures what fraction of a policy rollout remains inside the demonstration support set. Third, we
+show that PPO without BC warm-start does not reach contact-relevant behavior under the matched
+protocol, and remains at zero success in an additional 50k--200k-step PPO-only audit, whereas a
+stable behavior-cloning base reopens the task. Fourth, we show that BC-based support is the
+decisive gate under the matched teacher-coupled setup, while the main learned fixed-impedance
+baseline underperforms primarily in the \code{high\_friction} evaluation class, supporting a
+concrete load-efficiency role rather than a purely algorithmic one.
 
 The remainder of the paper is organized as follows. Section~\ref{sec:related-work} positions the
 study relative to contact-rich insertion, impedance control, and demonstration-guided RL.
@@ -314,6 +325,51 @@ The reported comparison set contains five methods.
     \bottomrule
   \end{tabular}
 \end{table}
+
+\subsection{Support-Gated Variable-Impedance Learning and Support Coverage Index}
+
+We refer to the main recipe studied in this paper as Support-Gated Variable-Impedance Learning
+(SG-VI). In this repository SG-VI is not a general controller or a teacher-independent theorem. It
+is the benchmark-local combination of three ingredients: (i) an explicit variable-impedance action
+space, (ii) BC-based demonstration support that can reopen contact-relevant states before PPO
+fine-tuning, and (iii) factorized controls that separate demonstration coverage, train-reset
+coverage, BC optimization depth, and PPO budget.
+
+To make the support claim measurable, we define a Support Coverage Index (SCI) over a projected
+state-action signature
+\begin{equation}
+\psi(\mathbf{o}_t,\mathbf{a}_t) =
+\left[
+\|\mathbf{p}^{\mathrm{rel}}_{t,xy}\|_2,\;
+p^{\mathrm{rel}}_{t,z},\;
+\|\mathbf{f}_t\|_2,\;
+\|[\Delta x_t,\Delta y_t]\|_2,\;
+\Delta z_t,\;
+\kappa^{xy}_t,\;
+\kappa^{z}_t
+\right].
+\end{equation}
+Let $Q_{\Delta}$ quantize this signature with benchmark-local bin widths
+$\Delta = (0.5\,\mm,\; 0.5\,\mm,\; 0.25\,\N,\; 0.1,\; 0.1,\; 0.1,\; 0.1)$, and let
+\begin{equation}
+\mathcal{S}_D =
+\left\{
+Q_{\Delta}\left(\psi(\mathbf{o}^{D}_i,\mathbf{a}^{D}_i)\right)
+\;\middle|\;
+i = 1,\dots, |D|
+\right\}
+\end{equation}
+be the quantized support set induced by a demonstration dataset $D$. For rollout $R$ with $T$
+state-action pairs, SCI is
+\begin{equation}
+\mathrm{SCI}(R;D) = \frac{1}{T}\sum_{t=1}^{T}
+\mathbb{I}\left[
+Q_{\Delta}\left(\psi(\mathbf{o}^{R}_t,\mathbf{a}^{R}_t)\right) \in \mathcal{S}_D
+\right].
+\end{equation}
+SCI is therefore 1 when the rollout remains entirely inside the quantized demonstration support and
+0 when it never re-enters that support. In this paper SCI is proposed as a benchmark-local
+diagnostic that complements success, contact, and force metrics rather than replacing them.
 
 All learned baselines reported in the main text are trained on the nominal profile only. The stable imitation
 configuration used throughout the main benchmark is
@@ -700,11 +756,12 @@ benchmark-local even after the dedicated pose-perturbation study.
 \section{Discussion and Limitations}
 \label{sec:discussion}
 
-The main lesson of the benchmark is not that pure PPO can never solve insertion in principle. It
-is that PPO without BC warm-start does not reach contact-relevant behavior under this benchmark
-interface, even after the dedicated PPO-only audit expands the budget to 200k environment steps
-under both the paper-matched PPO contract and the alternative rollout/epoch contract. Demonstrations therefore
-act here as a learnability scaffold rather than as a mere sample-efficiency convenience.
+Framed as SG-VI, the main lesson of the benchmark is not that pure PPO can never solve insertion in
+principle. It is that PPO without BC warm-start does not reach contact-relevant behavior under this
+benchmark interface, even after the dedicated PPO-only audit expands the budget to 200k environment
+steps under both the paper-matched PPO contract and the alternative rollout/epoch contract.
+Demonstrations therefore act here as a learnability scaffold rather than as a mere sample-efficiency
+convenience.
 
 The second lesson is that the upstream interface must be split carefully. Demonstration coverage
 is the clean one-directional lever: removing it drives useful-contact success to zero. Train-reset
@@ -713,7 +770,9 @@ protocol-local rather than universal or monotone. BC optimization depth and PPO 
 non-monotone; 32 BC pretraining steps is the current sweet spot, and additional PPO steps can
 substantially hurt a BC-initialized policy. This is why we instead separate demonstration coverage,
 reset coverage, BC optimization stability, and PPO budget instead of treating ``coverage'' or
-``algorithm choice'' as single knobs.
+``algorithm choice'' as single knobs. SCI is meant to accompany that decomposition rather than
+collapse it into a single leaderboard scalar: it asks whether a rollout stays inside the available
+demonstration support before asking how successful that rollout eventually becomes.
 
 The third lesson is that variable impedance still matters, but in a physically localized way.
 Fixed impedance is not uniformly poor in this benchmark: the tuned fixed-stiffness sweep nearly
@@ -745,7 +804,8 @@ expert demonstration set, a matched-motion/mismatched-impedance study, or a fixe
 pipeline would be needed to isolate that prior more completely. The same-interface
 handcrafted/classical anchors improve reference coverage, but the repository still does not
 provide an exhaustive survey of hybrid position/force, admittance/compliance, demo-augmented RL,
-or offline RL baselines.
+or offline RL baselines. Accordingly, both SG-VI and SCI remain benchmark-local, teacher-coupled
+definitions in the present paper rather than universal insertion metrics.
 
 Finally, the metric and parameter sensitivity evidence is still narrower than a full systems
 validation. The main table reports success, jam, final distance, peak force, and contact steps;
@@ -756,33 +816,36 @@ interpreted through the hole-centered relative-frame semantics; we do not yet pr
 absolute-versus-relative observation ablation. The analytical contact parameters
 $(\alpha_{xy}, \alpha_z, \mu_{\mathrm{wall}})$, jam thresholds, stiffness ranges, and demonstration
 quantity/quality also need systematic sensitivity sweeps before the conclusions can be read as
-anything beyond controlled-benchmark evidence. A larger 10-seed expansion would tighten the
-uncertainty on the remaining near-ceiling gaps, but it would not by itself close these external
-validity questions.
+anything beyond controlled-benchmark evidence. The same applies to SCI itself: the current
+projected state-action signature and bin widths are chosen to match this 3DoF relative-frame
+benchmark and still need sensitivity analysis before they can be read as anything broader. A larger
+10-seed expansion would tighten the uncertainty on the remaining near-ceiling gaps, but it would
+not by itself close these external validity questions.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper presents a simulation-only study of 3DoF variable-impedance insertion in which the main
-question is not which RL algorithm is strongest, but which upstream conditions make the task
-learnable at all. Under the matched protocol used here, PPO without BC warm-start does not reach
-useful contact, and a 50k--200k-step PPO-only audit preserves the same non-contact failure.
-More precisely, BC-based demonstration support is necessary to reach the useful contact regime,
-train-reset coverage remains a protocol-local rather than universal lever, and downstream
-algorithm ranking is budget-sensitive rather than fixed once PPO fine-tuning is varied. The
-learned fixed-impedance gap is concentrated under high-friction contact, while the tuned
-fixed-stiffness sweep shows that fixed impedance can nearly saturate success when tuned. This
-supports a localized load-efficiency role and a more robust learned interface under the matched
-teacher-coupled setup rather than a diffuse claim of uniform superiority. The dedicated
-pose-perturbation study further shows
-that this matched-frame ranking does not automatically survive outside the clean hole-centered frame:
-several learned suites degrade sharply under hidden pose bias and descent-coupled lateral drift,
-while the strongest same-interface handcrafted anchor remains robust. Because the BC demonstrations
-are generated by a variable-impedance teacher, these results identify a learnability gate under this
-teacher-coupled interface rather than a teacher-independent causal theorem about all demonstration
-designs. These conclusions are therefore benchmark-local and should be interpreted together with
-the simulation-only 3DoF scope,
-the proxy nature of the perturbation extension, and the still-limited classical anchor roster.
+This paper presents Support-Gated Variable-Impedance Learning (SG-VI) as a benchmark-local way to
+study 3DoF variable-impedance insertion when the main question is not which RL algorithm is
+strongest, but which upstream conditions make the task learnable at all. Support Coverage Index
+(SCI) provides a concrete rollout-to-demo support diagnostic for that question. Under the matched
+protocol used here, PPO without BC warm-start does not reach useful contact, and a 50k--200k-step
+PPO-only audit preserves the same non-contact failure. More precisely, BC-based demonstration
+support is necessary to reach the useful contact regime, train-reset coverage remains a
+protocol-local rather than universal lever, and downstream algorithm ranking is budget-sensitive
+rather than fixed once PPO fine-tuning is varied. The learned fixed-impedance gap is concentrated
+under high-friction contact, while the tuned fixed-stiffness sweep shows that fixed impedance can
+nearly saturate success when tuned. This supports a localized load-efficiency role and a more
+robust learned interface under the matched teacher-coupled setup rather than a diffuse claim of
+uniform superiority. The dedicated pose-perturbation study further shows that this matched-frame
+ranking does not automatically survive outside the clean hole-centered frame: several learned suites
+degrade sharply under hidden pose bias and descent-coupled lateral drift, while the strongest
+same-interface handcrafted anchor remains robust. Because the BC demonstrations are generated by a
+variable-impedance teacher, these results identify a learnability gate under this teacher-coupled
+interface rather than a teacher-independent causal theorem about all demonstration designs. These
+conclusions are therefore benchmark-local and should be interpreted together with the simulation-only
+3DoF scope, the proxy nature of the perturbation extension, and the still-limited classical anchor
+roster.
 
 \FloatBarrier
 \appendix

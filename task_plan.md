@@ -109,8 +109,9 @@ _B-category preventive refactor. Phase 2.5 锁定平台方向后立即启动;可
 - **Deliverable:** real-robot 章节 + 表 + 图 + supplementary video
 
 ### Phase 4: Writing & Artifact Strategy  (effort: 2–3 weeks | risk: medium | status: pending)
-- [ ] Contribution 重构:findings-only → `propose + show`(≥1 constructive)
+- [x] Contribution 重构:findings-only → `propose + show`(≥1 constructive)
   → Deliverable: 4 条 contribution,至少 1 条提出 named method / diagnostic tool
+  → 2026-04-21: SG-VI / SCI 已落地到 `paper/main.tex`、`README.md` 与 `src/vi_full/three_dof_support_metrics.py`
 - [ ] 主文结构重排:4.1 cross-family / 4.2 learning curves / 4.3 failure decomp / 4.4 high-friction mechanics / 4.5 teacher ablation / 4.6 clearance shift / 4.7 real-robot(若有)
   → Deliverable: 更新后的 `paper/main.tex` scaffolding
 - [ ] Figure/table pipeline 扩展

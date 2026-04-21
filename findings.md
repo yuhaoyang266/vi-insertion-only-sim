@@ -131,9 +131,17 @@
 - Effort 估算按单人全职;半职乘 2。
 
 ### Contribution rewrite target
-- 当前 4 条 contributions 要求改为至少 1 条 constructive + 3 条 observational 的结构。
-- Named method 候选:**Support-Gated Variable-Impedance Learning** (SG-VI / SGVIL);组件 = BC→PPO + variable impedance action space + factorized support analysis。
-- Diagnostic metric 候选:**Support Coverage Index** = demo state-action 对 policy rollout state-action 的覆盖率;作为 reusable 指标写入 Phase 4。
+- 当前 constructive layer 已落地到 manuscript / README / code:
+  - named method:**Support-Gated Variable-Impedance Learning** (SG-VI / SGVIL)
+  - diagnostic metric:**Support Coverage Index** (SCI)
+- `paper/main.tex` 现已包含:
+  - title-level SG-VI 命名
+  - 2 条 `we propose` 型 contributions(SG-VI + SCI)
+  - benchmark-local SCI 数学定义(projected state-action signature + quantized support set)
+- `src/vi_full/three_dof_support_metrics.py` 已实现 SCI 的 projected signature、量化和 rollout→demo coverage 计算；`README.md` 已同步 constructive framing。
+- 仍需保持的边界:
+  - SG-VI / SCI 目前仍是 benchmark-local、teacher-coupled 定义
+  - 还没有 cross-sim / hardware 级别的外部有效性证明
 
 ## Visual/Browser Findings
 - 本轮尚未查看图片、PDF 或网页内容。

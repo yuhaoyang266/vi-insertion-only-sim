@@ -1,5 +1,24 @@
 # Progress Log
 
+### Phase 4: SG-VI / SCI Contribution Landing
+- **Status:** complete
+- Actions taken:
+  - Landed the named method `Support-Gated Variable-Impedance Learning (SG-VI)` into the paper title, abstract, introduction, setup, discussion, and conclusion.
+  - Landed the diagnostic metric `Support Coverage Index (SCI)` as an explicit benchmark-local formula over a projected, quantized state-action signature.
+  - Added `src/vi_full/three_dof_support_metrics.py` plus rollout-sample collectors and regression tests so SCI is code-level, not only wording.
+  - Updated `README.md` to mirror the constructive framing and link the new support-metric module.
+  - Verified the focused Python regression suite; manuscript compile was attempted but the environment does not provide `latexmk` or `pdflatex`.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\paper\main.tex`
+  - `F:\edge download\learning\vi-insertion-only-sim\README.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_support_metrics.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_benchmark.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\__init__.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_three_dof_support_metrics.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\findings.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Phase 3: Sprint 2B Strict-Review Contract Hardening
 - **Status:** complete
 - Actions taken:

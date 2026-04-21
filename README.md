@@ -2,13 +2,18 @@
 
 Simulation-only research package for the manuscript:
 
-**Demonstration Support Gates Learnability in a 3DoF Variable-Impedance Insertion Benchmark**
+**Support-Gated Variable-Impedance Learning in a 3DoF Insertion Benchmark**
 
 This repository contains the LaTeX source, paper figures, frozen result artifacts, and focused
 reproduction scripts for a controlled 3DoF analytical insertion benchmark. The central claim is
 deliberately scoped: in this teacher-coupled benchmark, behavior-cloning demonstration support is
 the cleanest gate into useful contact, while variable impedance has a localized high-friction
-load/work advantage rather than implying a general algorithm ranking.
+load/work advantage rather than implying a general algorithm ranking. The current paper-facing
+constructive layer packages the main recipe as Support-Gated Variable-Impedance Learning (SG-VI):
+explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
+introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
+implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
+teacher-coupled rather than general sim-to-real claims.
 
 Repository URL embedded in the manuscript:
 
@@ -30,6 +35,7 @@ Repository URL embedded in the manuscript:
 | Figure/table export scripts | [`scripts/export/`](scripts/export/) |
 | Experiment runners | [`scripts/experiments/`](scripts/experiments/) |
 | Paper-facing source modules | [`src/vi_full/`](src/vi_full/) |
+| Support metric utilities | [`src/vi_full/three_dof_support_metrics.py`](src/vi_full/three_dof_support_metrics.py) |
 
 ## Evidence Map
 
