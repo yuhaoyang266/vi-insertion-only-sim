@@ -357,6 +357,21 @@ def test_evidence_matrix_rejects_missing_confirm_metrics(tmp_path: Path) -> None
         )
 
 
+def test_evidence_matrix_rejects_null_confirm_metrics(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    confirm["method_summaries"][1]["best_final_distance_mm"] = None
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    with pytest.raises(ValueError, match="best_final_distance_mm"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
 def test_evidence_matrix_rejects_missing_anchor_metrics(tmp_path: Path) -> None:
     from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
 
@@ -364,6 +379,23 @@ def test_evidence_matrix_rejects_missing_anchor_metrics(tmp_path: Path) -> None:
     del benchmark["learned_results"]["bc_only_stable_r32_p32"]["five_profile_mean"][
         "mean_contact_steps_mean_over_profiles"
     ]
+    confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
+    benchmark_path = _write_json(tmp_path / "benchmark.json", benchmark)
+
+    with pytest.raises(ValueError, match="mean_contact_steps_mean_over_profiles"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
+def test_evidence_matrix_rejects_null_anchor_metrics(tmp_path: Path) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    benchmark = _benchmark_report_payload()
+    benchmark["learned_results"]["bc_only_stable_r32_p32"]["five_profile_mean"][
+        "mean_contact_steps_mean_over_profiles"
+    ] = None
     confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
     benchmark_path = _write_json(tmp_path / "benchmark.json", benchmark)
 

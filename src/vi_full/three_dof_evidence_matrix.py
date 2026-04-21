@@ -117,7 +117,12 @@ def _require_field(mapping: dict[str, Any], field_name: str, *, context: str) ->
         raise ValueError(
             f"Evidence matrix missing required field '{field_name}' in {context}."
         )
-    return mapping[field_name]
+    value = mapping[field_name]
+    if value is None:
+        raise ValueError(
+            f"Evidence matrix missing required field '{field_name}' in {context}."
+        )
+    return value
 
 
 def _validate_confirm_report(confirm: dict[str, Any]) -> None:
