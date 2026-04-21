@@ -295,6 +295,62 @@ def test_markdown_exposes_row_level_provenance_and_train_budget(tmp_path: Path) 
     ) in markdown
 
 
+def test_evidence_matrix_prefers_suite_specific_train_budget_when_available(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
+    benchmark = _benchmark_report_payload()
+    benchmark["learned_results"]["bc_only_stable_r32_p32"]["suite_run_kwargs"] = {
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 16,
+        "total_timesteps": 0,
+    }
+    benchmark["learned_results"]["fixed_impedance_rl_stable_r32_p32"][
+        "suite_run_kwargs"
+    ] = {
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 16,
+        "total_timesteps": 512,
+    }
+    benchmark_path = _write_json(tmp_path / "benchmark.json", benchmark)
+
+    matrix = build_3dof_evidence_matrix(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+    )
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+
+    assert rows_by_method["bc_only_stable_r32_p32"]["train_budget"] == "BC 8/16"
+    assert (
+        rows_by_method["fixed_impedance_rl_stable_r32_p32"]["train_budget"]
+        == "BC 8/16 + PPO 512"
+    )
+
+
+def test_evidence_matrix_rejects_incomplete_suite_specific_train_budget(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
+    benchmark = _benchmark_report_payload()
+    benchmark["learned_results"]["fixed_impedance_rl_stable_r32_p32"][
+        "suite_run_kwargs"
+    ] = {
+        "bc_rollout_episodes": 8,
+        "total_timesteps": 512,
+    }
+    benchmark_path = _write_json(tmp_path / "benchmark.json", benchmark)
+
+    with pytest.raises(ValueError, match="bc_pretrain_steps"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
 def test_contact_gate_figure_exposes_mixed_contract_boundary_and_train_budget(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

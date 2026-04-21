@@ -86,6 +86,12 @@ BENCHMARK_CONFIG_REQUIRED_FIELDS = (
     "base_bc_pretrain_steps",
 )
 
+BENCHMARK_SUITE_RUN_BUDGET_REQUIRED_FIELDS = (
+    "total_timesteps",
+    "bc_rollout_episodes",
+    "bc_pretrain_steps",
+)
+
 BENCHMARK_FIVE_PROFILE_REQUIRED_FIELDS = (
     "success_rate_mean_over_profiles",
     "mean_final_distance_mean_over_profiles",
@@ -211,6 +217,7 @@ def _validate_benchmark_report(benchmark: dict[str, Any]) -> None:
                 field_name,
                 context=f"benchmark suite '{suite_name}'",
             )
+        _benchmark_train_budget(suite_name, suite_payload, config)
 
 
 def _pure_rl_allowed_claim(
@@ -353,22 +360,59 @@ def _extract_benchmark_metrics(suite_payload: dict[str, Any]) -> dict[str, float
     }
 
 
-def _benchmark_train_budget(suite_name: str, config: dict[str, Any]) -> str:
-    bc_rollouts = int(
-        _require_field(
-            config,
-            "base_bc_rollout_episodes",
-            context="benchmark config",
+def _benchmark_budget_values(
+    suite_name: str,
+    suite_payload: dict[str, Any],
+    config: dict[str, Any],
+) -> tuple[int, int, int]:
+    if "suite_run_kwargs" in suite_payload:
+        suite_run_kwargs = dict(
+            _require_field(
+                suite_payload,
+                "suite_run_kwargs",
+                context=f"benchmark suite '{suite_name}'",
+            )
         )
-    )
-    bc_pretrain = int(
-        _require_field(
-            config,
-            "base_bc_pretrain_steps",
-            context="benchmark config",
+        for field_name in BENCHMARK_SUITE_RUN_BUDGET_REQUIRED_FIELDS:
+            _require_field(
+                suite_run_kwargs,
+                field_name,
+                context=f"benchmark suite '{suite_name}' suite_run_kwargs",
+            )
+        return (
+            int(suite_run_kwargs["bc_rollout_episodes"]),
+            int(suite_run_kwargs["bc_pretrain_steps"]),
+            int(suite_run_kwargs["total_timesteps"]),
         )
+    return (
+        int(
+            _require_field(
+                config,
+                "base_bc_rollout_episodes",
+                context="benchmark config",
+            )
+        ),
+        int(
+            _require_field(
+                config,
+                "base_bc_pretrain_steps",
+                context="benchmark config",
+            )
+        ),
+        int(_require_field(config, "timesteps", context="benchmark config")),
     )
-    timesteps = int(_require_field(config, "timesteps", context="benchmark config"))
+
+
+def _benchmark_train_budget(
+    suite_name: str,
+    suite_payload: dict[str, Any],
+    config: dict[str, Any],
+) -> str:
+    bc_rollouts, bc_pretrain, timesteps = _benchmark_budget_values(
+        suite_name,
+        suite_payload,
+        config,
+    )
     bc_text = f"BC {bc_rollouts}/{bc_pretrain}"
     if suite_name == "bc_only_stable_r32_p32":
         return bc_text
@@ -386,7 +430,8 @@ def _build_anchor_rows(
     config = dict(benchmark.get("config", {}))
     rows: list[dict[str, Any]] = []
     for method_name, spec in ANCHOR_SPECS.items():
-        metrics = _extract_benchmark_metrics(learned_results[method_name])
+        suite_payload = dict(learned_results[method_name])
+        metrics = _extract_benchmark_metrics(suite_payload)
         rows.append(
             {
                 "method_name": method_name,
@@ -394,7 +439,11 @@ def _build_anchor_rows(
                 "method_family": spec["method_family"],
                 "source_contract": "five-profile benchmark",
                 "benchmark": "3dof_main_benchmark",
-                "train_budget": _benchmark_train_budget(method_name, config),
+                "train_budget": _benchmark_train_budget(
+                    method_name,
+                    suite_payload,
+                    config,
+                ),
                 "entered_contact": metrics["mean_contact_steps"] > 0.0
                 or metrics["success_rate"] > 0.0,
                 "success_rate": metrics["success_rate"],
