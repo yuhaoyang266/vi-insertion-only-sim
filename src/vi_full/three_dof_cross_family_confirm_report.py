@@ -17,6 +17,13 @@ import matplotlib.pyplot as plt
 EXPECTED_METHOD_COUNT = 3
 EXPECTED_BUDGET_COUNT = 3
 EXPECTED_CHUNK_COUNT = EXPECTED_METHOD_COUNT * EXPECTED_BUDGET_COUNT
+SUMMARY_ROW_REQUIRED_FIELDS = (
+    "success_rate",
+    "mean_final_distance_mm",
+    "mean_contact_steps",
+    "jam_rate",
+    "mean_peak_contact_force_n",
+)
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -84,6 +91,16 @@ def _validate_summary_row_grid(
         )
 
 
+def _validate_summary_row_metrics(rows: list[dict[str, Any]]) -> None:
+    for row in rows:
+        context = f"summary row '{row['method_name']}@{int(row['budget'])}'"
+        for field_name in SUMMARY_ROW_REQUIRED_FIELDS:
+            if field_name not in row or row[field_name] is None:
+                raise ValueError(
+                    f"Confirm report missing required field '{field_name}' in {context}."
+                )
+
+
 def _budget_value(rows: list[dict[str, Any]], budget: int, metric: str) -> float | None:
     for row in rows:
         if int(row["budget"]) == budget:
@@ -102,6 +119,8 @@ def _method_summary(method_name: str, rows: list[dict[str, Any]]) -> dict[str, A
 
     contact_steps = [_as_float(row.get("mean_contact_steps")) for row in rows]
     success_rates = [_as_float(row.get("success_rate")) for row in rows]
+    jam_rates = [_as_float(row.get("jam_rate")) for row in rows]
+    peak_forces = [_as_float(row.get("mean_peak_contact_force_n")) for row in rows]
     entered_contact = any(value > 0.0 for value in contact_steps)
 
     return {
@@ -114,6 +133,8 @@ def _method_summary(method_name: str, rows: list[dict[str, Any]]) -> dict[str, A
         "entered_contact": entered_contact,
         "mean_success_across_budgets": mean(success_rates),
         "mean_contact_steps_across_budgets": mean(contact_steps),
+        "mean_jam_rate_across_budgets": mean(jam_rates),
+        "mean_peak_force_across_budgets": mean(peak_forces),
         "max_success_across_budgets": max(success_rates),
         "final_distance_by_budget_mm": {
             str(int(row["budget"])): _as_float(row.get("mean_final_distance_mm"))
@@ -175,6 +196,7 @@ def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
     expected_grid = _validate_complete_grid(source)
     summary_rows = [dict(row) for row in source.get("summary_rows", [])]
     _validate_summary_row_grid(summary_rows, expected_grid)
+    _validate_summary_row_metrics(summary_rows)
     grouped_rows = _rows_by_method(summary_rows)
 
     method_names = [str(name) for name in expected_grid.get("method_names", [])]
@@ -204,10 +226,16 @@ def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
         "paper_claim_boundary": {
             "allowed": [
                 "pure RL remains outside useful contact",
-                "SAC reduces terminal distance",
+                (
+                    f"{best_distance_proxy_method} is the strongest distance proxy "
+                    "but still zero-contact"
+                ),
             ],
             "not_allowed": [
-                "SAC solves insertion",
+                (
+                    f"{best_distance_proxy_method} solves insertion "
+                    "or enters useful contact"
+                ),
                 "off-policy reaches useful contact",
                 "pure RL can never solve insertion",
             ],

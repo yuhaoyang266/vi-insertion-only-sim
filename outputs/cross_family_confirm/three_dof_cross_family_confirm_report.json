@@ -1,6 +1,6 @@
 {
   "report_name": "three_dof_cross_family_confirm_report",
-  "generated_at": "2026-04-21T03:41:58",
+  "generated_at": "2026-04-22T17:43:04",
   "source_report": "outputs/pilot_report/three_dof_cross_family_pilot_report.json",
   "grid_complete": true,
   "expected_grid": {
@@ -32,6 +32,8 @@
       "entered_contact": false,
       "mean_success_across_budgets": 0.0,
       "mean_contact_steps_across_budgets": 0.0,
+      "mean_jam_rate_across_budgets": 0.0,
+      "mean_peak_force_across_budgets": 0.0,
       "max_success_across_budgets": 0.0,
       "final_distance_by_budget_mm": {
         "50000": 31.019390137911646,
@@ -55,6 +57,8 @@
       "entered_contact": false,
       "mean_success_across_budgets": 0.0,
       "mean_contact_steps_across_budgets": 0.0,
+      "mean_jam_rate_across_budgets": 0.0,
+      "mean_peak_force_across_budgets": 0.0,
       "max_success_across_budgets": 0.0,
       "final_distance_by_budget_mm": {
         "50000": 23.274712957666043,
@@ -78,6 +82,8 @@
       "entered_contact": false,
       "mean_success_across_budgets": 0.0,
       "mean_contact_steps_across_budgets": 0.0,
+      "mean_jam_rate_across_budgets": 0.0,
+      "mean_peak_force_across_budgets": 0.0,
       "max_success_across_budgets": 0.0,
       "final_distance_by_budget_mm": {
         "50000": 30.784945878086912,
@@ -95,10 +101,10 @@
   "paper_claim_boundary": {
     "allowed": [
       "pure RL remains outside useful contact",
-      "SAC reduces terminal distance"
+      "sac_no_bc is the strongest distance proxy but still zero-contact"
     ],
     "not_allowed": [
-      "SAC solves insertion",
+      "sac_no_bc solves insertion or enters useful contact",
       "off-policy reaches useful contact",
       "pure RL can never solve insertion"
     ]

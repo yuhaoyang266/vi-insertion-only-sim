@@ -158,13 +158,28 @@ def test_confirm_report_rejects_success_claim_when_contact_steps_are_zero(
     confirm = build_confirm_report(_write_report(tmp_path, _complete_pilot_report()))
 
     assert "pure RL remains outside useful contact" in confirm["paper_claim_boundary"]["allowed"]
-    assert "SAC reduces terminal distance" in confirm["paper_claim_boundary"]["allowed"]
-    assert "SAC solves insertion" in confirm["paper_claim_boundary"]["not_allowed"]
+    assert "sac_no_bc is the strongest distance proxy but still zero-contact" in confirm["paper_claim_boundary"]["allowed"]
+    assert "sac_no_bc solves insertion or enters useful contact" in confirm["paper_claim_boundary"]["not_allowed"]
     assert "off-policy reaches useful contact" in confirm["paper_claim_boundary"]["not_allowed"]
     assert all(
         "success" not in allowed_claim.lower()
         for allowed_claim in confirm["paper_claim_boundary"]["allowed"]
     )
+
+
+@pytest.mark.parametrize("missing_field", ["jam_rate", "mean_peak_contact_force_n"])
+def test_confirm_report_rejects_missing_zero_contact_metrics(
+    tmp_path: Path,
+    missing_field: str,
+) -> None:
+    from vi_full.three_dof_cross_family_confirm_report import build_confirm_report
+
+    payload = _complete_pilot_report()
+    del payload["summary_rows"][0][missing_field]
+    pilot_report = _write_report(tmp_path, payload)
+
+    with pytest.raises(ValueError, match=missing_field):
+        build_confirm_report(pilot_report)
 
 
 def test_contact_gate_table_counts_zero_contact_cells(tmp_path: Path) -> None:

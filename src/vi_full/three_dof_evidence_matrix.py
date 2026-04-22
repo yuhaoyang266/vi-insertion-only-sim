@@ -78,6 +78,8 @@ CONFIRM_SUMMARY_REQUIRED_FIELDS = (
     "entered_contact",
     "mean_success_across_budgets",
     "mean_contact_steps_across_budgets",
+    "mean_jam_rate_across_budgets",
+    "mean_peak_force_across_budgets",
 )
 
 BENCHMARK_CONFIG_REQUIRED_FIELDS = (
@@ -274,6 +276,32 @@ def _build_pure_rl_rows(
     for method_name in PURE_RL_METHOD_ORDER:
         summary = summaries[method_name]
         label = str(summary.get("label", method_name))
+
+        jam_rate = _round_metric(
+            _require_field(
+                summary,
+                "mean_jam_rate_across_budgets",
+                context=f"confirm summary '{method_name}'",
+            )
+        )
+        peak_force = _round_metric(
+            _require_field(
+                summary,
+                "mean_peak_force_across_budgets",
+                context=f"confirm summary '{method_name}'",
+            )
+        )
+        if jam_rate != 0.0:
+            raise ValueError(
+                f"Branch A pure-RL row '{method_name}' reports jam_rate={jam_rate}, "
+                "expected 0.0 under the zero-contact contract."
+            )
+        if peak_force != 0.0:
+            raise ValueError(
+                f"Branch A pure-RL row '{method_name}' reports peak_force={peak_force}, "
+                "expected 0.0 under the zero-contact contract."
+            )
+
         rows.append(
             {
                 "method_name": method_name,
@@ -292,8 +320,8 @@ def _build_pure_rl_rows(
                 "mean_contact_steps": _round_metric(
                     summary.get("mean_contact_steps_across_budgets", 0.0)
                 ),
-                "jam_rate": 0.0,
-                "mean_peak_contact_force_n": 0.0,
+                "jam_rate": jam_rate,
+                "mean_peak_contact_force_n": peak_force,
                 "evidence_role": "contact_gate_negative",
                 "allowed_claim": _pure_rl_allowed_claim(
                     method_name,

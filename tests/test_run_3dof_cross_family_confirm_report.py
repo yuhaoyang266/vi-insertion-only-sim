@@ -3,6 +3,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+import pytest
+
 
 METHOD_SPECS = {
     "ppo_no_bc": {"label": "PPO w/o BC", "algorithm": "ppo"},
@@ -122,5 +124,39 @@ def test_cli_preserves_paper_claim_boundary(tmp_path: Path) -> None:
     assert payload["grid_complete"] is True
     assert payload["selected_branch"] == "branch_a"
     assert payload["best_distance_proxy_method"] == "sac_no_bc"
-    assert "SAC reduces terminal distance" in payload["paper_claim_boundary"]["allowed"]
-    assert "SAC solves insertion" in payload["paper_claim_boundary"]["not_allowed"]
+    assert "sac_no_bc is the strongest distance proxy but still zero-contact" in payload["paper_claim_boundary"]["allowed"]
+    assert "sac_no_bc solves insertion or enters useful contact" in payload["paper_claim_boundary"]["not_allowed"]
+
+
+@pytest.mark.parametrize("missing_field", ["jam_rate", "mean_peak_contact_force_n"])
+def test_cli_fails_fast_when_pilot_report_omits_zero_contact_metrics(
+    tmp_path: Path,
+    missing_field: str,
+) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = (
+        repo_root / "scripts" / "experiments" / "export_3dof_cross_family_confirm_report.py"
+    )
+    payload = _pilot_report_payload()
+    del payload["summary_rows"][0][missing_field]
+    pilot_report = tmp_path / "three_dof_cross_family_pilot_report.json"
+    pilot_report.write_text(json.dumps(payload), encoding="utf-8")
+    output_dir = tmp_path / "cross_family_confirm"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script_path),
+            "--pilot-report",
+            str(pilot_report),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode != 0
+    assert missing_field in completed.stderr

@@ -43,6 +43,8 @@ def _confirm_report_payload() -> dict[str, object]:
                 "entered_contact": False,
                 "mean_success_across_budgets": 0.0,
                 "mean_contact_steps_across_budgets": 0.0,
+                "mean_jam_rate_across_budgets": 0.0,
+                "mean_peak_force_across_budgets": 0.0,
                 "max_success_across_budgets": 0.0,
             }
             for method_name, spec in PURE_RL_CONFIRM_ROWS.items()
@@ -474,6 +476,28 @@ def test_evidence_matrix_rejects_null_confirm_metrics(tmp_path: Path) -> None:
     benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
 
     with pytest.raises(ValueError, match="best_final_distance_mm"):
+        build_3dof_evidence_matrix(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+        )
+
+
+@pytest.mark.parametrize(
+    "missing_field",
+    ["mean_jam_rate_across_budgets", "mean_peak_force_across_budgets"],
+)
+def test_evidence_matrix_rejects_missing_confirm_zero_contact_metrics(
+    tmp_path: Path,
+    missing_field: str,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    confirm = _confirm_report_payload()
+    del confirm["method_summaries"][1][missing_field]
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+
+    with pytest.raises(ValueError, match=missing_field):
         build_3dof_evidence_matrix(
             confirm_report_path=confirm_path,
             benchmark_report_path=benchmark_path,

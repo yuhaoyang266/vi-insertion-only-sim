@@ -3,6 +3,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+import pytest
+
 
 def _confirm_report_payload() -> dict[str, object]:
     return {
@@ -21,6 +23,8 @@ def _confirm_report_payload() -> dict[str, object]:
                 "entered_contact": False,
                 "mean_success_across_budgets": 0.0,
                 "mean_contact_steps_across_budgets": 0.0,
+                "mean_jam_rate_across_budgets": 0.0,
+                "mean_peak_force_across_budgets": 0.0,
                 "max_success_across_budgets": 0.0,
             },
             {
@@ -31,6 +35,8 @@ def _confirm_report_payload() -> dict[str, object]:
                 "entered_contact": False,
                 "mean_success_across_budgets": 0.0,
                 "mean_contact_steps_across_budgets": 0.0,
+                "mean_jam_rate_across_budgets": 0.0,
+                "mean_peak_force_across_budgets": 0.0,
                 "max_success_across_budgets": 0.0,
             },
             {
@@ -41,6 +47,8 @@ def _confirm_report_payload() -> dict[str, object]:
                 "entered_contact": False,
                 "mean_success_across_budgets": 0.0,
                 "mean_contact_steps_across_budgets": 0.0,
+                "mean_jam_rate_across_budgets": 0.0,
+                "mean_peak_force_across_budgets": 0.0,
                 "max_success_across_budgets": 0.0,
             },
         ],
@@ -214,3 +222,42 @@ def test_cli_exports_json_csv_markdown_and_figures(tmp_path: Path) -> None:
     sac_row = next(row for row in payload["rows"] if row["method_name"] == "sac_no_bc")
     assert sac_row["entered_contact"] is False
     assert "distance proxy" in sac_row["allowed_claim"].lower()
+
+
+@pytest.mark.parametrize(
+    "missing_field",
+    ["mean_jam_rate_across_budgets", "mean_peak_force_across_budgets"],
+)
+def test_cli_fails_fast_when_confirm_report_omits_zero_contact_metrics(
+    tmp_path: Path,
+    missing_field: str,
+) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = (
+        repo_root / "scripts" / "experiments" / "export_3dof_evidence_matrix.py"
+    )
+    confirm = _confirm_report_payload()
+    del confirm["method_summaries"][1][missing_field]
+    confirm_path = _write_json(tmp_path / "confirm.json", confirm)
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+    output_dir = tmp_path / "evidence_matrix"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script_path),
+            "--confirm-report",
+            str(confirm_path),
+            "--benchmark-report",
+            str(benchmark_path),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode != 0
+    assert missing_field in completed.stderr
