@@ -663,6 +663,15 @@ def test_evidence_matrix_exports_are_deterministic_across_identical_reruns(
     )
     first_json = (output_dir / "three_dof_evidence_matrix.json").read_bytes()
     first_pdf = (output_dir / "three_dof_contact_gate_matrix.pdf").read_bytes()
+    first_main_table_json = (
+        output_dir / "three_dof_sprint2_main_table.json"
+    ).read_bytes()
+    first_main_table_csv = (
+        output_dir / "three_dof_sprint2_main_table.csv"
+    ).read_bytes()
+    first_main_table_markdown = (
+        output_dir / "three_dof_sprint2_main_table.md"
+    ).read_bytes()
 
     time.sleep(1.1)
 
@@ -673,6 +682,18 @@ def test_evidence_matrix_exports_are_deterministic_across_identical_reruns(
     )
     second_json = (output_dir / "three_dof_evidence_matrix.json").read_bytes()
     second_pdf = (output_dir / "three_dof_contact_gate_matrix.pdf").read_bytes()
+    second_main_table_json = (
+        output_dir / "three_dof_sprint2_main_table.json"
+    ).read_bytes()
+    second_main_table_csv = (
+        output_dir / "three_dof_sprint2_main_table.csv"
+    ).read_bytes()
+    second_main_table_markdown = (
+        output_dir / "three_dof_sprint2_main_table.md"
+    ).read_bytes()
 
     assert second_json == first_json
     assert second_pdf == first_pdf
+    assert second_main_table_json == first_main_table_json
+    assert second_main_table_csv == first_main_table_csv
+    assert second_main_table_markdown == first_main_table_markdown
