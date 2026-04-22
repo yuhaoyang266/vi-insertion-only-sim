@@ -62,6 +62,46 @@ ROW_FIELD_ORDER = [
     "source_report",
 ]
 
+SPRINT2_MAIN_TABLE_LAYERS = (
+    {
+        "layer_name": "pure_rl_nominal_only_negative",
+        "title": "Pure-RL nominal-only negative rows",
+        "method_names": PURE_RL_METHOD_ORDER,
+        "summary": (
+            "Pure-RL rows from the nominal-only Branch-A confirm contract; "
+            "these rows stay outside useful contact."
+        ),
+    },
+    {
+        "layer_name": "demo_supported_contact_reopening",
+        "title": "Demo-supported contact-reopening rows",
+        "method_names": (
+            "bc_only_stable_r32_p32",
+            "repaired_mainline_bc_to_ppo",
+            "dapg_lite_repaired_mainline",
+        ),
+        "summary": (
+            "Five-profile benchmark rows showing that demonstration support "
+            "reopens contact and non-zero success."
+        ),
+    },
+    {
+        "layer_name": "mechanics_fixed_impedance_anchor",
+        "title": "Mechanics / fixed-impedance anchor rows",
+        "method_names": ("fixed_impedance_rl_stable_r32_p32",),
+        "summary": (
+            "Five-profile fixed-impedance row retained as a mechanics anchor, "
+            "not as a leaderboard entry."
+        ),
+    },
+)
+
+SPRINT2_MAIN_TABLE_FIELD_ORDER = [
+    "layer_name",
+    "layer_title",
+    *ROW_FIELD_ORDER,
+]
+
 PDF_METADATA = {
     "CreationDate": None,
     "ModDate": None,
@@ -614,6 +654,181 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _validate_evidence_matrix_payload(payload: dict[str, Any]) -> None:
+    if payload.get("report_name") != "three_dof_evidence_matrix":
+        raise ValueError("Sprint 2 main table requires a 3DoF evidence matrix payload.")
+    rows = payload.get("rows")
+    if not isinstance(rows, list):
+        raise ValueError("Sprint 2 main table requires evidence-matrix rows.")
+    rows_by_method = {
+        str(row.get("method_name")): row
+        for row in rows
+        if isinstance(row, dict) and row.get("method_name") is not None
+    }
+    missing_methods = [
+        method_name
+        for layer in SPRINT2_MAIN_TABLE_LAYERS
+        for method_name in layer["method_names"]
+        if method_name not in rows_by_method
+    ]
+    if missing_methods:
+        raise ValueError(
+            "Sprint 2 main table requires all evidence-layer rows; missing "
+            + ", ".join(missing_methods)
+            + "."
+        )
+    matrix_contract = payload.get("matrix_contract")
+    if not isinstance(matrix_contract, dict) or not bool(
+        matrix_contract.get("mixed_contracts")
+    ):
+        raise ValueError("Sprint 2 main table requires mixed-contract boundary metadata.")
+
+
+def build_sprint2_main_table_from_evidence_matrix(
+    payload: dict[str, Any],
+    *,
+    evidence_matrix_path: Path | None = None,
+) -> dict[str, Any]:
+    _validate_evidence_matrix_payload(payload)
+    rows_by_method = {str(row["method_name"]): row for row in payload["rows"]}
+    layers: list[dict[str, Any]] = []
+    flat_rows: list[dict[str, Any]] = []
+    for layer_spec in SPRINT2_MAIN_TABLE_LAYERS:
+        layer_rows = [
+            dict(rows_by_method[str(method_name)])
+            for method_name in layer_spec["method_names"]
+        ]
+        layer_payload = {
+            "layer_name": layer_spec["layer_name"],
+            "title": layer_spec["title"],
+            "summary": layer_spec["summary"],
+            "row_order": [row["method_name"] for row in layer_rows],
+            "rows": layer_rows,
+        }
+        layers.append(layer_payload)
+        for row in layer_rows:
+            flat_row = {
+                "layer_name": layer_payload["layer_name"],
+                "layer_title": layer_payload["title"],
+                **row,
+            }
+            flat_rows.append(flat_row)
+
+    source_artifacts = dict(payload.get("source_artifacts", {}))
+    source_artifacts["evidence_matrix"] = (
+        _provenance_path(Path(evidence_matrix_path))
+        if evidence_matrix_path is not None
+        else None
+    )
+    matrix_contract = dict(payload["matrix_contract"])
+    return {
+        "report_name": "three_dof_sprint2_main_table",
+        "source_artifacts": source_artifacts,
+        "table_contract": {
+            "three_layer_table": True,
+            "not_a_leaderboard": True,
+            "allowed": matrix_contract["allowed"],
+            "not_allowed": matrix_contract["not_allowed"],
+            "row_source_rule": matrix_contract["row_source_rule"],
+            "summary": (
+                "Use as a three-layer reviewer-facing main table: pure-RL "
+                "nominal-only negatives, demo-supported contact reopening, "
+                "and a mechanics fixed-impedance anchor."
+            ),
+        },
+        "row_count": len(flat_rows),
+        "layers": layers,
+        "rows": flat_rows,
+    }
+
+
+def _require_evidence_matrix_alignment(
+    *,
+    loaded_payload: dict[str, Any],
+    expected_payload: dict[str, Any],
+) -> None:
+    checked_fields = (
+        "source_artifacts",
+        "matrix_contract",
+        "row_count",
+        "row_order",
+        "rows",
+    )
+    for field_name in checked_fields:
+        if loaded_payload.get(field_name) != expected_payload.get(field_name):
+            raise ValueError(
+                "Sprint 2 evidence matrix input does not match the confirm "
+                f"and benchmark inputs at '{field_name}'."
+            )
+
+
+def build_3dof_sprint2_main_table(
+    *,
+    confirm_report_path: Path,
+    benchmark_report_path: Path,
+    evidence_matrix_path: Path | None = None,
+) -> dict[str, Any]:
+    expected_payload = build_3dof_evidence_matrix(
+        confirm_report_path=confirm_report_path,
+        benchmark_report_path=benchmark_report_path,
+    )
+    if evidence_matrix_path is None:
+        matrix_payload = expected_payload
+    else:
+        matrix_payload = _load_json(Path(evidence_matrix_path))
+        _require_evidence_matrix_alignment(
+            loaded_payload=matrix_payload,
+            expected_payload=expected_payload,
+        )
+    return build_sprint2_main_table_from_evidence_matrix(
+        matrix_payload,
+        evidence_matrix_path=evidence_matrix_path,
+    )
+
+
+def render_sprint2_main_table_markdown(payload: dict[str, Any]) -> str:
+    lines = [
+        "# Sprint 2 Main Table",
+        "",
+        f"Confirm source: `{payload['source_artifacts']['confirm_report']}`",
+        f"Evidence-matrix source: `{payload['source_artifacts']['evidence_matrix']}`",
+        f"Benchmark source: `{payload['source_artifacts']['benchmark_report']}`",
+        "",
+        "## Boundary",
+        "",
+        f"- Allowed: {payload['table_contract']['allowed']}",
+        f"- Not allowed: {payload['table_contract']['not_allowed']}",
+        "- Main-table reading: three evidence layers, not a leaderboard.",
+        "",
+    ]
+    for layer in payload["layers"]:
+        lines.extend(
+            [
+                f"## {layer['title']}",
+                "",
+                str(layer["summary"]),
+                "",
+                "| Method | Source contract | Train budget | Contact? | Success | Final dist (mm) | Contact steps | Role | Claim boundary |",
+                "| --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |",
+            ]
+        )
+        for row in layer["rows"]:
+            lines.append(
+                "| "
+                f"{row['label']} | "
+                f"{row['source_contract']} | "
+                f"{row['train_budget']} | "
+                f"{'yes' if row['entered_contact'] else 'no'} | "
+                f"{row['success_rate']:.2f} | "
+                f"{row['mean_final_distance_mm']:.2f} | "
+                f"{row['mean_contact_steps']:.2f} | "
+                f"{row['evidence_role']} | "
+                f"{row['allowed_claim']} |"
+            )
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def _contact_gate_figure_row_label(row: dict[str, Any]) -> str:
     return (
         f"{row['label']}\n"
@@ -685,6 +900,74 @@ def export_contact_gate_matrix_figure(
     return png_path, pdf_path
 
 
+def export_sprint2_main_table_json(
+    payload: dict[str, Any],
+    output_dir: Path,
+    stem: str = "three_dof_sprint2_main_table",
+) -> Path:
+    return _write_json(Path(output_dir) / f"{stem}.json", payload)
+
+
+def export_sprint2_main_table_csv(
+    payload: dict[str, Any],
+    output_dir: Path,
+    filename: str = "three_dof_sprint2_main_table.csv",
+) -> Path:
+    output_path = Path(output_dir) / filename
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=SPRINT2_MAIN_TABLE_FIELD_ORDER)
+        writer.writeheader()
+        for row in payload["rows"]:
+            writer.writerow(
+                {field: row[field] for field in SPRINT2_MAIN_TABLE_FIELD_ORDER}
+            )
+    return output_path
+
+
+def export_sprint2_main_table_markdown(
+    payload: dict[str, Any],
+    output_dir: Path,
+    filename: str = "three_dof_sprint2_main_table.md",
+) -> Path:
+    output_path = Path(output_dir) / filename
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        render_sprint2_main_table_markdown(payload),
+        encoding="utf-8",
+    )
+    return output_path
+
+
+def export_sprint2_main_table_artifacts(
+    payload: dict[str, Any],
+    output_dir: Path,
+) -> dict[str, Path]:
+    json_path = export_sprint2_main_table_json(payload, output_dir)
+    csv_path = export_sprint2_main_table_csv(payload, output_dir)
+    markdown_path = export_sprint2_main_table_markdown(payload, output_dir)
+    return {
+        "json": json_path,
+        "csv": csv_path,
+        "markdown": markdown_path,
+    }
+
+
+def export_3dof_sprint2_main_table(
+    *,
+    confirm_report_path: Path,
+    benchmark_report_path: Path,
+    output_dir: Path,
+    evidence_matrix_path: Path | None = None,
+) -> dict[str, Path]:
+    payload = build_3dof_sprint2_main_table(
+        confirm_report_path=confirm_report_path,
+        benchmark_report_path=benchmark_report_path,
+        evidence_matrix_path=evidence_matrix_path,
+    )
+    return export_sprint2_main_table_artifacts(payload, output_dir)
+
+
 def export_3dof_evidence_matrix_artifacts(
     *,
     confirm_report_path: Path,
@@ -699,9 +982,17 @@ def export_3dof_evidence_matrix_artifacts(
     csv_path = export_3dof_evidence_matrix_csv(payload, output_dir)
     markdown_path = export_3dof_evidence_matrix_markdown(payload, output_dir)
     figure_paths = export_contact_gate_matrix_figure(payload, output_dir)
+    sprint2_main_table = export_sprint2_main_table_artifacts(
+        build_sprint2_main_table_from_evidence_matrix(
+            payload,
+            evidence_matrix_path=json_path,
+        ),
+        output_dir,
+    )
     return {
         "json": json_path,
         "csv": csv_path,
         "markdown": markdown_path,
         "contact_gate_matrix": figure_paths,
+        "sprint2_main_table": sprint2_main_table,
     }

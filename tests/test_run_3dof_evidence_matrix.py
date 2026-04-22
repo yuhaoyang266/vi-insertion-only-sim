@@ -197,6 +197,9 @@ def test_cli_exports_json_csv_markdown_and_figures(tmp_path: Path) -> None:
     assert (output_dir / "three_dof_evidence_matrix.md").exists()
     assert (output_dir / "three_dof_contact_gate_matrix.png").exists()
     assert (output_dir / "three_dof_contact_gate_matrix.pdf").exists()
+    assert (output_dir / "three_dof_sprint2_main_table.json").exists()
+    assert (output_dir / "three_dof_sprint2_main_table.csv").exists()
+    assert (output_dir / "three_dof_sprint2_main_table.md").exists()
 
     csv_text = (output_dir / "three_dof_evidence_matrix.csv").read_text(
         encoding="utf-8"
@@ -222,6 +225,24 @@ def test_cli_exports_json_csv_markdown_and_figures(tmp_path: Path) -> None:
     sac_row = next(row for row in payload["rows"] if row["method_name"] == "sac_no_bc")
     assert sac_row["entered_contact"] is False
     assert "distance proxy" in sac_row["allowed_claim"].lower()
+
+    table_payload = json.loads(
+        (output_dir / "three_dof_sprint2_main_table.json").read_text(encoding="utf-8")
+    )
+    assert table_payload["report_name"] == "three_dof_sprint2_main_table"
+    assert table_payload["table_contract"]["not_a_leaderboard"] is True
+    assert [layer["layer_name"] for layer in table_payload["layers"]] == [
+        "pure_rl_nominal_only_negative",
+        "demo_supported_contact_reopening",
+        "mechanics_fixed_impedance_anchor",
+    ]
+
+    table_markdown = (output_dir / "three_dof_sprint2_main_table.md").read_text(
+        encoding="utf-8"
+    )
+    assert "SAC w/o BC" in table_markdown
+    assert "distance proxy" in table_markdown
+    assert "not a leaderboard" in table_markdown.lower()
 
 
 @pytest.mark.parametrize(

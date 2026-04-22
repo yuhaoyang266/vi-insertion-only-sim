@@ -64,6 +64,10 @@ def main() -> None:
     png_path, pdf_path = artifacts["contact_gate_matrix"]
     print(png_path)
     print(pdf_path)
+    sprint2_main_table = artifacts["sprint2_main_table"]
+    print(sprint2_main_table["json"])
+    print(sprint2_main_table["csv"])
+    print(sprint2_main_table["markdown"])
 
 
 if __name__ == "__main__":

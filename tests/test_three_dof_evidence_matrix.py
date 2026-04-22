@@ -280,6 +280,74 @@ def test_evidence_matrix_rejects_leaderboard_claim_across_mixed_contracts(
     assert matrix["row_count"] >= 7
 
 
+def test_sprint2_main_table_groups_rows_into_three_evidence_layers(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import (
+        build_sprint2_main_table_from_evidence_matrix,
+        render_sprint2_main_table_markdown,
+    )
+
+    matrix = _build_matrix(tmp_path)
+    table = build_sprint2_main_table_from_evidence_matrix(matrix)
+    layers_by_name = {layer["layer_name"]: layer for layer in table["layers"]}
+
+    assert table["report_name"] == "three_dof_sprint2_main_table"
+    assert table["table_contract"]["not_a_leaderboard"] is True
+    assert table["row_count"] == 7
+    assert [
+        row["method_name"]
+        for row in layers_by_name["pure_rl_nominal_only_negative"]["rows"]
+    ] == ["ppo_no_bc", "sac_no_bc", "td3_no_bc"]
+    assert [
+        row["method_name"]
+        for row in layers_by_name["demo_supported_contact_reopening"]["rows"]
+    ] == [
+        "bc_only_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+    ]
+    assert [
+        row["method_name"]
+        for row in layers_by_name["mechanics_fixed_impedance_anchor"]["rows"]
+    ] == ["fixed_impedance_rl_stable_r32_p32"]
+
+    markdown = render_sprint2_main_table_markdown(table)
+    assert "## Pure-RL nominal-only negative rows" in markdown
+    assert "## Demo-supported contact-reopening rows" in markdown
+    assert "## Mechanics / fixed-impedance anchor rows" in markdown
+    assert "SAC w/o BC" in markdown
+    assert "distance proxy" in markdown
+    assert "not a leaderboard" in markdown.lower()
+
+
+def test_sprint2_main_table_validates_evidence_matrix_alignment(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import (
+        build_3dof_sprint2_main_table,
+        export_3dof_evidence_matrix_json,
+    )
+
+    confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+    evidence_path, _ = export_3dof_evidence_matrix_json(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+        output_dir=tmp_path,
+    )
+    evidence_payload = json.loads(evidence_path.read_text(encoding="utf-8"))
+    evidence_payload["rows"][0]["success_rate"] = 1.0
+    evidence_path.write_text(json.dumps(evidence_payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="does not match"):
+        build_3dof_sprint2_main_table(
+            confirm_report_path=confirm_path,
+            benchmark_report_path=benchmark_path,
+            evidence_matrix_path=evidence_path,
+        )
+
+
 def test_markdown_exposes_row_level_provenance_and_train_budget(tmp_path: Path) -> None:
     from vi_full.three_dof_evidence_matrix import render_3dof_evidence_matrix_markdown
 
