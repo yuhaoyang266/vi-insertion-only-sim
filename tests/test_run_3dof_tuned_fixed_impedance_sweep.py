@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -91,10 +92,13 @@ def test_tuned_fixed_runner_writes_search_and_confirm_blocks(
 def test_tuned_fixed_runner_help_works_from_repo_root() -> None:
     repo_root = Path(__file__).resolve().parents[1]
     script_path = repo_root / "scripts" / "run_3dof_tuned_fixed_impedance_sweep.py"
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
 
     completed = subprocess.run(
         [sys.executable, str(script_path), "--help"],
         cwd=repo_root,
+        env=env,
         text=True,
         capture_output=True,
         check=False,

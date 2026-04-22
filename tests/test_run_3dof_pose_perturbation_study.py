@@ -1,6 +1,8 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 
 
@@ -82,3 +84,22 @@ def test_pose_perturbation_runner_exports_profile_metadata(
         "repaired_mainline_bc_to_ppo",
         "dapg_lite_repaired_mainline",
     ]
+
+
+def test_pose_perturbation_runner_help_works_from_repo_root() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = repo_root / "scripts" / "run_3dof_pose_perturbation_study.py"
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+
+    completed = subprocess.run(
+        [sys.executable, str(script_path), "--help"],
+        cwd=repo_root,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert "pose-perturbation external-validity study" in completed.stdout
