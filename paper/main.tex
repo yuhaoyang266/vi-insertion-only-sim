@@ -817,8 +817,13 @@ absolute-versus-relative observation ablation. The analytical contact parameters
 $(\alpha_{xy}, \alpha_z, \mu_{\mathrm{wall}})$, jam thresholds, stiffness ranges, and demonstration
 quantity/quality also need systematic sensitivity sweeps before the conclusions can be read as
 anything beyond controlled-benchmark evidence. The same applies to SCI itself: the current
-projected state-action signature and bin widths are chosen to match this 3DoF relative-frame
-benchmark and still need sensitivity analysis before they can be read as anything broader. A larger
+projected state-action signature and bin widths are frozen to the scale of this 3DoF relative-frame
+benchmark rather than tuned as a universal discretization. The $0.5\,\mm$ position bins resolve
+sub-millimeter contact-entry structure relative to the $0.8/1.0\,\mm$ success tolerances, the
+$0.25\,\N$ force bin stays well below the $8\,\N$ jam threshold while separating low-force approach
+from contact, and the $0.1$ normalized action bins keep the explicit motion/stiffness channels
+coarse enough to avoid near-exact sample matching. These choices remain benchmark-local and still
+require sensitivity analysis before SCI should be read as anything broader. A larger
 10-seed expansion would tighten the uncertainty on the remaining near-ceiling gaps, but it would
 not by itself close these external validity questions.
 
