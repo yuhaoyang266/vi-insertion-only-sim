@@ -200,3 +200,63 @@ def test_contact_gate_table_counts_zero_contact_cells(tmp_path: Path) -> None:
 
     assert "8/9 zero-contact method-budget cells" in table_text
     assert "| SAC w/o BC | 100000 | 17.58 | yes |" in table_text
+
+
+def test_learning_curve_summary_figure_exposes_budget_contact_success_and_distance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import matplotlib.axes
+    import matplotlib.figure
+
+    from vi_full.three_dof_cross_family_confirm_report import (
+        build_confirm_report,
+        export_learning_curve_summary_figure,
+    )
+
+    confirm = build_confirm_report(_write_report(tmp_path, _complete_pilot_report()))
+    captured: dict[str, list[str]] = {
+        "titles": [],
+        "xlabels": [],
+        "ylabels": [],
+        "suptitles": [],
+    }
+
+    original_set_title = matplotlib.axes.Axes.set_title
+    original_set_xlabel = matplotlib.axes.Axes.set_xlabel
+    original_set_ylabel = matplotlib.axes.Axes.set_ylabel
+    original_suptitle = matplotlib.figure.Figure.suptitle
+
+    def _capture_title(self, label, *args, **kwargs):
+        captured["titles"].append(str(label))
+        return original_set_title(self, label, *args, **kwargs)
+
+    def _capture_xlabel(self, xlabel, *args, **kwargs):
+        captured["xlabels"].append(str(xlabel))
+        return original_set_xlabel(self, xlabel, *args, **kwargs)
+
+    def _capture_ylabel(self, ylabel, *args, **kwargs):
+        captured["ylabels"].append(str(ylabel))
+        return original_set_ylabel(self, ylabel, *args, **kwargs)
+
+    def _capture_suptitle(self, t, *args, **kwargs):
+        captured["suptitles"].append(str(t))
+        return original_suptitle(self, t, *args, **kwargs)
+
+    monkeypatch.setattr(matplotlib.axes.Axes, "set_title", _capture_title)
+    monkeypatch.setattr(matplotlib.axes.Axes, "set_xlabel", _capture_xlabel)
+    monkeypatch.setattr(matplotlib.axes.Axes, "set_ylabel", _capture_ylabel)
+    monkeypatch.setattr(matplotlib.figure.Figure, "suptitle", _capture_suptitle)
+
+    png_path, pdf_path = export_learning_curve_summary_figure(confirm, tmp_path)
+
+    assert png_path.name == "three_dof_cross_family_confirm_learning_curve_summary.png"
+    assert pdf_path.name == "three_dof_cross_family_confirm_learning_curve_summary.pdf"
+    assert png_path.exists()
+    assert pdf_path.exists()
+    assert all("training budget" in label.lower() for label in captured["xlabels"])
+    assert any("final distance" in label.lower() for label in captured["ylabels"])
+    assert any("success" in label.lower() for label in captured["ylabels"])
+    assert any("contact steps" in label.lower() for label in captured["ylabels"])
+    assert any("distance proxy" in title.lower() for title in captured["titles"])
+    assert any("not success" in title.lower() for title in captured["suptitles"])

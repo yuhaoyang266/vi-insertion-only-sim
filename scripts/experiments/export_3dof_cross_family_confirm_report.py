@@ -43,6 +43,9 @@ def main() -> None:
     png_path, pdf_path = artifacts["distance_vs_budget"]
     print(png_path)
     print(pdf_path)
+    learning_png_path, learning_pdf_path = artifacts["learning_curve_summary"]
+    print(learning_png_path)
+    print(learning_pdf_path)
 
 
 if __name__ == "__main__":

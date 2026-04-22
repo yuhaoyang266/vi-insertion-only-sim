@@ -98,6 +98,12 @@ def test_cli_writes_json_csv_markdown_and_figures(tmp_path: Path) -> None:
     assert (
         output_dir / "three_dof_cross_family_confirm_distance_vs_budget.pdf"
     ).exists()
+    assert (
+        output_dir / "three_dof_cross_family_confirm_learning_curve_summary.png"
+    ).exists()
+    assert (
+        output_dir / "three_dof_cross_family_confirm_learning_curve_summary.pdf"
+    ).exists()
 
     table_text = (
         output_dir / "three_dof_cross_family_confirm_contact_gate_table.md"

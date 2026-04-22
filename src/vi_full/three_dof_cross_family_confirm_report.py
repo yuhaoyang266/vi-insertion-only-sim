@@ -14,6 +14,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
+PDF_METADATA = {
+    "CreationDate": None,
+    "ModDate": None,
+}
+
 EXPECTED_METHOD_COUNT = 3
 EXPECTED_BUDGET_COUNT = 3
 EXPECTED_CHUNK_COUNT = EXPECTED_METHOD_COUNT * EXPECTED_BUDGET_COUNT
@@ -138,6 +143,10 @@ def _method_summary(method_name: str, rows: list[dict[str, Any]]) -> dict[str, A
         "max_success_across_budgets": max(success_rates),
         "final_distance_by_budget_mm": {
             str(int(row["budget"])): _as_float(row.get("mean_final_distance_mm"))
+            for row in rows
+        },
+        "success_rate_by_budget": {
+            str(int(row["budget"])): _as_float(row.get("success_rate"))
             for row in rows
         },
         "contact_steps_by_budget": {
@@ -387,7 +396,103 @@ def export_distance_vs_budget_figure(
     png_path = output_dir / f"{stem}.png"
     pdf_path = output_dir / f"{stem}.pdf"
     fig.savefig(png_path, dpi=200)
-    fig.savefig(pdf_path)
+    fig.savefig(pdf_path, metadata=PDF_METADATA)
+    plt.close(fig)
+    return png_path, pdf_path
+
+
+def _budget_curve_points(
+    summary: dict[str, Any],
+    metric_key: str,
+) -> tuple[list[int], list[float]]:
+    points = sorted(
+        (
+            (int(budget_text), _as_float(metric_value))
+            for budget_text, metric_value in summary[metric_key].items()
+        ),
+        key=lambda item: item[0],
+    )
+    return [budget for budget, _ in points], [value for _, value in points]
+
+
+def export_learning_curve_summary_figure(
+    confirm: dict[str, Any],
+    output_dir: Path,
+    stem: str = "three_dof_cross_family_confirm_learning_curve_summary",
+) -> tuple[Path, Path]:
+    fig, axes = plt.subplots(1, 3, figsize=(12.2, 3.9), constrained_layout=True)
+    metric_panels = (
+        (
+            "final_distance_by_budget_mm",
+            "Distance proxy",
+            "Final distance (mm)",
+            None,
+        ),
+        (
+            "success_rate_by_budget",
+            "Success",
+            "Success rate",
+            (0.0, 1.05),
+        ),
+        (
+            "contact_steps_by_budget",
+            "Contact gate",
+            "Mean contact steps",
+            None,
+        ),
+    )
+    for ax, (metric_key, title, ylabel, ylim) in zip(
+        axes,
+        metric_panels,
+        strict=True,
+    ):
+        for summary in confirm["method_summaries"]:
+            budgets, values = _budget_curve_points(summary, metric_key)
+            is_best_proxy = bool(summary["is_best_distance_proxy"])
+            ax.plot(
+                budgets,
+                values,
+                marker="o",
+                linewidth=(
+                    2.4
+                    if is_best_proxy and metric_key == "final_distance_by_budget_mm"
+                    else 1.8
+                ),
+                linestyle="-" if is_best_proxy else "--",
+                label=str(summary["label"]),
+            )
+            if is_best_proxy and metric_key == "final_distance_by_budget_mm":
+                best_budget = int(summary["best_budget"])
+                best_distance = _as_float(summary["best_final_distance_mm"])
+                ax.scatter(
+                    [best_budget],
+                    [best_distance],
+                    marker="*",
+                    s=130,
+                    color="black",
+                    zorder=4,
+                    label="best distance proxy",
+                )
+        ax.set_title(title)
+        ax.set_xlabel("Training budget (timesteps)")
+        ax.set_ylabel(ylabel)
+        if ylim is not None:
+            ax.set_ylim(*ylim)
+        ax.grid(True, alpha=0.3)
+
+    axes[0].legend(loc="best", fontsize=8)
+    fig.suptitle(
+        "Pure-RL budget curves: distance proxy, not success",
+        fontsize=12,
+        fontweight="bold",
+    )
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    png_path = output_dir / f"{stem}.png"
+    pdf_path = output_dir / f"{stem}.pdf"
+    fig.savefig(png_path, dpi=200)
+    fig.savefig(pdf_path, metadata=PDF_METADATA)
     plt.close(fig)
     return png_path, pdf_path
 
@@ -404,9 +509,11 @@ def export_confirm_report_artifacts(
     csv_path = export_distance_proxy_csv(confirm, output_dir)
     markdown_path = export_contact_gate_table(confirm, output_dir)
     figure_paths = export_distance_vs_budget_figure(confirm, output_dir)
+    learning_curve_paths = export_learning_curve_summary_figure(confirm, output_dir)
     return {
         "json": json_path,
         "csv": csv_path,
         "markdown": markdown_path,
         "distance_vs_budget": figure_paths,
+        "learning_curve_summary": learning_curve_paths,
     }
