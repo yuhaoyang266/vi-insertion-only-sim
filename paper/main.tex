@@ -456,9 +456,13 @@ not as a single-p-value basis for ranking algorithms.
 \section{Experiments}
 \label{sec:experiments}
 
-The experiments use separate evidence layers. Only Figure~\ref{fig:main_results_matrix} and
-Table~\ref{tab:main_benchmark} should be read as the final benchmark estimate. They report the
-final five-seed benchmark with 100 evaluation episodes per seed and profile.
+The experiments use separate evidence layers. Figure~\ref{fig:main_results_matrix} and
+Table~\ref{tab:main_benchmark} report the final five-seed benchmark with 100 evaluation episodes
+per seed and profile. The Sprint 2 reviewer-facing main table exported as
+\code{outputs/evidence_matrix/three_dof_sprint2_main_table.md} serves a different role: it is a
+three-layer claim-control table tying nominal-only pure-RL negatives, demo-supported
+contact-reopening rows, and a mechanics / fixed-impedance anchor without turning them into a
+single leaderboard.
 Table~\ref{tab:mechanism_matrix} and
 Table~\ref{tab:behavioral_similarity} are smaller diagnostic sweeps intended for directional
 mechanism analysis, not direct numerical comparison with the main benchmark.
@@ -533,6 +537,13 @@ show that demonstration-supported methods reopen contact and non-zero success. I
 it is not a success baseline, and the mixed-contract matrix is not read as a direct leaderboard.
 Each matrix row cites the direct confirm JSON or schema2 benchmark JSON passed to the exporter,
 rather than a separate paper-table export, so the provenance stays inspectable at row level.
+The same row contract is rendered as \code{outputs/evidence_matrix/three_dof_sprint2_main_table.md}.
+Its companion pure-RL budget-curve figure,
+\code{outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png},
+plots distance proxy, success, and contact steps against the 50k--200k training budgets within the
+nominal-only confirm contract. Thus \code{SAC w/o BC} appears only as a zero-contact distance
+proxy and not a success baseline, solve-insertion claim, useful-contact claim, or cross-contract
+winner.
 
 The supplementary statistics report reinforces the same reading: within the ceiling-saturated
 BC-based band, the informative differences are modest contact-load shifts rather than success-rate

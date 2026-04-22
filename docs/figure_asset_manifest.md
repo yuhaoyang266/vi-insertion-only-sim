@@ -46,13 +46,22 @@ Slug rules:
 | Figure | Canonical Stem | Expected Export Files | Manuscript Role | Primary Source Artifacts | Status |
 | --- | --- | --- | --- | --- | --- |
 | Figure 1 | `fig1_task_policy_impedance_overview` | `figures/main/fig1_task_policy_impedance_overview.pdf` and `.png` | main-body task/interface schematic for the structured 3DoF policy | generated directly by `src/vi_full/paper_figures.py` | exported |
-| Figure 2 | `fig2_main_benchmark_evaluation_class_summary` | `figures/main/fig2_main_benchmark_evaluation_class_summary.pdf` and `.png` | main-body summary of the final benchmark across evaluation classes | `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`, `artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json` | exported |
+| Figure 2 | `fig2_main_benchmark_evaluation_class_summary` | `figures/main/fig2_main_benchmark_evaluation_class_summary.pdf` and `.png` | main-body summary of the final benchmark across evaluation classes | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json` | exported |
 | Figure 3 | `fig3_high_friction_impedance_mechanism` | `figures/main/fig3_high_friction_impedance_mechanism.pdf` and `.png` | main-body direct mechanics evidence for the high-friction fixed-versus-variable comparison | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
 | Figure 3 companion | `fig3_high_friction_impedance_mechanism_success_only` | `supplement/figures/fig3_high_friction_impedance_mechanism_success_only.pdf` and `.png` | supplementary successful-only companion view for the high-friction mechanics traces | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
 | Figure A1 | `figA1_evaluation_class_mapping` | `figures/appendix/figA1_evaluation_class_mapping.pdf` and `.png` | appendix mapping from nominal profiles to evaluation classes | generated directly by `src/vi_full/paper_figures.py` | exported |
 | Figure A2 | `fig1_contact_transition_audit` | `figures/appendix/fig1_contact_transition_audit.pdf` and `.png` | appendix contact-transition audit retained under a legacy stem for compatibility | `artifacts/mechanics/latest_three_dof_contact_model_audit.json` | exported |
 | Figure A3 | `figA3_teacher_ablation_summary` | `figures/appendix/figA3_teacher_ablation_summary.pdf` and `.png` | appendix teacher 2x2 motion-versus-impedance summary | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
 | Figure A4 | `figA4_termination_diagnostics_summary` | `figures/appendix/figA4_termination_diagnostics_summary.pdf` and `.png` | appendix termination-diagnostics decomposition across learned suites | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
+
+## Reviewer-Facing Sprint 2 Assets
+
+These assets support the main-table claim boundary but are not a new cross-contract leaderboard.
+
+| Asset | Expected Export Files | Source Artifacts | Role |
+| --- | --- | --- | --- |
+| Sprint 2 three-layer main table | `outputs/evidence_matrix/three_dof_sprint2_main_table.json`, `.csv`, and `.md` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`, `outputs/evidence_matrix/three_dof_evidence_matrix.json`, `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json` | pure-RL nominal-only negatives, demo-supported contact reopening, and mechanics / fixed-impedance anchor |
+| Pure-RL budget-curve summary | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.pdf` and `.png` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | distance proxy, success, and contact steps versus training budget within the nominal-only pure-RL contract |
 
 ## Panel Intent
 

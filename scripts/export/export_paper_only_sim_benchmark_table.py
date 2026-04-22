@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--stem",
         type=str,
-        default="table_3dof_paper_benchmark_stage3_20260412",
+        default="table_3dof_paper_benchmark_schema2_20260418",
         help="Canonical output filename stem.",
     )
     return parser.parse_args()

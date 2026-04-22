@@ -33,6 +33,8 @@ Repository URL embedded in the manuscript:
 | Appendix figures | [`figures/appendix/`](figures/appendix/) |
 | Supplementary successful-only mechanics view | [`supplement/figures/`](supplement/figures/) |
 | Final benchmark artifacts | [`artifacts/main_benchmark/`](artifacts/main_benchmark/) |
+| Sprint 2 reviewer table | [`outputs/evidence_matrix/three_dof_sprint2_main_table.md`](outputs/evidence_matrix/three_dof_sprint2_main_table.md) |
+| Pure-RL budget-curve summary | [`outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png`](outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png) |
 | Diagnostic sweep artifacts | [`artifacts/diagnostics/`](artifacts/diagnostics/) |
 | Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
 | Mechanics trace artifacts | [`artifacts/mechanics/`](artifacts/mechanics/) |
@@ -46,6 +48,8 @@ Repository URL embedded in the manuscript:
 | Evidence block | Where to look | Role |
 | --- | --- | --- |
 | Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
+| Sprint 2 three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
+| Pure-RL nominal-only budget curves | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.*`, `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | Distance proxy, success, and contact gate versus train budget |
 | Appendix teacher/termination package | `figures/appendix/figA3_*`, `figures/appendix/figA4_*`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.*` | Supplementary teacher-ablation and jam-diagnostics evidence |
 | Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
 | High-friction mechanics traces | `figures/main/fig3_*`, `supplement/figures/`, `artifacts/mechanics/` | Load/work interpretation |
@@ -99,6 +103,19 @@ benchmark artifact:
 python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json>
 python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json> --statistics-report-input <statistics_report.json>
 ```
+
+The Sprint 2 reviewer-facing table and pure-RL budget-curve summary use the frozen confirm,
+evidence-matrix, and schema-2 benchmark artifacts:
+
+```bash
+python scripts/experiments/export_3dof_cross_family_confirm_report.py --pilot-report outputs/pilot_report/three_dof_cross_family_pilot_report.json --output-dir outputs/cross_family_confirm
+python scripts/experiments/export_3dof_evidence_matrix.py --confirm-report outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json --benchmark-report artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json --output-dir outputs/evidence_matrix
+```
+
+Read `outputs/evidence_matrix/three_dof_sprint2_main_table.md` as a three-layer claim-control
+table: pure-RL nominal-only negatives, demo-supported contact-reopening rows, and a mechanics /
+fixed-impedance anchor. `SAC w/o BC` is only a zero-contact distance proxy in that table; it is not
+a solve-insertion or useful-contact claim.
 
 When the input benchmark JSON includes `support_metrics`, the supplementary statistics report also
 exports Support Coverage Index (SCI) and support-cell-coverage summaries alongside the main table
