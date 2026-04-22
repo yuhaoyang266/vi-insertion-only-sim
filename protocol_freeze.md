@@ -144,6 +144,36 @@ Minimum Sprint 0 guardrails:
 - It does freeze the paper-facing claim that, under the matched 3DoF benchmark contract and the reviewer-fair PPO contract, PPO-only remains in a non-contact regime up to `200000` steps.
 - Any future change to the runner, registry, training defaults, or expected signal should update both this document and the regression tests in the same commit.
 
+## SCI Quantization Contract
+
+Projected signature fields:
+
+- `||obs_xy||`
+- `obs_z`
+- `||force||`
+- `||action_xy||`
+- `action_dz`
+- `action_k_xy`
+- `action_k_z`
+
+Default widths frozen in `ThreeDoFSupportMetricConfig` (`src/vi_full/three_dof_support_metrics.py`):
+
+- `obs_xy_norm_bin_m = 5e-4`
+- `obs_z_bin_m = 5e-4`
+- `force_norm_bin_n = 0.25`
+- `action_xy_norm_bin = 0.1`
+- `action_dz_bin = 0.1`
+- `action_k_xy_bin = 0.1`
+- `action_k_z_bin = 0.1`
+
+Reviewer-facing rationale:
+
+- The `5e-4` position bins are frozen to resolve sub-millimeter contact-entry structure relative to the benchmark success tolerances `success_lateral_tolerance_m = 0.0008` and `success_axial_tolerance_m = 0.0010` in `src/vi_full/three_dof_config.py`.
+- The `0.25` force bin is intentionally coarse relative to the benchmark jam threshold `jam_force_threshold_n = 8.0` in `src/vi_full/three_dof_config.py` and the mirrored paper-facing contract in `src/vi_full/three_dof_contract.py`, while still separating low-force approach from contact.
+- The `0.1` action bins are coarse normalized partitions for the explicit motion/stiffness interface `(\Delta x, \Delta y, \Delta z, K_{xy}, K_z)` so SCI does not collapse into near-exact sample matching.
+
+These widths are frozen benchmark-local quantization choices, not a completed sensitivity-optimized SCI calibration.
+
 ## Cross-Family Pilot Contract
 
 This section freezes the default Sprint 1 pure-RL pilot contract used to compare PPO, SAC, and TD3 before the
