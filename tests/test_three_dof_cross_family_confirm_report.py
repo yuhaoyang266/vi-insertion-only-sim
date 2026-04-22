@@ -150,6 +150,16 @@ def test_confirm_report_marks_sac_as_best_distance_proxy(tmp_path: Path) -> None
     assert sac_summary["is_best_distance_proxy"] is True
 
 
+def test_confirm_report_uses_source_timestamp_for_deterministic_reruns(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_cross_family_confirm_report import build_confirm_report
+
+    confirm = build_confirm_report(_write_report(tmp_path, _complete_pilot_report()))
+
+    assert confirm["generated_at"] == "2026-04-20T17:05:50"
+
+
 def test_confirm_report_rejects_success_claim_when_contact_steps_are_zero(
     tmp_path: Path,
 ) -> None:

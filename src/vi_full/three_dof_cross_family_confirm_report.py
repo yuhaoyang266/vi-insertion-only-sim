@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from datetime import datetime
 import csv
 import json
 from pathlib import Path
@@ -202,6 +201,7 @@ def _mark_best_distance_proxy(method_summaries: list[dict[str, Any]]) -> str:
 def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
     pilot_report = Path(pilot_report)
     source = _load_json(pilot_report)
+    source_generated_at = str(source.get("generated_at", ""))
     expected_grid = _validate_complete_grid(source)
     summary_rows = [dict(row) for row in source.get("summary_rows", [])]
     _validate_summary_row_grid(summary_rows, expected_grid)
@@ -218,7 +218,7 @@ def build_confirm_report(pilot_report: Path) -> dict[str, Any]:
 
     return {
         "report_name": "three_dof_cross_family_confirm_report",
-        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "generated_at": source_generated_at,
         "source_report": str(pilot_report).replace("\\", "/"),
         "grid_complete": True,
         "expected_grid": {
