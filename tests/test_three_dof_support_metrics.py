@@ -193,3 +193,41 @@ def test_collect_3dof_policy_rollout_samples_records_all_episode_rows() -> None:
     assert actions.shape == (3, 5)
     assert observations[:, 0].tolist() == pytest.approx([0.1, 0.2, 0.3])
     assert actions[:, 3].tolist() == pytest.approx([0.5, 0.5, 0.5])
+
+
+def test_evaluate_3dof_policy_with_rollout_samples_rejects_missing_observations(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from vi_full import three_dof_benchmark as benchmark
+
+    monkeypatch.setattr(
+        benchmark,
+        "_evaluate_3dof_policy_rollouts",
+        lambda *args, **kwargs: (
+            {"success_rate": 0.0},
+            None,
+            np.zeros((1, 5), dtype=np.float32),
+        ),
+    )
+
+    with pytest.raises(ValueError, match="requested observations"):
+        benchmark.evaluate_3dof_policy_with_rollout_samples(env=object(), policy=object())
+
+
+def test_evaluate_3dof_policy_with_rollout_samples_rejects_missing_actions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from vi_full import three_dof_benchmark as benchmark
+
+    monkeypatch.setattr(
+        benchmark,
+        "_evaluate_3dof_policy_rollouts",
+        lambda *args, **kwargs: (
+            {"success_rate": 0.0},
+            np.zeros((1, 14), dtype=np.float32),
+            None,
+        ),
+    )
+
+    with pytest.raises(ValueError, match="requested actions"):
+        benchmark.evaluate_3dof_policy_with_rollout_samples(env=object(), policy=object())

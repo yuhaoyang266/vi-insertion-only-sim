@@ -550,8 +550,14 @@ def evaluate_3dof_policy_with_rollout_samples(
         uncertainty_profile=uncertainty_profile,
         collect_rollout_samples=True,
     )
-    assert observations is not None
-    assert actions is not None
+    if observations is None:
+        raise ValueError(
+            "rollout sample collection requested observations, but none were returned"
+        )
+    if actions is None:
+        raise ValueError(
+            "rollout sample collection requested actions, but none were returned"
+        )
     return summary, observations, actions
 
 
