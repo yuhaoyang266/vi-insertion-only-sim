@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 3 Sprint 2B complete; next: Sprint 2 main table
+Phase 3 Sprint 2 complete; next: Sprint 3 teacher mini-ablation
 
 ## Phase Dependency Graph
 ```
@@ -73,7 +73,7 @@ _A-category work. 可与 Phase 2.5 并行启动。_
   → Deliverable: confirm report + CSV + contact gate table + distance vs budget figure;8 tests passing
 - [x] Sprint 2B: Anchor-integrated evidence matrix + strict review
   → Deliverable: evidence matrix (pure-RL × demo-supported anchors) + JSON/CSV/MD/PNG/PDF artifacts;code review passed (4 Important fixes applied);52 tests passing
-- [ ] Sprint 2 main table: 三层主表 + learning curves
+- [x] Sprint 2 main table: 三层主表 + learning curves
   → Deliverable: performance/failure/mechanics 三层主表 + failure heatmap + learning-curve figure;5 methods × 5 seeds × 1–2 budgets × 5 profiles
 - [ ] Sprint 3: Teacher mini-ablation,扩展两个正交维度
   → Deliverable: variable/fixed teacher × clean/noisy demo × few/many demo 的 2×2×2×2 表;directional evidence 锁定 teacher-coupling claim
@@ -196,3 +196,20 @@ demo-supported anchors, not oversell SAC.
   - confirm aggregation now fail-fast on missing/null `jam_rate` and `mean_peak_contact_force_n` instead of silently folding them into `0.0`
   - contract regressions cover module + CLI failure paths for confirm/evidence exporters
   - reviewer-facing confirm/evidence artifacts were re-exported after the contract tightened
+
+## Sprint 2 Main Table / Figures Close-out (2026-04-23)
+- Sprint 2 reviewer-facing main table and budget-curve figure are complete.
+- Closed artifacts:
+  - `outputs/evidence_matrix/three_dof_sprint2_main_table.{json,csv,md}`
+  - `outputs/evidence_matrix/three_dof_evidence_matrix.{json,csv,md}`
+  - `outputs/evidence_matrix/three_dof_contact_gate_matrix.{png,pdf}`
+  - `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.{png,pdf}`
+- Claim boundary:
+  - the Sprint 2 table is a three-layer reviewer-facing claim-control table, not a mixed-contract leaderboard
+  - `SAC w/o BC` is retained only as a zero-contact distance proxy under the nominal-only confirm contract
+  - row-level provenance stays tied to the direct confirm JSON or schema2 benchmark JSON inputs
+- Determinism:
+  - confirm export uses the frozen pilot source timestamp
+  - evidence-matrix and Sprint 2 table exports have deterministic rerun coverage
+- Final close-out review covered commits `a272ff8..3af22a4` plus `81c9345`.
+- Workspace boundary: existing dirty paths `pyproject.toml`, `src/vi_full/three_dof_benchmark.py`, `conftest.py`, and `docs/superpowers/` are SCI guardrails / workspace residue and were not used in the Sprint 2 table/figures closure decision.

@@ -1,5 +1,18 @@
 # Progress Log
 
+### Phase 3: Sprint 2 Main Table / Figures Close-out
+- **Status:** complete
+- Actions taken:
+  - Reviewed Sprint 2 table/figure scope across commits `a272ff8..3af22a4` plus `81c9345`.
+  - Confirmed the reviewer-facing Sprint 2 outputs are already landed: three-layer main table, evidence matrix, contact-gate matrix, and pure-RL budget-curve summary.
+  - Confirmed the paper-facing boundary remains narrow: the Sprint 2 table is claim control, not a mixed-contract leaderboard; `SAC w/o BC` is only a zero-contact distance proxy.
+  - Confirmed old stage3 frozen-artifact names are absent from active user-facing README / manifest / paper / script entrypoints; remaining stage3 strings are legacy test references, not user-facing entrypoints.
+  - Updated `task_plan.md` from "Phase 3 Sprint 2B complete; next: Sprint 2 main table" to "Phase 3 Sprint 2 complete; next: Sprint 3 teacher mini-ablation".
+  - Explicitly excluded existing workspace residue from the Sprint 2 close-out judgment: `pyproject.toml`, `src/vi_full/three_dof_benchmark.py`, `conftest.py`, and `docs/superpowers/`.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Phase 4: SG-VI / SCI Contribution Landing
 - **Status:** complete
 - Actions taken:
