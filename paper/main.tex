@@ -955,6 +955,9 @@ diagnostic sweeps or trace slices with the final five-seed benchmark.
     Evidence block & Sampling contract & Train profile & Evaluation profiles & Role \\
     \midrule
     Table~\ref{tab:main_benchmark} / Figure~\ref{fig:main_results_matrix} & 5 seeds, 100 episodes per seed/profile & nominal & five nominal profiles grouped into three evaluation classes & final benchmark estimate \\
+    Cross-family pure-RL pilot & 3 seeds, 50 episodes per seed/profile & nominal & nominal only & Branch-A negative evidence for PPO/SAC/TD3, not a mixed-contract leaderboard \\
+    Teacher mini-ablation kickoff boundary & 4 frozen conditions, 5-profile evaluation & nominal & five nominal profiles & pre-registered teacher-support-quality $\times$ demo-budget boundary, not a completed ablation \\
+    Sprint 4A clearance shift sweep & 5 seeds, 100 episodes per seed/profile & nominal & \code{clearance\_easy} / \code{nominal} / \code{clearance\_hard} & pure-clearance robustness stress, not a replacement for the frozen five-profile benchmark \\
     Table~\ref{tab:mechanism_matrix} & smaller diagnostic sweep & nominal & five nominal profiles & directional factor analysis, not direct comparison with Table~\ref{tab:main_benchmark} \\
     Table~\ref{tab:behavioral_similarity} & smaller diagnostic sweep & nominal & five nominal profiles & PPO-budget sensitivity, not direct comparison with Table~\ref{tab:main_benchmark} \\
     Figure~\ref{fig:high_friction_mechanism} & 3 seeds, 50 trace episodes per seed & nominal & high friction & mechanics trace slice, not a success estimate comparable to Table~\ref{tab:main_benchmark} \\

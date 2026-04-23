@@ -88,18 +88,21 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 ### Phase 3.5: CANCELLED (no-hardware decision 2026-04-22)
 ### Phase H: CANCELLED (no-hardware decision 2026-04-22)
 
-### Phase 4: Writing & Artifact Strategy  (effort: 2–3 weeks | risk: medium | status: pending)
-- [x] Contribution 重构:findings-only → `propose + show`(≥1 constructive)
-  → Deliverable: 4 条 contribution,至少 1 条提出 named method / diagnostic tool
-  → 2026-04-21: SG-VI / SCI 已落地到 `paper/main.tex`、`README.md` 与 `src/vi_full/three_dof_support_metrics.py`
-- [ ] Abstract/Intro 改稿:反映 Branch A + SG-VI + cross-family evidence
-  → Deliverable: 更新后的 abstract 和 intro 占位文本
-- [ ] 主文结构重排:4.1 cross-family / 4.2 learning curves / 4.3 failure decomp / 4.4 high-friction mechanics / 4.5 teacher ablation / 4.6 clearance shift / 4.7 real-robot(若有)
-  → Deliverable: 更新后的 `paper/main.tex` scaffolding
-- [ ] Figure/table pipeline 扩展
-  → Deliverable: failure heatmap、teacher 2×2×2、real-sim parity(若有)的 exporter
-- [ ] Limitations 收敛(硬件完成后去掉 sim-only 的自我贬低)
-  → Deliverable: 改写后的 Discussion / Limitations
+### Phase 4: Writing & Artifact Strategy  (effort: 2-3 weeks | risk: medium | status: in_progress)
+- [x] Contribution reframing: findings-only -> `propose + show` (>=1 constructive)
+  -> Deliverable: 4 contributions, at least 1 named method / diagnostic tool
+  -> 2026-04-21: SG-VI / SCI landed in `paper/main.tex`, `README.md`, and `src/vi_full/three_dof_support_metrics.py`
+- [x] Abstract/Intro rewrite: reflect Branch A + SG-VI + cross-family evidence
+  -> Deliverable: updated abstract and intro text
+  -> 2026-04-23: abstract and introduction now carry Branch A, SG-VI / SCI, cross-family negative evidence, and Sprint 4A framing
+- [x] Main text restructure: 4.1 cross-family / 4.2 learning curves / 4.3 failure decomp / 4.4 high-friction mechanics / 4.5 teacher ablation / 4.6 clearance shift / 4.7 real-robot(if any)
+  -> Deliverable: updated `paper/main.tex` scaffolding
+  -> 2026-04-23: experiments/discussion now include cross-family, teacher-boundary, clearance-shift, and appendix protocol-map alignment
+- [ ] Figure/table pipeline extension
+  -> Deliverable: failure heatmap, teacher 2x2x2, real-sim parity(if any) exporters
+- [x] Limitations convergence: keep the no-hardware / sim-only boundary explicit until hardware exists
+  -> Deliverable: rewritten Discussion / Limitations
+  -> 2026-04-23: Discussion now states benchmark-local, no-hardware, proxy-study, and no-checkpoint boundaries explicitly
 - **Depends on:** Phase 3 complete(+ Phase H if hardware path)
 
 ### Phase 5: Delivery  (effort: 1 week | risk: low | status: pending)

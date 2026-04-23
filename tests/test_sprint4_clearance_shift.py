@@ -196,4 +196,20 @@ def test_repo_docs_reference_sprint4_clearance_shift_boundary() -> None:
     assert "not a replacement" in docs
     assert "frozen five-profile" in docs
     assert "Phase 3 complete" in task_plan
-    assert "- [x] Sprint 4A: Clearance shift 鲁棒性扫描" in task_plan
+    assert "Sprint 4A: Clearance shift" in task_plan
+
+
+def test_phase4_plan_and_protocol_map_stay_in_sync() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    task_plan = (repo_root / "task_plan.md").read_text(encoding="utf-8")
+    paper = (repo_root / "paper" / "main.tex").read_text(encoding="utf-8")
+
+    assert "status: in_progress" in task_plan
+    assert "- [x] Abstract/Intro rewrite" in task_plan
+    assert "- [x] Main text restructure" in task_plan
+    assert "- [x] Limitations convergence" in task_plan
+    assert "Cross-family pure-RL pilot" in paper
+    assert "Teacher mini-ablation kickoff boundary" in paper
+    assert "Sprint 4A clearance shift sweep" in paper
+    assert "nominal only" in paper
+    assert "\\code{clearance\\_easy} / \\code{nominal} / \\code{clearance\\_hard}" in paper
