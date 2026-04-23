@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 3 Sprint 2 complete; next: Sprint 3 teacher mini-ablation
+Phase 3 Sprint 2 complete; SCI residue housekeeping complete; next: Sprint 3 teacher mini-ablation
 
 ## Phase Dependency Graph
 ```

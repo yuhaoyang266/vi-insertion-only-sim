@@ -1,5 +1,17 @@
 # Progress Log
 
+### Housekeeping: SCI Residue Decision (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Confirmed the substantive SCI guardrails work was already landed in `0638087`, `e807e29`, `7546b4d`, and `ed189e9`.
+  - Kept the remaining repo-facing residue narrow: committed SCI rollout helper docstrings in `6e7364b` and the pytest startup guard against the unused `zarr` plugin in `05b264f`.
+  - Removed local-only execution residue: empty root `conftest.py` and `docs/superpowers/` plan/spec files.
+  - Verified `python -m pytest -q tests/test_three_dof_support_metrics.py` and the two root experiment-wrapper regressions.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\pyproject.toml`
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\three_dof_benchmark.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Phase 3: Sprint 2 Main Table / Figures Close-out
 - **Status:** complete
 - Actions taken:
