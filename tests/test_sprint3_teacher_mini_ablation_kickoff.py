@@ -97,16 +97,20 @@ def test_export_writes_deterministic_json_and_markdown(tmp_path) -> None:
 
 def test_repo_docs_reference_frozen_sprint3_kickoff_boundary() -> None:
     repo_root = Path(__file__).resolve().parents[1]
+    task_plan = (repo_root / "task_plan.md").read_text(encoding="utf-8")
     docs = "\n".join(
         [
             (repo_root / "README.md").read_text(encoding="utf-8"),
             (repo_root / "docs" / "figure_asset_manifest.md").read_text(
                 encoding="utf-8"
             ),
-            (repo_root / "task_plan.md").read_text(encoding="utf-8"),
+            task_plan,
         ]
     )
 
     assert "outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json" in docs
     assert "teacher support quality x demo rollout budget" in docs
+    assert "Phase 3 Sprint 3 kickoff complete" in task_plan
+    assert "- [x] Sprint 3: Teacher mini-ablation kickoff" in task_plan
+    assert "next: Sprint 3 teacher mini-ablation" not in task_plan
     assert "2×2×2×2" not in docs

@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 3 Sprint 2 complete; SCI residue housekeeping complete; next: Sprint 3 teacher mini-ablation
+Phase 3 Sprint 3 kickoff complete; next: Sprint 4A clearance shift sweep
 
 ## Phase Dependency Graph
 ```
@@ -75,7 +75,7 @@ _A-category work. 可与 Phase 2.5 并行启动。_
   → Deliverable: evidence matrix (pure-RL × demo-supported anchors) + JSON/CSV/MD/PNG/PDF artifacts;code review passed (4 Important fixes applied);52 tests passing
 - [x] Sprint 2 main table: 三层主表 + learning curves
   → Deliverable: reviewer-facing 三层 claim-control 主表 + contact-gate matrix + pure-RL budget-curve figure;nominal-only pure-RL rows 与 five-profile benchmark anchors 保持 separate evidence contracts
-- [ ] Sprint 3: Teacher mini-ablation kickoff,冻结 teacher support quality × demo rollout budget 小边界
+- [x] Sprint 3: Teacher mini-ablation kickoff,冻结 teacher support quality × demo rollout budget 小边界
   → Kickoff artifact: `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,md}`
   → Frozen boundary: 4 条件 teacher support quality x demo rollout budget;固定 `bc_pretrain_steps=32`、`total_timesteps=128`、BC-to-PPO init、five-profile evaluation、Sprint 2 claim-control metrics + SCI/support-cell coverage
   → Excluded from kickoff: BC pretrain-step sweep、policy-init sweep、teacher/no-teacher pure-RL control、完整 motion-rule × impedance-rule appendix sweep
