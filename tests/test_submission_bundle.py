@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from vi_full.submission_bundle import build_submission_bundle
 
 
@@ -142,6 +144,28 @@ def test_build_submission_bundle_can_include_optional_pdf_and_archives(
     assert manifest["paper_pdf"]["filename"] == "anonymous_manuscript.pdf"
 
 
+def test_build_submission_bundle_rejects_pdf_inside_output_dir(tmp_path: Path) -> None:
+    source_root = _create_minimal_submission_source_tree(tmp_path)
+    output_dir = tmp_path / "bundle_output"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paper_pdf = output_dir / "anonymous_manuscript.pdf"
+    _write_text(paper_pdf, "%PDF-1.4\n")
+
+    with pytest.raises(
+        ValueError,
+        match="outside the submission bundle output directory",
+    ):
+        build_submission_bundle(
+            source_root=source_root,
+            output_dir=output_dir,
+            venue="journal-double-blind",
+            paper_pdf=paper_pdf,
+            create_archives=False,
+        )
+
+    assert paper_pdf.is_file()
+
+
 def test_submission_docs_match_completed_local_pdf_build_path() -> None:
     repo_root = Path(__file__).resolve().parents[1]
     readme = (repo_root / "README.md").read_text(encoding="utf-8")
@@ -152,4 +176,5 @@ def test_submission_docs_match_completed_local_pdf_build_path() -> None:
     assert "No repository-local blocker remains for the Phase 5 submission package." in checklist
     assert "pdflatex -interaction=nonstopmode -halt-on-error main.tex" in readme
     assert "bibtex main" in readme
+    assert "outside the staged bundle directory" in readme
     assert "were all missing when the Phase 5 submission staging pass was checked" not in readme

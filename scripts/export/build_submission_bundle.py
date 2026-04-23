@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
         "--paper-pdf",
         type=Path,
         default=None,
-        help="Optional anonymous manuscript PDF to include alongside the bundle.",
+        help="Optional anonymous manuscript PDF to include alongside the bundle. Must live outside --output-dir.",
     )
     parser.add_argument(
         "--skip-archives",

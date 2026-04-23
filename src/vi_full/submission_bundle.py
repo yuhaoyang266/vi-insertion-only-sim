@@ -177,6 +177,18 @@ def _scan_for_identity_leaks(snapshot_dir: Path, identity_tokens: list[str]) -> 
     return leaks
 
 
+def _resolve_bundle_paper_pdf(output_dir: Path, paper_pdf: Path | None) -> Path | None:
+    if paper_pdf is None:
+        return None
+
+    resolved_paper_pdf = Path(paper_pdf).resolve()
+    if resolved_paper_pdf.is_relative_to(output_dir):
+        raise ValueError(
+            "paper_pdf must point to a file outside the submission bundle output directory."
+        )
+    return resolved_paper_pdf
+
+
 def build_submission_bundle(
     *,
     source_root: Path,
@@ -187,6 +199,7 @@ def build_submission_bundle(
 ) -> dict[str, Path | None]:
     source_root = Path(source_root).resolve()
     output_dir = Path(output_dir).resolve()
+    paper_pdf = _resolve_bundle_paper_pdf(output_dir, paper_pdf)
     anonymous_snapshot_dir = output_dir / "anonymous_snapshot"
     editor_materials_dir = output_dir / "editor_materials"
 
@@ -238,7 +251,6 @@ def build_submission_bundle(
 
     copied_paper_pdf_path: Path | None = None
     if paper_pdf is not None:
-        paper_pdf = Path(paper_pdf).resolve()
         copied_paper_pdf_path = output_dir / paper_pdf.name
         shutil.copy2(paper_pdf, copied_paper_pdf_path)
 

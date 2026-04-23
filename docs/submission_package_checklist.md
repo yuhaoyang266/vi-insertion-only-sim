@@ -65,6 +65,8 @@ anonymous submission package assembled from this repository.
      until cross-references stabilize
   3. copy the resulting anonymous PDF outside the staged directory and rerun
      `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf tmp/submission_bundle/anonymous_manuscript.pdf`
+     because the builder recreates `--output-dir` on each invocation and now rejects in-place PDF
+     paths before deleting the staging tree
 
 ## Remaining Notes
 

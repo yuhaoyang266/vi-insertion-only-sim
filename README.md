@@ -104,6 +104,10 @@ Once an anonymous manuscript PDF is available, add it with:
 python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf <anonymous_manuscript.pdf>
 ```
 
+Keep `<anonymous_manuscript.pdf>` outside the staged bundle directory, for example
+`tmp/submission_bundle/anonymous_manuscript.pdf`. The builder recreates `--output-dir` on each run
+and now rejects in-place PDF paths before deleting the staging tree.
+
 ## Reproduce Exported Assets
 
 The exported PDF/PNG figures are already included. To regenerate them from the frozen artifacts,
