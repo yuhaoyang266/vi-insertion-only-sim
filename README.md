@@ -49,6 +49,7 @@ Repository URL embedded in the manuscript:
 | --- | --- | --- |
 | Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
 | Sprint 2 three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
+| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json`, `.md` | Frozen teacher support quality x demo rollout budget boundary before new training |
 | Pure-RL nominal-only budget curves | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.*`, `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | Distance proxy, success, and contact gate versus train budget |
 | Appendix teacher/termination package | `figures/appendix/figA3_*`, `figures/appendix/figA4_*`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.*` | Supplementary teacher-ablation and jam-diagnostics evidence |
 | Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
@@ -116,6 +117,14 @@ Read `outputs/evidence_matrix/three_dof_sprint2_main_table.md` as a three-layer 
 table: pure-RL nominal-only negatives, demo-supported contact-reopening rows, and a mechanics /
 fixed-impedance anchor. `SAC w/o BC` is only a zero-contact distance proxy in that table; it is not
 a solve-insertion or useful-contact claim.
+
+The Sprint 3 teacher mini-ablation kickoff is a boundary artifact, not a training result. It freezes
+the 4-condition teacher support quality x demo rollout budget matrix and keeps BC steps, PPO steps,
+policy initialization, metrics, and paper-facing claim limits fixed before running new jobs:
+
+```bash
+python scripts/experiments/export_sprint3_teacher_mini_ablation_kickoff.py --output-dir outputs/sprint3_teacher_mini_ablation
+```
 
 When the input benchmark JSON includes `support_metrics`, the supplementary statistics report also
 exports Support Coverage Index (SCI) and support-cell-coverage summaries alongside the main table

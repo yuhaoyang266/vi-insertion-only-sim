@@ -1,5 +1,25 @@
 # Progress Log
 
+### Phase 3: Sprint 3 Teacher Mini-Ablation Kickoff (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Froze Sprint 3 as a 4-condition teacher support quality x demo rollout budget kickoff boundary before launching new training.
+  - Added machine-readable and Markdown kickoff artifacts under `outputs/sprint3_teacher_mini_ablation/`.
+  - Kept `bc_pretrain_steps=32`, `bc_batch_size=64`, `total_timesteps=128`, BC-to-PPO initialization, and five-profile evaluation fixed.
+  - Required Sprint 2 claim-control metrics plus `support_coverage_index` and `support_cell_coverage`; excluded BC-step, policy-init, no-teacher, and full appendix motion×impedance sweeps from the kickoff.
+  - Added tests covering the 4-condition matrix, teacher registry metadata alignment, deterministic export, CLI export, and repo-doc references.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint3_teacher_mini_ablation\sprint3_teacher_mini_ablation_kickoff.json`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint3_teacher_mini_ablation\sprint3_teacher_mini_ablation_kickoff.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\README.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\figure_asset_manifest.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Housekeeping: SCI Residue Decision (2026-04-23)
 - **Status:** complete
 - Actions taken:

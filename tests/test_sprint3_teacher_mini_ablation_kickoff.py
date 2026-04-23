@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from vi_full.sprint3_teacher_mini_ablation_kickoff import (
     build_sprint3_teacher_mini_ablation_kickoff,
@@ -92,3 +93,20 @@ def test_export_writes_deterministic_json_and_markdown(tmp_path) -> None:
     payload = json.loads(first["json_path"].read_text(encoding="utf-8"))
     assert payload["condition_count"] == 4
     assert payload["closure_criteria"]["contract_tests_required"] is True
+
+
+def test_repo_docs_reference_frozen_sprint3_kickoff_boundary() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    docs = "\n".join(
+        [
+            (repo_root / "README.md").read_text(encoding="utf-8"),
+            (repo_root / "docs" / "figure_asset_manifest.md").read_text(
+                encoding="utf-8"
+            ),
+            (repo_root / "task_plan.md").read_text(encoding="utf-8"),
+        ]
+    )
+
+    assert "outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json" in docs
+    assert "teacher support quality x demo rollout budget" in docs
+    assert "2×2×2×2" not in docs

@@ -75,9 +75,10 @@ _A-category work. 可与 Phase 2.5 并行启动。_
   → Deliverable: evidence matrix (pure-RL × demo-supported anchors) + JSON/CSV/MD/PNG/PDF artifacts;code review passed (4 Important fixes applied);52 tests passing
 - [x] Sprint 2 main table: 三层主表 + learning curves
   → Deliverable: reviewer-facing 三层 claim-control 主表 + contact-gate matrix + pure-RL budget-curve figure;nominal-only pure-RL rows 与 five-profile benchmark anchors 保持 separate evidence contracts
-- [ ] Sprint 3: Teacher mini-ablation,扩展两个正交维度
-  → Deliverable: variable/fixed teacher × clean/noisy demo × few/many demo 的 2×2×2×2 表;directional evidence 锁定 teacher-coupling claim
-  → **Decision (2026-04-22):** 两个维度都做 (demo quality + demo quantity)
+- [ ] Sprint 3: Teacher mini-ablation kickoff,冻结 teacher support quality × demo rollout budget 小边界
+  → Kickoff artifact: `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,md}`
+  → Frozen boundary: 4 条件 teacher support quality x demo rollout budget;固定 `bc_pretrain_steps=32`、`total_timesteps=128`、BC-to-PPO init、five-profile evaluation、Sprint 2 claim-control metrics + SCI/support-cell coverage
+  → Excluded from kickoff: BC pretrain-step sweep、policy-init sweep、teacher/no-teacher pure-RL control、完整 motion-rule × impedance-rule appendix sweep
 - [ ] Sprint 4A: Clearance shift 鲁棒性扫描
   → Deliverable: easy/nominal/hard clearance × best 3–4 methods;复用 checkpoint,评估为主
 - **Depends on:** Phase 2 narrative lock
@@ -110,7 +111,7 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 ## Key Questions — Resolved (2026-04-22)
 1. **Phase 2.5 → No-hardware**。Venue ceiling: Q3 upper / Q2 marginal。Phase 3.5/H cancelled。
 2. ~~真机学术折扣~~ N/A。
-3. **Sprint 3 正交维度 → 两个都做** (demo quality + demo quantity)。
+3. **Sprint 3 kickoff boundary → 4 条件 teacher support quality x demo rollout budget**；先冻结小矩阵，不启动大 sweep。
 4. **Hard bonus path → SG-VI + SCI already landed**; cross-sim transfer 为可选额外加分项。
 5. **Compute → GPU 可用**,训练可加速。
 
@@ -133,12 +134,12 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 | 新增 Phase 3.5 Sim-to-Real Scaffolding 为 conditional phase | 买硬件后才触发;提前标记避免硬件到货后才仓促补 DR / adapter |
 | 新增 Phase H Hardware Integration 为 conditional phase | 将真机 experiment 从 sim 流程独立,避免耦合 |
 | Sprint 1 标记高工程风险(SAC/TD3 代码不存在) | findings.md 已确认 `src/` 无 off-policy 入口 |
-| Sprint 3 teacher ablation 扩展 orthogonal 维度(非仅 fixed/variable) | 当前 2×2 是 motion×impedance,不是真正的 teacher quality/quantity |
+| Sprint 3 teacher ablation 先冻结 4 条件小边界 | 2026-04-23 kickoff 将目标收敛为 teacher support quality x demo rollout budget，避免直接扩成大 sweep |
 | `recoverable_contact_entry_rate` 降级为 event counter | 用户明确偏好;不做 learning-curve 主角 |
 | 论文改稿视为"重排骨架 + 插入 evidence block" | 现有正文/appendix 挂点清晰 |
 | Contribution 重构要求至少 1 条 `we propose` | 当前 4 条全是 `we show`,Q2 通常需要 constructive contribution |
 | Phase 2.5 = no-hardware (2026-04-22) | 用户决策;venue ceiling 降至 Q3 upper / Q2 marginal;Phase 3.5/H cancelled |
-| Sprint 3 ablation 正交维度:两个都做 (2026-04-22) | demo quality (clean/noisy) + demo quantity (few/many) |
+| Sprint 3 kickoff 小矩阵 (2026-04-23) | support-rich/support-poor teacher × few/many demo rollouts；固定 BC steps、PPO budget、policy init 与五 profile |
 | Compute: GPU 可用 (2026-04-22) | Sprint 2 main table 训练可用 GPU 加速 |
 
 ## Errors Encountered

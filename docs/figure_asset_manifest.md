@@ -63,6 +63,15 @@ These assets support the main-table claim boundary but are not a new cross-contr
 | Sprint 2 three-layer main table | `outputs/evidence_matrix/three_dof_sprint2_main_table.json`, `.csv`, and `.md` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`, `outputs/evidence_matrix/three_dof_evidence_matrix.json`, `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json` | pure-RL nominal-only negatives, demo-supported contact reopening, and mechanics / fixed-impedance anchor |
 | Pure-RL budget-curve summary | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.pdf` and `.png` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | distance proxy, success, and contact steps versus training budget within the nominal-only pure-RL contract |
 
+## Reviewer-Facing Sprint 3 Kickoff Assets
+
+These assets freeze the next experiment boundary before training. They are not result tables and should
+not be cited as outcome evidence.
+
+| Asset | Expected Export Files | Source Artifacts | Role |
+| --- | --- | --- | --- |
+| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json` and `.md` | generated directly by `src/vi_full/sprint3_teacher_mini_ablation_kickoff.py` | 4-condition teacher support quality x demo rollout budget boundary with fixed metrics, controls, closure criteria, and claim limits |
+
 ## Panel Intent
 
 These panel intents are locked only to keep export work aligned with the current manuscript.
