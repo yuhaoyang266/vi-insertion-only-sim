@@ -70,7 +70,7 @@ not be cited as outcome evidence.
 
 | Asset | Expected Export Files | Source Artifacts | Role |
 | --- | --- | --- | --- |
-| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json` and `.md` | generated directly by `src/vi_full/sprint3_teacher_mini_ablation_kickoff.py` | 4-condition teacher support quality x demo rollout budget boundary with fixed metrics, controls, closure criteria, and claim limits |
+| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json`, `.csv`, `.md`, and `sprint3_teacher_mini_ablation_kickoff_matrix.pdf` / `.png` | generated directly by `src/vi_full/sprint3_teacher_mini_ablation_kickoff.py` | 4-condition teacher support quality x demo rollout budget boundary with fixed metrics, controls, closure criteria, and a reviewer-facing kickoff matrix |
 
 ## Reviewer-Facing Sprint 4 Assets
 
@@ -80,7 +80,7 @@ benchmark contract.
 
 | Asset | Expected Export Files | Source Artifacts | Role |
 | --- | --- | --- | --- |
-| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.json`, `.csv`, and `.md` | generated directly by `src/vi_full/sprint4_clearance_shift.py` via `scripts/experiments/export_sprint4_clearance_shift.py` | selected demo-supported suites under a pure `clearance_easy` / `nominal` / `clearance_hard` ladder with fixed train profile and explicit claim boundary |
+| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.json`, `.csv`, `.md`, and `sprint4_clearance_shift_summary.pdf` / `.png` | generated directly by `src/vi_full/sprint4_clearance_shift.py` via `scripts/experiments/export_sprint4_clearance_shift.py` | selected demo-supported suites under a pure `clearance_easy` / `nominal` / `clearance_hard` ladder with fixed train profile, explicit claim boundary, and a reviewer-facing summary figure |
 
 ## Panel Intent
 

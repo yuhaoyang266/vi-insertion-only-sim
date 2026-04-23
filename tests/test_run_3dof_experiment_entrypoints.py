@@ -14,6 +14,7 @@ import pytest
         "run_3dof_pose_perturbation_study.py",
         "run_3dof_statistics_report.py",
         "run_3dof_uncertainty_benchmark.py",
+        "export_sprint4_clearance_shift.py",
     ],
 )
 def test_experiment_entrypoint_help_works_from_repo_root(script_name: str) -> None:

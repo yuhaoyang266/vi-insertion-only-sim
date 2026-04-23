@@ -1,5 +1,52 @@
 # Progress Log
 
+### Phase 5: Submission Package Probe (2026-04-23)
+- **Status:** in_progress
+- Actions taken:
+  - Probed the local TeX toolchain and confirmed that `latexmk`, `pdflatex`, and `xelatex` are all missing in the current environment, so a fresh paper PDF cannot be built locally right now.
+  - Audited the current identity surfaces and confirmed the working tree is not an anonymized snapshot because `paper/main.tex`, `README.md`, and `docs/github_upload.md` still expose the public author/repository identity.
+  - Added `docs/submission_package_checklist.md` to capture package contents, completion criteria, and the current blockers.
+  - Added `docs/cover_letter_draft.md` so the remaining open submission task already has a venue-facing draft rather than only a TODO line.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\submission_package_checklist.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\cover_letter_draft.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+
+### Phase 5: Delivery Audit for CLI Closure and Teacher Serialization (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Verified repo-root experiment/export entrypoints after the Sprint 3/4 bundle work, including stripped-`PYTHONPATH` smoke for the Sprint 3 kickoff exporter and repo-root `--help` coverage for the Sprint 4 exporter.
+  - Re-ran the teacher serialization regression suite to confirm resolved teacher metadata still survives training-config, dataset-metadata, and training-summary serialization.
+  - Promoted the first two Phase 5 checklist items in `task_plan.md` to complete; only the submission package remains open.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_3dof_experiment_entrypoints.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+
+### Phase 4: Reviewer-Facing Sprint 3/4 Figure Pipeline Close-out (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Extended the Sprint 3 kickoff exporter from `json/md` into a full reviewer-facing bundle: `json/csv/md` plus a kickoff matrix figure under `outputs/sprint3_teacher_mini_ablation/`.
+  - Extended the Sprint 4 clearance-shift exporter to emit a summary figure under `outputs/sprint4_clearance_shift/` while preserving the existing pure-clearance contract and tracked JSON / CSV / Markdown outputs.
+  - Synced `README.md`, `docs/figure_asset_manifest.md`, and `task_plan.md` so the new artifact paths are discoverable and Phase 4 now closes as complete with Phase 5 next.
+  - Verified the focused Sprint 3/4 export/doc suite after writing the new bundles.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_sprint3_teacher_mini_ablation_kickoff.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint3_teacher_mini_ablation\sprint3_teacher_mini_ablation_kickoff.csv`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint3_teacher_mini_ablation\sprint3_teacher_mini_ablation_kickoff_matrix.pdf`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint3_teacher_mini_ablation\sprint3_teacher_mini_ablation_kickoff_matrix.png`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint4_clearance_shift\sprint4_clearance_shift_summary.pdf`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint4_clearance_shift\sprint4_clearance_shift_summary.png`
+  - `F:\edge download\learning\vi-insertion-only-sim\README.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\figure_asset_manifest.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+
 ### Phase 4: Sprint 4 Findings Integrated Into Manuscript (2026-04-23)
 - **Status:** complete
 - Actions taken:

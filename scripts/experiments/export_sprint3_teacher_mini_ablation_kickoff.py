@@ -50,7 +50,10 @@ def main() -> None:
     )
     print("sprint3_teacher_mini_ablation_kickoff")
     print(artifacts["json_path"])
+    print(artifacts["csv_path"])
     print(artifacts["markdown_path"])
+    print(artifacts["pdf_path"])
+    print(artifacts["png_path"])
 
 
 if __name__ == "__main__":

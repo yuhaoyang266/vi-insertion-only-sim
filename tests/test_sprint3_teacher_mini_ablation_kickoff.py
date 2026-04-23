@@ -84,15 +84,22 @@ def test_markdown_exposes_closure_criteria_and_claim_boundary() -> None:
 def test_export_writes_deterministic_json_and_markdown(tmp_path) -> None:
     first = export_sprint3_teacher_mini_ablation_kickoff_artifacts(tmp_path)
     first_json = first["json_path"].read_bytes()
+    first_csv = first["csv_path"].read_bytes()
     first_markdown = first["markdown_path"].read_bytes()
 
     second = export_sprint3_teacher_mini_ablation_kickoff_artifacts(tmp_path)
 
     assert first["json_path"].read_bytes() == first_json
+    assert first["csv_path"].read_bytes() == first_csv
     assert second["markdown_path"].read_bytes() == first_markdown
     payload = json.loads(first["json_path"].read_text(encoding="utf-8"))
     assert payload["condition_count"] == 4
     assert payload["closure_criteria"]["contract_tests_required"] is True
+    assert "teacher_support_quality" in first["csv_path"].read_text(encoding="utf-8")
+    assert first["pdf_path"].suffix == ".pdf"
+    assert first["png_path"].suffix == ".png"
+    assert first["pdf_path"].exists()
+    assert first["png_path"].stat().st_size > 0
 
 
 def test_repo_docs_reference_frozen_sprint3_kickoff_boundary() -> None:
@@ -109,6 +116,7 @@ def test_repo_docs_reference_frozen_sprint3_kickoff_boundary() -> None:
     )
 
     assert "outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json" in docs
+    assert "outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf" in docs
     assert "teacher support quality x demo rollout budget" in docs
     assert (
         "Phase 3 Sprint 3 kickoff complete" in task_plan

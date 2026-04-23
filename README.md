@@ -34,7 +34,9 @@ Repository URL embedded in the manuscript:
 | Supplementary successful-only mechanics view | [`supplement/figures/`](supplement/figures/) |
 | Final benchmark artifacts | [`artifacts/main_benchmark/`](artifacts/main_benchmark/) |
 | Sprint 2 reviewer table | [`outputs/evidence_matrix/three_dof_sprint2_main_table.md`](outputs/evidence_matrix/three_dof_sprint2_main_table.md) |
+| Sprint 3 kickoff matrix | [`outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf`](outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf) |
 | Sprint 4 clearance sweep | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift.md`](outputs/sprint4_clearance_shift/sprint4_clearance_shift.md) |
+| Sprint 4 clearance summary | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.pdf`](outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.pdf) |
 | Pure-RL budget-curve summary | [`outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png`](outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png) |
 | Diagnostic sweep artifacts | [`artifacts/diagnostics/`](artifacts/diagnostics/) |
 | Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
@@ -50,8 +52,8 @@ Repository URL embedded in the manuscript:
 | --- | --- | --- |
 | Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
 | Sprint 2 three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
-| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json`, `.md` | Frozen teacher support quality x demo rollout budget boundary before new training |
-| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}` | Selected demo-supported suites under a pure easy/nominal/hard clearance ladder |
+| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,csv,md}` and `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.{pdf,png}` | Frozen teacher support quality x demo rollout budget boundary before new training |
+| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}` and `outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.{pdf,png}` | Selected demo-supported suites under a pure easy/nominal/hard clearance ladder |
 | Pure-RL nominal-only budget curves | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.*`, `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | Distance proxy, success, and contact gate versus train budget |
 | Appendix teacher/termination package | `figures/appendix/figA3_*`, `figures/appendix/figA4_*`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.*` | Supplementary teacher-ablation and jam-diagnostics evidence |
 | Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
@@ -121,16 +123,18 @@ fixed-impedance anchor. `SAC w/o BC` is only a zero-contact distance proxy in th
 a solve-insertion or useful-contact claim.
 
 The Sprint 3 teacher mini-ablation kickoff is a boundary artifact, not a training result. It freezes
-the 4-condition teacher support quality x demo rollout budget matrix and keeps BC steps, PPO steps,
-policy initialization, metrics, and paper-facing claim limits fixed before running new jobs:
+the 4-condition teacher support quality x demo rollout budget matrix and now exports both a machine-
+readable bundle and a reviewer-facing matrix figure while keeping BC steps, PPO steps, policy
+initialization, metrics, and paper-facing claim limits fixed before running new jobs:
 
 ```bash
 python scripts/experiments/export_sprint3_teacher_mini_ablation_kickoff.py --output-dir outputs/sprint3_teacher_mini_ablation
 ```
 
 Sprint 4A adds a pure-clearance stress sweep for the selected demo-supported suites. The generated
-artifact is sprint-specific: it uses a `clearance_easy` / `nominal` / `clearance_hard` ladder and
-must not be read as a replacement for the frozen five-profile manuscript benchmark:
+artifact bundle is sprint-specific: it uses a `clearance_easy` / `nominal` / `clearance_hard`
+ladder, exports a reviewer-facing summary figure, and must not be read as a replacement for the
+frozen five-profile manuscript benchmark:
 
 ```bash
 python scripts/experiments/export_sprint4_clearance_shift.py --output-dir outputs/sprint4_clearance_shift

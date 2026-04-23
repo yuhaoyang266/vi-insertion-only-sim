@@ -43,6 +43,8 @@ def main() -> None:
     print("json_path", artifacts["json_path"])
     print("csv_path", artifacts["csv_path"])
     print("markdown_path", artifacts["markdown_path"])
+    print("pdf_path", artifacts["pdf_path"])
+    print("png_path", artifacts["png_path"])
 
 
 if __name__ == "__main__":

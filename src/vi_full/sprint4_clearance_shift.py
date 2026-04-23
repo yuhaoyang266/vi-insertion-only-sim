@@ -5,6 +5,12 @@ import json
 from pathlib import Path
 from typing import Any
 
+import matplotlib
+import numpy as np
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+
 from vi_full.three_dof_benchmark import (
     build_3dof_dapg_baseline_registry,
     run_3dof_condition_across_profiles,
@@ -226,6 +232,117 @@ def render_sprint4_clearance_shift_markdown(report: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _save_figure_bundle(
+    fig,
+    *,
+    output_dir: Path,
+    stem: str,
+) -> tuple[Path, Path]:
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    pdf_path = output_dir / f"{stem}.pdf"
+    png_path = output_dir / f"{stem}.png"
+    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(png_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+    return pdf_path, png_path
+
+
+def export_sprint4_clearance_shift_summary_figure(
+    report: dict[str, Any],
+    output_dir: Path,
+    *,
+    stem: str = "sprint4_clearance_shift_summary",
+) -> tuple[Path, Path]:
+    profile_order = list(report["profile_order"])
+    profile_labels = ["easy", "nominal", "hard"]
+    suite_rows = list(report["suite_rows"])
+    suite_labels = [row["display_name"] for row in suite_rows]
+    success_matrix = np.asarray(
+        [
+            [float(row["per_profile"][profile_name]["success_rate"]) for profile_name in profile_order]
+            for row in suite_rows
+        ],
+        dtype=np.float64,
+    )
+    hard_final_distance = np.asarray(
+        [
+            float(row["per_profile"]["clearance_hard"]["mean_final_distance_mm"])
+            for row in suite_rows
+        ],
+        dtype=np.float64,
+    )
+    hard_jam = np.asarray(
+        [float(row["per_profile"]["clearance_hard"]["jam_rate"]) for row in suite_rows],
+        dtype=np.float64,
+    )
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.2, 4.8), constrained_layout=True)
+    heatmap = axes[0].imshow(success_matrix, vmin=0.0, vmax=1.0, cmap="YlGnBu", aspect="auto")
+    axes[0].set_xticks(range(len(profile_labels)), profile_labels)
+    axes[0].set_yticks(range(len(suite_labels)), suite_labels)
+    axes[0].set_title("Success across the clearance ladder", fontsize=12, fontweight="bold")
+    axes[0].set_xlabel("clearance profile")
+    axes[0].set_ylabel("selected suite")
+    for row_index in range(success_matrix.shape[0]):
+        for col_index in range(success_matrix.shape[1]):
+            value = success_matrix[row_index, col_index]
+            axes[0].text(
+                col_index,
+                row_index,
+                f"{value:.3f}",
+                ha="center",
+                va="center",
+                fontsize=8.6,
+                color="#0F243E" if value < 0.72 else "white",
+                fontweight="bold",
+            )
+    colorbar = fig.colorbar(heatmap, ax=axes[0], fraction=0.046, pad=0.04)
+    colorbar.set_label("success rate")
+
+    x_positions = np.arange(len(suite_rows), dtype=np.float64)
+    bars = axes[1].bar(
+        x_positions,
+        hard_final_distance,
+        color=["#4F81BD", "#9BBB59", "#C0504D", "#8064A2"],
+        edgecolor="#333333",
+        linewidth=1.0,
+        alpha=0.9,
+    )
+    axes[1].set_xticks(x_positions, suite_labels, rotation=18, ha="right")
+    axes[1].set_ylabel("hard-clearance final distance (mm)")
+    axes[1].set_title("Hard-clearance penalty", fontsize=12, fontweight="bold")
+    axes[1].grid(axis="y", color="#DDDDDD", linewidth=0.8)
+    axes[1].set_axisbelow(True)
+    for bar, value in zip(bars, hard_final_distance, strict=True):
+        axes[1].text(
+            bar.get_x() + bar.get_width() / 2.0,
+            value + 0.03,
+            f"{value:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=8.4,
+        )
+    jam_axis = axes[1].twinx()
+    jam_axis.plot(
+        x_positions,
+        hard_jam,
+        color="#C0504D",
+        marker="o",
+        linewidth=2.0,
+        label="hard jam rate",
+    )
+    jam_axis.set_ylabel("hard-clearance jam rate", color="#C0504D")
+    jam_axis.tick_params(axis="y", colors="#C0504D")
+    jam_axis.set_ylim(0.0, max(0.08, float(hard_jam.max()) + 0.02))
+    fig.suptitle(
+        "Sprint 4A pure-clearance shift summary",
+        fontsize=13,
+        fontweight="bold",
+    )
+    return _save_figure_bundle(fig, output_dir=output_dir, stem=stem)
+
+
 def export_sprint4_clearance_shift_artifacts(
     report: dict[str, Any],
     output_dir: Path,
@@ -277,10 +394,16 @@ def export_sprint4_clearance_shift_artifacts(
         render_sprint4_clearance_shift_markdown(report),
         encoding="utf-8",
     )
+    pdf_path, png_path = export_sprint4_clearance_shift_summary_figure(
+        report,
+        output_dir,
+    )
     return {
         "json_path": json_path,
         "csv_path": csv_path,
         "markdown_path": markdown_path,
+        "pdf_path": pdf_path,
+        "png_path": png_path,
     }
 
 

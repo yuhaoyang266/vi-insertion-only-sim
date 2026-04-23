@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 3 complete; next: Phase 4 writing / artifact integration
+Phase 5 delivery in_progress; next: submission package
 
 ## Phase Dependency Graph
 ```
@@ -88,7 +88,7 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 ### Phase 3.5: CANCELLED (no-hardware decision 2026-04-22)
 ### Phase H: CANCELLED (no-hardware decision 2026-04-22)
 
-### Phase 4: Writing & Artifact Strategy  (effort: 2-3 weeks | risk: medium | status: in_progress)
+### Phase 4: Writing & Artifact Strategy  (effort: 2-3 weeks | risk: medium | status: complete)
 - [x] Contribution reframing: findings-only -> `propose + show` (>=1 constructive)
   -> Deliverable: 4 contributions, at least 1 named method / diagnostic tool
   -> 2026-04-21: SG-VI / SCI landed in `paper/main.tex`, `README.md`, and `src/vi_full/three_dof_support_metrics.py`
@@ -98,17 +98,22 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 - [x] Main text restructure: 4.1 cross-family / 4.2 learning curves / 4.3 failure decomp / 4.4 high-friction mechanics / 4.5 teacher ablation / 4.6 clearance shift / 4.7 real-robot(if any)
   -> Deliverable: updated `paper/main.tex` scaffolding
   -> 2026-04-23: experiments/discussion now include cross-family, teacher-boundary, clearance-shift, and appendix protocol-map alignment
-- [ ] Figure/table pipeline extension
-  -> Deliverable: failure heatmap, teacher 2x2x2, real-sim parity(if any) exporters
+- [x] Figure/table pipeline extension
+  -> Deliverable: Sprint 3 kickoff matrix exporter + Sprint 4 clearance summary exporter; real-sim parity N/A on the no-hardware path
+  -> 2026-04-23: reviewer-facing Sprint 3 bundle now exports `json/csv/md + kickoff_matrix.pdf/png`; Sprint 4 bundle now exports `json/csv/md + summary.pdf/png`
 - [x] Limitations convergence: keep the no-hardware / sim-only boundary explicit until hardware exists
   -> Deliverable: rewritten Discussion / Limitations
   -> 2026-04-23: Discussion now states benchmark-local, no-hardware, proxy-study, and no-checkpoint boundaries explicitly
 - **Depends on:** Phase 3 complete(+ Phase H if hardware path)
 
-### Phase 5: Delivery  (effort: 1 week | risk: low | status: pending)
-- [ ] README / runner CLI 收口
-- [ ] Contract smoke tests + teacher serialization tests
+### Phase 5: Delivery  (effort: 1 week | risk: low | status: in_progress)
+- [x] README / runner CLI 收口
+  -> 2026-04-23: README quick links / reproduce commands now surface the Sprint 3 kickoff matrix and Sprint 4 clearance summary bundles; repo-root smoke coverage includes the public experiment/export entrypoints plus Sprint 3 actual CLI export
+- [x] Contract smoke tests + teacher serialization tests
+  -> 2026-04-23: `tests/test_run_3dof_experiment_entrypoints.py`, `tests/test_run_sprint3_teacher_mini_ablation_kickoff.py`, `tests/test_run_sprint4_clearance_shift.py`, and `tests/test_three_dof_teacher_training.py` verified the delivery-facing smoke + teacher serialization path (`22 passed`)
 - [ ] Submission package(paper PDF + supplementary + repo snapshot + anonymization)
+  -> blocker (2026-04-23): local environment is missing `latexmk` / `pdflatex` / `xelatex`, and the working tree is not yet an anonymized snapshot because `paper/main.tex`, `README.md`, and `docs/github_upload.md` still expose the public author/repo identity
+  -> staging docs: `docs/submission_package_checklist.md`, `docs/cover_letter_draft.md`
 - **Depends on:** Phase 4 complete
 - **Deliverable:** submission-ready package + cover letter draft
 
