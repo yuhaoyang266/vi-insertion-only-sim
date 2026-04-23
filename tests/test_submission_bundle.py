@@ -166,6 +166,47 @@ def test_build_submission_bundle_rejects_pdf_inside_output_dir(tmp_path: Path) -
     assert paper_pdf.is_file()
 
 
+def test_build_submission_bundle_rejects_output_dir_equal_to_source_root(
+    tmp_path: Path,
+) -> None:
+    source_root = _create_minimal_submission_source_tree(tmp_path)
+
+    with pytest.raises(
+        ValueError,
+        match="must not point at the source repository root",
+    ):
+        build_submission_bundle(
+            source_root=source_root,
+            output_dir=source_root,
+            venue="journal-double-blind",
+            create_archives=False,
+        )
+
+
+def test_build_submission_bundle_rejects_output_dir_inside_copied_source_tree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source_root = _create_minimal_submission_source_tree(tmp_path)
+    output_dir = source_root / "outputs" / "submission_bundle"
+
+    def _unexpected_copy(*args, **kwargs):
+        raise AssertionError("copy should not start for an invalid output_dir")
+
+    monkeypatch.setattr("vi_full.submission_bundle._copy_tree", _unexpected_copy)
+
+    with pytest.raises(
+        ValueError,
+        match="must stay outside the source directories copied into the bundle",
+    ):
+        build_submission_bundle(
+            source_root=source_root,
+            output_dir=output_dir,
+            venue="journal-double-blind",
+            create_archives=False,
+        )
+
+
 def test_submission_docs_match_completed_local_pdf_build_path() -> None:
     repo_root = Path(__file__).resolve().parents[1]
     readme = (repo_root / "README.md").read_text(encoding="utf-8")
@@ -177,4 +218,6 @@ def test_submission_docs_match_completed_local_pdf_build_path() -> None:
     assert "pdflatex -interaction=nonstopmode -halt-on-error main.tex" in readme
     assert "bibtex main" in readme
     assert "outside the staged bundle directory" in readme
+    assert "point at the repository root" in readme
     assert "were all missing when the Phase 5 submission staging pass was checked" not in readme
+    assert "dedicated staging path such as `tmp/submission_bundle/...`" in checklist

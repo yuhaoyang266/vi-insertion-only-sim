@@ -64,9 +64,12 @@ anonymous submission package assembled from this repository.
      `pdflatex -interaction=nonstopmode -halt-on-error main.tex`, `bibtex main`, then `pdflatex`
      until cross-references stabilize
   3. copy the resulting anonymous PDF outside the staged directory and rerun
-     `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf tmp/submission_bundle/anonymous_manuscript.pdf`
-     because the builder recreates `--output-dir` on each invocation and now rejects in-place PDF
-     paths before deleting the staging tree
+      `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf tmp/submission_bundle/anonymous_manuscript.pdf`
+      because the builder recreates `--output-dir` on each invocation and now rejects in-place PDF
+      paths before deleting the staging tree
+- `--output-dir` should remain a dedicated staging path such as `tmp/submission_bundle/...`; the
+  builder now rejects repository-root destinations and paths nested under copied source trees such
+  as `outputs/`, `paper/`, `scripts/`, or `src/`.
 
 ## Remaining Notes
 

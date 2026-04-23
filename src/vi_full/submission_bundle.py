@@ -189,6 +189,20 @@ def _resolve_bundle_paper_pdf(output_dir: Path, paper_pdf: Path | None) -> Path 
     return resolved_paper_pdf
 
 
+def _validate_bundle_output_dir(source_root: Path, output_dir: Path) -> None:
+    if output_dir == source_root or source_root.is_relative_to(output_dir):
+        raise ValueError(
+            "output_dir must not point at the source repository root or one of its parents."
+        )
+
+    for directory_name in ANONYMOUS_SNAPSHOT_DIRS:
+        copied_source_dir = source_root / directory_name
+        if output_dir.is_relative_to(copied_source_dir):
+            raise ValueError(
+                "output_dir must stay outside the source directories copied into the bundle."
+            )
+
+
 def build_submission_bundle(
     *,
     source_root: Path,
@@ -199,6 +213,7 @@ def build_submission_bundle(
 ) -> dict[str, Path | None]:
     source_root = Path(source_root).resolve()
     output_dir = Path(output_dir).resolve()
+    _validate_bundle_output_dir(source_root, output_dir)
     paper_pdf = _resolve_bundle_paper_pdf(output_dir, paper_pdf)
     anonymous_snapshot_dir = output_dir / "anonymous_snapshot"
     editor_materials_dir = output_dir / "editor_materials"

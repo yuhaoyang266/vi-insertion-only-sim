@@ -98,6 +98,11 @@ directories. The anonymous snapshot deliberately rewrites `README.md` and `paper
 excludes reviewer-irrelevant staging content such as `docs/github_upload.md`, `tests/`, and the
 editor-only submission notes from the reviewer-facing copy.
 
+Keep `--output-dir` as a dedicated staging path such as `tmp/submission_bundle/...`. The builder
+now rejects destinations that point at the repository root or that live inside copied source trees
+such as `outputs/`, `paper/`, `scripts/`, or `src/`, because those paths would either delete the
+working tree or recurse into self-copying source data.
+
 Once an anonymous manuscript PDF is available, add it with:
 
 ```bash

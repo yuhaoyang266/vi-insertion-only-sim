@@ -33,6 +33,10 @@ def parse_args() -> argparse.Namespace:
         "--output-dir",
         type=Path,
         default=Path("tmp/submission_bundle/journal_double_blind"),
+        help=(
+            "Bundle staging directory. Must not point at the repo root or live inside copied "
+            "source trees such as outputs/, paper/, scripts/, or src/."
+        ),
     )
     parser.add_argument(
         "--venue",
