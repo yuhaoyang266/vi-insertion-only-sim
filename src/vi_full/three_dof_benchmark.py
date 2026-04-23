@@ -79,6 +79,11 @@ def collect_3dof_policy_rollout_samples(
     episodes: int = 1,
     seed: int = 0,
 ) -> tuple[np.ndarray, np.ndarray]:
+    """Collect (observations, actions) rollout samples for SCI computation.
+
+    Rolls out the given ThreeDoFPolicy and returns concatenated state-action
+    arrays suitable for ``support_coverage_index()``.
+    """
     return _collect_3dof_rollout_samples(
         env,
         act_fn=policy.act,
@@ -138,6 +143,11 @@ def collect_3dof_predictor_rollout_samples(
     episodes: int = 1,
     seed: int = 0,
 ) -> tuple[np.ndarray, np.ndarray]:
+    """Collect (observations, actions) rollout samples for SCI computation.
+
+    Rolls out the given SB3-style predictor and returns concatenated state-action
+    arrays suitable for ``support_coverage_index()``.
+    """
     def _act(observation: np.ndarray) -> np.ndarray:
         action, _ = predictor.predict(observation, deterministic=True)
         return np.asarray(action, dtype=np.float32)
