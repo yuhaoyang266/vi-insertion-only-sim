@@ -42,6 +42,7 @@ Repository URL embedded in the manuscript:
 | Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
 | Mechanics trace artifacts | [`artifacts/mechanics/`](artifacts/mechanics/) |
 | Figure/table export scripts | [`scripts/export/`](scripts/export/) |
+| Submission bundle builder | [`scripts/export/build_submission_bundle.py`](scripts/export/build_submission_bundle.py) |
 | Experiment runners | [`scripts/experiments/`](scripts/experiments/) |
 | Paper-facing source modules | [`src/vi_full/`](src/vi_full/) |
 | Support metric utilities | [`src/vi_full/three_dof_support_metrics.py`](src/vi_full/three_dof_support_metrics.py) |
@@ -73,6 +74,30 @@ latexmk -pdf main.tex
 
 The TeX source uses relative paths to `../figures/main/`, `../figures/appendix/`, and
 `../supplement/figures/`.
+
+The current machine-local blocker is still the TeX toolchain itself: `latexmk`, `pdflatex`, and
+`xelatex` were all missing when the Phase 5 submission staging pass was checked on 2026-04-23.
+
+## Build The Submission Bundle
+
+The repository now includes a dedicated anonymous submission-bundle builder. From the repository
+root:
+
+```bash
+python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind
+```
+
+This writes an `anonymous_snapshot/` tree, an `editor_materials/` tree, a
+`submission_bundle_manifest.json`, a `submission_bundle_summary.md`, and zip archives for both
+directories. The anonymous snapshot deliberately rewrites `README.md` and `paper/main.tex`, and it
+excludes reviewer-irrelevant staging content such as `docs/github_upload.md`, `tests/`, and the
+editor-only submission notes from the reviewer-facing copy.
+
+Once an anonymous manuscript PDF is available, add it with:
+
+```bash
+python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf <anonymous_manuscript.pdf>
+```
 
 ## Reproduce Exported Assets
 

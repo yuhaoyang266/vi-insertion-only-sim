@@ -36,6 +36,9 @@ submission-facing package.
 - Repo-root CLI smoke coverage passes for the public experiment/export entrypoints.
 - Teacher metadata serialization coverage passes in `tests/test_three_dof_teacher_training.py`.
 - Sprint 3 and Sprint 4 reviewer-facing bundles are present under `outputs/`.
+- `scripts/export/build_submission_bundle.py` can now stage an anonymous snapshot plus editor-only
+  materials under `tmp/submission_bundle/` while recording the package contents in
+  `submission_bundle_manifest.json`.
 
 ## Open Blockers
 
@@ -52,40 +55,37 @@ Implication:
 - The final paper PDF cannot be regenerated locally from `paper/main.tex` in the current
   environment.
 
-### 2. Anonymous submission snapshot is not assembled
-
-Current explicit identity surfaces include:
-
-- `paper/main.tex`
-  - author name
-  - affiliation
-  - email
-  - public repository URL in the date line
-- `README.md`
-  - public repository URL and author-facing package language
-- `docs/github_upload.md`
-  - direct GitHub target URL and public upload steps
-
-Implication:
-
-- The working tree is not an anonymized package snapshot.
-- A venue-specific anonymous package still needs a deliberate filtered export rather than a raw
-  zip of the repository root.
-
 ## Recommended Packaging Sequence
 
 1. Install a TeX toolchain that provides `latexmk` and `pdflatex`.
-2. Build the manuscript from `paper/` and verify the generated PDF opens cleanly.
-3. Decide whether the target venue requires anonymous supplementary materials.
-4. If anonymity is required, create a filtered package copy that excludes or rewrites:
-   - author identity in `paper/main.tex`
-   - public repository URL references
-   - `docs/github_upload.md`
+2. Build the anonymous manuscript PDF from `paper/` and verify the generated PDF opens cleanly.
+3. Stage the bundle with:
+   - `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf <anonymous_manuscript.pdf>`
+4. Review `tmp/submission_bundle/journal_double_blind/submission_bundle_manifest.json` against the
+   target venue's anonymity policy.
 5. Bundle:
    - paper PDF
-   - supplementary figures
-   - the filtered repo snapshot
-   - the cover letter draft in `docs/cover_letter_draft.md`
+   - supplementary figures inside `anonymous_snapshot/`
+   - the anonymous repo snapshot or `anonymous_snapshot.zip`
+   - editor-only material from `editor_materials/`, including `cover_letter_draft.md`
+
+## Anonymous Snapshot Contract
+
+The anonymous bundle builder currently applies the following filtering rules:
+
+- `paper/main.tex`
+  - rewrites the author block to `Anonymous Authors`
+  - removes the repository URL from the title metadata
+- `README.md`
+  - removes the public repository URL section
+  - relabels the snapshot as reviewer-facing anonymous material
+- `docs/github_upload.md`
+  - excluded from the anonymous snapshot
+- `docs/cover_letter_draft.md`
+  - copied only into `editor_materials/`
+- `tests/` and internal planning notes
+  - excluded from the anonymous snapshot to keep the reviewer-facing package narrow and avoid
+    reintroducing author-facing staging text
 
 ## Minimal Completion Criteria
 

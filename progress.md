@@ -1,5 +1,24 @@
 # Progress Log
 
+### Phase 5: Anonymous Submission Bundle Staging (2026-04-23)
+- **Status:** in_progress
+- Actions taken:
+  - Added `src/vi_full/submission_bundle.py` plus the repo-root CLI `scripts/export/build_submission_bundle.py` so Phase 5 can now generate a reviewer-facing anonymous snapshot and a separate editor-only staging directory instead of relying on a manual checklist.
+  - Followed TDD for the new packaging contract: wrote failing tests for anonymous redaction, optional PDF inclusion, and CLI defaults; then implemented the minimal builder and repo-root `--help` coverage.
+  - Tightened the anonymous snapshot boundary after an actual dry run exposed leakage through test fixtures and literal redaction strings: the builder now excludes `tests/`, uses generic email/URL patterns in the redaction code, and runs an identity-token scan over the staged snapshot before declaring success.
+  - Generated a real staged bundle at `tmp/submission_bundle/journal_double_blind/` with `anonymous_snapshot/`, `editor_materials/`, `submission_bundle_manifest.json`, `submission_bundle_summary.md`, `anonymous_snapshot.zip`, and `editor_materials.zip`.
+  - Narrowed the remaining Phase 5 blocker to TeX availability only: the local machine still lacks `latexmk`, `pdflatex`, and `xelatex`, so the final anonymous paper PDF must be added later via `--paper-pdf`.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\submission_bundle.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\scripts\export\build_submission_bundle.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_submission_bundle.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_submission_bundle.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_3dof_experiment_entrypoints.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\README.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\submission_package_checklist.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+
 ### Phase 5: Submission Package Probe (2026-04-23)
 - **Status:** in_progress
 - Actions taken:

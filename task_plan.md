@@ -112,7 +112,8 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 - [x] Contract smoke tests + teacher serialization tests
   -> 2026-04-23: `tests/test_run_3dof_experiment_entrypoints.py`, `tests/test_run_sprint3_teacher_mini_ablation_kickoff.py`, `tests/test_run_sprint4_clearance_shift.py`, and `tests/test_three_dof_teacher_training.py` verified the delivery-facing smoke + teacher serialization path (`22 passed`)
 - [ ] Submission package(paper PDF + supplementary + repo snapshot + anonymization)
-  -> blocker (2026-04-23): local environment is missing `latexmk` / `pdflatex` / `xelatex`, and the working tree is not yet an anonymized snapshot because `paper/main.tex`, `README.md`, and `docs/github_upload.md` still expose the public author/repo identity
+  -> 2026-04-23: anonymous repo staging is now scripted via `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind`; the builder rewrites `paper/main.tex` / `README.md`, excludes `docs/github_upload.md`, copies editor-only docs separately, and accepts `--paper-pdf` once an anonymous manuscript PDF exists
+  -> blocker (2026-04-23): local environment is still missing `latexmk` / `pdflatex` / `xelatex`, so the final paper PDF cannot yet be regenerated on this machine
   -> staging docs: `docs/submission_package_checklist.md`, `docs/cover_letter_draft.md`
 - **Depends on:** Phase 4 complete
 - **Deliverable:** submission-ready package + cover letter draft

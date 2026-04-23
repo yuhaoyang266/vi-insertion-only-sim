@@ -41,6 +41,7 @@ def test_experiment_entrypoint_help_works_from_repo_root(script_name: str) -> No
     [
         "export_paper_only_sim_high_friction_trace_figure.py",
         "export_paper_only_sim_figure3.py",
+        "build_submission_bundle.py",
     ],
 )
 def test_trace_export_entrypoint_help_works_from_repo_root(script_name: str) -> None:
