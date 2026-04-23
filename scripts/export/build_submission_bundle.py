@@ -1,16 +1,28 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 from pathlib import Path
-import sys
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SRC_ROOT = REPO_ROOT / "src"
-if str(SRC_ROOT) not in sys.path:
-    sys.path.insert(0, str(SRC_ROOT))
 
-from vi_full.submission_bundle import build_submission_bundle
+
+def _load_build_submission_bundle():
+    module_path = SRC_ROOT / "vi_full" / "submission_bundle.py"
+    spec = importlib.util.spec_from_file_location(
+        "submission_bundle_runtime",
+        module_path,
+    )
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load submission bundle module from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.build_submission_bundle
+
+
+build_submission_bundle = _load_build_submission_bundle()
 
 
 def parse_args() -> argparse.Namespace:

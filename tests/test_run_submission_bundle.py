@@ -1,5 +1,6 @@
 import importlib.util
 from pathlib import Path
+import subprocess
 import sys
 
 
@@ -81,3 +82,26 @@ def test_runner_uses_default_submission_bundle_contract(
     assert (
         tmp_path / "submission_bundle" / "submission_bundle_manifest.json"
     ).is_file()
+
+
+def test_submission_bundle_cli_avoids_unrelated_gym_warning(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    command = [
+        sys.executable,
+        "scripts/export/build_submission_bundle.py",
+        "--output-dir",
+        str(tmp_path / "submission_bundle"),
+        "--skip-archives",
+    ]
+
+    completed = subprocess.run(
+        command,
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    combined_output = completed.stdout + completed.stderr
+    assert completed.returncode == 0, combined_output
+    assert "Gym has been unmaintained since 2022" not in combined_output
