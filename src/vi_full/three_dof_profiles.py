@@ -17,6 +17,12 @@ DEFAULT_UNCERTAINTY_PROFILES = (
     "noisy_force",
 )
 
+CLEARANCE_SHIFT_PROFILES = (
+    "clearance_easy",
+    "nominal",
+    "clearance_hard",
+)
+
 POSE_PERTURBATION_PROFILES = (
     "pose_perturb_mild",
     "pose_perturb_moderate",
@@ -32,6 +38,16 @@ def build_3dof_profile_config(
     base = ThreeDoFInsertionConfig(max_episode_steps=max_episode_steps)
     if profile_name == "nominal":
         return base
+    if profile_name == "clearance_easy":
+        return replace(
+            base,
+            clearance_range_m=(0.00095, 0.00135),
+        )
+    if profile_name == "clearance_hard":
+        return replace(
+            base,
+            clearance_range_m=(0.00045, 0.00075),
+        )
     if profile_name == "tight_clearance":
         return replace(
             base,

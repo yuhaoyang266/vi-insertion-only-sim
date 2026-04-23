@@ -1,0 +1,228 @@
+{
+  "export_name": "sprint4_clearance_shift",
+  "artifact_schema_version": 1,
+  "profile_order": [
+    "clearance_easy",
+    "nominal",
+    "clearance_hard"
+  ],
+  "suite_order": [
+    "bc_only_stable_r32_p32",
+    "repaired_mainline_bc_to_ppo",
+    "dapg_lite_repaired_mainline",
+    "fixed_impedance_rl_stable_r32_p32"
+  ],
+  "profile_ladder": [
+    {
+      "profile_name": "clearance_easy",
+      "clearance_range_mm": [
+        0.95,
+        1.35
+      ],
+      "hole_xy_offset_range_mm": 1.0,
+      "is_pure_clearance_shift": true
+    },
+    {
+      "profile_name": "nominal",
+      "clearance_range_mm": [
+        0.7,
+        1.1
+      ],
+      "hole_xy_offset_range_mm": 1.0,
+      "is_pure_clearance_shift": true
+    },
+    {
+      "profile_name": "clearance_hard",
+      "clearance_range_mm": [
+        0.45,
+        0.75
+      ],
+      "hole_xy_offset_range_mm": 1.0,
+      "is_pure_clearance_shift": true
+    }
+  ],
+  "required_metrics": [
+    "success_rate",
+    "mean_final_distance_mm",
+    "mean_contact_steps",
+    "jam_rate",
+    "mean_peak_contact_force_n"
+  ],
+  "execution_boundary": {
+    "mode": "train_once_eval_many_profiles",
+    "train_profile": "nominal",
+    "checkpoint_note": "Sprint 4A evaluates each seed once and reuses the in-memory predictor across the clearance ladder because this repository does not persist paper-ready checkpoints today."
+  },
+  "claim_boundary": {
+    "allowed": [
+      "clearance-ladder robustness claims for the selected demo-supported 3DoF suites",
+      "stating how success/contact degrades from easy to hard clearance under the nominal-train contract",
+      "comparing the selected four suites within this single Sprint 4A clearance-shift contract"
+    ],
+    "not_allowed": [
+      "not a mixed-contract leaderboard",
+      "not a replacement for the frozen five-profile manuscript benchmark",
+      "not evidence that clearance dominates every other pressure axis in the repository",
+      "not a hardware or sim-to-real claim"
+    ]
+  },
+  "source_contract": "3DoF nominal-train Sprint 4A clearance-shift stress sweep",
+  "suite_rows": [
+    {
+      "suite_name": "bc_only_stable_r32_p32",
+      "display_name": "BC-only (stable 32/32)",
+      "training_budget": {
+        "total_timesteps": 0,
+        "bc_rollout_episodes": 32,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "per_profile": {
+        "clearance_easy": {
+          "success_rate": 1.0,
+          "mean_final_distance_mm": 0.9002283378235075,
+          "mean_contact_steps": 28.413999999999998,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 0.80676635378711
+        },
+        "nominal": {
+          "success_rate": 1.0,
+          "mean_final_distance_mm": 0.8943384457851826,
+          "mean_contact_steps": 27.758,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 0.7808453132299228
+        },
+        "clearance_hard": {
+          "success_rate": 1.0,
+          "mean_final_distance_mm": 0.8985012852202022,
+          "mean_contact_steps": 28.556,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 0.841380581760497
+        }
+      },
+      "clearance_drop": {
+        "success_rate_easy_to_hard": 0.0,
+        "jam_rate_hard_minus_easy": 0.0,
+        "mean_final_distance_mm_hard_minus_easy": -0.0017270526033053013,
+        "mean_contact_steps_easy_to_hard": -0.142000000000003
+      }
+    },
+    {
+      "suite_name": "repaired_mainline_bc_to_ppo",
+      "display_name": "BC -> PPO",
+      "training_budget": {
+        "total_timesteps": 128,
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "per_profile": {
+        "clearance_easy": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.259715652777215,
+          "mean_contact_steps": 20.6,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 1.2978225161586905
+        },
+        "nominal": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.2483884702438341,
+          "mean_contact_steps": 20.6,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 1.3449878709458003
+        },
+        "clearance_hard": {
+          "success_rate": 0.808,
+          "mean_final_distance_mm": 1.066881673205688,
+          "mean_contact_steps": 21.062,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 2.456157150914746
+        }
+      },
+      "clearance_drop": {
+        "success_rate_easy_to_hard": -0.008000000000000007,
+        "jam_rate_hard_minus_easy": 0.0,
+        "mean_final_distance_mm_hard_minus_easy": -0.19283397957152704,
+        "mean_contact_steps_easy_to_hard": -0.46199999999999974
+      }
+    },
+    {
+      "suite_name": "dapg_lite_repaired_mainline",
+      "display_name": "DAPG-lite",
+      "training_budget": {
+        "total_timesteps": 128,
+        "bc_rollout_episodes": 8,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "per_profile": {
+        "clearance_easy": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.177884261896415,
+          "mean_contact_steps": 35.824,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 1.3128656168924215
+        },
+        "nominal": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.2920037734590695,
+          "mean_contact_steps": 35.81400000000001,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 1.5775226094505823
+        },
+        "clearance_hard": {
+          "success_rate": 0.768,
+          "mean_final_distance_mm": 1.6166457758281731,
+          "mean_contact_steps": 35.178000000000004,
+          "jam_rate": 0.05,
+          "mean_peak_contact_force_n": 2.4036158199912725
+        }
+      },
+      "clearance_drop": {
+        "success_rate_easy_to_hard": 0.03200000000000003,
+        "jam_rate_hard_minus_easy": 0.05,
+        "mean_final_distance_mm_hard_minus_easy": 0.4387615139317582,
+        "mean_contact_steps_easy_to_hard": 0.6459999999999937
+      }
+    },
+    {
+      "suite_name": "fixed_impedance_rl_stable_r32_p32",
+      "display_name": "Fixed-impedance RL (stable BC 32/32)",
+      "training_budget": {
+        "total_timesteps": 128,
+        "bc_rollout_episodes": 32,
+        "bc_pretrain_steps": 32,
+        "bc_batch_size": 64
+      },
+      "per_profile": {
+        "clearance_easy": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.1053501821828622,
+          "mean_contact_steps": 35.982000000000006,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 0.774818486549692
+        },
+        "nominal": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.1048054901593012,
+          "mean_contact_steps": 35.836,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 0.749127446631512
+        },
+        "clearance_hard": {
+          "success_rate": 0.8,
+          "mean_final_distance_mm": 1.1057992358724829,
+          "mean_contact_steps": 36.07600000000001,
+          "jam_rate": 0.0,
+          "mean_peak_contact_force_n": 0.8035975764532044
+        }
+      },
+      "clearance_drop": {
+        "success_rate_easy_to_hard": 0.0,
+        "jam_rate_hard_minus_easy": 0.0,
+        "mean_final_distance_mm_hard_minus_easy": 0.00044905368962067094,
+        "mean_contact_steps_easy_to_hard": -0.0940000000000012
+      }
+    }
+  ]
+}

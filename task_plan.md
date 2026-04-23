@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 3 Sprint 3 kickoff complete; next: Sprint 4A clearance shift sweep
+Phase 3 complete; next: Phase 4 writing / artifact integration
 
 ## Phase Dependency Graph
 ```
@@ -59,7 +59,7 @@ Phase 2 (narrative lock)
 - Phase 3.5 / Phase H: **cancelled**
 - **Deliverable:** 本 decision record
 
-### Phase 3: Sim-only Experiment Execution  (effort: 4–6 weeks | risk: medium | status: in_progress)
+### Phase 3: Sim-only Experiment Execution  (effort: 4–6 weeks | risk: medium | status: complete)
 _A-category work. 可与 Phase 2.5 并行启动。_
 
 - [x] Sprint 0: PPO-only 200k 复现 + `protocol_freeze.md`
@@ -79,8 +79,9 @@ _A-category work. 可与 Phase 2.5 并行启动。_
   → Kickoff artifact: `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,md}`
   → Frozen boundary: 4 条件 teacher support quality x demo rollout budget;固定 `bc_pretrain_steps=32`、`total_timesteps=128`、BC-to-PPO init、five-profile evaluation、Sprint 2 claim-control metrics + SCI/support-cell coverage
   → Excluded from kickoff: BC pretrain-step sweep、policy-init sweep、teacher/no-teacher pure-RL control、完整 motion-rule × impedance-rule appendix sweep
-- [ ] Sprint 4A: Clearance shift 鲁棒性扫描
-  → Deliverable: easy/nominal/hard clearance × best 3–4 methods;复用 checkpoint,评估为主
+- [x] Sprint 4A: Clearance shift 鲁棒性扫描
+  → Deliverable: `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}`; pure-clearance `easy/nominal/hard` ladder × selected demo-supported suites;当前仓库无持久化 checkpoint,因此采用 train-once / eval-many-profile 合同
+  → 2026-04-23 result snapshot: `BC-only (stable 32/32)` 在 hard ladder 仍为 `success_rate=1.0`; `DAPG-lite` 降至 `success_rate=0.768`, `jam_rate=0.05`; `BC -> PPO` 与 `Fixed-impedance RL (stable BC 32/32)` 在 hard ladder 保持约 `0.8` success 且 `jam_rate=0`
 - **Depends on:** Phase 2 narrative lock
 - **Does NOT depend on:** Phase 2.5
 

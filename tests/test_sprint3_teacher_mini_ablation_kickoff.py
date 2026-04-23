@@ -110,7 +110,10 @@ def test_repo_docs_reference_frozen_sprint3_kickoff_boundary() -> None:
 
     assert "outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json" in docs
     assert "teacher support quality x demo rollout budget" in docs
-    assert "Phase 3 Sprint 3 kickoff complete" in task_plan
+    assert (
+        "Phase 3 Sprint 3 kickoff complete" in task_plan
+        or "Phase 3 complete" in task_plan
+    )
     assert "- [x] Sprint 3: Teacher mini-ablation kickoff" in task_plan
     assert "next: Sprint 3 teacher mini-ablation" not in task_plan
     assert "2×2×2×2" not in docs

@@ -34,6 +34,7 @@ Repository URL embedded in the manuscript:
 | Supplementary successful-only mechanics view | [`supplement/figures/`](supplement/figures/) |
 | Final benchmark artifacts | [`artifacts/main_benchmark/`](artifacts/main_benchmark/) |
 | Sprint 2 reviewer table | [`outputs/evidence_matrix/three_dof_sprint2_main_table.md`](outputs/evidence_matrix/three_dof_sprint2_main_table.md) |
+| Sprint 4 clearance sweep | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift.md`](outputs/sprint4_clearance_shift/sprint4_clearance_shift.md) |
 | Pure-RL budget-curve summary | [`outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png`](outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png) |
 | Diagnostic sweep artifacts | [`artifacts/diagnostics/`](artifacts/diagnostics/) |
 | Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
@@ -50,6 +51,7 @@ Repository URL embedded in the manuscript:
 | Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
 | Sprint 2 three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
 | Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json`, `.md` | Frozen teacher support quality x demo rollout budget boundary before new training |
+| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}` | Selected demo-supported suites under a pure easy/nominal/hard clearance ladder |
 | Pure-RL nominal-only budget curves | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.*`, `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | Distance proxy, success, and contact gate versus train budget |
 | Appendix teacher/termination package | `figures/appendix/figA3_*`, `figures/appendix/figA4_*`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.*` | Supplementary teacher-ablation and jam-diagnostics evidence |
 | Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
@@ -126,6 +128,14 @@ policy initialization, metrics, and paper-facing claim limits fixed before runni
 python scripts/experiments/export_sprint3_teacher_mini_ablation_kickoff.py --output-dir outputs/sprint3_teacher_mini_ablation
 ```
 
+Sprint 4A adds a pure-clearance stress sweep for the selected demo-supported suites. The generated
+artifact is sprint-specific: it uses a `clearance_easy` / `nominal` / `clearance_hard` ladder and
+must not be read as a replacement for the frozen five-profile manuscript benchmark:
+
+```bash
+python scripts/experiments/export_sprint4_clearance_shift.py --output-dir outputs/sprint4_clearance_shift
+```
+
 When the input benchmark JSON includes `support_metrics`, the supplementary statistics report also
 exports Support Coverage Index (SCI) and support-cell-coverage summaries alongside the main table
 confidence intervals.
@@ -145,6 +155,7 @@ python scripts/experiments/run_3dof_ppo_large_budget_ablation.py
 python scripts/experiments/run_3dof_tuned_fixed_impedance_sweep.py
 python scripts/experiments/run_3dof_pose_perturbation_study.py
 python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchmark.json>
+python scripts/experiments/export_sprint4_clearance_shift.py --output-dir outputs/sprint4_clearance_shift
 ```
 
 These runs can be computationally slower than figure export. For manuscript inspection, the frozen

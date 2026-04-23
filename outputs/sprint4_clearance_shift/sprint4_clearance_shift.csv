@@ -1,0 +1,13 @@
+suite_name,display_name,profile_name,success_rate,mean_final_distance_mm,mean_contact_steps,jam_rate,mean_peak_contact_force_n,success_rate_easy_to_hard
+bc_only_stable_r32_p32,BC-only (stable 32/32),clearance_easy,1.0,0.9002283378235075,28.413999999999998,0.0,0.80676635378711,0.0
+bc_only_stable_r32_p32,BC-only (stable 32/32),nominal,1.0,0.8943384457851826,27.758,0.0,0.7808453132299228,0.0
+bc_only_stable_r32_p32,BC-only (stable 32/32),clearance_hard,1.0,0.8985012852202022,28.556,0.0,0.841380581760497,0.0
+repaired_mainline_bc_to_ppo,BC -> PPO,clearance_easy,0.8,1.259715652777215,20.6,0.0,1.2978225161586905,-0.008000000000000007
+repaired_mainline_bc_to_ppo,BC -> PPO,nominal,0.8,1.2483884702438341,20.6,0.0,1.3449878709458003,-0.008000000000000007
+repaired_mainline_bc_to_ppo,BC -> PPO,clearance_hard,0.808,1.066881673205688,21.062,0.0,2.456157150914746,-0.008000000000000007
+dapg_lite_repaired_mainline,DAPG-lite,clearance_easy,0.8,1.177884261896415,35.824,0.0,1.3128656168924215,0.03200000000000003
+dapg_lite_repaired_mainline,DAPG-lite,nominal,0.8,1.2920037734590695,35.81400000000001,0.0,1.5775226094505823,0.03200000000000003
+dapg_lite_repaired_mainline,DAPG-lite,clearance_hard,0.768,1.6166457758281731,35.178000000000004,0.05,2.4036158199912725,0.03200000000000003
+fixed_impedance_rl_stable_r32_p32,Fixed-impedance RL (stable BC 32/32),clearance_easy,0.8,1.1053501821828622,35.982000000000006,0.0,0.774818486549692,0.0
+fixed_impedance_rl_stable_r32_p32,Fixed-impedance RL (stable BC 32/32),nominal,0.8,1.1048054901593012,35.836,0.0,0.749127446631512,0.0
+fixed_impedance_rl_stable_r32_p32,Fixed-impedance RL (stable BC 32/32),clearance_hard,0.8,1.1057992358724829,36.07600000000001,0.0,0.8035975764532044,0.0
