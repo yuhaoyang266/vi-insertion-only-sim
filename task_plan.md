@@ -74,7 +74,7 @@ _A-category work. 可与 Phase 2.5 并行启动。_
 - [x] Sprint 2B: Anchor-integrated evidence matrix + strict review
   → Deliverable: evidence matrix (pure-RL × demo-supported anchors) + JSON/CSV/MD/PNG/PDF artifacts;code review passed (4 Important fixes applied);52 tests passing
 - [x] Sprint 2 main table: 三层主表 + learning curves
-  → Deliverable: performance/failure/mechanics 三层主表 + failure heatmap + learning-curve figure;5 methods × 5 seeds × 1–2 budgets × 5 profiles
+  → Deliverable: reviewer-facing 三层 claim-control 主表 + contact-gate matrix + pure-RL budget-curve figure;nominal-only pure-RL rows 与 five-profile benchmark anchors 保持 separate evidence contracts
 - [ ] Sprint 3: Teacher mini-ablation,扩展两个正交维度
   → Deliverable: variable/fixed teacher × clean/noisy demo × few/many demo 的 2×2×2×2 表;directional evidence 锁定 teacher-coupling claim
   → **Decision (2026-04-22):** 两个维度都做 (demo quality + demo quantity)

@@ -8,6 +8,7 @@
   - Confirmed the paper-facing boundary remains narrow: the Sprint 2 table is claim control, not a mixed-contract leaderboard; `SAC w/o BC` is only a zero-contact distance proxy.
   - Confirmed old stage3 frozen-artifact names are absent from active user-facing README / manifest / paper / script entrypoints; remaining stage3 strings are legacy test references, not user-facing entrypoints.
   - Updated `task_plan.md` from "Phase 3 Sprint 2B complete; next: Sprint 2 main table" to "Phase 3 Sprint 2 complete; next: Sprint 3 teacher mini-ablation".
+  - Aligned the Sprint 2 deliverable line with the actual closed assets: three-layer claim-control table, contact-gate matrix, and pure-RL budget-curve figure under separate evidence contracts.
   - Explicitly excluded existing workspace residue from the Sprint 2 close-out judgment: `pyproject.toml`, `src/vi_full/three_dof_benchmark.py`, `conftest.py`, and `docs/superpowers/`.
 - Files created/modified:
   - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
