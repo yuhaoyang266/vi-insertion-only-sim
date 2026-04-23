@@ -1,0 +1,147 @@
+{
+  "artifact_schema_version": 1,
+  "claim_boundary": {
+    "allowed": [
+      "directional teacher-coupling evidence under the fixed 3DoF benchmark contract",
+      "contact-gate contrast between support-rich and support-poor teacher demonstrations",
+      "demo-budget sensitivity within the frozen BC-to-PPO initialization path"
+    ],
+    "not_allowed": [
+      "teacher-independent causal claim",
+      "general robotics or sim-to-real claim",
+      "cross-contract leaderboard",
+      "claim that training completion alone closes Sprint 3"
+    ]
+  },
+  "closure_criteria": {
+    "artifact_reproducible": true,
+    "contract_tests_required": true,
+    "paper_facing_text_must_not_overclaim": true,
+    "table_plot_claim_boundary_explicit": true
+  },
+  "condition_count": 4,
+  "condition_matrix": [
+    {
+      "bc_batch_size": 64,
+      "bc_pretrain_steps": 32,
+      "bc_rollout_episodes": 32,
+      "condition_id": "support_rich_many_demo",
+      "demo_budget_label": "many_demo",
+      "policy_init": "bc_to_ppo_from_scratch",
+      "source_contract": "five-profile 3DoF teacher-coupled benchmark",
+      "suite_name": "teacher_variable_variable__sprint3_r32_p32",
+      "teacher_impedance_rule": "contact_aware_variable_impedance",
+      "teacher_motion_rule": "contact_aware_variable_motion",
+      "teacher_preset_name": "teacher_variable_variable",
+      "teacher_support_quality": "support_rich",
+      "total_timesteps": 128,
+      "uncertainty_profiles": [
+        "nominal",
+        "tight_clearance",
+        "high_friction",
+        "offset_bias",
+        "noisy_force"
+      ]
+    },
+    {
+      "bc_batch_size": 64,
+      "bc_pretrain_steps": 32,
+      "bc_rollout_episodes": 8,
+      "condition_id": "support_rich_few_demo",
+      "demo_budget_label": "few_demo",
+      "policy_init": "bc_to_ppo_from_scratch",
+      "source_contract": "five-profile 3DoF teacher-coupled benchmark",
+      "suite_name": "teacher_variable_variable__sprint3_r8_p32",
+      "teacher_impedance_rule": "contact_aware_variable_impedance",
+      "teacher_motion_rule": "contact_aware_variable_motion",
+      "teacher_preset_name": "teacher_variable_variable",
+      "teacher_support_quality": "support_rich",
+      "total_timesteps": 128,
+      "uncertainty_profiles": [
+        "nominal",
+        "tight_clearance",
+        "high_friction",
+        "offset_bias",
+        "noisy_force"
+      ]
+    },
+    {
+      "bc_batch_size": 64,
+      "bc_pretrain_steps": 32,
+      "bc_rollout_episodes": 32,
+      "condition_id": "support_poor_many_demo",
+      "demo_budget_label": "many_demo",
+      "policy_init": "bc_to_ppo_from_scratch",
+      "source_contract": "five-profile 3DoF teacher-coupled benchmark",
+      "suite_name": "teacher_pose_fixed__sprint3_r32_p32",
+      "teacher_impedance_rule": "fixed",
+      "teacher_motion_rule": "pose_feedback",
+      "teacher_preset_name": "teacher_pose_fixed",
+      "teacher_support_quality": "support_poor",
+      "total_timesteps": 128,
+      "uncertainty_profiles": [
+        "nominal",
+        "tight_clearance",
+        "high_friction",
+        "offset_bias",
+        "noisy_force"
+      ]
+    },
+    {
+      "bc_batch_size": 64,
+      "bc_pretrain_steps": 32,
+      "bc_rollout_episodes": 8,
+      "condition_id": "support_poor_few_demo",
+      "demo_budget_label": "few_demo",
+      "policy_init": "bc_to_ppo_from_scratch",
+      "source_contract": "five-profile 3DoF teacher-coupled benchmark",
+      "suite_name": "teacher_pose_fixed__sprint3_r8_p32",
+      "teacher_impedance_rule": "fixed",
+      "teacher_motion_rule": "pose_feedback",
+      "teacher_preset_name": "teacher_pose_fixed",
+      "teacher_support_quality": "support_poor",
+      "total_timesteps": 128,
+      "uncertainty_profiles": [
+        "nominal",
+        "tight_clearance",
+        "high_friction",
+        "offset_bias",
+        "noisy_force"
+      ]
+    }
+  ],
+  "excluded_axes": [
+    "BC pretrain-step sweep",
+    "policy initialization sweep",
+    "teacher/no-teacher pure-RL control",
+    "full motion-rule x impedance-rule appendix sweep"
+  ],
+  "export_name": "sprint3_teacher_mini_ablation_kickoff",
+  "frozen_controls": {
+    "bc_batch_size": 64,
+    "bc_pretrain_steps": 32,
+    "policy_init": "bc_to_ppo_from_scratch",
+    "total_timesteps": 128,
+    "uncertainty_profiles": [
+      "nominal",
+      "tight_clearance",
+      "high_friction",
+      "offset_bias",
+      "noisy_force"
+    ]
+  },
+  "required_metrics": [
+    "success_rate",
+    "mean_final_distance_mm",
+    "mean_contact_steps",
+    "jam_rate",
+    "mean_peak_contact_force_n",
+    "support_coverage_index",
+    "support_cell_coverage"
+  ],
+  "target_question": {
+    "plain_text": "Does support-rich teacher demonstration reopen the contact gate, and does that directional claim survive a reduced demo rollout budget?",
+    "primary_axis": "teacher_support_quality",
+    "secondary_axis": "demo_rollout_budget"
+  }
+}
