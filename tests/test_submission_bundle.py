@@ -140,3 +140,16 @@ def test_build_submission_bundle_can_include_optional_pdf_and_archives(
     manifest = json.loads(artifacts["manifest_path"].read_text(encoding="utf-8"))
     assert manifest["paper_pdf"]["status"] == "included"
     assert manifest["paper_pdf"]["filename"] == "anonymous_manuscript.pdf"
+
+
+def test_submission_docs_match_completed_local_pdf_build_path() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    readme = (repo_root / "README.md").read_text(encoding="utf-8")
+    checklist = (
+        repo_root / "docs" / "submission_package_checklist.md"
+    ).read_text(encoding="utf-8")
+
+    assert "No repository-local blocker remains for the Phase 5 submission package." in checklist
+    assert "pdflatex -interaction=nonstopmode -halt-on-error main.tex" in readme
+    assert "bibtex main" in readme
+    assert "were all missing when the Phase 5 submission staging pass was checked" not in readme

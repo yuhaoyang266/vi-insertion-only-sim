@@ -69,14 +69,19 @@ From the repository root:
 
 ```bash
 cd paper
-latexmk -pdf main.tex
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+bibtex main
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
 The TeX source uses relative paths to `../figures/main/`, `../figures/appendix/`, and
 `../supplement/figures/`.
 
-The current machine-local blocker is still the TeX toolchain itself: `latexmk`, `pdflatex`, and
-`xelatex` were all missing when the Phase 5 submission staging pass was checked on 2026-04-23.
+The current local delivery path uses MiKTeX-provided `pdflatex` and `bibtex`; this direct sequence
+was used to build the anonymous manuscript on 2026-04-23. `latexmk` is still not usable in this
+environment because the local MiKTeX setup does not see a Perl script engine, so the direct
+`pdflatex -> bibtex -> pdflatex` chain is the supported local build path.
 
 ## Build The Submission Bundle
 
