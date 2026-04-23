@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 5 delivery in_progress; next: submission package
+Phase 5 delivery complete; submission package assembled
 
 ## Phase Dependency Graph
 ```
@@ -106,14 +106,15 @@ _A-category work. 可与 Phase 2.5 并行启动。_
   -> 2026-04-23: Discussion now states benchmark-local, no-hardware, proxy-study, and no-checkpoint boundaries explicitly
 - **Depends on:** Phase 3 complete(+ Phase H if hardware path)
 
-### Phase 5: Delivery  (effort: 1 week | risk: low | status: in_progress)
+### Phase 5: Delivery  (effort: 1 week | risk: low | status: complete)
 - [x] README / runner CLI 收口
   -> 2026-04-23: README quick links / reproduce commands now surface the Sprint 3 kickoff matrix and Sprint 4 clearance summary bundles; repo-root smoke coverage includes the public experiment/export entrypoints plus Sprint 3 actual CLI export
 - [x] Contract smoke tests + teacher serialization tests
   -> 2026-04-23: `tests/test_run_3dof_experiment_entrypoints.py`, `tests/test_run_sprint3_teacher_mini_ablation_kickoff.py`, `tests/test_run_sprint4_clearance_shift.py`, and `tests/test_three_dof_teacher_training.py` verified the delivery-facing smoke + teacher serialization path (`22 passed`)
-- [ ] Submission package(paper PDF + supplementary + repo snapshot + anonymization)
-  -> 2026-04-23: anonymous repo staging is now scripted via `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind`; the builder rewrites `paper/main.tex` / `README.md`, excludes `docs/github_upload.md`, copies editor-only docs separately, and accepts `--paper-pdf` once an anonymous manuscript PDF exists
-  -> blocker (2026-04-23): local environment is still missing `latexmk` / `pdflatex` / `xelatex`, so the final paper PDF cannot yet be regenerated on this machine
+- [x] Submission package(paper PDF + supplementary + repo snapshot + anonymization)
+  -> 2026-04-23: built `tmp/submission_bundle/journal_double_blind/anonymous_manuscript.pdf` from the staged anonymous snapshot under `tmp/submission_bundle/journal_double_blind/anonymous_snapshot/paper/`, then re-ran `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf tmp/submission_bundle/anonymous_manuscript.pdf`
+  -> build note (2026-04-23): local MiKTeX provides `pdflatex` / `bibtex`, but `latexmk` remains unusable without a Perl script engine; the successful local manuscript path is direct `pdflatex -> bibtex -> pdflatex` passes inside the anonymized snapshot
+  -> final staged bundle now contains `anonymous_snapshot/`, `editor_materials/`, `submission_bundle_manifest.json`, `submission_bundle_summary.md`, `anonymous_snapshot.zip`, `editor_materials.zip`, and `anonymous_manuscript.pdf` with `paper_pdf.status = included`
   -> staging docs: `docs/submission_package_checklist.md`, `docs/cover_letter_draft.md`
 - **Depends on:** Phase 4 complete
 - **Deliverable:** submission-ready package + cover letter draft

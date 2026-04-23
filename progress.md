@@ -1,7 +1,20 @@
 # Progress Log
 
+### Phase 5: Submission Package Finalization (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Installed `MiKTeX.MiKTeX` via `winget`, generated a fresh anonymous snapshot with `scripts/export/build_submission_bundle.py`, and compiled the manuscript from the staged anonymous `paper/` directory rather than from the named source tree.
+  - Switched the local build path from `latexmk` to direct `pdflatex -> bibtex -> pdflatex` passes after MiKTeX reported that `latexmk` could not run without a `perl` script engine.
+  - Verified the generated PDF with `pdfinfo` plus extracted-text token scans to confirm that author name, email, affiliation, and public repository URL do not survive into the anonymous manuscript.
+  - Rebuilt `tmp/submission_bundle/journal_double_blind/` with `--paper-pdf` so the final staged package now includes the anonymous manuscript alongside `anonymous_snapshot/`, `editor_materials/`, both zip archives, and a manifest with `paper_pdf.status = included`.
+  - Synced `task_plan.md` and `docs/submission_package_checklist.md` so the repository-facing Phase 5 status matches the completed local package.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\submission_package_checklist.md`
+
 ### Phase 5: Anonymous Submission Bundle Staging (2026-04-23)
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - Added `src/vi_full/submission_bundle.py` plus the repo-root CLI `scripts/export/build_submission_bundle.py` so Phase 5 can now generate a reviewer-facing anonymous snapshot and a separate editor-only staging directory instead of relying on a manual checklist.
   - Followed TDD for the new packaging contract: wrote failing tests for anonymous redaction, optional PDF inclusion, and CLI defaults; then implemented the minimal builder and repo-root `--help` coverage.
@@ -20,7 +33,7 @@
   - `F:\edge download\learning\vi-insertion-only-sim\progress.md`
 
 ### Phase 5: Submission Package Probe (2026-04-23)
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - Probed the local TeX toolchain and confirmed that `latexmk`, `pdflatex`, and `xelatex` are all missing in the current environment, so a fresh paper PDF cannot be built locally right now.
   - Audited the current identity surfaces and confirmed the working tree is not an anonymized snapshot because `paper/main.tex`, `README.md`, and `docs/github_upload.md` still expose the public author/repository identity.

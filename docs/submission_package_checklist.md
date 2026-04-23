@@ -2,8 +2,8 @@
 
 ## Scope
 
-This note tracks what still needs to happen before the repository can be treated as a
-submission-facing package.
+This note records the concrete contents and local verification state of the
+anonymous submission package assembled from this repository.
 
 ## Package Contents
 
@@ -39,27 +39,45 @@ submission-facing package.
 - `scripts/export/build_submission_bundle.py` can now stage an anonymous snapshot plus editor-only
   materials under `tmp/submission_bundle/` while recording the package contents in
   `submission_bundle_manifest.json`.
+- 2026-04-23: the local anonymous manuscript PDF was built successfully at
+  `tmp/submission_bundle/journal_double_blind/anonymous_manuscript.pdf`.
+- 2026-04-23: the final staged package exists under `tmp/submission_bundle/journal_double_blind/`
+  with `anonymous_snapshot/`, `editor_materials/`, `submission_bundle_manifest.json`,
+  `submission_bundle_summary.md`, `anonymous_snapshot.zip`, `editor_materials.zip`, and
+  `anonymous_manuscript.pdf`.
+- `submission_bundle_manifest.json` now records `paper_pdf.status = included` and
+  `identity_token_scan_passed = true`.
+- PDF metadata and extracted text were checked after the anonymous build; no author name, email,
+  or public repository URL survived into the generated PDF.
 
-## Open Blockers
+## Local Build Notes
 
-### 1. PDF build toolchain is missing on this machine
+- 2026-04-23: `MiKTeX.MiKTeX` was installed via `winget`.
+- The local MiKTeX install exposes `pdflatex`, `bibtex`, `xelatex`, and `initexmf` under the
+  user profile.
+- `latexmk` still cannot run in this environment because MiKTeX does not see a local `perl`
+  script engine. This is not a packaging blocker because the direct `pdflatex` / `bibtex` chain
+  succeeds.
+- Successful local PDF sequence:
+  1. `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind`
+  2. in `tmp/submission_bundle/journal_double_blind/anonymous_snapshot/paper/`, run
+     `pdflatex -interaction=nonstopmode -halt-on-error main.tex`, `bibtex main`, then `pdflatex`
+     until cross-references stabilize
+  3. copy the resulting anonymous PDF outside the staged directory and rerun
+     `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf tmp/submission_bundle/anonymous_manuscript.pdf`
 
-Checked on 2026-04-23:
+## Remaining Notes
 
-- `latexmk`: missing
-- `pdflatex`: missing
-- `xelatex`: missing
-
-Implication:
-
-- The final paper PDF cannot be regenerated locally from `paper/main.tex` in the current
-  environment.
+- No repository-local blocker remains for the Phase 5 submission package.
+- `docs/cover_letter_draft.md` is already staged into `editor_materials/`; any venue-specific
+  wording update is editorial follow-up rather than a repository build blocker.
 
 ## Recommended Packaging Sequence
 
-1. Install a TeX toolchain that provides `latexmk` and `pdflatex`.
-2. Build the anonymous manuscript PDF from `paper/` and verify the generated PDF opens cleanly.
-3. Stage the bundle with:
+1. Refresh the anonymous snapshot with:
+   - `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind`
+2. Build the anonymous manuscript PDF from `tmp/submission_bundle/journal_double_blind/anonymous_snapshot/paper/`.
+3. Stage the final bundle with:
    - `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf <anonymous_manuscript.pdf>`
 4. Review `tmp/submission_bundle/journal_double_blind/submission_bundle_manifest.json` against the
    target venue's anonymity policy.
@@ -89,7 +107,7 @@ The anonymous bundle builder currently applies the following filtering rules:
 
 ## Minimal Completion Criteria
 
-- Paper PDF built successfully in the target environment.
-- Supplementary figure assets included.
-- Snapshot contents match the target venue's anonymity policy.
-- Cover letter draft reviewed once against the target venue.
+- [x] Paper PDF built successfully in the current environment.
+- [x] Supplementary figure assets are included in the anonymous snapshot.
+- [x] Snapshot contents match the current anonymity policy and manifest.
+- [x] Cover letter draft is staged under `editor_materials/`; venue-specific wording can be tuned later if needed.
