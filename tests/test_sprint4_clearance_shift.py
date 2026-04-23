@@ -173,3 +173,27 @@ def test_report_and_export_capture_per_profile_clearance_drop(tmp_path: Path) ->
     assert payload["suite_rows"][2]["suite_name"] == "dapg_lite_repaired_mainline"
     assert "fixed_impedance_rl_stable_r32_p32" in csv_text
     assert "clearance_easy" in csv_text
+
+
+def test_repo_docs_reference_sprint4_clearance_shift_boundary() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    task_plan = (repo_root / "task_plan.md").read_text(encoding="utf-8")
+    docs = "\n".join(
+        [
+            (repo_root / "README.md").read_text(encoding="utf-8"),
+            (repo_root / "docs" / "figure_asset_manifest.md").read_text(
+                encoding="utf-8"
+            ),
+            (repo_root / "paper" / "main.tex").read_text(encoding="utf-8"),
+            task_plan,
+        ]
+    )
+
+    assert "outputs/sprint4_clearance_shift/sprint4_clearance_shift.json" in docs
+    assert "export_sprint4_clearance_shift.py" in docs
+    assert "clearance_easy" in docs
+    assert "clearance_hard" in docs
+    assert "not a replacement" in docs
+    assert "frozen five-profile" in docs
+    assert "Phase 3 complete" in task_plan
+    assert "- [x] Sprint 4A: Clearance shift 鲁棒性扫描" in task_plan

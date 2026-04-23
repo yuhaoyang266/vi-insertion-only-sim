@@ -1,5 +1,33 @@
 # Progress Log
 
+### Phase 4: Sprint 4 Findings Integrated Into Manuscript (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Restored the unmerged Sprint 4 manuscript patch so the main text now references the cross-family pure-RL negative-evidence layer, the frozen Sprint 3 teacher-boundary artifact, and the Sprint 4A clearance-shift sweep.
+  - Updated the abstract, introduction, experiments, discussion, and limitations to keep the paper-facing claim boundary explicit: benchmark-local, no-hardware, and train-once / eval-many-profile because paper-ready checkpoints are not persisted.
+  - Kept the clearance ladder framed as a sprint-specific robustness stress test rather than a replacement for the frozen five-profile benchmark.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\paper\main.tex`
+
+### Phase 3: Sprint 4A Clearance Shift Sweep (2026-04-23)
+- **Status:** complete
+- Actions taken:
+  - Restored the missing Sprint 4A sweep/export code and tracked artifacts from the repo-local branch history.
+  - Added a dedicated pure-clearance ladder with `clearance_easy`, `nominal`, and `clearance_hard`, keeping offset, friction, force noise, and the nominal train profile fixed.
+  - Exported reviewer-facing JSON / CSV / Markdown artifacts and kept the contract explicit: selected demo-supported suites only, not a mixed-contract leaderboard and not a replacement for the frozen benchmark.
+  - Synced repo-facing docs so README / manifest / task-plan references now point to the Sprint 4A exporter and artifact bundle.
+- Files created/modified:
+  - `F:\edge download\learning\vi-insertion-only-sim\src\vi_full\sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\scripts\experiments\export_sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\tests\test_run_sprint4_clearance_shift.py`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint4_clearance_shift\sprint4_clearance_shift.json`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint4_clearance_shift\sprint4_clearance_shift.csv`
+  - `F:\edge download\learning\vi-insertion-only-sim\outputs\sprint4_clearance_shift\sprint4_clearance_shift.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\README.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\docs\figure_asset_manifest.md`
+  - `F:\edge download\learning\vi-insertion-only-sim\task_plan.md`
+
 ### Phase 3: Sprint 3 Teacher Mini-Ablation Kickoff (2026-04-23)
 - **Status:** complete
 - Actions taken:

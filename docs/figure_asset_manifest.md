@@ -72,6 +72,16 @@ not be cited as outcome evidence.
 | --- | --- | --- | --- |
 | Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json` and `.md` | generated directly by `src/vi_full/sprint3_teacher_mini_ablation_kickoff.py` | 4-condition teacher support quality x demo rollout budget boundary with fixed metrics, controls, closure criteria, and claim limits |
 
+## Reviewer-Facing Sprint 4 Assets
+
+These assets add a sprint-specific pure-clearance stress ladder. They are paper-facing robustness
+artifacts, not new manuscript figure exports and not a replacement for the frozen five-profile
+benchmark contract.
+
+| Asset | Expected Export Files | Source Artifacts | Role |
+| --- | --- | --- | --- |
+| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.json`, `.csv`, and `.md` | generated directly by `src/vi_full/sprint4_clearance_shift.py` via `scripts/experiments/export_sprint4_clearance_shift.py` | selected demo-supported suites under a pure `clearance_easy` / `nominal` / `clearance_hard` ladder with fixed train profile and explicit claim boundary |
+
 ## Panel Intent
 
 These panel intents are locked only to keep export work aligned with the current manuscript.
