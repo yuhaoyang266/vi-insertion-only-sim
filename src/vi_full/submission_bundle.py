@@ -18,6 +18,7 @@ ANONYMOUS_SNAPSHOT_DIRS = (
 )
 ANONYMOUS_SNAPSHOT_TEST_DIRS = ("tests/reviewer",)
 ANONYMOUS_SNAPSHOT_FILES = ("environment.yml", "pyproject.toml")
+ANONYMOUS_SNAPSHOT_DOC_FILES = ("docs/figure_asset_manifest.md",)
 EDITOR_ONLY_DOCS = ("cover_letter_draft.md", "submission_package_checklist.md")
 EXCLUDED_PATHS = (
     "docs/github_upload.md",
@@ -241,6 +242,15 @@ def build_submission_bundle(
         if source_file.exists():
             shutil.copy2(source_file, anonymous_snapshot_dir / file_name)
 
+    copied_files = ["README.md", *ANONYMOUS_SNAPSHOT_FILES]
+    for file_name in ANONYMOUS_SNAPSHOT_DOC_FILES:
+        source_file = source_root / file_name
+        if source_file.exists():
+            destination_file = anonymous_snapshot_dir / file_name
+            destination_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source_file, destination_file)
+            copied_files.append(file_name)
+
     readme_path = source_root / "README.md"
     if readme_path.exists():
         anonymized_readme = _anonymize_readme(readme_path.read_text(encoding="utf-8"))
@@ -291,7 +301,7 @@ def build_submission_bundle(
         "anonymous_snapshot_dir": str(anonymous_snapshot_dir),
         "editor_materials_dir": str(editor_materials_dir),
         "copied_directories": copied_directories,
-        "copied_files": ["README.md", *ANONYMOUS_SNAPSHOT_FILES],
+        "copied_files": copied_files,
         "redacted_files": ["README.md", "paper/main.tex"],
         "excluded_paths": list(EXCLUDED_PATHS),
         "identity_token_scan_passed": True,

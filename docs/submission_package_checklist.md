@@ -104,6 +104,8 @@ The anonymous bundle builder currently applies the following filtering rules:
   - relabels the snapshot as reviewer-facing anonymous material
 - `docs/github_upload.md`
   - excluded from the anonymous snapshot
+- `docs/figure_asset_manifest.md`
+  - included so reviewer smoke tests can verify figure-source provenance inside the snapshot
 - `docs/cover_letter_draft.md`
   - copied only into `editor_materials/`
 - `tests/reviewer/`

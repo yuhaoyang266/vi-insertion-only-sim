@@ -91,9 +91,9 @@ python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bun
 This writes an `anonymous_snapshot/` tree, an `editor_materials/` tree, a
 `submission_bundle_manifest.json`, a `submission_bundle_summary.md`, and zip archives for both
 directories. The anonymous snapshot deliberately rewrites `README.md` and `paper/main.tex`, includes
-only the reviewer-facing `tests/reviewer/` smoke subset, and excludes reviewer-irrelevant staging
-content such as `docs/github_upload.md`, the rest of `tests/`, and the editor-only submission notes
-from the reviewer-facing copy.
+`docs/figure_asset_manifest.md` plus the reviewer-facing `tests/reviewer/` smoke subset, and excludes
+reviewer-irrelevant staging content such as `docs/github_upload.md`, the rest of `tests/`, and the
+editor-only submission notes from the reviewer-facing copy.
 
 Keep `--output-dir` as a dedicated staging path such as `tmp/submission_bundle/...`. The builder
 now rejects destinations that point at the repository root or that live inside copied source trees

@@ -38,6 +38,7 @@ Repository URL embedded in the manuscript:
     )
     _write_text(source_root / "paper" / "references.bib", "% references\n")
     _write_text(source_root / "docs" / "cover_letter_draft.md", "Sincerely,\n\nYu Haoyang\n")
+    _write_text(source_root / "docs" / "figure_asset_manifest.md", "# Figure manifest\n")
     _write_text(
         source_root / "docs" / "github_upload.md",
         "git remote add origin https://github.com/yuhaoyang266/vi-insertion-only-sim.git\n",
@@ -110,7 +111,8 @@ def test_build_submission_bundle_anonymizes_identity_surfaces(tmp_path: Path) ->
     assert "yuhaoyang266" not in anonymized_main_tex
     assert "Project repository" not in anonymized_main_tex
 
-    assert not (anonymous_snapshot_dir / "docs").exists()
+    assert (anonymous_snapshot_dir / "docs" / "figure_asset_manifest.md").is_file()
+    assert not (anonymous_snapshot_dir / "docs" / "cover_letter_draft.md").exists()
     assert (anonymous_snapshot_dir / "tests" / "reviewer" / "test_snapshot_smoke.py").is_file()
     assert not (anonymous_snapshot_dir / "tests" / "test_dummy.py").exists()
     assert (editor_materials_dir / "cover_letter_draft.md").is_file()
