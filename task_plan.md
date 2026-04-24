@@ -13,7 +13,7 @@
 Final tier 将在 Phase 2.5 关闭时锁定。
 
 ## Current Phase
-Phase 5 delivery complete; submission package assembled
+Phase 5 delivery complete; submission package assembled. Milestone 3 Engineering Trust planning opened on 2026-04-25 with local PDF/TeX deployment explicitly excluded from the blocking gate.
 
 ## Phase Dependency Graph
 ```

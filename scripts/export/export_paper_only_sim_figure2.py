@@ -104,10 +104,14 @@ def _load_manifest(path: Path) -> dict:
 
 
 def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
-    manifest = _load_manifest(args.manifest)
-    canonical_benchmark = manifest["artifacts"]["canonical_main_benchmark"]
-    canonical_statistics = manifest["artifacts"]["canonical_statistics_report"]
-    if args.benchmark_input is None:
+    if args.benchmark_input is not None:
+        benchmark_input = args.benchmark_input
+        statistics_report_input = args.statistics_report_input
+        provenance_label = "override_benchmark_input"
+    else:
+        manifest = _load_manifest(args.manifest)
+        canonical_benchmark = manifest["artifacts"]["canonical_main_benchmark"]
+        canonical_statistics = manifest["artifacts"]["canonical_statistics_report"]
         benchmark_input = Path(canonical_benchmark["path"])
         statistics_report_input = (
             Path(canonical_statistics["path"])
@@ -115,10 +119,6 @@ def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
             else args.statistics_report_input
         )
         provenance_label = "canonical_main_benchmark"
-    else:
-        benchmark_input = args.benchmark_input
-        statistics_report_input = args.statistics_report_input
-        provenance_label = "override_benchmark_input"
     return ExportInputs(
         benchmark_input=benchmark_input,
         statistics_report_input=statistics_report_input,

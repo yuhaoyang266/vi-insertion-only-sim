@@ -61,6 +61,22 @@ def test_benchmark_table_exporter_marks_explicit_override() -> None:
     assert resolved.statistics_report_input is None
 
 
+def test_benchmark_table_override_does_not_load_manifest(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_benchmark_table.py",
+        "benchmark_table_exporter_override_manifest_under_test",
+    )
+    missing_manifest = tmp_path / "missing_manifest.json"
+
+    args = module.parse_args(
+        ["--manifest", str(missing_manifest), "--benchmark-input", str(SCHEMA2_DIAGNOSTIC)]
+    )
+    resolved = module.resolve_export_inputs(args)
+
+    assert resolved.benchmark_input == SCHEMA2_DIAGNOSTIC
+    assert resolved.provenance_label == "override_benchmark_input"
+
+
 def test_figure2_exporter_defaults_to_manifest_sources() -> None:
     module = _load_script(
         "scripts/export/export_paper_only_sim_figure2.py",
@@ -75,6 +91,22 @@ def test_figure2_exporter_defaults_to_manifest_sources() -> None:
     assert resolved.statistics_report_input == STAGE3_STATISTICS
     assert resolved.provenance_label == "canonical_main_benchmark"
     assert args.benchmark_input is None
+
+
+def test_figure2_override_does_not_load_manifest(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_figure2.py",
+        "figure2_exporter_override_manifest_under_test",
+    )
+    missing_manifest = tmp_path / "missing_manifest.json"
+
+    args = module.parse_args(
+        ["--manifest", str(missing_manifest), "--benchmark-input", str(SCHEMA2_DIAGNOSTIC)]
+    )
+    resolved = module.resolve_export_inputs(args)
+
+    assert resolved.benchmark_input == SCHEMA2_DIAGNOSTIC
+    assert resolved.provenance_label == "override_benchmark_input"
 
 
 def test_table_exporter_rejects_manifest_with_bad_artifact_sha(tmp_path: Path) -> None:

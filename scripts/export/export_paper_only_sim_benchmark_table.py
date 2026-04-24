@@ -118,11 +118,16 @@ def _load_manifest(path: Path) -> dict:
 
 
 def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
-    manifest = _load_manifest(args.manifest)
-    canonical_benchmark = manifest["artifacts"]["canonical_main_benchmark"]
-    canonical_statistics = manifest["artifacts"]["canonical_statistics_report"]
-
-    if args.benchmark_input is None:
+    if args.benchmark_input is not None:
+        benchmark_input = args.benchmark_input
+        statistics_report_input = args.statistics_report_input
+        provenance_label = "override_benchmark_input"
+        generating_command = "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <override>"
+        git_commit = None
+    else:
+        manifest = _load_manifest(args.manifest)
+        canonical_benchmark = manifest["artifacts"]["canonical_main_benchmark"]
+        canonical_statistics = manifest["artifacts"]["canonical_statistics_report"]
         benchmark_input = Path(canonical_benchmark["path"])
         statistics_report_input = (
             Path(canonical_statistics["path"])
@@ -135,12 +140,6 @@ def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
             "--manifest artifacts/main_benchmark/main_benchmark_manifest.json"
         )
         git_commit = canonical_benchmark["git_commit"]
-    else:
-        benchmark_input = args.benchmark_input
-        statistics_report_input = args.statistics_report_input
-        provenance_label = "override_benchmark_input"
-        generating_command = "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <override>"
-        git_commit = None
     return ExportInputs(
         benchmark_input=benchmark_input,
         statistics_report_input=statistics_report_input,

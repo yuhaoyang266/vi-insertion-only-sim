@@ -92,6 +92,16 @@
 - Planning skill: `C:\Users\Windows\.codex\skills\planning-with-files\SKILL.md`
 - User draft plan: current conversation content
 
+## Milestone 3 Engineering Trust Planning (2026-04-25)
+
+- Milestone 2 Paper-Facing Reproducibility is treated as complete for the next work slice.
+- The user does not want local LaTeX/PDF deployment to be a blocking workflow requirement.
+- Milestone 3 should therefore close on no-training Python checks, source/prose audits, import-boundary checks, reviewer smoke checks, and `build_paper_assets.py --check`; it should not require `pdflatex`, `bibtex`, `latexmk`, or `build_paper_pdf.py`.
+- Current Task 10 baseline is mostly implemented: `src/vi_full/__init__.py` exposes only `__version__`, and `tests/test_import_boundaries.py` exists.
+- Current Task 11 baseline is not implemented: `.github/` does not exist.
+- Current Task 13 baseline is not implemented: `tests/test_paper_claim_boundaries.py` does not exist.
+- Recommended execution order: Task 10 closeout -> Task 13 claim test/prose cleanup -> Task 11 CI workflows.
+
 ## Paper Ceiling Diagnosis (per 2026-04-18 discussion)
 
 ### Current trajectory ceiling
