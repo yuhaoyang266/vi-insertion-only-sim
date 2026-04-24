@@ -13,6 +13,8 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
+from vi_full.artifact_registry import load_manifest
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -187,7 +189,7 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 def _resolve_manifest_artifact(manifest_path: Path, role: str) -> dict[str, Any]:
-    manifest = _load_json(manifest_path)
+    manifest = load_manifest(manifest_path, repo_root=REPO_ROOT)
     try:
         artifact = manifest["artifacts"][role]
     except KeyError as exc:

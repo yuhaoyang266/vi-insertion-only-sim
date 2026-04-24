@@ -282,3 +282,36 @@ def test_cli_fails_fast_when_confirm_report_omits_zero_contact_metrics(
 
     assert completed.returncode != 0
     assert missing_field in completed.stderr
+
+
+def test_cli_rejects_benchmark_override_with_custom_manifest(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = (
+        repo_root / "scripts" / "experiments" / "export_3dof_evidence_matrix.py"
+    )
+    confirm_path = _write_json(tmp_path / "confirm.json", _confirm_report_payload())
+    benchmark_path = _write_json(tmp_path / "benchmark.json", _benchmark_report_payload())
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text("{}", encoding="utf-8")
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script_path),
+            "--confirm-report",
+            str(confirm_path),
+            "--benchmark-report",
+            str(benchmark_path),
+            "--manifest",
+            str(manifest_path),
+            "--output-dir",
+            str(tmp_path / "evidence_matrix"),
+        ],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode != 0
+    assert "--benchmark-report disables manifest lookup" in completed.stderr

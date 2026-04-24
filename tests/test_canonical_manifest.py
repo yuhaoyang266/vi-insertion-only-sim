@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
+import json
 from pathlib import Path
 import sys
+
+import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -73,3 +77,32 @@ def test_schema2_is_appendix_diagnostic_only() -> None:
     assert schema2["schema_version"] == 2
     assert "appendix" in schema2["claim_scope"]
     assert "main" not in schema2["claim_scope"]
+
+
+def test_schema2_diagnostic_gate_does_not_depend_on_manifest_key(tmp_path: Path) -> None:
+    registry = _load_artifact_registry_module()
+    source_path = REPO_ROOT / SCHEMA2_BENCHMARK_PATH
+    artifact_path = tmp_path / source_path.name
+    artifact_path.write_bytes(source_path.read_bytes())
+    manifest = {
+        "manifest_version": 1,
+        "artifacts": {
+            "canonical_main_benchmark": {
+                "role": "canonical_main_benchmark",
+                "path": artifact_path.name,
+                "sha256": hashlib.sha256(artifact_path.read_bytes()).hexdigest(),
+                "schema_version": 2,
+                "claim_scope": "main manuscript Table 1",
+                "source_role": "renamed_schema2_source",
+                "generating_command": "test",
+                "git_commit": "test",
+                "git_dirty": False,
+                "generated_at_utc": "2026-04-24T00:00:00Z",
+            }
+        },
+    }
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="appendix/diagnostic/legacy"):
+        registry.load_manifest(manifest_path, repo_root=tmp_path)

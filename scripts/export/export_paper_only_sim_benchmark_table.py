@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import difflib
 import importlib.util
-import json
 from dataclasses import dataclass
 from pathlib import Path
 import sys
@@ -39,6 +38,21 @@ def _load_paper_tables_module():
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
+
+
+def _load_artifact_registry_module():
+    repo_root = _repo_root()
+    src_root = repo_root / "src"
+    if str(src_root) not in sys.path:
+        sys.path.insert(0, str(src_root))
+    module_path = src_root / "vi_full" / "artifact_registry.py"
+    spec = importlib.util.spec_from_file_location("artifact_registry_cli", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load artifact registry module from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -99,7 +113,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def _load_manifest(path: Path) -> dict:
     manifest_path = path if path.is_absolute() else _repo_root() / path
-    return json.loads(manifest_path.read_text(encoding="utf-8"))
+    registry = _load_artifact_registry_module()
+    return registry.load_manifest(manifest_path, repo_root=_repo_root())
 
 
 def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
@@ -115,7 +130,10 @@ def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
             else args.statistics_report_input
         )
         provenance_label = "canonical_main_benchmark"
-        generating_command = canonical_benchmark["generating_command"]
+        generating_command = (
+            "python scripts/export/export_paper_only_sim_benchmark_table.py "
+            "--manifest artifacts/main_benchmark/main_benchmark_manifest.json"
+        )
         git_commit = canonical_benchmark["git_commit"]
     else:
         benchmark_input = args.benchmark_input

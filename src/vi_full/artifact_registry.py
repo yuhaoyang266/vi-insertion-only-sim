@@ -35,9 +35,16 @@ REQUIRED_ARTIFACT_FIELDS = {
 }
 
 
-def load_manifest(path: Path = DEFAULT_MANIFEST_PATH) -> dict[str, Any]:
+def load_manifest(
+    path: Path = DEFAULT_MANIFEST_PATH,
+    *,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
     manifest = json.loads(Path(path).read_text(encoding="utf-8"))
-    validate_manifest(manifest, repo_root=_infer_repo_root(Path(path)))
+    validate_manifest(
+        manifest,
+        repo_root=_infer_repo_root(Path(path)) if repo_root is None else Path(repo_root),
+    )
     return manifest
 
 
@@ -90,11 +97,16 @@ def _validate_artifact(role: str, artifact: dict[str, Any], *, repo_root: Path) 
     if artifact["sha256"] != actual_sha256:
         raise ValueError(f"Artifact '{role}' sha256 does not match {raw_path}.")
 
-    if role == "schema2_diagnostic":
+    diagnostic_gate = (
+        artifact.get("schema_version") == 2
+        or "schema2" in str(artifact.get("path", "")).lower()
+        or "schema2" in str(artifact.get("source_role", "")).lower()
+    )
+    if diagnostic_gate:
         if artifact["role"] != "appendix_diagnostic_legacy":
-            raise ValueError("schema2_diagnostic must be appendix/diagnostic/legacy only.")
-        if "main" in artifact["claim_scope"]:
-            raise ValueError("schema2_diagnostic must not claim main-paper scope.")
+            raise ValueError("schema2 artifacts must be appendix/diagnostic/legacy only.")
+        if "main" in artifact["claim_scope"].lower():
+            raise ValueError("schema2 artifacts must not claim main-paper scope.")
 
 
 def _infer_repo_root(path: Path) -> Path:

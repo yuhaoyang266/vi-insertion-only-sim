@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
+
+import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +75,38 @@ def test_figure2_exporter_defaults_to_manifest_sources() -> None:
     assert resolved.statistics_report_input == STAGE3_STATISTICS
     assert resolved.provenance_label == "canonical_main_benchmark"
     assert args.benchmark_input is None
+
+
+def test_table_exporter_rejects_manifest_with_bad_artifact_sha(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_benchmark_table.py",
+        "benchmark_table_exporter_bad_sha_under_test",
+    )
+    manifest = json.loads((REPO_ROOT / MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["artifacts"]["canonical_main_benchmark"]["sha256"] = "0" * 64
+    manifest_path = tmp_path / "bad_manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    args = module.parse_args(["--manifest", str(manifest_path)])
+
+    with pytest.raises(ValueError, match="sha256 does not match"):
+        module.resolve_export_inputs(args)
+
+
+def test_figure2_exporter_rejects_manifest_with_bad_artifact_sha(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_figure2.py",
+        "figure2_exporter_bad_sha_under_test",
+    )
+    manifest = json.loads((REPO_ROOT / MANIFEST_PATH).read_text(encoding="utf-8"))
+    manifest["artifacts"]["canonical_main_benchmark"]["sha256"] = "0" * 64
+    manifest_path = tmp_path / "bad_manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    args = module.parse_args(["--manifest", str(manifest_path)])
+
+    with pytest.raises(ValueError, match="sha256 does not match"):
+        module.resolve_export_inputs(args)
 
 
 def test_exporters_support_check_mode_without_rewriting_outputs() -> None:

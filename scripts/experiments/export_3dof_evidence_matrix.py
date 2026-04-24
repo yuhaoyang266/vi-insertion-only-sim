@@ -6,13 +6,15 @@ from pathlib import Path
 import sys
 
 
+DEFAULT_MANIFEST = Path("artifacts/main_benchmark/main_benchmark_manifest.json")
+
+
 def _load_evidence_matrix_module():
-    module_path = (
-        Path(__file__).resolve().parents[2]
-        / "src"
-        / "vi_full"
-        / "three_dof_evidence_matrix.py"
-    )
+    repo_root = Path(__file__).resolve().parents[2]
+    src_root = repo_root / "src"
+    if str(src_root) not in sys.path:
+        sys.path.insert(0, str(src_root))
+    module_path = src_root / "vi_full" / "three_dof_evidence_matrix.py"
     spec = importlib.util.spec_from_file_location(
         "three_dof_evidence_matrix_cli",
         module_path,
@@ -25,7 +27,13 @@ def _load_evidence_matrix_module():
     return module
 
 
-def parse_args() -> argparse.Namespace:
+def _is_default_manifest(path: Path) -> bool:
+    repo_root = Path(__file__).resolve().parents[2]
+    candidate = path if path.is_absolute() else repo_root / path
+    return candidate.resolve() == (repo_root / DEFAULT_MANIFEST).resolve()
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Export the reviewer-facing 3DoF evidence matrix artifacts."
     )
@@ -38,14 +46,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--manifest",
         type=Path,
-        default=Path("artifacts/main_benchmark/main_benchmark_manifest.json"),
+        default=DEFAULT_MANIFEST,
         help="Canonical benchmark manifest used for demo-supported and mechanics-anchor rows.",
     )
     parser.add_argument(
         "--benchmark-report",
         type=Path,
         default=None,
-        help="Optional benchmark JSON override. Defaults to --manifest canonical_main_benchmark.",
+        help="Optional benchmark JSON override; disables manifest lookup unless a custom --manifest is also provided, which is rejected.",
     )
     parser.add_argument(
         "--output-dir",
@@ -53,7 +61,10 @@ def parse_args() -> argparse.Namespace:
         default=Path("outputs/evidence_matrix"),
         help="Directory for exported evidence-matrix artifacts.",
     )
-    return parser.parse_args()
+    args = parser.parse_args(argv)
+    if args.benchmark_report is not None and not _is_default_manifest(args.manifest):
+        parser.error("--benchmark-report disables manifest lookup; do not combine it with custom --manifest.")
+    return args
 
 
 def main() -> None:

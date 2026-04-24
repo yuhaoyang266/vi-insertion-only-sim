@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,11 @@ FORBIDDEN_STRINGS = (
     "/home/",
     "full_projects",
     "vi_insertion_full_only_sim",
+)
+ABSOLUTE_PATH_PATTERNS = (
+    re.compile(r"(?<![A-Za-z])[A-Za-z]:[\\/]"),
+    re.compile(r"(?<![A-Za-z0-9\\])\\\\[A-Za-z0-9]"),
+    re.compile(r"(?<!:)//[A-Za-z0-9]"),
 )
 TEXT_SUFFIXES = {".bib", ".csv", ".json", ".md", ".tex"}
 
@@ -57,6 +63,13 @@ def _load_json(relative_path: str) -> dict[str, Any]:
     return json.loads((REPO_ROOT / relative_path).read_text(encoding="utf-8"))
 
 
+def _absolute_path_violation(line: str) -> str | None:
+    for pattern in ABSOLUTE_PATH_PATTERNS:
+        if pattern.search(line):
+            return pattern.pattern
+    return None
+
+
 def _assert_common_provenance(payload: dict[str, Any]) -> None:
     assert isinstance(payload.get("source_artifacts"), dict)
     assert isinstance(payload.get("source_hashes"), dict)
@@ -84,7 +97,21 @@ def test_paper_facing_text_artifacts_do_not_leak_local_paths() -> None:
             for forbidden in FORBIDDEN_STRINGS:
                 if forbidden in line:
                     violations.append(f"{relative}:{line_number}: contains {forbidden!r}")
+            pattern = _absolute_path_violation(line)
+            if pattern is not None:
+                violations.append(f"{relative}:{line_number}: matches {pattern!r}")
     assert violations == []
+
+
+def test_absolute_path_gate_matches_generic_windows_and_unc_paths() -> None:
+    assert _absolute_path_violation(r"E:\scratch\artifact.json") is not None
+    assert _absolute_path_violation("Z:/scratch/artifact.json") is not None
+    assert _absolute_path_violation(r"\\server\share\artifact.json") is not None
+    assert _absolute_path_violation("//server/share/artifact.json") is not None
+    assert _absolute_path_violation(r"\toprule") is None
+    assert _absolute_path_violation(r"Author\\Institution\\\texttt{name@example.com}") is None
+    assert _absolute_path_violation("generated://three_dof/artifact") is None
+    assert _absolute_path_violation("https://github.com/example/repo") is None
 
 
 def test_stage3_table_and_statistics_have_source_provenance() -> None:
