@@ -46,6 +46,18 @@ Repository URL embedded in the manuscript:
 | Paper-facing source modules | [`src/vi_full/`](src/vi_full/) |
 | Support metric utilities | [`src/vi_full/three_dof_support_metrics.py`](src/vi_full/three_dof_support_metrics.py) |
 
+## Import Contract
+
+`import vi_full` is intentionally lightweight: it exposes only `__version__` and does not import `mujoco`, `stable_baselines3`, training modules, or legacy environment code at the top level. Runtime and simulator APIs (benchmark runners, environment constructors, support metrics) are imported from explicit submodules:
+
+```python
+import vi_full                                   # lightweight, no side effects
+from vi_full import three_dof_benchmark as bm    # explicit submodule
+import vi_full.three_dof_support_metrics as sci   # explicit submodule
+```
+
+The boundary is enforced by `tests/test_import_boundaries.py`.
+
 ## Evidence Map
 
 | Evidence block | Where to look | Role |
