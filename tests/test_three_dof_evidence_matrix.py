@@ -762,3 +762,35 @@ def test_evidence_matrix_exports_are_deterministic_across_identical_reruns(
     assert second_main_table_json == first_main_table_json
     assert second_main_table_csv == first_main_table_csv
     assert second_main_table_markdown == first_main_table_markdown
+
+
+def test_sprint2_main_table_uses_portable_evidence_reference_for_external_output(
+    tmp_path: Path,
+) -> None:
+    from vi_full.three_dof_evidence_matrix import export_3dof_evidence_matrix_artifacts
+
+    confirm_path = _write_json(
+        tmp_path / "three_dof_cross_family_confirm_report.json",
+        _confirm_report_payload(),
+    )
+    benchmark_path = _write_json(
+        tmp_path / "three_dof_benchmark_schema2_paper_teacher.json",
+        _benchmark_report_payload(),
+    )
+    output_dir = tmp_path / "external_evidence_matrix"
+
+    artifacts = export_3dof_evidence_matrix_artifacts(
+        confirm_report_path=confirm_path,
+        benchmark_report_path=benchmark_path,
+        output_dir=output_dir,
+    )
+    sprint2_paths = artifacts["sprint2_main_table"]
+    table = json.loads(sprint2_paths["json"].read_text(encoding="utf-8"))
+    evidence_source = table["source_artifacts"]["evidence_matrix"]
+
+    assert evidence_source == "three_dof_evidence_matrix.json"
+    assert not Path(evidence_source).is_absolute()
+    assert table["source_hashes"]["evidence_matrix"] == _sha256(artifacts["json"])
+    markdown = sprint2_paths["markdown"].read_text(encoding="utf-8")
+    assert f"Evidence-matrix source: `{evidence_source}`" in markdown
+    assert artifacts["json"].resolve().as_posix() not in markdown

@@ -203,6 +203,14 @@ def _provenance_path(path: Path) -> str:
         return resolved.as_posix()
 
 
+def _sibling_artifact_path(path: Path) -> str:
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return resolved.name
+
+
 def _as_float(value: object) -> float:
     if value is None:
         return 0.0
@@ -812,11 +820,16 @@ def build_sprint2_main_table_from_evidence_matrix(
 
     source_artifacts = dict(payload.get("source_artifacts", {}))
     source_artifacts["evidence_matrix"] = (
-        _provenance_path(Path(evidence_matrix_path))
+        _sibling_artifact_path(Path(evidence_matrix_path))
         if evidence_matrix_path is not None
         else None
     )
-    source_hashes = _source_hashes(source_artifacts)
+    source_hash_inputs = dict(source_artifacts)
+    if evidence_matrix_path is not None:
+        source_hash_inputs.pop("evidence_matrix", None)
+    source_hashes = _source_hashes(source_hash_inputs)
+    if evidence_matrix_path is not None:
+        source_hashes["evidence_matrix"] = _sha256(Path(evidence_matrix_path))
     matrix_contract = dict(payload["matrix_contract"])
     return {
         "report_name": "three_dof_sprint2_main_table",
