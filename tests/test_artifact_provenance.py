@@ -118,6 +118,10 @@ def test_stage3_table_and_statistics_have_source_provenance() -> None:
     table = _load_json("artifacts/main_benchmark/table_3dof_paper_benchmark_stage3_20260412.json")
     _assert_common_provenance(table)
     assert table["schema_version"] == 3
+    assert "scripts/export/export_paper_only_sim_benchmark_table.py" in table[
+        "generating_command"
+    ]
+    assert "run_3dof_cross_family_benchmark.py" not in table["generating_command"]
     _assert_sources(
         table,
         {
