@@ -103,4 +103,3 @@ def _infer_repo_root(path: Path) -> Path:
         if (candidate / ".git").exists():
             return candidate
     return resolved.parents[2]
-

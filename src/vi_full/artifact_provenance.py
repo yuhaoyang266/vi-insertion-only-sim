@@ -40,4 +40,3 @@ def _run_git(args: list[str], *, repo_root: Path) -> str:
         text=True,
     )
     return completed.stdout.strip()
-

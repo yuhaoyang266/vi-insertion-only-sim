@@ -138,4 +138,3 @@ def test_evidence_artifacts_have_manifest_level_provenance() -> None:
             "evidence_matrix": EVIDENCE_MATRIX,
         },
     )
-
