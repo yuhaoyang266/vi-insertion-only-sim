@@ -234,3 +234,14 @@ mechanism stay auditable side by side.
 The repository intentionally separates manuscript files, figures, supplementary views, result
 artifacts, scripts, source modules, and tests. Generated LaTeX products and Python caches are
 ignored; frozen paper artifacts are tracked.
+
+## CI
+
+Two no-training GitHub Actions workflows guard the repository:
+
+| Workflow | Purpose | Local equivalent |
+| --- | --- | --- |
+| `reviewer-smoke` | Lightweight import + boundary + reviewer snapshot | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_import_boundaries.py tests/reviewer` |
+| `paper-assets-check` | Manifest, provenance, exporter sync, table sync, claim boundaries, asset check | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_canonical_manifest.py tests/test_artifact_provenance.py tests/test_exporter_defaults.py tests/test_paper_table_sync.py tests/test_three_dof_evidence_matrix.py tests/test_sprint2_paper_sync.py tests/test_paper_claim_boundaries.py && python scripts/export/build_paper_assets.py --check` |
+
+Neither workflow runs training or requires a TeX/PDF build environment.

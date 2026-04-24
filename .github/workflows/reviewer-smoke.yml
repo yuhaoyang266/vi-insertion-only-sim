@@ -1,0 +1,29 @@
+name: Reviewer Smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  reviewer-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e . 2>/dev/null || pip install pytest 2>/dev/null || true
+
+      - name: Lightweight import check
+        run: PYTHONPATH=src python -c "import vi_full; print(vi_full.__version__)"
+
+      - name: Import boundary test
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_import_boundaries.py
+
+      - name: Reviewer snapshot smoke
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/reviewer
