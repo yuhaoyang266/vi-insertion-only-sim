@@ -45,6 +45,10 @@ Repository URL embedded in the manuscript:
     _write_text(source_root / "src" / "vi_full" / "__init__.py", "__all__ = []\n")
     _write_text(source_root / "scripts" / "experiments" / "dummy.py", "print('dummy')\n")
     _write_text(source_root / "tests" / "test_dummy.py", "def test_dummy():\n    assert True\n")
+    _write_text(
+        source_root / "tests" / "reviewer" / "test_snapshot_smoke.py",
+        "def test_reviewer_smoke():\n    assert True\n",
+    )
     _write_text(source_root / "environment.yml", "name: vi-insertion-only-sim\n")
     _write_text(source_root / "pyproject.toml", "[project]\nname='vi-insertion-full'\n")
     _write_text(source_root / "figures" / "main" / "fig1.pdf", "pdf\n")
@@ -107,7 +111,8 @@ def test_build_submission_bundle_anonymizes_identity_surfaces(tmp_path: Path) ->
     assert "Project repository" not in anonymized_main_tex
 
     assert not (anonymous_snapshot_dir / "docs").exists()
-    assert not (anonymous_snapshot_dir / "tests").exists()
+    assert (anonymous_snapshot_dir / "tests" / "reviewer" / "test_snapshot_smoke.py").is_file()
+    assert not (anonymous_snapshot_dir / "tests" / "test_dummy.py").exists()
     assert (editor_materials_dir / "cover_letter_draft.md").is_file()
     assert _scan_snapshot_for_identity_strings(anonymous_snapshot_dir) == []
 
@@ -118,6 +123,8 @@ def test_build_submission_bundle_anonymizes_identity_surfaces(tmp_path: Path) ->
     assert "paper/main.tex" in manifest["redacted_files"]
     assert "README.md" in manifest["redacted_files"]
     assert "docs/github_upload.md" in manifest["excluded_paths"]
+    assert "tests/" in manifest["excluded_paths"]
+    assert "tests/reviewer/" in manifest["copied_directories"]
 
 
 def test_build_submission_bundle_can_include_optional_pdf_and_archives(

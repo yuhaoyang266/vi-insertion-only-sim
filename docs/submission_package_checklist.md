@@ -106,7 +106,9 @@ The anonymous bundle builder currently applies the following filtering rules:
   - excluded from the anonymous snapshot
 - `docs/cover_letter_draft.md`
   - copied only into `editor_materials/`
-- `tests/` and internal planning notes
+- `tests/reviewer/`
+  - included as the narrow reviewer-facing smoke subset
+- the rest of `tests/` and internal planning notes
   - excluded from the anonymous snapshot to keep the reviewer-facing package narrow and avoid
     reintroducing author-facing staging text
 

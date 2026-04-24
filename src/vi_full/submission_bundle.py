@@ -16,6 +16,7 @@ ANONYMOUS_SNAPSHOT_DIRS = (
     "src",
     "supplement",
 )
+ANONYMOUS_SNAPSHOT_TEST_DIRS = ("tests/reviewer",)
 ANONYMOUS_SNAPSHOT_FILES = ("environment.yml", "pyproject.toml")
 EDITOR_ONLY_DOCS = ("cover_letter_draft.md", "submission_package_checklist.md")
 EXCLUDED_PATHS = (
@@ -222,10 +223,17 @@ def build_submission_bundle(
         shutil.rmtree(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    copied_directories = list(ANONYMOUS_SNAPSHOT_DIRS)
     for directory_name in ANONYMOUS_SNAPSHOT_DIRS:
         source_dir = source_root / directory_name
         if source_dir.exists():
             _copy_tree(source_dir, anonymous_snapshot_dir / directory_name)
+
+    for directory_name in ANONYMOUS_SNAPSHOT_TEST_DIRS:
+        source_dir = source_root / directory_name
+        if source_dir.exists():
+            _copy_tree(source_dir, anonymous_snapshot_dir / directory_name)
+            copied_directories.append(f"{directory_name}/")
 
     anonymous_snapshot_dir.mkdir(parents=True, exist_ok=True)
     for file_name in ANONYMOUS_SNAPSHOT_FILES:
@@ -282,7 +290,7 @@ def build_submission_bundle(
         "source_root": str(source_root),
         "anonymous_snapshot_dir": str(anonymous_snapshot_dir),
         "editor_materials_dir": str(editor_materials_dir),
-        "copied_directories": list(ANONYMOUS_SNAPSHOT_DIRS),
+        "copied_directories": copied_directories,
         "copied_files": ["README.md", *ANONYMOUS_SNAPSHOT_FILES],
         "redacted_files": ["README.md", "paper/main.tex"],
         "excluded_paths": list(EXCLUDED_PATHS),

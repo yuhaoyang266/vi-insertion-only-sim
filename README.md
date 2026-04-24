@@ -67,20 +67,17 @@ Repository URL embedded in the manuscript:
 From the repository root:
 
 ```bash
-cd paper
-pdflatex -interaction=nonstopmode -halt-on-error main.tex
-bibtex main
-pdflatex -interaction=nonstopmode -halt-on-error main.tex
-pdflatex -interaction=nonstopmode -halt-on-error main.tex
+python scripts/export/build_paper_pdf.py
 ```
 
 The TeX source uses relative paths to `../figures/main/`, `../figures/appendix/`, and
 `../supplement/figures/`.
 
-The current local delivery path uses MiKTeX-provided `pdflatex` and `bibtex`; this direct sequence
-was used to build the anonymous manuscript on 2026-04-23. `latexmk` is still not usable in this
-environment because the local MiKTeX setup does not see a Perl script engine, so the direct
-`pdflatex -> bibtex -> pdflatex` chain is the supported local build path.
+The wrapper checks for `pdflatex` and `bibtex`, prints actionable MiKTeX/PATH diagnostics when they
+are missing, then runs the direct `pdflatex -> bibtex -> pdflatex -> pdflatex` chain. Manual fallback
+is the same sequence from inside `paper/` if wrapper diagnostics are not needed:
+`pdflatex -interaction=nonstopmode -halt-on-error main.tex`, `bibtex main`, then two more
+`pdflatex` passes.
 
 ## Build The Submission Bundle
 
@@ -93,9 +90,10 @@ python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bun
 
 This writes an `anonymous_snapshot/` tree, an `editor_materials/` tree, a
 `submission_bundle_manifest.json`, a `submission_bundle_summary.md`, and zip archives for both
-directories. The anonymous snapshot deliberately rewrites `README.md` and `paper/main.tex`, and it
-excludes reviewer-irrelevant staging content such as `docs/github_upload.md`, `tests/`, and the
-editor-only submission notes from the reviewer-facing copy.
+directories. The anonymous snapshot deliberately rewrites `README.md` and `paper/main.tex`, includes
+only the reviewer-facing `tests/reviewer/` smoke subset, and excludes reviewer-irrelevant staging
+content such as `docs/github_upload.md`, the rest of `tests/`, and the editor-only submission notes
+from the reviewer-facing copy.
 
 Keep `--output-dir` as a dedicated staging path such as `tmp/submission_bundle/...`. The builder
 now rejects destinations that point at the repository root or that live inside copied source trees
@@ -114,19 +112,17 @@ and now rejects in-place PDF paths before deleting the staging tree.
 
 ## Reproduce Exported Assets
 
-The exported PDF/PNG figures are already included. To regenerate them from the frozen artifacts,
-run the export scripts from the repository root:
+The exported PDF/PNG figures and generated main table are already included. To check or regenerate
+the canonical paper-facing assets from the manifest, run from the repository root:
 
 ```bash
-python scripts/export/export_paper_only_sim_figure1.py
-python scripts/export/export_paper_only_sim_figure2.py
-python scripts/export/export_paper_only_sim_high_friction_trace_figure.py
-python scripts/export/export_paper_only_sim_figureA1.py
-python scripts/export/export_paper_only_sim_figureA2.py
+python scripts/export/build_paper_assets.py --check
+python scripts/export/build_paper_assets.py
 ```
 
-The scripts are preserved with the source modules used to produce the paper assets. If running them
-outside the original working tree, verify paths before regenerating figures.
+Advanced users can still run individual exporters; main-paper table and Figure 2 commands should pass
+`--manifest artifacts/main_benchmark/main_benchmark_manifest.json` so they resolve the stage3 source
+through the canonical manifest.
 
 Appendix-only teacher/termination assets are exported from a Phase C benchmark artifact:
 
@@ -144,7 +140,7 @@ benchmark artifact:
 
 ```bash
 python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json>
-python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json> --statistics-report-input <statistics_report.json>
+python scripts/export/export_paper_only_sim_benchmark_table.py --manifest artifacts/main_benchmark/main_benchmark_manifest.json
 ```
 
 The Sprint 2 reviewer-facing table and pure-RL budget-curve summary use the frozen confirm report,
