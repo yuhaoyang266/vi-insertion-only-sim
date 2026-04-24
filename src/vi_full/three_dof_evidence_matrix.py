@@ -62,6 +62,9 @@ ROW_FIELD_ORDER = [
     "allowed_claim",
     "not_allowed_claim",
     "source_report",
+    "source_role",
+    "source_artifact",
+    "source_sha256",
 ]
 
 
@@ -181,6 +184,15 @@ BENCHMARK_FIVE_PROFILE_REQUIRED_FIELDS = (
 
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _resolve_manifest_artifact(manifest_path: Path, role: str) -> dict[str, Any]:
+    manifest = _load_json(manifest_path)
+    try:
+        artifact = manifest["artifacts"][role]
+    except KeyError as exc:
+        raise ValueError(f"Manifest is missing artifact role '{role}'.") from exc
+    return dict(artifact)
 
 
 def _provenance_path(path: Path) -> str:
@@ -348,6 +360,7 @@ def _build_pure_rl_rows(
     }
     best_distance_proxy_method = str(confirm["best_distance_proxy_method"])
     direct_source = _provenance_path(confirm_report_path)
+    direct_sha256 = _sha256(confirm_report_path)
     rows: list[dict[str, Any]] = []
     for method_name in PURE_RL_METHOD_ORDER:
         summary = summaries[method_name]
@@ -409,6 +422,9 @@ def _build_pure_rl_rows(
                     label=label,
                 ),
                 "source_report": direct_source,
+                "source_role": "confirm_report",
+                "source_artifact": direct_source,
+                "source_sha256": direct_sha256,
             }
         )
     return rows
@@ -529,9 +545,13 @@ def _build_anchor_rows(
     benchmark: dict[str, Any],
     *,
     benchmark_report_path: Path,
+    source_role: str = "benchmark_report_input",
+    source_sha256: str | None = None,
 ) -> list[dict[str, Any]]:
     learned_results = dict(benchmark.get("learned_results", {}))
     config = dict(benchmark.get("config", {}))
+    benchmark_source = _provenance_path(benchmark_report_path)
+    benchmark_sha256 = _sha256(benchmark_report_path) if source_sha256 is None else source_sha256
     rows: list[dict[str, Any]] = []
     for method_name, spec in ANCHOR_SPECS.items():
         suite_payload = dict(learned_results[method_name])
@@ -558,7 +578,10 @@ def _build_anchor_rows(
                 "evidence_role": spec["evidence_role"],
                 "allowed_claim": _anchor_allowed_claim(method_name),
                 "not_allowed_claim": _anchor_not_allowed_claim(method_name),
-                "source_report": _provenance_path(benchmark_report_path),
+                "source_report": benchmark_source,
+                "source_role": source_role,
+                "source_artifact": benchmark_source,
+                "source_sha256": benchmark_sha256,
             }
         )
     return rows
@@ -567,10 +590,26 @@ def _build_anchor_rows(
 def build_3dof_evidence_matrix(
     *,
     confirm_report_path: Path,
-    benchmark_report_path: Path,
+    benchmark_report_path: Path | None = None,
+    manifest_path: Path | None = None,
 ) -> dict[str, Any]:
     confirm_report_path = Path(confirm_report_path)
-    benchmark_report_path = Path(benchmark_report_path)
+    manifest_artifact: dict[str, Any] | None = None
+    if manifest_path is not None:
+        manifest_path = Path(manifest_path)
+        manifest_artifact = _resolve_manifest_artifact(
+            manifest_path,
+            "canonical_main_benchmark",
+        )
+        benchmark_report_path = REPO_ROOT / Path(str(manifest_artifact["path"]))
+        benchmark_source_role = str(manifest_artifact["role"])
+        benchmark_source_sha256 = str(manifest_artifact["sha256"])
+    elif benchmark_report_path is not None:
+        benchmark_report_path = Path(benchmark_report_path)
+        benchmark_source_role = "benchmark_report_input"
+        benchmark_source_sha256 = None
+    else:
+        raise ValueError("Either benchmark_report_path or manifest_path is required.")
     confirm = _load_json(confirm_report_path)
     benchmark = _load_json(benchmark_report_path)
 
@@ -583,11 +622,15 @@ def build_3dof_evidence_matrix(
     ) + _build_anchor_rows(
         benchmark,
         benchmark_report_path=benchmark_report_path,
+        source_role=benchmark_source_role,
+        source_sha256=benchmark_source_sha256,
     )
     source_artifacts = {
         "confirm_report": _provenance_path(confirm_report_path),
         "benchmark_report": _provenance_path(benchmark_report_path),
     }
+    if manifest_path is not None:
+        source_artifacts["benchmark_manifest"] = _provenance_path(manifest_path)
     return {
         "report_name": "three_dof_evidence_matrix",
         "export_name": "three_dof_evidence_matrix",
@@ -624,13 +667,15 @@ def _write_json(path: Path, payload: dict[str, Any]) -> Path:
 def export_3dof_evidence_matrix_json(
     *,
     confirm_report_path: Path,
-    benchmark_report_path: Path,
+    benchmark_report_path: Path | None = None,
+    manifest_path: Path | None = None,
     output_dir: Path,
     stem: str = "three_dof_evidence_matrix",
 ) -> tuple[Path, dict[str, Any]]:
     payload = build_3dof_evidence_matrix(
         confirm_report_path=confirm_report_path,
         benchmark_report_path=benchmark_report_path,
+        manifest_path=manifest_path,
     )
     json_path = Path(output_dir) / f"{stem}.json"
     return _write_json(json_path, payload), payload
@@ -656,6 +701,12 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
         "# 3DoF Evidence Matrix",
         "",
         f"Confirm source: `{payload['source_artifacts']['confirm_report']}`",
+    ]
+    benchmark_manifest = payload["source_artifacts"].get("benchmark_manifest")
+    if benchmark_manifest is not None:
+        lines.append(f"Manifest source: `{benchmark_manifest}`")
+    lines.extend(
+        [
         f"Benchmark source: `{payload['source_artifacts']['benchmark_report']}`",
         "",
         "## Mixed-Contract Boundary",
@@ -668,7 +719,8 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
         "",
         "| Method | Family | Source contract | Train budget | Source report | Contact? | Success | Final dist (mm) | Contact steps | Role |",
         "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
-    ]
+        ]
+    )
     for row in payload["rows"]:
         lines.append(
             "| "
@@ -813,12 +865,14 @@ def _require_evidence_matrix_alignment(
 def build_3dof_sprint2_main_table(
     *,
     confirm_report_path: Path,
-    benchmark_report_path: Path,
+    benchmark_report_path: Path | None = None,
+    manifest_path: Path | None = None,
     evidence_matrix_path: Path | None = None,
 ) -> dict[str, Any]:
     expected_payload = build_3dof_evidence_matrix(
         confirm_report_path=confirm_report_path,
         benchmark_report_path=benchmark_report_path,
+        manifest_path=manifest_path,
     )
     if evidence_matrix_path is None:
         matrix_payload = expected_payload
@@ -840,6 +894,12 @@ def render_sprint2_main_table_markdown(payload: dict[str, Any]) -> str:
         "",
         f"Confirm source: `{payload['source_artifacts']['confirm_report']}`",
         f"Evidence-matrix source: `{payload['source_artifacts']['evidence_matrix']}`",
+    ]
+    benchmark_manifest = payload["source_artifacts"].get("benchmark_manifest")
+    if benchmark_manifest is not None:
+        lines.append(f"Manifest source: `{benchmark_manifest}`")
+    lines.extend(
+        [
         f"Benchmark source: `{payload['source_artifacts']['benchmark_report']}`",
         "",
         "## Boundary",
@@ -848,7 +908,8 @@ def render_sprint2_main_table_markdown(payload: dict[str, Any]) -> str:
         f"- Not allowed: {payload['table_contract']['not_allowed']}",
         "- Main-table reading: three evidence layers, not a leaderboard.",
         "",
-    ]
+        ]
+    )
     for layer in payload["layers"]:
         lines.extend(
             [
@@ -1004,13 +1065,15 @@ def export_sprint2_main_table_artifacts(
 def export_3dof_sprint2_main_table(
     *,
     confirm_report_path: Path,
-    benchmark_report_path: Path,
+    benchmark_report_path: Path | None = None,
+    manifest_path: Path | None = None,
     output_dir: Path,
     evidence_matrix_path: Path | None = None,
 ) -> dict[str, Path]:
     payload = build_3dof_sprint2_main_table(
         confirm_report_path=confirm_report_path,
         benchmark_report_path=benchmark_report_path,
+        manifest_path=manifest_path,
         evidence_matrix_path=evidence_matrix_path,
     )
     return export_sprint2_main_table_artifacts(payload, output_dir)
@@ -1019,12 +1082,14 @@ def export_3dof_sprint2_main_table(
 def export_3dof_evidence_matrix_artifacts(
     *,
     confirm_report_path: Path,
-    benchmark_report_path: Path,
+    benchmark_report_path: Path | None = None,
+    manifest_path: Path | None = None,
     output_dir: Path,
 ) -> dict[str, Path | tuple[Path, Path]]:
     json_path, payload = export_3dof_evidence_matrix_json(
         confirm_report_path=confirm_report_path,
         benchmark_report_path=benchmark_report_path,
+        manifest_path=manifest_path,
         output_dir=output_dir,
     )
     csv_path = export_3dof_evidence_matrix_csv(payload, output_dir)

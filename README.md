@@ -182,8 +182,11 @@ When the input benchmark JSON includes `support_metrics`, the supplementary stat
 exports Support Coverage Index (SCI) and support-cell-coverage summaries alongside the main table
 confidence intervals.
 
-The bundled frozen benchmark JSON under `artifacts/main_benchmark/` is currently schema 2, so this
-SCI support-diagnostics section appears only after regenerating a newer schema-3 benchmark artifact.
+The bundled canonical main benchmark JSON is
+`artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`;
+the paired canonical statistics report is
+`artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json`;
+schema-2 benchmark artifacts remain appendix / diagnostic legacy inputs only.
 
 ## Reproduce Experiments
 

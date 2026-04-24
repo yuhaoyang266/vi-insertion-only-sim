@@ -36,10 +36,16 @@ def parse_args() -> argparse.Namespace:
         help="Path to the Branch-A cross-family confirm report JSON.",
     )
     parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=Path("artifacts/main_benchmark/main_benchmark_manifest.json"),
+        help="Canonical benchmark manifest used for demo-supported and mechanics-anchor rows.",
+    )
+    parser.add_argument(
         "--benchmark-report",
         type=Path,
-        required=True,
-        help="Path to the canonical main benchmark JSON artifact.",
+        default=None,
+        help="Optional benchmark JSON override. Defaults to --manifest canonical_main_benchmark.",
     )
     parser.add_argument(
         "--output-dir",
@@ -56,6 +62,7 @@ def main() -> None:
     artifacts = module.export_3dof_evidence_matrix_artifacts(
         confirm_report_path=args.confirm_report,
         benchmark_report_path=args.benchmark_report,
+        manifest_path=None if args.benchmark_report is not None else args.manifest,
         output_dir=args.output_dir,
     )
     print(artifacts["json"])

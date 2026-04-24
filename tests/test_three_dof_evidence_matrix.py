@@ -3,8 +3,25 @@ from pathlib import Path
 import shutil
 import tempfile
 import time
+import hashlib
 
 import pytest
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CANONICAL_MANIFEST_PATH = REPO_ROOT / "artifacts" / "main_benchmark" / "main_benchmark_manifest.json"
+CANONICAL_BENCHMARK = (
+    "artifacts/main_benchmark/"
+    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+)
+SCHEMA2_DIAGNOSTIC = (
+    "artifacts/main_benchmark/"
+    "three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
+)
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 PURE_RL_CONFIRM_ROWS = {
@@ -485,6 +502,54 @@ def test_evidence_matrix_rows_point_to_direct_input_artifacts(tmp_path: Path) ->
         "fixed_impedance_rl_stable_r32_p32",
     ):
         assert rows_by_method[method_name]["source_report"] == expected_benchmark
+        assert rows_by_method[method_name]["source_artifact"] == expected_benchmark
+        assert rows_by_method[method_name]["source_sha256"] == _sha256(benchmark_path)
+        assert rows_by_method[method_name]["source_role"] == "benchmark_report_input"
+
+
+def test_evidence_matrix_reads_benchmark_rows_from_manifest() -> None:
+    from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
+
+    matrix = build_3dof_evidence_matrix(
+        confirm_report_path=REPO_ROOT
+        / "outputs"
+        / "cross_family_confirm"
+        / "three_dof_cross_family_confirm_report.json",
+        manifest_path=CANONICAL_MANIFEST_PATH,
+    )
+    rows_by_method = {row["method_name"]: row for row in matrix["rows"]}
+    manifest = json.loads(CANONICAL_MANIFEST_PATH.read_text(encoding="utf-8"))
+    canonical = manifest["artifacts"]["canonical_main_benchmark"]
+    canonical_report = json.loads((REPO_ROOT / canonical["path"]).read_text(encoding="utf-8"))
+
+    assert matrix["source_artifacts"]["benchmark_manifest"] == (
+        "artifacts/main_benchmark/main_benchmark_manifest.json"
+    )
+    assert matrix["source_artifacts"]["benchmark_report"] == CANONICAL_BENCHMARK
+
+    for method_name in (
+        "bc_only_stable_r32_p32",
+        "repaired_mainline_bc_to_ppo",
+        "dapg_lite_repaired_mainline",
+        "fixed_impedance_rl_stable_r32_p32",
+    ):
+        row = rows_by_method[method_name]
+        assert row["source_artifact"] == CANONICAL_BENCHMARK
+        assert row["source_report"] == CANONICAL_BENCHMARK
+        assert row["source_role"] == "canonical_main_benchmark"
+        assert row["source_sha256"] == canonical["sha256"]
+        assert SCHEMA2_DIAGNOSTIC not in row["source_artifact"]
+
+    for method_name in ("dapg_lite_repaired_mainline", "fixed_impedance_rl_stable_r32_p32"):
+        metrics = canonical_report["learned_results"][method_name]["five_profile_mean"]
+        row = rows_by_method[method_name]
+        assert row["success_rate"] == round(
+            float(metrics["success_rate_mean_over_profiles"]), 2
+        )
+        assert row["mean_final_distance_mm"] == round(
+            float(metrics["mean_final_distance_mean_over_profiles"]) * 1000.0,
+            2,
+        )
 
 
 def test_evidence_matrix_uses_repo_relative_provenance_for_repo_local_inputs() -> None:

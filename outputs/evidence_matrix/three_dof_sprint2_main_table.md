@@ -28,8 +28,8 @@ Five-profile benchmark rows showing that demonstration support reopens contact a
 | Method | Source contract | Train budget | Contact? | Success | Final dist (mm) | Contact steps | Role | Claim boundary |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
 | BC-only (stable 32/32) | five-profile benchmark | BC 32/32 | yes | 1.00 | 0.90 | 29.97 | support_reopens_contact | Demonstration support alone reopens contact and near-ceiling success under the five-profile benchmark. |
-| BC -> PPO | five-profile benchmark | BC 32/32 + PPO 128 | yes | 1.00 | 0.94 | 26.28 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
-| DAPG-lite | five-profile benchmark | BC 32/32 + DAPG-lite 128 | yes | 0.60 | 1.17 | 27.55 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
+| BC -> PPO | five-profile benchmark | BC 32/32 + PPO 128 | yes | 1.00 | 0.90 | 29.76 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
+| DAPG-lite | five-profile benchmark | BC 32/32 + DAPG-lite 128 | yes | 1.00 | 0.90 | 29.56 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
 
 ## Mechanics / fixed-impedance anchor rows
 
@@ -37,4 +37,4 @@ Five-profile fixed-impedance row retained as a mechanics anchor, not as a leader
 
 | Method | Source contract | Train budget | Contact? | Success | Final dist (mm) | Contact steps | Role | Claim boundary |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
-| Fixed-impedance RL (stable BC 32/32) | five-profile benchmark | BC 32/32 + PPO 128 | yes | 0.80 | 1.10 | 36.22 | mechanics_anchor | Fixed impedance still enters contact and succeeds under support, so this row acts as a mechanics anchor. |
+| Fixed-impedance RL (stable BC 32/32) | five-profile benchmark | BC 32/32 + PPO 128 | yes | 0.95 | 0.92 | 36.49 | mechanics_anchor | Fixed impedance still enters contact and succeeds under support, so this row acts as a mechanics anchor. |
