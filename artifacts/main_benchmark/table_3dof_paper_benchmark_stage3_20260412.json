@@ -37,6 +37,23 @@
         "p95_peak_contact_force_n": 0.0,
         "mean_contact_steps": 0.0
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 0.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 0.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -220,6 +237,23 @@
         "p95_peak_contact_force_n": 1.2344152541122317,
         "mean_contact_steps": 29.9724
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 0.998,
+          "std": 0.004472135954999584,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -402,6 +436,23 @@
         "mean_peak_contact_force_n": 1.0705691478428165,
         "p95_peak_contact_force_n": 1.4166021993949534,
         "mean_contact_steps": 36.492399999999996
+      },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 0.9913333333333334,
+          "std": 0.018847761013926715,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 0.776,
+          "std": 0.2866705426094562,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 0.984,
+          "std": 0.03577708763999661,
+          "num_samples": 5
+        }
       },
       "effective_pressure_classes": {
         "baseline": {
@@ -588,6 +639,23 @@
         "p95_peak_contact_force_n": 1.1916638835200524,
         "mean_contact_steps": 29.7592
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -772,6 +840,23 @@
         "mean_peak_contact_force_n": 1.0085136684983,
         "p95_peak_contact_force_n": 1.3390206492474221,
         "mean_contact_steps": 29.556400000000004
+      },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
       },
       "effective_pressure_classes": {
         "baseline": {
@@ -958,6 +1043,23 @@
         "p95_peak_contact_force_n": 0.8875146043237556,
         "mean_contact_steps": 19.843600000000002
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 0.138,
+          "std": 0.24355110933260565,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 0.122,
+          "std": 0.27280029325497435,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -1140,6 +1242,23 @@
         "mean_peak_contact_force_n": 0.9945390048190939,
         "p95_peak_contact_force_n": 1.3172916745960883,
         "mean_contact_steps": 29.791199999999996
+      },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
       },
       "effective_pressure_classes": {
         "baseline": {
@@ -1324,6 +1443,23 @@
         "p95_peak_contact_force_n": 0.856717962238257,
         "mean_contact_steps": 19.4076
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 0.23266666666666663,
+          "std": 0.29273260999140654,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 0.21800000000000003,
+          "std": 0.2985297305127247,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -1506,6 +1642,23 @@
         "mean_peak_contact_force_n": 1.0085136684983,
         "p95_peak_contact_force_n": 1.3390206492474221,
         "mean_contact_steps": 29.556400000000004
+      },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
       },
       "effective_pressure_classes": {
         "baseline": {
@@ -1697,6 +1850,23 @@
         "p95_peak_contact_force_n": 1.4635232051115958,
         "mean_contact_steps": 11.0
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -1823,6 +1993,23 @@
         "p95_peak_contact_force_n": 3.916712621245086,
         "mean_contact_steps": 11.0
       },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        }
+      },
       "effective_pressure_classes": {
         "baseline": {
           "profiles": [
@@ -1948,6 +2135,23 @@
         "mean_peak_contact_force_n": 0.8849679706984587,
         "p95_peak_contact_force_n": 1.1429043152107052,
         "mean_contact_steps": 30.594
+      },
+      "class_success_statistics": {
+        "baseline": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 15
+        },
+        "high_friction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "num_samples": 5
+        },
+        "noisy_force": {
+          "mean": 0.952,
+          "std": 0.004472135954999583,
+          "num_samples": 5
+        }
       },
       "effective_pressure_classes": {
         "baseline": {

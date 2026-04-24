@@ -80,6 +80,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Canonical output filename stem.",
     )
     parser.add_argument(
+        "--latex-output",
+        type=Path,
+        default=Path("paper/generated/main_benchmark_table.tex"),
+        help="Path for the generated LaTeX tabular include.",
+    )
+    parser.add_argument(
         "--check",
         action="store_true",
         help="Generate in a temporary directory and fail if checked-in outputs would change.",
@@ -126,26 +132,30 @@ def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
     )
 
 
+def _diff_text_files(expected_path: Path, generated_path: Path) -> list[str]:
+    if not expected_path.exists():
+        return [f"Missing checked-in output: {expected_path}"]
+    expected = expected_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    generated = generated_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    if expected == generated:
+        return []
+    return list(
+        difflib.unified_diff(
+            expected,
+            generated,
+            fromfile=str(expected_path),
+            tofile=str(generated_path),
+            n=3,
+        )
+    )
+
+
 def _diff_outputs(expected_dir: Path, generated_dir: Path, stem: str) -> str:
     messages: list[str] = []
     for suffix in (".json", ".md"):
         expected_path = expected_dir / f"{stem}{suffix}"
         generated_path = generated_dir / f"{stem}{suffix}"
-        if not expected_path.exists():
-            messages.append(f"Missing checked-in output: {expected_path}")
-            continue
-        expected = expected_path.read_text(encoding="utf-8").splitlines(keepends=True)
-        generated = generated_path.read_text(encoding="utf-8").splitlines(keepends=True)
-        if expected != generated:
-            messages.extend(
-                difflib.unified_diff(
-                    expected,
-                    generated,
-                    fromfile=str(expected_path),
-                    tofile=str(generated_path),
-                    n=3,
-                )
-            )
+        messages.extend(_diff_text_files(expected_path, generated_path))
     return "".join(messages)
 
 
@@ -153,6 +163,7 @@ def run_check(args: argparse.Namespace) -> None:
     module = _load_paper_tables_module()
     inputs = resolve_export_inputs(args)
     with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_latex_path = Path(tmp_dir) / args.latex_output.name
         module.export_3dof_paper_table(
             benchmark_report_path=inputs.benchmark_input,
             fixed_impedance_report_path=args.fixed_impedance_input,
@@ -162,8 +173,10 @@ def run_check(args: argparse.Namespace) -> None:
             source_role=inputs.provenance_label,
             generating_command=inputs.generating_command,
             git_commit=inputs.git_commit,
+            latex_output_path=tmp_latex_path,
         )
         diff = _diff_outputs(args.output_dir, Path(tmp_dir), args.stem)
+        diff += "".join(_diff_text_files(args.latex_output, tmp_latex_path))
     if diff:
         raise SystemExit("Benchmark table outputs are stale:\n" + diff)
 
@@ -184,6 +197,7 @@ def main() -> None:
         source_role=inputs.provenance_label,
         generating_command=inputs.generating_command,
         git_commit=inputs.git_commit,
+        latex_output_path=args.latex_output,
     )
     print(json_path)
     print(markdown_path)
