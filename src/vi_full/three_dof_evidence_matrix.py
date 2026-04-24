@@ -604,10 +604,12 @@ def build_3dof_evidence_matrix(
         benchmark_report_path = REPO_ROOT / Path(str(manifest_artifact["path"]))
         benchmark_source_role = str(manifest_artifact["role"])
         benchmark_source_sha256 = str(manifest_artifact["sha256"])
+        source_git_commit = str(manifest_artifact["git_commit"])
     elif benchmark_report_path is not None:
         benchmark_report_path = Path(benchmark_report_path)
         benchmark_source_role = "benchmark_report_input"
         benchmark_source_sha256 = None
+        source_git_commit = _git_commit()
     else:
         raise ValueError("Either benchmark_report_path or manifest_path is required.")
     confirm = _load_json(confirm_report_path)
@@ -638,7 +640,7 @@ def build_3dof_evidence_matrix(
         "source_artifacts": source_artifacts,
         "source_hashes": _source_hashes(source_artifacts),
         "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
-        "git_commit": _git_commit(),
+        "git_commit": source_git_commit,
         "matrix_contract": {
             "mixed_contracts": True,
             "allowed": (
@@ -823,7 +825,7 @@ def build_sprint2_main_table_from_evidence_matrix(
         "source_artifacts": source_artifacts,
         "source_hashes": source_hashes,
         "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
-        "git_commit": _git_commit(),
+        "git_commit": str(payload.get("git_commit", _git_commit())),
         "table_contract": {
             "three_layer_table": True,
             "not_a_leaderboard": True,

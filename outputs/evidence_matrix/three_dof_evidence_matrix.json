@@ -13,7 +13,7 @@
     "benchmark_manifest": "556bf4b07388bad03946a99fc4b082bc8e769757cbaf5b42e639147b23239cc3"
   },
   "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
-  "git_commit": "6f4fe5020d1c29c5a65b2efa987614e4ba28419e",
+  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
   "matrix_contract": {
     "mixed_contracts": true,
     "allowed": "Use only for contact-gate contrast across nominal-only pilot and five-profile benchmark evidence.",

@@ -12,10 +12,10 @@
     "confirm_report": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb",
     "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
     "benchmark_manifest": "556bf4b07388bad03946a99fc4b082bc8e769757cbaf5b42e639147b23239cc3",
-    "evidence_matrix": "b5979ab72b56e0550fff7f402c7d323829acdb2fca40dae6585ee50bed52c509"
+    "evidence_matrix": "d1c2a2608f92cd2c904ca76159d5db78d4bf7458eaaa3d8a3d22fffca058dff4"
   },
   "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
-  "git_commit": "6f4fe5020d1c29c5a65b2efa987614e4ba28419e",
+  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
   "table_contract": {
     "three_layer_table": true,
     "not_a_leaderboard": true,
