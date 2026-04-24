@@ -1,9 +1,25 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import importlib.util
+import json
+from dataclasses import dataclass
 from pathlib import Path
 import sys
+import tempfile
+
+
+DEFAULT_MANIFEST = Path("artifacts/main_benchmark/main_benchmark_manifest.json")
+
+
+@dataclass(frozen=True)
+class ExportInputs:
+    benchmark_input: Path
+    statistics_report_input: Path | None
+    provenance_label: str
+    generating_command: str
+    git_commit: str | None
 
 
 def _load_paper_tables_module():
@@ -21,15 +37,23 @@ def _load_paper_tables_module():
     return module
 
 
-def parse_args() -> argparse.Namespace:
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Export the paper-facing 3DoF benchmark table.")
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=DEFAULT_MANIFEST,
+        help="Canonical benchmark manifest. Defaults to the stage3 main benchmark; schema2 is appendix diagnostic only.",
+    )
     parser.add_argument(
         "--benchmark-input",
         type=Path,
-        default=Path(
-            "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
-        ),
-        help="Path to the main 9-suite 3DoF benchmark JSON.",
+        default=None,
+        help="Optional override benchmark JSON. Overrides are not labeled canonical; schema2 is appendix diagnostic only.",
     )
     parser.add_argument(
         "--fixed-impedance-input",
@@ -40,33 +64,126 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("outputs/paper_only_sim_tables"),
+        default=Path("artifacts/main_benchmark"),
         help="Directory for the exported table files.",
     )
     parser.add_argument(
         "--statistics-report-input",
         type=Path,
         default=None,
-        help="Optional paper-facing statistics report JSON for CI and comparison notes.",
+        help="Optional override statistics report JSON. Defaults to the manifest canonical statistics report.",
     )
     parser.add_argument(
         "--stem",
         type=str,
-        default="table_3dof_paper_benchmark_schema2_20260418",
+        default="table_3dof_paper_benchmark_stage3_20260412",
         help="Canonical output filename stem.",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Generate in a temporary directory and fail if checked-in outputs would change.",
+    )
+    return parser
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    return build_parser().parse_args(argv)
+
+
+def _load_manifest(path: Path) -> dict:
+    manifest_path = path if path.is_absolute() else _repo_root() / path
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def resolve_export_inputs(args: argparse.Namespace) -> ExportInputs:
+    manifest = _load_manifest(args.manifest)
+    canonical_benchmark = manifest["artifacts"]["canonical_main_benchmark"]
+    canonical_statistics = manifest["artifacts"]["canonical_statistics_report"]
+
+    if args.benchmark_input is None:
+        benchmark_input = Path(canonical_benchmark["path"])
+        statistics_report_input = (
+            Path(canonical_statistics["path"])
+            if args.statistics_report_input is None
+            else args.statistics_report_input
+        )
+        provenance_label = "canonical_main_benchmark"
+        generating_command = canonical_benchmark["generating_command"]
+        git_commit = canonical_benchmark["git_commit"]
+    else:
+        benchmark_input = args.benchmark_input
+        statistics_report_input = args.statistics_report_input
+        provenance_label = "override_benchmark_input"
+        generating_command = "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <override>"
+        git_commit = None
+    return ExportInputs(
+        benchmark_input=benchmark_input,
+        statistics_report_input=statistics_report_input,
+        provenance_label=provenance_label,
+        generating_command=generating_command,
+        git_commit=git_commit,
+    )
+
+
+def _diff_outputs(expected_dir: Path, generated_dir: Path, stem: str) -> str:
+    messages: list[str] = []
+    for suffix in (".json", ".md"):
+        expected_path = expected_dir / f"{stem}{suffix}"
+        generated_path = generated_dir / f"{stem}{suffix}"
+        if not expected_path.exists():
+            messages.append(f"Missing checked-in output: {expected_path}")
+            continue
+        expected = expected_path.read_text(encoding="utf-8").splitlines(keepends=True)
+        generated = generated_path.read_text(encoding="utf-8").splitlines(keepends=True)
+        if expected != generated:
+            messages.extend(
+                difflib.unified_diff(
+                    expected,
+                    generated,
+                    fromfile=str(expected_path),
+                    tofile=str(generated_path),
+                    n=3,
+                )
+            )
+    return "".join(messages)
+
+
+def run_check(args: argparse.Namespace) -> None:
+    module = _load_paper_tables_module()
+    inputs = resolve_export_inputs(args)
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        module.export_3dof_paper_table(
+            benchmark_report_path=inputs.benchmark_input,
+            fixed_impedance_report_path=args.fixed_impedance_input,
+            statistics_report_path=inputs.statistics_report_input,
+            output_dir=Path(tmp_dir),
+            stem=args.stem,
+            source_role=inputs.provenance_label,
+            generating_command=inputs.generating_command,
+            git_commit=inputs.git_commit,
+        )
+        diff = _diff_outputs(args.output_dir, Path(tmp_dir), args.stem)
+    if diff:
+        raise SystemExit("Benchmark table outputs are stale:\n" + diff)
 
 
 def main() -> None:
     args = parse_args()
+    if args.check:
+        run_check(args)
+        return
     module = _load_paper_tables_module()
+    inputs = resolve_export_inputs(args)
     json_path, markdown_path = module.export_3dof_paper_table(
-        benchmark_report_path=args.benchmark_input,
+        benchmark_report_path=inputs.benchmark_input,
         fixed_impedance_report_path=args.fixed_impedance_input,
-        statistics_report_path=args.statistics_report_input,
+        statistics_report_path=inputs.statistics_report_input,
         output_dir=args.output_dir,
         stem=args.stem,
+        source_role=inputs.provenance_label,
+        generating_command=inputs.generating_command,
+        git_commit=inputs.git_commit,
     )
     print(json_path)
     print(markdown_path)

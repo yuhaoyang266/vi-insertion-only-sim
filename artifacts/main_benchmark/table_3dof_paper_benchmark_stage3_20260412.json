@@ -1,10 +1,18 @@
 {
   "export_name": "three_dof_paper_benchmark_table",
+  "schema_version": 3,
+  "source_role": "canonical_main_benchmark",
   "source_artifacts": {
     "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
     "fixed_impedance_report": null,
     "statistics_report": "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json"
   },
+  "source_hashes": {
+    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
+    "statistics_report": "3a896e02e9bcd2866c2bb4a2e7e9335e3a94833c4999655265dd6651bd0e0192"
+  },
+  "generating_command": "python scripts/experiments/run_3dof_cross_family_benchmark.py --config configs/benchmark/three_dof_paper9suite_full5profile_bc32x32_stage3.yaml",
+  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
   "suite_order": [
     "ppo_no_bc",
     "bc_only_stable_r32_p32",
@@ -5740,13 +5748,12 @@
         "practical_interpretation": "materially different",
         "practical_note": "The success-rate gap is too large to dismiss as a ceiling-saturation artifact and should be treated as materially different."
       }
-    ]
-  },
-  "schema_version": 3,
-  "source_hashes": {
-    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
-    "statistics_report": "3a896e02e9bcd2866c2bb4a2e7e9335e3a94833c4999655265dd6651bd0e0192"
-  },
-  "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json --statistics-report-input artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json --output-dir artifacts/main_benchmark --stem table_3dof_paper_benchmark_stage3_20260412",
-  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"
+    ],
+    "schema_version": 3,
+    "source_hashes": {
+      "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+    },
+    "generating_command": "python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+    "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"
+  }
 }

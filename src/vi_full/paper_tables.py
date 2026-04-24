@@ -1223,6 +1223,9 @@ def build_3dof_paper_table_export(
     benchmark_report_path: Path,
     fixed_impedance_report_path: Path | None = None,
     statistics_report_path: Path | None = None,
+    source_role: str = "canonical_main_benchmark",
+    generating_command: str = "python scripts/export/export_paper_only_sim_benchmark_table.py",
+    git_commit: str | None = None,
 ) -> dict[str, Any]:
     resolved_benchmark_source = _resolved_source_path(benchmark_report_path)
     resolved_fixed_source = _resolved_source_path(fixed_impedance_report_path)
@@ -1290,10 +1293,11 @@ def build_3dof_paper_table_export(
     return {
         "export_name": "three_dof_paper_benchmark_table",
         "schema_version": 3,
+        "source_role": source_role,
         "source_artifacts": source_artifacts,
         "source_hashes": _source_hashes(source_artifacts),
-        "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py",
-        "git_commit": _git_commit(),
+        "generating_command": generating_command,
+        "git_commit": _git_commit() if git_commit is None else git_commit,
         "suite_order": suite_order,
         "suite_rows": suite_rows,
         "handcrafted_policy_order": handcrafted_policy_order,
@@ -1410,11 +1414,17 @@ def export_3dof_paper_table(
     statistics_report_path: Path | None = None,
     output_dir: Path,
     stem: str = "table_3dof_paper_benchmark",
+    source_role: str = "canonical_main_benchmark",
+    generating_command: str = "python scripts/export/export_paper_only_sim_benchmark_table.py",
+    git_commit: str | None = None,
 ) -> tuple[Path, Path]:
     export_payload = build_3dof_paper_table_export(
         benchmark_report_path=benchmark_report_path,
         fixed_impedance_report_path=fixed_impedance_report_path,
         statistics_report_path=statistics_report_path,
+        source_role=source_role,
+        generating_command=generating_command,
+        git_commit=git_commit,
     )
     markdown = render_3dof_paper_table_markdown(export_payload)
     output_dir = Path(output_dir)

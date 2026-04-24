@@ -13,6 +13,12 @@ from matplotlib.patches import Patch, Rectangle  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 
 
+PDF_METADATA = {
+    "CreationDate": None,
+    "ModDate": None,
+}
+
+
 @dataclass(frozen=True, slots=True)
 class ContactWindowTrackSummary:
     label: str
@@ -1358,7 +1364,7 @@ def export_figure1_contact_transition_audit(
 
     pdf_path = output_dir / f"{stem}.pdf"
     png_path = output_dir / f"{stem}.png"
-    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(pdf_path, bbox_inches="tight", metadata=PDF_METADATA)
     fig.savefig(png_path, dpi=220, bbox_inches="tight")
     plt.close(fig)
     return pdf_path, png_path
@@ -1390,7 +1396,7 @@ def export_figure2_bc_coverage_repair(
 
     pdf_path = output_dir / f"{stem}.pdf"
     png_path = output_dir / f"{stem}.png"
-    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(pdf_path, bbox_inches="tight", metadata=PDF_METADATA)
     fig.savefig(png_path, dpi=220, bbox_inches="tight")
     plt.close(fig)
     return pdf_path, png_path
@@ -1556,7 +1562,7 @@ def _save_figure_bundle(fig, *, output_dir: Path, stem: str) -> tuple[Path, Path
     output_dir.mkdir(parents=True, exist_ok=True)
     pdf_path = output_dir / f"{stem}.pdf"
     png_path = output_dir / f"{stem}.png"
-    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(pdf_path, bbox_inches="tight", metadata=PDF_METADATA)
     fig.savefig(png_path, dpi=220, bbox_inches="tight")
     plt.close(fig)
     return pdf_path, png_path
