@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import itertools
+import hashlib
 import json
 from pathlib import Path
+import subprocess
 from typing import Any
 
 import numpy as np
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 SUITE_DISPLAY_NAMES = {
@@ -227,7 +232,45 @@ def _load_json(path: Path) -> dict[str, Any]:
 def _resolved_source_path(path: Path | None) -> str | None:
     if path is None:
         return None
-    return str(Path(path).resolve())
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _source_hashes(source_artifacts: dict[str, str | None]) -> dict[str, str]:
+    hashes: dict[str, str] = {}
+    for source_name, source_path in source_artifacts.items():
+        if source_path is None:
+            continue
+        path = Path(source_path)
+        if not path.is_absolute():
+            path = REPO_ROOT / path
+        hashes[source_name] = _sha256(path)
+    return hashes
+
+
+def _git_commit() -> str:
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+    return completed.stdout.strip()
 
 
 def _validate_statistics_report_alignment(
@@ -251,6 +294,20 @@ def _validate_statistics_report_alignment(
         raise ValueError(
             "Statistics report fixed-impedance source does not match the requested fixed-impedance artifact."
         )
+
+    source_hashes = statistics_report.get("source_hashes")
+    if isinstance(source_hashes, dict):
+        expected_hashes = _source_hashes(
+            {
+                "benchmark_report": expected_benchmark_source,
+                "fixed_impedance_report": expected_fixed_source,
+            }
+        )
+        for source_name, expected_hash in expected_hashes.items():
+            if source_hashes.get(source_name) != expected_hash:
+                raise ValueError(
+                    f"Statistics report {source_name} hash does not match the requested artifact."
+                )
 
 
 def _m_to_mm(value_m: float) -> float:
@@ -855,7 +912,7 @@ def build_3dof_statistics_report(
 
         suite_statistics[suite_name] = {
             "display_name": suite_payload["display_name"],
-            "source_artifact": str(Path(suite_payload["source_artifact"]).resolve()),
+            "source_artifact": _resolved_source_path(Path(suite_payload["source_artifact"])),
             "seed_order": seed_order,
             "five_profile_seed_samples": five_profile_seed_samples,
             "five_profile_statistics": five_profile_statistics,
@@ -908,16 +965,17 @@ def build_3dof_statistics_report(
     benchmark_config = raw_benchmark["config"]
     observed_seeds = benchmark_config.get("seeds", [])
     episodes_per_seed = int(benchmark_config.get("episodes_per_seed", 0))
+    source_artifacts = {
+        "benchmark_report": _resolved_source_path(benchmark_report_path),
+        "fixed_impedance_report": _resolved_source_path(fixed_impedance_report_path),
+    }
     return {
         "report_name": "three_dof_statistics_report",
-        "source_artifacts": {
-            "benchmark_report": str(Path(benchmark_report_path).resolve()),
-            "fixed_impedance_report": (
-                str(Path(fixed_impedance_report_path).resolve())
-                if fixed_impedance_report_path is not None
-                else None
-            ),
-        },
+        "schema_version": 3,
+        "source_artifacts": source_artifacts,
+        "source_hashes": _source_hashes(source_artifacts),
+        "generating_command": "python scripts/experiments/run_3dof_statistics_report.py",
+        "git_commit": _git_commit(),
         "sample_plan": {
             "recommended_training_seed_min": RECOMMENDED_TRAINING_SEED_MIN,
             "recommended_training_seed_max": RECOMMENDED_TRAINING_SEED_MAX,
@@ -1060,7 +1118,7 @@ def _build_suite_row(
     row = {
         "suite_name": suite_name,
         "display_name": display_name,
-        "source_artifact": str(source_artifact.resolve()),
+        "source_artifact": _resolved_source_path(source_artifact),
         "five_profile_mean": _extract_over_profile_metrics(five_profile_mean),
         "effective_pressure_classes": _build_effective_pressure_classes(eval_results),
         "per_profile": _build_profile_rows(eval_results),
@@ -1116,7 +1174,7 @@ def _build_appendix_teacher_row(suite_payload: dict[str, Any]) -> dict[str, Any]
     row = {
         "suite_name": suite_name,
         "display_name": suite_payload["display_name"],
-        "source_artifact": str(Path(suite_payload["source_artifact"]).resolve()),
+        "source_artifact": _resolved_source_path(Path(suite_payload["source_artifact"])),
         "teacher_preset_name": raw_suite_payload.get("teacher_preset_name"),
         "teacher_motion_rule": str(teacher_motion_rule),
         "teacher_impedance_rule": str(teacher_impedance_rule),
@@ -1142,7 +1200,7 @@ def _build_appendix_diagnostic_row(suite_payload: dict[str, Any]) -> dict[str, A
     row = {
         "suite_name": suite_name,
         "display_name": suite_payload["display_name"],
-        "source_artifact": str(Path(suite_payload["source_artifact"]).resolve()),
+        "source_artifact": _resolved_source_path(Path(suite_payload["source_artifact"])),
         "diagnostics": _extract_metric_values(
             suite_payload["five_profile_mean"],
             APPENDIX_TERMINATION_DIAGNOSTIC_METRICS,
@@ -1224,13 +1282,18 @@ def build_3dof_paper_table_export(
             )
         )
 
+    source_artifacts = {
+        "benchmark_report": resolved_benchmark_source,
+        "fixed_impedance_report": resolved_fixed_source,
+        "statistics_report": resolved_statistics_source,
+    }
     return {
         "export_name": "three_dof_paper_benchmark_table",
-        "source_artifacts": {
-            "benchmark_report": resolved_benchmark_source,
-            "fixed_impedance_report": resolved_fixed_source,
-            "statistics_report": resolved_statistics_source,
-        },
+        "schema_version": 3,
+        "source_artifacts": source_artifacts,
+        "source_hashes": _source_hashes(source_artifacts),
+        "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py",
+        "git_commit": _git_commit(),
         "suite_order": suite_order,
         "suite_rows": suite_rows,
         "handcrafted_policy_order": handcrafted_policy_order,
@@ -1409,16 +1472,19 @@ def build_3dof_appendix_table_export(
         for suite_name in diagnostic_suite_order
     ]
 
+    source_artifacts = {
+        "benchmark_report": _resolved_source_path(benchmark_report_path),
+        "fixed_impedance_report": _resolved_source_path(fixed_impedance_report_path),
+    }
     return {
         "export_name": "three_dof_appendix_benchmark_table",
-        "source_artifacts": {
-            "benchmark_report": str(Path(benchmark_report_path).resolve()),
-            "fixed_impedance_report": (
-                str(Path(fixed_impedance_report_path).resolve())
-                if fixed_impedance_report_path is not None
-                else None
-            ),
-        },
+        "role": "appendix_diagnostic_legacy",
+        "schema_version": 2,
+        "claim_scope": "appendix teacher/termination diagnostics only",
+        "source_artifacts": source_artifacts,
+        "source_hashes": _source_hashes(source_artifacts),
+        "generating_command": "python scripts/export/export_paper_only_sim_appendix_table.py",
+        "git_commit": _git_commit(),
         "suite_order": suite_order,
         "teacher_suite_order": list(APPENDIX_TEACHER_SUITE_ORDER),
         "teacher_rows": teacher_rows,

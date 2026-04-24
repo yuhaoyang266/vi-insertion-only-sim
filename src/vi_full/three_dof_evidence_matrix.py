@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 from pathlib import Path
+import subprocess
 from typing import Any
 
 import matplotlib
@@ -61,6 +63,40 @@ ROW_FIELD_ORDER = [
     "not_allowed_claim",
     "source_report",
 ]
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _source_hashes(source_artifacts: dict[str, str | None]) -> dict[str, str]:
+    hashes: dict[str, str] = {}
+    for source_name, source_path in source_artifacts.items():
+        if source_path is None:
+            continue
+        path = Path(source_path)
+        if not path.is_absolute():
+            path = REPO_ROOT / path
+        hashes[source_name] = _sha256(path)
+    return hashes
+
+
+def _git_commit() -> str:
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+    return completed.stdout.strip()
 
 SPRINT2_MAIN_TABLE_LAYERS = (
     {
@@ -548,12 +584,18 @@ def build_3dof_evidence_matrix(
         benchmark,
         benchmark_report_path=benchmark_report_path,
     )
+    source_artifacts = {
+        "confirm_report": _provenance_path(confirm_report_path),
+        "benchmark_report": _provenance_path(benchmark_report_path),
+    }
     return {
         "report_name": "three_dof_evidence_matrix",
-        "source_artifacts": {
-            "confirm_report": _provenance_path(confirm_report_path),
-            "benchmark_report": _provenance_path(benchmark_report_path),
-        },
+        "export_name": "three_dof_evidence_matrix",
+        "schema_version": 1,
+        "source_artifacts": source_artifacts,
+        "source_hashes": _source_hashes(source_artifacts),
+        "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
+        "git_commit": _git_commit(),
         "matrix_contract": {
             "mixed_contracts": True,
             "allowed": (
@@ -720,10 +762,16 @@ def build_sprint2_main_table_from_evidence_matrix(
         if evidence_matrix_path is not None
         else None
     )
+    source_hashes = _source_hashes(source_artifacts)
     matrix_contract = dict(payload["matrix_contract"])
     return {
         "report_name": "three_dof_sprint2_main_table",
+        "export_name": "three_dof_sprint2_main_table",
+        "schema_version": 1,
         "source_artifacts": source_artifacts,
+        "source_hashes": source_hashes,
+        "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
+        "git_commit": _git_commit(),
         "table_contract": {
             "three_layer_table": True,
             "not_a_leaderboard": True,

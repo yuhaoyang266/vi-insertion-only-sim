@@ -1,7 +1,7 @@
 {
   "export_name": "three_dof_appendix_benchmark_table",
   "source_artifacts": {
-    "benchmark_report": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+    "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
     "fixed_impedance_report": null
   },
   "suite_order": [
@@ -25,7 +25,7 @@
     {
       "suite_name": "teacher_variable_variable__repaired_mainline",
       "display_name": "Teacher: variable motion + variable impedance",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "teacher_preset_name": "teacher_variable_variable",
       "teacher_motion_rule": "contact_aware_variable_motion",
       "teacher_impedance_rule": "contact_aware_variable_impedance",
@@ -77,7 +77,7 @@
     {
       "suite_name": "teacher_variable_fixed__repaired_mainline",
       "display_name": "Teacher: variable motion + fixed impedance",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "teacher_preset_name": "teacher_variable_fixed",
       "teacher_motion_rule": "contact_aware_variable_motion",
       "teacher_impedance_rule": "fixed",
@@ -129,7 +129,7 @@
     {
       "suite_name": "teacher_pose_variable__repaired_mainline",
       "display_name": "Teacher: pose motion + variable impedance",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "teacher_preset_name": "teacher_pose_variable",
       "teacher_motion_rule": "pose_feedback",
       "teacher_impedance_rule": "contact_aware_variable_impedance",
@@ -181,7 +181,7 @@
     {
       "suite_name": "teacher_pose_fixed__repaired_mainline",
       "display_name": "Teacher: pose motion + fixed impedance",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "teacher_preset_name": "teacher_pose_fixed",
       "teacher_motion_rule": "pose_feedback",
       "teacher_impedance_rule": "fixed",
@@ -241,7 +241,7 @@
     {
       "suite_name": "bc_only_stable_r32_p32",
       "display_name": "BC-only (stable 32/32)",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "diagnostics": {
         "jam_rate": 0.0,
         "force_threshold_termination_rate": 0.0,
@@ -302,7 +302,7 @@
     {
       "suite_name": "repaired_mainline_bc_to_ppo",
       "display_name": "BC -> PPO",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "diagnostics": {
         "jam_rate": 0.0,
         "force_threshold_termination_rate": 0.0,
@@ -363,7 +363,7 @@
     {
       "suite_name": "dapg_lite_repaired_mainline",
       "display_name": "DAPG-lite",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "diagnostics": {
         "jam_rate": 0.0,
         "force_threshold_termination_rate": 0.0,
@@ -424,7 +424,7 @@
     {
       "suite_name": "fixed_impedance_rl_stable_r32_p32",
       "display_name": "Fixed-impedance RL (stable BC 32/32)",
-      "source_artifact": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
       "diagnostics": {
         "jam_rate": 0.0,
         "force_threshold_termination_rate": 0.0,
@@ -482,5 +482,13 @@
         }
       }
     }
-  ]
+  ],
+  "role": "appendix_diagnostic_legacy",
+  "schema_version": 2,
+  "claim_scope": "appendix teacher/termination diagnostics only",
+  "source_hashes": {
+    "benchmark_report": "4a4ca8b98446e34a19cdb31593d647b1fabc7bb443f68c6f7788268ced214c1b"
+  },
+  "generating_command": "python scripts/export/export_paper_only_sim_appendix_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json --output-dir artifacts/main_benchmark --stem table_3dof_appendix_schema2_20260418",
+  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"
 }

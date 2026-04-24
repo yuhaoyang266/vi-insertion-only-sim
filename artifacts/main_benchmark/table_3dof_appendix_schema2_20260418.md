@@ -1,6 +1,6 @@
 # 3DoF Appendix Benchmark Tables
 
-Benchmark source: `F:\edge download\learning\vi-insertion-only-sim\outputs\three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`
+Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`
 
 ## Teacher Ablation
 

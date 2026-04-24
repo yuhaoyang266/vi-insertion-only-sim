@@ -1,9 +1,9 @@
 {
   "export_name": "three_dof_paper_benchmark_table",
   "source_artifacts": {
-    "benchmark_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+    "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
     "fixed_impedance_report": null,
-    "statistics_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\paper_only_sim_tables\\three_dof_statistics_report_stage3_20260412.json"
+    "statistics_report": "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json"
   },
   "suite_order": [
     "ppo_no_bc",
@@ -20,7 +20,7 @@
     {
       "suite_name": "ppo_no_bc",
       "display_name": "PPO w/o BC",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 0.0,
         "jam_rate": 0.0,
@@ -203,7 +203,7 @@
     {
       "suite_name": "bc_only_stable_r32_p32",
       "display_name": "BC-only (stable 32/32)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 0.9996,
         "jam_rate": 0.0,
@@ -386,7 +386,7 @@
     {
       "suite_name": "fixed_impedance_rl_stable_r32_p32",
       "display_name": "Fixed-impedance RL (stable BC 32/32)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 0.9468,
         "jam_rate": 0.0,
@@ -571,7 +571,7 @@
     {
       "suite_name": "repaired_mainline_bc_to_ppo",
       "display_name": "BC -> PPO",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 1.0,
         "jam_rate": 0.0,
@@ -756,7 +756,7 @@
     {
       "suite_name": "dapg_lite_repaired_mainline",
       "display_name": "DAPG-lite",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 1.0,
         "jam_rate": 0.0,
@@ -941,7 +941,7 @@
     {
       "suite_name": "dapg_lite_contact_old__reset_coverage_collapse",
       "display_name": "DAPG-lite old reset (coverage collapse)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 0.10719999999999999,
         "jam_rate": 0.0,
@@ -1124,7 +1124,7 @@
     {
       "suite_name": "dapg_lite_contact_old__reset_repaired",
       "display_name": "DAPG-lite old reset (repaired)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 1.0,
         "jam_rate": 0.0,
@@ -1307,7 +1307,7 @@
     {
       "suite_name": "dapg_lite_contact_new__reset_coverage_collapse",
       "display_name": "DAPG-lite new reset (coverage collapse)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 0.18319999999999997,
         "jam_rate": 0.0,
@@ -1490,7 +1490,7 @@
     {
       "suite_name": "dapg_lite_contact_new__reset_repaired",
       "display_name": "DAPG-lite new reset (repaired)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 1.0,
         "jam_rate": 0.0,
@@ -1680,7 +1680,7 @@
     {
       "suite_name": "pose_only",
       "display_name": "Pose-only",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 1.0,
         "jam_rate": 0.0,
@@ -1806,7 +1806,7 @@
     {
       "suite_name": "fixed_impedance",
       "display_name": "Handcrafted fixed impedance",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 1.0,
         "jam_rate": 0.0,
@@ -1932,7 +1932,7 @@
     {
       "suite_name": "variable_impedance",
       "display_name": "Handcrafted variable impedance",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "five_profile_mean": {
         "success_rate": 0.9904,
         "jam_rate": 0.0,
@@ -2097,7 +2097,7 @@
   "statistics_report": {
     "report_name": "three_dof_statistics_report",
     "source_artifacts": {
-      "benchmark_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "fixed_impedance_report": null
     },
     "sample_plan": {
@@ -2128,7 +2128,7 @@
     "suite_statistics": {
       "ppo_no_bc": {
         "display_name": "PPO w/o BC",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -2521,7 +2521,7 @@
       },
       "bc_only_stable_r32_p32": {
         "display_name": "BC-only (stable 32/32)",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -2914,7 +2914,7 @@
       },
       "fixed_impedance_rl_stable_r32_p32": {
         "display_name": "Fixed-impedance RL (stable BC 32/32)",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -3307,7 +3307,7 @@
       },
       "repaired_mainline_bc_to_ppo": {
         "display_name": "BC -> PPO",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -3700,7 +3700,7 @@
       },
       "dapg_lite_repaired_mainline": {
         "display_name": "DAPG-lite",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -4093,7 +4093,7 @@
       },
       "dapg_lite_contact_old__reset_coverage_collapse": {
         "display_name": "DAPG-lite old reset (coverage collapse)",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -4486,7 +4486,7 @@
       },
       "dapg_lite_contact_old__reset_repaired": {
         "display_name": "DAPG-lite old reset (repaired)",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -4879,7 +4879,7 @@
       },
       "dapg_lite_contact_new__reset_coverage_collapse": {
         "display_name": "DAPG-lite new reset (coverage collapse)",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -5272,7 +5272,7 @@
       },
       "dapg_lite_contact_new__reset_repaired": {
         "display_name": "DAPG-lite new reset (repaired)",
-        "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+        "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
         "seed_order": [
           0,
           1,
@@ -5741,5 +5741,12 @@
         "practical_note": "The success-rate gap is too large to dismiss as a ceiling-saturation artifact and should be treated as materially different."
       }
     ]
-  }
+  },
+  "schema_version": 3,
+  "source_hashes": {
+    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
+    "statistics_report": "3a896e02e9bcd2866c2bb4a2e7e9335e3a94833c4999655265dd6651bd0e0192"
+  },
+  "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json --statistics-report-input artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json --output-dir artifacts/main_benchmark --stem table_3dof_paper_benchmark_stage3_20260412",
+  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"
 }

@@ -1,7 +1,7 @@
 {
   "report_name": "three_dof_statistics_report",
   "source_artifacts": {
-    "benchmark_report": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+    "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
     "fixed_impedance_report": null
   },
   "sample_plan": {
@@ -32,7 +32,7 @@
   "suite_statistics": {
     "ppo_no_bc": {
       "display_name": "PPO w/o BC",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -425,7 +425,7 @@
     },
     "bc_only_stable_r32_p32": {
       "display_name": "BC-only (stable 32/32)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -818,7 +818,7 @@
     },
     "fixed_impedance_rl_stable_r32_p32": {
       "display_name": "Fixed-impedance RL (stable BC 32/32)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -1211,7 +1211,7 @@
     },
     "repaired_mainline_bc_to_ppo": {
       "display_name": "BC -> PPO",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -1604,7 +1604,7 @@
     },
     "dapg_lite_repaired_mainline": {
       "display_name": "DAPG-lite",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -1997,7 +1997,7 @@
     },
     "dapg_lite_contact_old__reset_coverage_collapse": {
       "display_name": "DAPG-lite old reset (coverage collapse)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -2390,7 +2390,7 @@
     },
     "dapg_lite_contact_old__reset_repaired": {
       "display_name": "DAPG-lite old reset (repaired)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -2783,7 +2783,7 @@
     },
     "dapg_lite_contact_new__reset_coverage_collapse": {
       "display_name": "DAPG-lite new reset (coverage collapse)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -3176,7 +3176,7 @@
     },
     "dapg_lite_contact_new__reset_repaired": {
       "display_name": "DAPG-lite new reset (repaired)",
-      "source_artifact": "F:\\edge download\\learning\\full_projects\\vi_insertion_full_only_sim\\outputs\\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "seed_order": [
         0,
         1,
@@ -3644,5 +3644,11 @@
       "practical_interpretation": "materially different",
       "practical_note": "The success-rate gap is too large to dismiss as a ceiling-saturation artifact and should be treated as materially different."
     }
-  ]
+  ],
+  "schema_version": 3,
+  "source_hashes": {
+    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+  },
+  "generating_command": "python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"
 }

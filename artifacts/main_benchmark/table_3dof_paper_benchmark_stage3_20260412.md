@@ -1,7 +1,7 @@
 # 3DoF Paper Benchmark Table
 
-Main benchmark source: `F:\edge download\learning\full_projects\vi_insertion_full_only_sim\outputs\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`
-Statistics source: `F:\edge download\learning\full_projects\vi_insertion_full_only_sim\outputs\paper_only_sim_tables\three_dof_statistics_report_stage3_20260412.json`
+Main benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`
+Statistics source: `artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json`
 
 Entries report mean +- std with 95% CI where a statistics report is attached.
 

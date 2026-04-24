@@ -2,7 +2,8 @@
 
 Confirm source: `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`
 Evidence-matrix source: `outputs/evidence_matrix/three_dof_evidence_matrix.json`
-Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`
+Manifest source: `artifacts/main_benchmark/main_benchmark_manifest.json`
+Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`
 
 ## Boundary
 
