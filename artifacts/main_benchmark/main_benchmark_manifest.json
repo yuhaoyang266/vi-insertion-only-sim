@@ -1,0 +1,41 @@
+{
+  "manifest_version": 1,
+  "artifacts": {
+    "canonical_main_benchmark": {
+      "role": "canonical_main_benchmark",
+      "path": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "schema_version": 3,
+      "claim_scope": "main manuscript Table 1 and Figure 2",
+      "source_role": "stage3_current_manuscript_claim",
+      "generating_command": "python scripts/experiments/run_3dof_cross_family_benchmark.py --config configs/benchmark/three_dof_paper9suite_full5profile_bc32x32_stage3.yaml",
+      "sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
+      "git_commit": "45d6d180a2720bd34e6ae2761792d0c8769a5ee4",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-24T00:00:00Z"
+    },
+    "canonical_statistics_report": {
+      "role": "canonical_statistics_report",
+      "path": "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json",
+      "schema_version": 3,
+      "claim_scope": "main manuscript benchmark statistics",
+      "source_role": "stage3_current_manuscript_statistics",
+      "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json --statistics-report-input artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json",
+      "sha256": "007f0fb759086455f4e2b947f3045304993e0f43f25f6388030b04b10d59de72",
+      "git_commit": "45d6d180a2720bd34e6ae2761792d0c8769a5ee4",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-24T00:00:00Z"
+    },
+    "schema2_diagnostic": {
+      "role": "appendix_diagnostic_legacy",
+      "path": "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "schema_version": 2,
+      "claim_scope": "appendix teacher/termination diagnostics only",
+      "source_role": "schema2_appendix_diagnostic_legacy",
+      "generating_command": "python scripts/export/export_paper_only_sim_appendix_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json",
+      "sha256": "4a4ca8b98446e34a19cdb31593d647b1fabc7bb443f68c6f7788268ced214c1b",
+      "git_commit": "45d6d180a2720bd34e6ae2761792d0c8769a5ee4",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-24T00:00:00Z"
+    }
+  }
+}

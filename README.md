@@ -13,11 +13,10 @@ constructive layer packages the main recipe as Support-Gated Variable-Impedance 
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
 implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
-teacher-coupled rather than general sim-to-real claims. Newly generated schema-3 uncertainty
-benchmark JSON artifacts can also record per-seed, per-profile, and per-suite SCI summaries under
-the same benchmark-local quantization contract; the currently tracked frozen main benchmark JSON in
-`artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json` predates
-that export path.
+teacher-coupled rather than general sim-to-real claims. The canonical paper-facing benchmark source
+is declared in `artifacts/main_benchmark/main_benchmark_manifest.json`; it assigns the schema-3
+stage3 artifact to the main manuscript Table 1 and Figure 2, while schema-2 artifacts are retained
+for appendix / diagnostic legacy use only.
 
 Repository URL embedded in the manuscript:
 
@@ -148,12 +147,12 @@ python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchm
 python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input <phase_c_benchmark.json> --fixed-impedance-input <fixed_impedance_override.json> --statistics-report-input <statistics_report.json>
 ```
 
-The Sprint 2 reviewer-facing table and pure-RL budget-curve summary use the frozen confirm,
-evidence-matrix, and schema-2 benchmark artifacts:
+The Sprint 2 reviewer-facing table and pure-RL budget-curve summary use the frozen confirm report,
+evidence matrix, and canonical main-benchmark manifest:
 
 ```bash
 python scripts/experiments/export_3dof_cross_family_confirm_report.py --pilot-report outputs/pilot_report/three_dof_cross_family_pilot_report.json --output-dir outputs/cross_family_confirm
-python scripts/experiments/export_3dof_evidence_matrix.py --confirm-report outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json --benchmark-report artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json --output-dir outputs/evidence_matrix
+python scripts/experiments/export_3dof_evidence_matrix.py --confirm-report outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json --manifest artifacts/main_benchmark/main_benchmark_manifest.json --output-dir outputs/evidence_matrix
 ```
 
 Read `outputs/evidence_matrix/three_dof_sprint2_main_table.md` as a three-layer claim-control
