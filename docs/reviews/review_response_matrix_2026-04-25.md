@@ -4,7 +4,7 @@ This internal matrix binds each high-risk reviewer concern to required evidence,
 
 | Reviewer concern | Claim affected | Severity | Required evidence | Planned experiment / text revision | Success criterion | Manuscript location | Response draft | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Teacher support and VI prior are confounded | VI value; support gate | Fatal | FI teacher x VI teacher crossed ablation | Add VI/FI teacher x VI/FI policy crossed experiment | Demonstration-support effect remains visible after teacher impedance prior is controlled; VI value is stated only if VI improves load/work or robustness under FI/matched support | Main + appendix | We added a crossed teacher/action-space ablation to separate demonstration support from impedance prior. The 2026-04-25 run shows VI-teacher conditions succeeded more often than FI-teacher conditions, so support/motion coupling remains a major claim boundary; VI superiority remains gated on P0.3 motion-matched controls. | P0.2 evidence recorded; Gate A still pending P0.3 |
+| Teacher support and VI prior are confounded | VI value; support gate | Fatal | FI teacher x VI teacher crossed ablation | Add VI/FI teacher x VI/FI policy crossed experiment | Demonstration-support effect remains visible after teacher impedance prior is controlled; VI value is stated only if VI improves load/work or robustness under FI/matched support | Main + appendix | We added a crossed teacher/action-space ablation to separate demonstration support from impedance prior. The 2026-04-25 run shows VI-teacher conditions succeeded more often than FI-teacher conditions, so support/motion coupling remains a major claim boundary; VI superiority remains gated on P0.3 motion-matched controls. | P0.2 evidence recorded; resolved together with P0.3 Gate A readout |
 | Motion prior and impedance prior are confounded | VI value | Fatal | Motion-matched impedance controls | Add VI motion + FI K and FI motion + VI K comparisons | The manuscript can state whether the observed effect comes from motion support, stiffness schedule, or both | Main | We decouple motion command source from stiffness command source and report the residual impedance effect. The 2026-04-25 run shows `fi_motion_vi_k` succeeds while `vi_motion_fi_k` fails, so the revised claim should emphasize variable-impedance command capacity under matched teacher support rather than broad VI-teacher superiority. | P0.3 evidence recorded; Gate A supports bounded VI-capacity language |
 | SCI is post-hoc and bin-dependent | SCI diagnostic | Major | Bin sensitivity + alternative support metrics | Add fine/default/coarse SCI, state-only/action-only SCI, nearest-demo distance, Jaccard/MMD if stable | SCI remains correlated with contact entry/success across bin settings and is not dominated by trivial distance metrics; otherwise SCI is downgraded | Main summary + appendix full grid | We audited SCI against bin settings and continuous alternatives rather than relying on one discretization. Current artifact populates the predictive schema and synthetic bin-sensitivity checks, but raw-trace SCI values remain weak/zero in the P0 ablation artifacts, so manuscript wording should keep SCI as a bounded diagnostic rather than proof. | P0.4 evidence recorded; Gate C supports bounded diagnostic wording |
 | VI value unclear because tuned FI can succeed | VI physical role | Major | Success-matched mechanics analysis | Add success/failure split, success-only curves, success-matched force/work, Pareto, phase portraits | VI shows lower load/work under matched-success conditions, not just higher success or mixed failure composition | Main Figure 3 replacement + appendix | We no longer claim broad VI superiority; we report lower-load contact paths when supported by matched mechanics evidence. | Pending P1.1 |
@@ -23,7 +23,32 @@ This internal matrix binds each high-risk reviewer concern to required evidence,
 - Update `Status` when each evidence block lands, and keep any response draft conservative until the corresponding gate is evaluated.
 - Prefer claim downgrades over adding unsupported prose if a gate is ambiguous.
 - Keep manuscript-facing language benchmark-local unless a later stress layer changes the evidence boundary.
-`r`n## Gate A Interim Readout (P0.2)`r`n`r`n- Artifact: `outputs/revision/teacher_coupling_ablation_20260425.json`.`r`n- Minimal crossed result: `vi_teacher_vi_student` success 1.00; `vi_teacher_fi_student` success 0.67; both FI-teacher conditions success 0.00 under the small 3-seed / 128-step / 16-episode run.`r`n- Interpretation: teacher support/motion quality is not separable enough to support broad VI-superiority language yet; keep VI claims conditional until P0.3 motion-matched impedance controls land.`r`n
-`r`n## Gate A Readout (P0.3)`r`n`r`n- Artifact: `outputs/revision/motion_matched_impedance_ablation_20260425.json`.`r`n- Minimal motion-matched result: `vi_full` success 1.00, `fi_full` success 0.00, `vi_motion_fi_k` success 0.00, `fi_motion_vi_k` success 1.00, `tuned_fi_k` success 0.00 under the small 3-seed / 128-step / 16-episode run.`r`n- Interpretation: the decisive contrast is not just VI teacher motion. The `fi_motion_vi_k` condition recovers success while fixed-K variants fail, supporting a bounded claim that variable impedance/action capacity can reopen useful insertion under this controlled benchmark. Keep load/work claims gated on P1 mechanics.`r`n
-`r`n## Gate C Readout (P0.4)`r`n`r`n- Artifact: `outputs/revision/sci_sensitivity_20260425.{json,csv,md}`.`r`n- Audit coverage: fine/default/coarse SCI configs, nearest-demo distance, Jaccard, state-only SCI, action-only SCI, and predictive rows with success/contact/jam/force/work/distance/steps fields.`r`n- Interpretation: schema and bin checks are in place, but available P0 artifacts do not yet provide strong nonzero SCI association evidence; keep SCI as a benchmark-local diagnostic and avoid proof/generalization language.`r`n
-`r`n## P0.5 Manuscript Boundary Readout`r`n`r`n- Updated `paper/main.tex`, `README.md`, and `docs/figure_asset_manifest.md` to remove paper-facing Sprint/Branch/confirm-JSON phrasing and reduce teacher-coupled/propose language.`r`n- Contribution wording now uses study/audit/decouple/show framing and keeps SG-VI/SCI benchmark-local.`r`n- Prose tests passed after rewrite.`r`n
+
+## Gate A Interim Readout (P0.2)
+
+- Artifact: `outputs/revision/teacher_coupling_ablation_20260425.json`.
+- Minimal crossed result: `vi_teacher_vi_student` success 1.00; `vi_teacher_fi_student` success 0.67; both FI-teacher conditions success 0.00 under the small 3-seed / 128-step / 16-episode run.
+- Interpretation: teacher support/motion quality is not separable enough to support broad VI-superiority language yet; keep VI claims conditional until P0.3 motion-matched impedance controls land.
+
+
+## Gate A Readout (P0.3)
+
+- Artifact: `outputs/revision/motion_matched_impedance_ablation_20260425.json`.
+- Minimal motion-matched result: `vi_full` success 1.00, `fi_full` success 0.00, `vi_motion_fi_k` success 0.00, `fi_motion_vi_k` success 1.00, `tuned_fi_k` success 0.00 under the small 3-seed / 128-step / 16-episode run.
+- Interpretation: the decisive contrast is not just VI teacher motion. The `fi_motion_vi_k` condition recovers success while fixed-K variants fail, supporting a bounded claim that variable impedance/action capacity can reopen useful insertion under this controlled benchmark. Keep load/work claims gated on P1 mechanics.
+
+
+## Gate C Readout (P0.4)
+
+- Artifact: `outputs/revision/sci_sensitivity_20260425.{json,csv,md}`.
+- Audit coverage: fine/default/coarse SCI configs, nearest-demo distance, Jaccard, state-only SCI, action-only SCI, and predictive rows with success/contact/jam/force/work/distance/steps fields.
+- Interpretation: schema and bin checks are in place, but available P0 artifacts do not yet provide strong nonzero SCI association evidence; keep SCI as a benchmark-local diagnostic and avoid proof/generalization language.
+
+
+## P0.5 Manuscript Boundary Readout
+
+- Updated `paper/main.tex`, `README.md`, and `docs/figure_asset_manifest.md` to remove paper-facing Sprint/Branch/confirm-JSON phrasing and reduce teacher-coupled/propose language.
+- Contribution wording now uses study/audit/decouple/show framing and keeps SG-VI/SCI benchmark-local.
+- Prose tests passed after rewrite.
+
+
