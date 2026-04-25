@@ -6,7 +6,12 @@ from typing import Any, Sequence
 from vi_full.three_dof_benchmark import DEFAULT_UNCERTAINTY_PROFILES
 from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
 from vi_full.three_dof_policies import ThreeDoFTeacherSpec, resolve_3dof_teacher_spec
-from vi_full.three_dof_training import build_3dof_fixed_impedance_env_overrides
+from vi_full.three_dof_training import (
+    FIXED_IMPEDANCE_K_XY,
+    FIXED_IMPEDANCE_K_Z,
+    build_3dof_fixed_impedance_env_overrides,
+    build_3dof_fixed_impedance_env_overrides_for,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -24,6 +29,10 @@ class TeacherCouplingCondition:
     train_uncertainty_profile: str = "nominal"
     eval_uncertainty_profile: str = "nominal"
     max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps
+    motion_rule: str | None = None
+    impedance_rule: str | None = None
+    fixed_stiffness_xy: float | None = None
+    fixed_stiffness_z: float | None = None
 
     def to_suite_run_kwargs(
         self,
@@ -46,8 +55,22 @@ class TeacherCouplingCondition:
             "bc_demo_policy_name": self.teacher_preset_name,
             "bc_demo_teacher_spec": self.teacher_spec,
         }
+        if self.motion_rule is not None:
+            kwargs["motion_rule"] = self.motion_rule
+        if self.impedance_rule is not None:
+            kwargs["impedance_rule"] = self.impedance_rule
+        if self.fixed_stiffness_xy is not None:
+            kwargs["fixed_stiffness_xy"] = float(self.fixed_stiffness_xy)
+        if self.fixed_stiffness_z is not None:
+            kwargs["fixed_stiffness_z"] = float(self.fixed_stiffness_z)
         if self.student_impedance_space == "fixed_impedance":
-            kwargs["base_env_overrides"] = build_3dof_fixed_impedance_env_overrides()
+            if self.fixed_stiffness_xy is None or self.fixed_stiffness_z is None:
+                kwargs["base_env_overrides"] = build_3dof_fixed_impedance_env_overrides()
+            else:
+                kwargs["base_env_overrides"] = build_3dof_fixed_impedance_env_overrides_for(
+                    k_xy=float(self.fixed_stiffness_xy),
+                    k_z=float(self.fixed_stiffness_z),
+                )
         return kwargs
 
 
@@ -98,6 +121,88 @@ def build_teacher_coupling_grid(
     ]
 
 
+def _motion_condition(
+    *,
+    name: str,
+    teacher_prior: str,
+    student_impedance_space: str,
+    teacher_preset_name: str,
+    seeds: tuple[int, ...],
+    total_timesteps: int,
+    fixed_stiffness_xy: float | None = None,
+    fixed_stiffness_z: float | None = None,
+) -> TeacherCouplingCondition:
+    spec = resolve_3dof_teacher_spec(policy_name=teacher_preset_name)
+    return TeacherCouplingCondition(
+        name=name,
+        teacher_prior=teacher_prior,
+        student_impedance_space=student_impedance_space,
+        teacher_preset_name=teacher_preset_name,
+        teacher_spec=spec,
+        seeds=seeds,
+        total_timesteps=int(total_timesteps),
+        motion_rule=spec.motion_rule,
+        impedance_rule=spec.impedance_rule,
+        fixed_stiffness_xy=fixed_stiffness_xy,
+        fixed_stiffness_z=fixed_stiffness_z,
+    )
+
+
+def build_motion_matched_grid(
+    seeds: Sequence[int] = (0, 1, 2),
+    total_timesteps: int = 128,
+) -> list[TeacherCouplingCondition]:
+    seed_tuple = tuple(int(seed) for seed in seeds)
+    return [
+        _motion_condition(
+            name="vi_full",
+            teacher_prior="variable_impedance",
+            student_impedance_space="variable_impedance",
+            teacher_preset_name="teacher_variable_variable",
+            seeds=seed_tuple,
+            total_timesteps=total_timesteps,
+        ),
+        _motion_condition(
+            name="fi_full",
+            teacher_prior="fixed_impedance",
+            student_impedance_space="fixed_impedance",
+            teacher_preset_name="teacher_pose_fixed",
+            seeds=seed_tuple,
+            total_timesteps=total_timesteps,
+            fixed_stiffness_xy=FIXED_IMPEDANCE_K_XY,
+            fixed_stiffness_z=FIXED_IMPEDANCE_K_Z,
+        ),
+        _motion_condition(
+            name="vi_motion_fi_k",
+            teacher_prior="motion_matched",
+            student_impedance_space="fixed_impedance",
+            teacher_preset_name="teacher_variable_fixed",
+            seeds=seed_tuple,
+            total_timesteps=total_timesteps,
+            fixed_stiffness_xy=FIXED_IMPEDANCE_K_XY,
+            fixed_stiffness_z=FIXED_IMPEDANCE_K_Z,
+        ),
+        _motion_condition(
+            name="fi_motion_vi_k",
+            teacher_prior="motion_matched",
+            student_impedance_space="variable_impedance",
+            teacher_preset_name="teacher_pose_variable",
+            seeds=seed_tuple,
+            total_timesteps=total_timesteps,
+        ),
+        _motion_condition(
+            name="tuned_fi_k",
+            teacher_prior="fixed_impedance",
+            student_impedance_space="fixed_impedance",
+            teacher_preset_name="teacher_pose_fixed",
+            seeds=seed_tuple,
+            total_timesteps=total_timesteps,
+            fixed_stiffness_xy=0.6,
+            fixed_stiffness_z=0.6,
+        ),
+    ]
+
+
 def _json_safe(value: Any) -> Any:
     if is_dataclass(value):
         return _json_safe(asdict(value))
@@ -126,9 +231,7 @@ def summarize_teacher_coupling_results(report: dict[str, Any]) -> dict[str, Any]
                 "student_impedance_space": payload.get("student_impedance_space"),
                 "teacher_motion_rule": payload.get("teacher_motion_rule"),
                 "teacher_impedance_rule": payload.get("teacher_impedance_rule"),
-                "success_rate": _metric(
-                    five_profile_mean, "success_rate_mean_over_profiles"
-                ),
+                "success_rate": _metric(five_profile_mean, "success_rate_mean_over_profiles"),
                 "jam_rate": _metric(five_profile_mean, "jam_rate_mean_over_profiles"),
                 "mean_final_distance_mm": 1000.0
                 * _metric(five_profile_mean, "mean_final_distance_mean_over_profiles"),
@@ -164,10 +267,9 @@ def teacher_coupling_report_payload(
 ) -> dict[str, Any]:
     report = {
         "artifact_schema_version": 1,
-        "ablation_name": "teacher_coupling_crossed_ablation",
+        "ablation_name": config.get("ablation_name", "teacher_coupling_crossed_ablation"),
         "config": config,
         "learned_results": learned_results,
     }
     report["summary"] = summarize_teacher_coupling_results(report)
     return _json_safe(report)
-
