@@ -1,4 +1,4 @@
-# vi-insertion-only-sim
+﻿# vi-insertion-only-sim
 
 Simulation-only research package for the manuscript:
 
@@ -6,14 +6,14 @@ Simulation-only research package for the manuscript:
 
 This repository contains the LaTeX source, paper figures, frozen result artifacts, and focused
 reproduction scripts for a controlled 3DoF analytical insertion benchmark. The central claim is
-deliberately scoped: in this teacher-coupled benchmark, behavior-cloning demonstration support is
+deliberately scoped: in this matched-demonstration benchmark, behavior-cloning demonstration support is
 the cleanest gate into useful contact, while variable impedance has a localized high-friction
 load/work advantage rather than implying a general algorithm ranking. The current paper-facing
 constructive layer packages the main recipe as Support-Gated Variable-Impedance Learning (SG-VI):
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
 implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
-teacher-coupled rather than general sim-to-real claims. The canonical paper-facing benchmark source
+matched-demonstration rather than general sim-to-real claims. The canonical paper-facing benchmark source
 is declared in `artifacts/main_benchmark/main_benchmark_manifest.json`; it assigns the schema-3
 stage3 artifact to the main manuscript Table 1 and Figure 2, while schema-2 artifacts are retained
 for appendix / diagnostic legacy use only.
@@ -32,10 +32,10 @@ Repository URL embedded in the manuscript:
 | Appendix figures | [`figures/appendix/`](figures/appendix/) |
 | Supplementary successful-only mechanics view | [`supplement/figures/`](supplement/figures/) |
 | Final benchmark artifacts | [`artifacts/main_benchmark/`](artifacts/main_benchmark/) |
-| Sprint 2 reviewer table | [`outputs/evidence_matrix/three_dof_sprint2_main_table.md`](outputs/evidence_matrix/three_dof_sprint2_main_table.md) |
-| Sprint 3 kickoff matrix | [`outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf`](outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf) |
-| Sprint 4 clearance sweep | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift.md`](outputs/sprint4_clearance_shift/sprint4_clearance_shift.md) |
-| Sprint 4 clearance summary | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.pdf`](outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.pdf) |
+| Three-layer reviewer table | [`outputs/evidence_matrix/three_dof_sprint2_main_table.md`](outputs/evidence_matrix/three_dof_sprint2_main_table.md) |
+| Teacher-boundary kickoff matrix | [`outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf`](outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.pdf) |
+| Pure-clearance stress sweep | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift.md`](outputs/sprint4_clearance_shift/sprint4_clearance_shift.md) |
+| Pure-clearance summary | [`outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.pdf`](outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.pdf) |
 | Pure-RL budget-curve summary | [`outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png`](outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png) |
 | Diagnostic sweep artifacts | [`artifacts/diagnostics/`](artifacts/diagnostics/) |
 | Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
@@ -45,6 +45,15 @@ Repository URL embedded in the manuscript:
 | Experiment runners | [`scripts/experiments/`](scripts/experiments/) |
 | Paper-facing source modules | [`src/vi_full/`](src/vi_full/) |
 | Support metric utilities | [`src/vi_full/three_dof_support_metrics.py`](src/vi_full/three_dof_support_metrics.py) |
+| Documentation index | [`docs/README.md`](docs/README.md) |
+| Test index | [`tests/README.md`](tests/README.md) |
+
+## Repository Layout
+
+- `docs/project/` holds long-running planning state that used to live at the repository root.
+- `docs/plans/`, `docs/submission/`, and `docs/reviews/` separate execution plans, submission material, and review reports.
+- `tests/` is grouped by contract: `artifacts/`, `core/`, `paper/`, `packaging/`, `reviewer/`, `runners/`, `sprints/`, and `three_dof/`.
+- `docs/figure_asset_manifest.md` and `tests/reviewer/` stay at their current paths because the anonymous submission snapshot copies those exact reviewer-facing paths.
 
 ## Import Contract
 
@@ -56,16 +65,16 @@ from vi_full import three_dof_benchmark as bm    # explicit submodule
 import vi_full.three_dof_support_metrics as sci   # explicit submodule
 ```
 
-The boundary is enforced by `tests/test_import_boundaries.py`.
+The boundary is enforced by `tests/core/test_import_boundaries.py`.
 
 ## Evidence Map
 
 | Evidence block | Where to look | Role |
 | --- | --- | --- |
 | Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
-| Sprint 2 three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
-| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,csv,md}` and `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.{pdf,png}` | Frozen teacher support quality x demo rollout budget boundary before new training |
-| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}` and `outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.{pdf,png}` | Selected demo-supported suites under a pure easy/nominal/hard clearance ladder |
+| Three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
+| Teacher mini-ablation boundary | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,csv,md}` and `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.{pdf,png}` | Frozen teacher support quality x demo rollout budget boundary before new training |
+| Pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}` and `outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.{pdf,png}` | Selected demo-supported suites under a pure easy/nominal/hard clearance ladder |
 | Pure-RL nominal-only budget curves | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.*`, `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | Distance proxy, success, and contact gate versus train budget |
 | Appendix teacher/termination package | `figures/appendix/figA3_*`, `figures/appendix/figA4_*`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.*` | Supplementary teacher-ablation and jam-diagnostics evidence |
 | Factorized support/reset/BC/PPO diagnostics | `artifacts/diagnostics/` | Directional mechanism analysis |
@@ -104,7 +113,7 @@ This writes an `anonymous_snapshot/` tree, an `editor_materials/` tree, a
 `submission_bundle_manifest.json`, a `submission_bundle_summary.md`, and zip archives for both
 directories. The anonymous snapshot deliberately rewrites `README.md` and `paper/main.tex`, includes
 `docs/figure_asset_manifest.md` plus the reviewer-facing `tests/reviewer/` smoke subset, and excludes
-reviewer-irrelevant staging content such as `docs/github_upload.md`, the rest of `tests/`, and the
+reviewer-irrelevant staging content such as `docs/submission/github_upload.md`, the rest of `tests/`, and the
 editor-only submission notes from the reviewer-facing copy.
 
 Keep `--output-dir` as a dedicated staging path such as `tmp/submission_bundle/...`. The builder
@@ -155,7 +164,7 @@ python scripts/experiments/run_3dof_statistics_report.py --input <phase_c_benchm
 python scripts/export/export_paper_only_sim_benchmark_table.py --manifest artifacts/main_benchmark/main_benchmark_manifest.json
 ```
 
-The Sprint 2 reviewer-facing table and pure-RL budget-curve summary use the frozen confirm report,
+The reviewer-facing table and pure-RL budget-curve summary use the frozen confirm report,
 evidence matrix, and canonical main-benchmark manifest:
 
 ```bash
@@ -168,7 +177,7 @@ table: pure-RL nominal-only negatives, demo-supported contact-reopening rows, an
 fixed-impedance anchor. `SAC w/o BC` is only a zero-contact distance proxy in that table; it is not
 a solve-insertion or useful-contact claim.
 
-The Sprint 3 teacher mini-ablation kickoff is a boundary artifact, not a training result. It freezes
+The Teacher mini-ablation boundary is a boundary artifact, not a training result. It freezes
 the 4-condition teacher support quality x demo rollout budget matrix and now exports both a machine-
 readable bundle and a reviewer-facing matrix figure while keeping BC steps, PPO steps, policy
 initialization, metrics, and paper-facing claim limits fixed before running new jobs:
@@ -177,7 +186,7 @@ initialization, metrics, and paper-facing claim limits fixed before running new 
 python scripts/experiments/export_sprint3_teacher_mini_ablation_kickoff.py --output-dir outputs/sprint3_teacher_mini_ablation
 ```
 
-Sprint 4A adds a pure-clearance stress sweep for the selected demo-supported suites. The generated
+The pure-clearance stress sweep adds a pure-clearance stress sweep for the selected demo-supported suites. The generated
 artifact bundle is sprint-specific: it uses a `clearance_easy` / `nominal` / `clearance_hard`
 ladder, exports a reviewer-facing summary figure, and must not be read as a replacement for the
 frozen five-profile manuscript benchmark:
@@ -219,7 +228,7 @@ JSON/Markdown artifacts are the canonical paper record.
 This is a simulation-only, translational 3DoF analytical benchmark. It uses relative observations,
 synthetic force signals, diagonal stiffness decoding, and behavior-cloning demonstrations generated
 by a variable-impedance teacher. The repository should therefore be read as a benchmark-local,
-teacher-coupled learnability study rather than a hardware validation, a 6DoF insertion benchmark, or
+matched-demonstration learnability study rather than a hardware validation, a 6DoF insertion benchmark, or
 a teacher-independent causal theorem.
 
 Phase C+ benchmark artifacts also report two force-jam diagnostics with intentionally different
@@ -241,7 +250,8 @@ Two no-training GitHub Actions workflows guard the repository:
 
 | Workflow | Purpose | Local equivalent |
 | --- | --- | --- |
-| `reviewer-smoke` | Lightweight import + boundary + reviewer snapshot | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_import_boundaries.py tests/reviewer` |
-| `paper-assets-check` | Manifest, provenance, exporter sync, table sync, claim boundaries, asset check | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_canonical_manifest.py tests/test_artifact_provenance.py tests/test_exporter_defaults.py tests/test_paper_table_sync.py tests/test_three_dof_evidence_matrix.py tests/test_sprint2_paper_sync.py tests/test_paper_claim_boundaries.py && python scripts/export/build_paper_assets.py --check` |
+| `reviewer-smoke` | Lightweight import + boundary + reviewer snapshot | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` |
+| `paper-assets-check` | Manifest, provenance, exporter sync, table sync, claim boundaries, asset check | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_paper_claim_boundaries.py && python scripts/export/build_paper_assets.py --check` |
 
 Neither workflow runs training or requires a TeX/PDF build environment.
+

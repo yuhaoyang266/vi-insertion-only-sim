@@ -1,4 +1,4 @@
-# Only-Sim Figure Asset Manifest
+﻿# Only-Sim Figure Asset Manifest
 
 This note defines the canonical asset names and export locations for the figures referenced by the
 only-sim manuscript. It does not create plots or change any paper-facing result. Its role is only
@@ -54,25 +54,25 @@ Slug rules:
 | Figure A3 | `figA3_teacher_ablation_summary` | `figures/appendix/figA3_teacher_ablation_summary.pdf` and `.png` | appendix teacher 2x2 motion-versus-impedance summary | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
 | Figure A4 | `figA4_termination_diagnostics_summary` | `figures/appendix/figA4_termination_diagnostics_summary.pdf` and `.png` | appendix termination-diagnostics decomposition across learned suites | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
 
-## Reviewer-Facing Sprint 2 Assets
+## Reviewer-Facing Main-Table Assets
 
 These assets support the main-table claim boundary but are not a new cross-contract leaderboard.
 
 | Asset | Expected Export Files | Source Artifacts | Role |
 | --- | --- | --- | --- |
-| Sprint 2 three-layer main table | `outputs/evidence_matrix/three_dof_sprint2_main_table.json`, `.csv`, and `.md` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`, `outputs/evidence_matrix/three_dof_evidence_matrix.json`, `artifacts/main_benchmark/main_benchmark_manifest.json` -> `canonical_main_benchmark` -> `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json` | pure-RL nominal-only negatives, demo-supported contact reopening, and mechanics / fixed-impedance anchor |
+| Three-layer main table | `outputs/evidence_matrix/three_dof_sprint2_main_table.json`, `.csv`, and `.md` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`, `outputs/evidence_matrix/three_dof_evidence_matrix.json`, `artifacts/main_benchmark/main_benchmark_manifest.json` -> `canonical_main_benchmark` -> `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json` | pure-RL nominal-only negatives, demo-supported contact reopening, and mechanics / fixed-impedance anchor |
 | Pure-RL budget-curve summary | `outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.pdf` and `.png` | `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json` | distance proxy, success, and contact steps versus training budget within the nominal-only pure-RL contract |
 
-## Reviewer-Facing Sprint 3 Kickoff Assets
+## Reviewer-Facing Teacher-Boundary Assets
 
 These assets freeze the next experiment boundary before training. They are not result tables and should
 not be cited as outcome evidence.
 
 | Asset | Expected Export Files | Source Artifacts | Role |
 | --- | --- | --- | --- |
-| Sprint 3 teacher mini-ablation kickoff | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json`, `.csv`, `.md`, and `sprint3_teacher_mini_ablation_kickoff_matrix.pdf` / `.png` | generated directly by `src/vi_full/sprint3_teacher_mini_ablation_kickoff.py` | 4-condition teacher support quality x demo rollout budget boundary with fixed metrics, controls, closure criteria, and a reviewer-facing kickoff matrix |
+| Teacher mini-ablation boundary | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.json`, `.csv`, `.md`, and `sprint3_teacher_mini_ablation_kickoff_matrix.pdf` / `.png` | generated directly by `src/vi_full/sprint3_teacher_mini_ablation_kickoff.py` | 4-condition teacher support quality x demo rollout budget boundary with fixed metrics, controls, closure criteria, and a reviewer-facing kickoff matrix |
 
-## Reviewer-Facing Sprint 4 Assets
+## Reviewer-Facing Clearance-Stress Assets
 
 These assets add a sprint-specific pure-clearance stress ladder. They are paper-facing robustness
 artifacts, not new manuscript figure exports and not a replacement for the frozen five-profile
@@ -80,7 +80,7 @@ benchmark contract.
 
 | Asset | Expected Export Files | Source Artifacts | Role |
 | --- | --- | --- | --- |
-| Sprint 4 pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.json`, `.csv`, `.md`, and `sprint4_clearance_shift_summary.pdf` / `.png` | generated directly by `src/vi_full/sprint4_clearance_shift.py` via `scripts/experiments/export_sprint4_clearance_shift.py` | selected demo-supported suites under a pure `clearance_easy` / `nominal` / `clearance_hard` ladder with fixed train profile, explicit claim boundary, and a reviewer-facing summary figure |
+| Pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.json`, `.csv`, `.md`, and `sprint4_clearance_shift_summary.pdf` / `.png` | generated directly by `src/vi_full/sprint4_clearance_shift.py` via `scripts/experiments/export_sprint4_clearance_shift.py` | selected demo-supported suites under a pure `clearance_easy` / `nominal` / `clearance_hard` ladder with fixed train profile, explicit claim boundary, and a reviewer-facing summary figure |
 
 ## Panel Intent
 
@@ -159,3 +159,4 @@ Before any actual figure export is considered complete, check:
 4. The asset is written to `figures/` or `supplement/figures/`, not to `docs/`.
 5. Appendix figures do not introduce any new claim beyond the current strict-criterion and
    supporting-closure readings.
+

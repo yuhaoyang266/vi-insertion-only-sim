@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+﻿\documentclass[11pt]{article}
 
 \usepackage[margin=1in]{geometry}
 \usepackage[T1]{fontenc}
@@ -77,16 +77,14 @@ cross-family pure-RL pilot, PPO, SAC, and TD3 from scratch remain outside useful
 to 200k environment steps, so optimizer family alone does not reopen the gate. A factorized
 diagnostic sweep identifies BC demonstration support as the cleanest lever: removing it drives
 useful-contact success to zero, whereas reset coverage, BC depth, and PPO budget show
-protocol-sensitive and partly non-monotone effects. A separate pure-clearance Sprint 4A ladder
+protocol-sensitive and partly non-monotone effects. A separate pure-clearance stress ladder
 isolates \code{clearance\_easy}, \code{nominal}, and \code{clearance\_hard} without changing
 offset, friction, or force-noise axes; on this ladder \code{BC-only} stays at 1.000 success,
 \code{BC$\rightarrow$PPO} and the learned fixed-impedance baseline remain near 0.8 success without
 jam, while \code{DAPG-lite} drops to 0.768 success with 0.05 jam under
 \code{clearance\_hard}. Variable impedance retains localized physical value under high-friction
 contact: tuned fixed stiffness can nearly saturate success, but same-interface mechanics traces
-show lower contact load and work for variable stiffness. The claim is benchmark-local and
-teacher-coupled, not a general robotics or teacher-independent
-algorithm-ranking result.
+show lower contact load and work for variable stiffness. The claim is benchmark-local and matched-demonstration bounded, not a general robotics or teacher-independent algorithm-ranking result.
 \end{abstract}
 
 \section{Introduction}
@@ -111,34 +109,19 @@ The benchmark separates whether a policy ever reaches recoverable contact, wheth
 and reset curricula expose useful state-action support, whether PPO-style fine-tuning changes a
 BC-initialized policy, and whether variable stiffness changes the contact load path once contact is
 reached. We also separate the frozen five-profile benchmark from later stress ladders such as the
-pure-clearance Sprint 4A sweep, because those ladders answer narrower robustness questions rather
-than replacing the main benchmark contract. This leads to a narrow claim: in the matched
-teacher-coupled setup, learnability is dominated by upstream interface design, while the physical
+pure-clearance stress sweep, because those ladders answer narrower robustness questions rather
+than replacing the main benchmark contract. This leads to a narrow claim: in the matched-demonstration setup, learnability is dominated by upstream interface design, while the physical
 value of variable impedance is localized to lower-load high-friction contact rather than broad
 algorithmic superiority.
 
 We package that interface-level view as Support-Gated Variable-Impedance Learning (SG-VI): a
-benchmark-local recipe that keeps impedance explicit in the action space, uses BC to reopen
+controlled benchmark protocol that keeps impedance explicit in the action space, uses BC to reopen
 contact-relevant support, and then studies what policy optimization changes once that support is
 available. To keep the gate measurable rather than only rhetorical, we also define a Support
 Coverage Index (SCI), a discretized rollout-to-demo support-overlap diagnostic under the same
 relative-frame interface.
 
-Our contributions are therefore fivefold. First, we propose Support-Gated Variable-Impedance
-Learning (SG-VI), a benchmark-local methodology for auditing 3DoF insertion learnability through
-explicit impedance commands, BC warm-start, and factorized support controls. Second, we propose
-Support Coverage Index (SCI), a benchmark-local discretized state-action support diagnostic that
-measures what fraction of a policy rollout remains inside the demonstration support set. Third, we
-show with a matched cross-family pure-RL pilot that PPO, SAC, and TD3 without demonstrations do
-not reach useful contact under the nominal-train 50k--200k contract, while the mixed-contract
-evidence matrix keeps this negative result separate from the five-profile demo-supported benchmark.
-Fourth, we show that BC-based support is the decisive gate under the matched teacher-coupled
-setup, while a frozen teacher-support-quality $\times$ demo-budget boundary keeps the next teacher
-ablation auditable rather than post hoc. Fifth, we show that robustness beyond the frozen
-five-profile benchmark remains localized: the main learned fixed-impedance baseline underperforms
-primarily in the \code{high\_friction} evaluation class, while a separate pure-clearance ladder
-preserves \code{BC-only} success but exposes the clearest harder-clearance penalty in
-\code{DAPG-lite}.
+Our contributions are therefore fivefold. First, we study Support-Gated Variable-Impedance Learning (SG-VI) as a benchmark-local methodology for auditing 3DoF insertion learnability through explicit impedance commands, BC warm-start, and factorized support controls. Second, we audit Support Coverage Index (SCI) as a benchmark-local discretized state-action support diagnostic rather than a proof of generalization. Third, we show with a matched cross-family pure-RL pilot that PPO, SAC, and TD3 without demonstrations do not reach useful contact under the nominal-train 50k--200k contract, while the mixed-contract evidence matrix keeps this negative result separate from the five-profile demo-supported benchmark. Fourth, we decouple teacher motion and impedance factors with crossed P0 controls, keeping the variable-impedance claim bounded to the matched-demonstration evidence. Fifth, we show that robustness beyond the frozen five-profile benchmark remains localized: the main learned fixed-impedance baseline underperforms primarily in the \code{high\_friction} evaluation class, while a separate pure-clearance ladder preserves \code{BC-only} success but exposes the clearest harder-clearance penalty in \code{DAPG-lite}.
 
 The remainder of the paper is organized as follows. Section~\ref{sec:related-work} positions the
 study relative to contact-rich insertion, impedance control, and demonstration-guided RL.
@@ -471,15 +454,15 @@ not as a single-p-value basis for ranking algorithms.
 
 The experiments use separate evidence layers. Figure~\ref{fig:main_results_matrix} and
 Table~\ref{tab:main_benchmark} report the final five-seed benchmark with 100 evaluation episodes
-per seed and profile. The Sprint 2 reviewer-facing main table exported as
+per seed and profile. The reviewer-facing main table exported as
 \code{outputs/evidence_matrix/three_dof_sprint2_main_table.md} serves a different role: it is a
 three-layer claim-control table tying nominal-only pure-RL negatives, demo-supported
 contact-reopening rows, and a mechanics / fixed-impedance anchor without turning them into a
 single leaderboard. The cross-family PPO/SAC/TD3 pilot and its confirm report provide a separate
-Branch-A negative-evidence layer, Table~\ref{tab:mechanism_matrix} and
+pure-RL negative-evidence layer, Table~\ref{tab:mechanism_matrix} and
 Table~\ref{tab:behavioral_similarity} are smaller diagnostic sweeps intended for directional
-mechanism analysis, the frozen Sprint 3 teacher mini-ablation kickoff fixes the next
-teacher-support-quality $\times$ demo-budget question, and the Sprint 4A clearance sweep provides a
+mechanism analysis, the frozen teacher mini-ablation boundary fixes the next
+teacher-support-quality $\times$ demo-budget question, and the pure-clearance stress sweep provides a
 pure easy/nominal/hard clearance ladder that should not be read as a replacement for the frozen
 five-profile benchmark. Figure~\ref{fig:high_friction_mechanism} reports high-friction mechanics
 traces under the same 3DoF interface but with its own trace sampling contract,
@@ -534,7 +517,7 @@ separated explicitly.
 
 \subsection{Cross-Family Pure-RL Negative Evidence and Claim Control}
 
-The manuscript's Branch-A narrative is locked by a nominal-train, nominal-eval cross-family pilot.
+The manuscript narrative is locked by a nominal-train, nominal-eval cross-family pilot.
 Across \code{PPO w/o BC}, \code{SAC w/o BC}, and \code{TD3 w/o BC} at 50k, 100k, and 200k
 training budgets, none of the pure-RL runs enters useful contact: success remains 0, mean contact
 steps remain 0, and the mean first-contact step stays at the 64-step episode horizon. The only
@@ -549,7 +532,7 @@ claim control, not a new ranking table: the nominal-only pure-RL pilot rows
 show that demonstration-supported methods reopen contact and non-zero success. In that matrix,
 \code{SAC w/o BC} is retained only as the strongest \emph{distance proxy} among the pure-RL rows;
 it is not a success baseline, and the mixed-contract matrix is not read as a direct leaderboard.
-Each matrix row cites either the direct confirm JSON or the canonical main-benchmark manifest
+Each matrix row cites either the direct controlled-benchmark report or the canonical main-benchmark manifest
 (\code{artifacts/main_benchmark/main_benchmark_manifest.json}) and its resolved source hash,
 rather than a separate paper-table export, so the provenance stays inspectable at row level.
 The same row contract is rendered as \code{outputs/evidence_matrix/three_dof_sprint2_main_table.md}.
@@ -739,8 +722,7 @@ teacher ablation from partial runs, we freeze a 2 $\times$ 2 boundary over teach
 (\emph{support rich} versus \emph{support poor}) and demonstration rollout budget
 (\emph{many demo} versus \emph{few demo}). This boundary keeps BC pretraining steps, PPO
 fine-tuning steps, policy initialization, and evaluation metrics fixed while varying only the two
-teacher-coupled axes that matter for the next iteration. In other words, the current Sprint 3
-artifact is a pre-registered boundary condition, not a new leaderboard or an additional benchmark
+matched-demonstration axes that matter for the next iteration. In other words, the current teacher-boundary artifact is a pre-registered boundary condition, not a new leaderboard or an additional benchmark
 result. Its role in the paper is methodological: it prevents us from expanding the teacher story
 post hoc after seeing partial training outcomes, and it keeps the eventual teacher ablation tied to
 contact-gate contrast plus support diagnostics rather than to a broad teacher-independent claim.
@@ -749,7 +731,7 @@ contact-gate contrast plus support diagnostics rather than to a broad teacher-in
 
 The frozen five nominal profiles do not isolate pure clearance. Under the current environment
 semantics, \code{tight\_clearance} becomes active only under lateral-overflow contact, and
-\code{offset\_bias} is strongly attenuated by the hole-centered relative frame. Sprint 4A therefore
+\code{offset\_bias} is strongly attenuated by the hole-centered relative frame. The pure-clearance stress sweep therefore
 adds a separate pure-clearance ladder with three evaluation profiles:
 \code{clearance\_easy} with a 0.95--1.35~\mm\ clearance range, the nominal 0.70--1.10~\mm\
 benchmark range, and \code{clearance\_hard} with a 0.45--0.75~\mm\ range. This ladder keeps hole
@@ -871,8 +853,7 @@ expert demonstration set, a matched-motion/mismatched-impedance study, or a fixe
 pipeline would be needed to isolate that prior more completely. The same-interface
 handcrafted/classical anchors improve reference coverage, but the repository still does not
 provide an exhaustive survey of hybrid position/force, admittance/compliance, demo-augmented RL,
-or offline RL baselines. Accordingly, both SG-VI and SCI remain benchmark-local, teacher-coupled
-definitions in the present paper rather than universal insertion metrics.
+or offline RL baselines. Accordingly, both SG-VI and SCI remain benchmark-local, matched-demonstration definitions in the present paper rather than universal insertion metrics.
 
 Finally, the metric and parameter sensitivity evidence is still narrower than a full systems
 validation. The main table reports success, jam, final distance, peak force, and contact steps;
@@ -892,7 +873,7 @@ from contact, and the $0.1$ normalized action bins keep the explicit motion/stif
 coarse enough to avoid near-exact sample matching. These choices remain benchmark-local and still
 require sensitivity analysis before SCI should be read as anything broader. A larger
 10-seed expansion would tighten the uncertainty on the remaining near-ceiling gaps, but it would
-not by itself close these external validity questions. Likewise, the Sprint 4A clearance sweep is
+not by itself close these external validity questions. Likewise, the pure-clearance stress sweep is
 currently executed as a train-once / eval-many-profile stress test because this repository does not
 yet persist paper-ready checkpoints for true eval-only reruns.
 
@@ -910,13 +891,12 @@ protocol-local rather than universal lever, and downstream algorithm ranking is 
 rather than fixed once PPO fine-tuning is varied. The learned fixed-impedance gap is concentrated
 under high-friction contact, while the tuned fixed-stiffness sweep shows that fixed impedance can
 nearly saturate success when tuned. This supports a localized load-efficiency role and a more
-robust learned interface under the matched teacher-coupled setup rather than a diffuse claim of
+robust learned interface under the matched-demonstration setup rather than a diffuse claim of
 uniform superiority. The dedicated pose-perturbation study further shows that this matched-frame
 ranking does not automatically survive outside the clean hole-centered frame: several learned suites
 degrade sharply under hidden pose bias and descent-coupled lateral drift, while the strongest
 same-interface handcrafted anchor remains robust. Because the BC demonstrations are generated by a
-variable-impedance teacher, these results identify a learnability gate under this teacher-coupled
-interface rather than a teacher-independent causal theorem about all demonstration designs. These
+variable-impedance teacher, these results identify a learnability gate under this matched-demonstration interface rather than a teacher-independent causal theorem about all demonstration designs. These
 conclusions are therefore benchmark-local and should be interpreted together with the simulation-only
 3DoF scope, the proxy nature of the perturbation extension, and the still-limited classical anchor
 roster.
@@ -947,9 +927,9 @@ diagnostic sweeps or trace slices with the final five-seed benchmark.
     Evidence block & Sampling contract & Train profile & Evaluation profiles & Role \\
     \midrule
     Table~\ref{tab:main_benchmark} / Figure~\ref{fig:main_results_matrix} & 5 seeds, 100 episodes per seed/profile & nominal & five nominal profiles grouped into three evaluation classes & final benchmark estimate \\
-    Cross-family pure-RL pilot & 3 seeds, 50 episodes per seed/profile & nominal & nominal only & Branch-A negative evidence for PPO/SAC/TD3, not a mixed-contract leaderboard \\
+    Cross-family pure-RL pilot & 3 seeds, 50 episodes per seed/profile & nominal & nominal only & pure-RL negative evidence for PPO/SAC/TD3, not a mixed-contract leaderboard \\
     Teacher mini-ablation kickoff boundary & 4 frozen conditions, 5-profile evaluation & nominal & five nominal profiles & pre-registered teacher-support-quality $\times$ demo-budget boundary, not a completed ablation \\
-    Sprint 4A clearance shift sweep & 5 seeds, 100 episodes per seed/profile & nominal & \code{clearance\_easy} / \code{nominal} / \code{clearance\_hard} & pure-clearance robustness stress, not a replacement for the frozen five-profile benchmark \\
+    Pure-clearance stress sweep & 5 seeds, 100 episodes per seed/profile & nominal & \code{clearance\_easy} / \code{nominal} / \code{clearance\_hard} & pure-clearance robustness stress, not a replacement for the frozen five-profile benchmark \\
     Table~\ref{tab:mechanism_matrix} & smaller diagnostic sweep & nominal & five nominal profiles & directional factor analysis, not direct comparison with Table~\ref{tab:main_benchmark} \\
     Table~\ref{tab:behavioral_similarity} & smaller diagnostic sweep & nominal & five nominal profiles & PPO-budget sensitivity, not direct comparison with Table~\ref{tab:main_benchmark} \\
     Figure~\ref{fig:high_friction_mechanism} & 3 seeds, 50 trace episodes per seed & nominal & high friction & mechanics trace slice, not a success estimate comparable to Table~\ref{tab:main_benchmark} \\
@@ -1012,7 +992,7 @@ stiffness was then confirmed with 5 seeds and 100 evaluation episodes per seed/p
 Table~\ref{tab:tuned_fixed_sweep} shows that tuned fixed impedance can nearly saturate success in
 this reduced task. This check limits the fixed-versus-variable claim: fixed impedance is not a
 success-rate impossibility result, so the variable-impedance interpretation should rest on the more
-robust learned interface under the matched teacher-coupled setup and on the lower-load mechanics
+robust learned interface under the matched-demonstration setup and on the lower-load mechanics
 evidence in Figure~\ref{fig:high_friction_mechanism}.
 
 \begin{table}[!htbp]
@@ -1162,3 +1142,5 @@ performance, which is exactly the data pattern behind the paper's ``stable BC ba
 \bibliography{references}
 
 \end{document}
+
+
