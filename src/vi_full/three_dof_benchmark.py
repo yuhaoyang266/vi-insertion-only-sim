@@ -44,6 +44,7 @@ THREE_DOF_NUMERIC_METRICS = (
     "mean_force_std",
     "mean_first_contact_step",
     "mean_contact_steps",
+    "mean_contact_work",
     "mean_settling_steps_after_contact",
     "jam_rate",
     "force_threshold_termination_rate",
@@ -386,6 +387,7 @@ def _evaluate_3dof_policy_rollouts(
     mean_force_stds: list[float] = []
     first_contact_steps: list[float] = []
     contact_steps_per_episode: list[float] = []
+    contact_work_per_episode: list[float] = []
     settling_steps_after_contact: list[float] = []
     jam_flags: list[float] = []
     force_threshold_termination_flags: list[float] = []
@@ -454,6 +456,7 @@ def _evaluate_3dof_policy_rollouts(
             float(first_contact_step) if first_contact_step is not None else float(step_count)
         )
         contact_steps_per_episode.append(float(contact_steps))
+        contact_work_per_episode.append(float(final_info["cumulative_contact_work"]))
         settling_steps_after_contact.append(
             float(settling_delay)
             if settling_delay is not None
@@ -494,6 +497,7 @@ def _evaluate_3dof_policy_rollouts(
         "mean_force_std": float(np.mean(mean_force_stds)),
         "mean_first_contact_step": float(np.mean(first_contact_steps)),
         "mean_contact_steps": float(np.mean(contact_steps_per_episode)),
+        "mean_contact_work": float(np.mean(contact_work_per_episode)),
         "mean_settling_steps_after_contact": float(np.mean(settling_steps_after_contact)),
         "jam_rate": float(np.mean(jam_flags)),
         "force_threshold_termination_rate": float(

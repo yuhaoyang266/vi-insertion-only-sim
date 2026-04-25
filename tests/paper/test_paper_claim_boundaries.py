@@ -1,4 +1,4 @@
-"""Claim-boundary tests for paper/main.tex.
+﻿"""Claim-boundary tests for paper/main.tex.
 
 Enforces that manuscript prose remains benchmark-local, teacher-coupled, and
 free of universal generalization claims.  Each test greps for unsafe phrases
@@ -10,7 +10,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-PAPER = Path(__file__).resolve().parents[1] / "paper" / "main.tex"
+PAPER = Path(__file__).resolve().parents[2] / "paper" / "main.tex"
+README = Path(__file__).resolve().parents[2] / "README.md"
 
 
 def _lines() -> list[str]:
@@ -20,7 +21,7 @@ def _lines() -> list[str]:
 def test_no_state_of_the_art() -> None:
     for i, line in enumerate(_lines(), 1):
         assert "state of the art" not in line.lower(), (
-            f"line {i}: 'state of the art' found — use benchmark-local framing"
+            f"line {i}: 'state of the art' found 鈥?use benchmark-local framing"
         )
 
 
@@ -190,3 +191,11 @@ def test_no_sim_to_real_claim() -> None:
             assert any(re.search(w, line, re.IGNORECASE) for w in _SIM2REAL_WHITELIST), (
                 f"line {i}: unqualified sim-to-real/hardware claim: {line.strip()}"
             )
+
+
+def test_load_work_claims_do_not_outrun_pending_mechanics_gate() -> None:
+    paper_text = PAPER.read_text(encoding="utf-8")
+    readme_text = README.read_text(encoding="utf-8")
+
+    assert "show lower contact load and work for variable stiffness" not in paper_text
+    assert "load/work advantage rather than implying a general algorithm ranking" not in readme_text

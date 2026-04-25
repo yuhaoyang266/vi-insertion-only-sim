@@ -70,10 +70,13 @@ def test_summarize_teacher_coupling_results_extracts_gate_metrics() -> None:
                 "student_impedance_space": "variable_impedance",
                 "teacher_motion_rule": "contact_aware_variable_motion",
                 "teacher_impedance_rule": "contact_aware_variable_impedance",
+                "training_summaries": [{"seed": 0}, {"seed": 1}, {"seed": 2}],
                 "five_profile_mean": {
                     "success_rate_mean_over_profiles": 0.75,
                     "jam_rate_mean_over_profiles": 0.10,
                     "mean_peak_contact_force_mean_over_profiles": 1.2,
+                    "mean_contact_work_mean_over_profiles": 0.015,
+                    "mean_first_contact_step_mean_over_profiles": 9.0,
                     "mean_contact_steps_mean_over_profiles": 12.0,
                     "mean_final_distance_mean_over_profiles": 0.001,
                 },
@@ -92,5 +95,8 @@ def test_summarize_teacher_coupling_results_extracts_gate_metrics() -> None:
     assert row["condition_name"] == "vi_teacher_vi_student"
     assert row["success_rate"] == 0.75
     assert row["mean_final_distance_mm"] == 1.0
+    assert row["mean_first_contact_step"] == 9.0
+    assert row["mean_contact_work"] == 0.015
+    assert row["seed_count"] == 3
     assert row["support_coverage_index"] == 0.44
     assert "Gate A" in summary["gate"]

@@ -83,8 +83,10 @@ offset, friction, or force-noise axes; on this ladder \code{BC-only} stays at 1.
 \code{BC$\rightarrow$PPO} and the learned fixed-impedance baseline remain near 0.8 success without
 jam, while \code{DAPG-lite} drops to 0.768 success with 0.05 jam under
 \code{clearance\_hard}. Variable impedance retains localized physical value under high-friction
-contact: tuned fixed stiffness can nearly saturate success, but same-interface mechanics traces
-show lower contact load and work for variable stiffness. The claim is benchmark-local and matched-demonstration bounded, not a general robotics or teacher-independent algorithm-ranking result.
+contact: tuned fixed stiffness can nearly saturate success, while the released same-interface
+mechanics traces suggest a lower-load variable-impedance contact path without closing the
+success-matched mechanics question. The claim is benchmark-local and matched-demonstration bounded,
+not a general robotics or teacher-independent algorithm-ranking result.
 \end{abstract}
 
 \section{Introduction}
@@ -653,9 +655,11 @@ two hand-crafted anchors because both succeed reliably under this diagnostic tra
 operating at different contact loads. By the end of the aggregated contact phase, the hand-crafted
 fixed controller remains near $0.87$~\N\ total contact force and about $1.87\times 10^{-2}$~J
 cumulative contact work, whereas the hand-crafted variable controller remains near $0.46$~\N\ and
-about $4.35\times 10^{-3}$~J. This direct evidence supports a conservative interpretation: fixed
-impedance is not physically impossible in this reduced task, but variable impedance can realize a
-lower-load, lower-work contact path under high friction. The learned all-trace view remains
+about $4.35\times 10^{-3}$~J. This diagnostic contrast supports only a bounded interpretation:
+fixed impedance is not physically impossible in this reduced task, and the same-interface
+hand-crafted variable controller suggests a lower-load, lower-work contact path under high
+friction, but a success-matched mechanics split is still needed before making a broader causal
+claim. The learned all-trace view remains
 heterogeneous, which is why the released figure family also includes a successful-only secondary
 aggregation rather than claiming a single clean monotone force ranking from the learned traces
 alone.
@@ -669,9 +673,9 @@ alone.
   seed, while the hand-crafted anchors use the same trace count. The all-trace learned aggregates
   are heterogeneous and are included to show rollout mechanics rather than to provide success-rate
   estimates comparable to Table~\ref{tab:main_benchmark}. The cleanest physical contrast is the
-  hand-crafted fixed-vs-variable pair, where both controllers succeed reliably but the variable
-  strategy follows a lower-load, lower-work contact path. The hand-crafted fixed anchor is not the
-  tuned fixed-stiffness setting from Appendix~\ref{app:tuned-fixed}; it is a same-interface
+  hand-crafted fixed-vs-variable pair, where both controllers succeed reliably and the variable
+  strategy suggests a lower-load, lower-work contact path under the released trace protocol. The
+  hand-crafted fixed anchor is not the tuned fixed-stiffness setting from Appendix~\ref{app:tuned-fixed}; it is a same-interface
   mechanics reference for fixed-command contact paths. A successful-only companion view is provided
   in the supplementary material.}
   \label{fig:high_friction_mechanism}
@@ -890,8 +894,8 @@ support is necessary to reach the useful contact regime, train-reset coverage re
 protocol-local rather than universal lever, and downstream algorithm ranking is budget-sensitive
 rather than fixed once PPO fine-tuning is varied. The learned fixed-impedance gap is concentrated
 under high-friction contact, while the tuned fixed-stiffness sweep shows that fixed impedance can
-nearly saturate success when tuned. This supports a localized load-efficiency role and a more
-robust learned interface under the matched-demonstration setup rather than a diffuse claim of
+nearly saturate success when tuned. This keeps open a localized load-efficiency hypothesis and a
+more robust learned interface under the matched-demonstration setup rather than a diffuse claim of
 uniform superiority. The dedicated pose-perturbation study further shows that this matched-frame
 ranking does not automatically survive outside the clean hole-centered frame: several learned suites
 degrade sharply under hidden pose bias and descent-coupled lateral drift, while the strongest

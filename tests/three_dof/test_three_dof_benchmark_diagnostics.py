@@ -214,6 +214,67 @@ def test_evaluate_3dof_policy_reports_termination_diagnostic_rates() -> None:
     assert summary["documented_force_jam_rate"] == 0.5
 
 
+def test_evaluate_3dof_policy_reports_mean_contact_work() -> None:
+    env = _ScriptedEpisodeEnv(
+        [
+            [
+                {
+                    "reward": 0.0,
+                    "terminated": True,
+                    "truncated": False,
+                    "info": {
+                        **_base_info(
+                            is_success=True,
+                            is_jammed=False,
+                            termination_reason="success",
+                            termination_details={
+                                "success": True,
+                                "force_threshold_exceeded": False,
+                                "blocked_contact_failure": False,
+                                "meets_documented_force_jam": False,
+                                "jammed": False,
+                            },
+                        ),
+                        "cumulative_contact_work": 0.02,
+                    },
+                }
+            ],
+            [
+                {
+                    "reward": 0.0,
+                    "terminated": True,
+                    "truncated": False,
+                    "info": {
+                        **_base_info(
+                            is_success=False,
+                            is_jammed=False,
+                            termination_reason="timeout",
+                            termination_details={
+                                "success": False,
+                                "force_threshold_exceeded": False,
+                                "blocked_contact_failure": False,
+                                "meets_documented_force_jam": False,
+                                "jammed": False,
+                            },
+                        ),
+                        "cumulative_contact_work": 0.06,
+                    },
+                }
+            ],
+        ]
+    )
+
+    summary = evaluate_3dof_policy(
+        env,
+        _NoOpPolicy(),
+        episodes=2,
+        seed=0,
+        uncertainty_profile="nominal",
+    )
+
+    assert summary["mean_contact_work"] == 0.04
+
+
 def test_trace_3dof_policy_rollout_includes_termination_diagnostics() -> None:
     env = _ScriptedEpisodeEnv(
         [
@@ -353,3 +414,14 @@ def test_summarize_3dof_seed_runs_aggregates_termination_diagnostic_rates() -> N
     assert aggregate["blocked_contact_only_termination_rate_mean"] == 0.25
     assert aggregate["force_and_blocked_termination_rate_mean"] == 0.25
     assert aggregate["documented_force_jam_rate_mean"] == 0.125
+
+
+def test_summarize_3dof_seed_runs_aggregates_mean_contact_work() -> None:
+    aggregate = summarize_3dof_seed_runs(
+        [
+            _summary_with_defaults(mean_contact_work=0.02),
+            _summary_with_defaults(seed=1, mean_contact_work=0.08),
+        ]
+    )
+
+    assert aggregate["mean_contact_work_mean"] == 0.05

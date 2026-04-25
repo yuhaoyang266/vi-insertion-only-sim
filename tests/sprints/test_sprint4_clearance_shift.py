@@ -1,4 +1,4 @@
-import json
+﻿import json
 from pathlib import Path
 
 import pytest
@@ -180,8 +180,10 @@ def test_report_and_export_capture_per_profile_clearance_drop(tmp_path: Path) ->
 
 
 def test_repo_docs_reference_sprint4_clearance_shift_boundary() -> None:
-    repo_root = Path(__file__).resolve().parents[1]
-    task_plan = (repo_root / "task_plan.md").read_text(encoding="utf-8")
+    repo_root = Path(__file__).resolve().parents[2]
+    task_plan = (repo_root / "docs" / "project" / "task_plan.md").read_text(
+        encoding="utf-8"
+    )
     docs = "\n".join(
         [
             (repo_root / "README.md").read_text(encoding="utf-8"),
@@ -205,8 +207,10 @@ def test_repo_docs_reference_sprint4_clearance_shift_boundary() -> None:
 
 
 def test_phase4_plan_and_protocol_map_stay_in_sync() -> None:
-    repo_root = Path(__file__).resolve().parents[1]
-    task_plan = (repo_root / "task_plan.md").read_text(encoding="utf-8")
+    repo_root = Path(__file__).resolve().parents[2]
+    task_plan = (repo_root / "docs" / "project" / "task_plan.md").read_text(
+        encoding="utf-8"
+    )
     paper = (repo_root / "paper" / "main.tex").read_text(encoding="utf-8")
 
     assert "status: complete" in task_plan
@@ -216,6 +220,6 @@ def test_phase4_plan_and_protocol_map_stay_in_sync() -> None:
     assert "- [x] Limitations convergence" in task_plan
     assert "Cross-family pure-RL pilot" in paper
     assert "Teacher mini-ablation kickoff boundary" in paper
-    assert "Sprint 4A clearance shift sweep" in paper
+    assert "pure-clearance stress sweep" in paper
     assert "nominal only" in paper
     assert "\\code{clearance\\_easy} / \\code{nominal} / \\code{clearance\\_hard}" in paper

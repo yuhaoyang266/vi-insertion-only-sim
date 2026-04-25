@@ -233,16 +233,25 @@ def summarize_teacher_coupling_results(report: dict[str, Any]) -> dict[str, Any]
                 "teacher_impedance_rule": payload.get("teacher_impedance_rule"),
                 "success_rate": _metric(five_profile_mean, "success_rate_mean_over_profiles"),
                 "jam_rate": _metric(five_profile_mean, "jam_rate_mean_over_profiles"),
+                "mean_first_contact_step": _metric(
+                    five_profile_mean,
+                    "mean_first_contact_step_mean_over_profiles",
+                ),
                 "mean_final_distance_mm": 1000.0
                 * _metric(five_profile_mean, "mean_final_distance_mean_over_profiles"),
                 "mean_peak_contact_force_n": _metric(
                     five_profile_mean,
                     "mean_peak_contact_force_mean_over_profiles",
                 ),
+                "mean_contact_work": _metric(
+                    five_profile_mean,
+                    "mean_contact_work_mean_over_profiles",
+                ),
                 "mean_contact_steps": _metric(
                     five_profile_mean,
                     "mean_contact_steps_mean_over_profiles",
                 ),
+                "seed_count": len(payload.get("training_summaries", ())),
                 "support_coverage_index": _metric(
                     support_metrics,
                     "support_coverage_index_mean_over_profiles",

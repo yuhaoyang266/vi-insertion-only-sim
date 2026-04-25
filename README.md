@@ -8,7 +8,8 @@ This repository contains the LaTeX source, paper figures, frozen result artifact
 reproduction scripts for a controlled 3DoF analytical insertion benchmark. The central claim is
 deliberately scoped: in this matched-demonstration benchmark, behavior-cloning demonstration support is
 the cleanest gate into useful contact, while variable impedance has a localized high-friction
-load/work advantage rather than implying a general algorithm ranking. The current paper-facing
+mechanics signal that remains diagnostic pending a success-matched split rather than implying a
+general algorithm ranking. The current paper-facing
 constructive layer packages the main recipe as Support-Gated Variable-Impedance Learning (SG-VI):
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
