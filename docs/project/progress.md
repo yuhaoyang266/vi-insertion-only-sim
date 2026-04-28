@@ -1,5 +1,23 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: Bundle Manifest Path Hardening (2026-04-29)
+- **Status:** local gate strengthened; remote CI sign-off still pending.
+- Actions taken:
+  - Strict review found one remaining bundle-facing path-lineage gap: `submission_bundle_manifest.json` recorded absolute local source/output paths even though the anonymous snapshot itself was clean.
+  - Updated the submission bundle manifest to redact `source_root` and record snapshot/editor/archive paths relative to the bundle root.
+  - Hardened local path scanning for JSON-escaped Windows paths and slash-style drive paths (`F:/...`) so copied reviewer artifacts and reviewer-smoke tests catch both path encodings.
+  - Updated submission docs to state that the generated manifest uses portable bundle-relative paths.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/packaging/test_submission_bundle.py tests/reviewer` -> 13 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> 5 passed.
+  - `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/gate_a1_manifest_check` -> exit 0; generated manifest uses `anonymous_snapshot`, `editor_materials`, and zip filenames rather than absolute paths.
+  - From `tmp/submission_bundle/gate_a1_manifest_check/anonymous_snapshot`: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/reviewer` -> 4 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_paper_claim_boundaries.py` -> 62 passed, 9 warnings.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `git diff --check` -> exit 0.
+- Next blocker:
+  - Push the committed branch or open a PR, then mark Gate A1 only after GitHub Actions `reviewer-smoke` and `paper-assets-check` pass.
+
 ### Phase 7.1 Sprint A: Local Gate A1 Strict Review (2026-04-29)
 - **Status:** local gate strengthened; remote CI sign-off still pending.
 - Actions taken:

@@ -164,7 +164,13 @@ def _collect_identity_tokens(source_root: Path) -> list[str]:
 
 def _collect_source_path_tokens(source_root: Path) -> list[str]:
     resolved = source_root.resolve()
-    return sorted({str(resolved), resolved.as_posix()})
+    raw_tokens = {str(resolved), resolved.as_posix()}
+    escaped_tokens = {
+        token.replace("\\", "\\\\")
+        for token in raw_tokens
+        if "\\" in token
+    }
+    return sorted(raw_tokens | escaped_tokens)
 
 
 def _scan_for_forbidden_tokens(snapshot_dir: Path, forbidden_tokens: list[str]) -> dict[str, list[str]]:
@@ -195,6 +201,12 @@ def _resolve_bundle_paper_pdf(output_dir: Path, paper_pdf: Path | None) -> Path 
             "paper_pdf must point to a file outside the submission bundle output directory."
         )
     return resolved_paper_pdf
+
+
+def _manifest_relative_path(output_dir: Path, path: Path | None) -> str | None:
+    if path is None:
+        return None
+    return path.resolve().relative_to(output_dir).as_posix()
 
 
 def _validate_bundle_output_dir(source_root: Path, output_dir: Path) -> None:
@@ -305,9 +317,15 @@ def build_submission_bundle(
     manifest = {
         "venue": venue,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "source_root": str(source_root),
-        "anonymous_snapshot_dir": str(anonymous_snapshot_dir),
-        "editor_materials_dir": str(editor_materials_dir),
+        "source_root": "redacted_for_anonymity",
+        "anonymous_snapshot_dir": _manifest_relative_path(
+            output_dir,
+            anonymous_snapshot_dir,
+        ),
+        "editor_materials_dir": _manifest_relative_path(
+            output_dir,
+            editor_materials_dir,
+        ),
         "copied_directories": copied_directories,
         "copied_files": copied_files,
         "redacted_files": ["README.md", "paper/main.tex"],
@@ -320,12 +338,14 @@ def build_submission_bundle(
             else None,
         },
         "archives": {
-            "anonymous_snapshot_zip": str(anonymous_snapshot_zip)
-            if anonymous_snapshot_zip is not None
-            else None,
-            "editor_materials_zip": str(editor_materials_zip)
-            if editor_materials_zip is not None
-            else None,
+            "anonymous_snapshot_zip": _manifest_relative_path(
+                output_dir,
+                anonymous_snapshot_zip,
+            ),
+            "editor_materials_zip": _manifest_relative_path(
+                output_dir,
+                editor_materials_zip,
+            ),
         },
     }
     manifest_path = output_dir / "submission_bundle_manifest.json"

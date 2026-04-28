@@ -117,6 +117,7 @@ directories. The anonymous snapshot deliberately rewrites `README.md` and `paper
 `REVIEWER_GUIDE.md`, `docs/figure_asset_manifest.md`, plus the reviewer-facing `tests/reviewer/` smoke subset, and excludes
 reviewer-irrelevant staging content such as `docs/submission/github_upload.md`, the rest of `tests/`, and the
 editor-only submission notes from the reviewer-facing copy.
+The manifest records bundle-relative paths and redacts the local source-root path.
 
 Keep `--output-dir` as a dedicated staging path such as `tmp/submission_bundle/...`. The builder
 now rejects destinations that point at the repository root or that live inside copied source trees

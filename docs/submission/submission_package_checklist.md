@@ -47,6 +47,7 @@ anonymous submission package assembled from this repository.
   `anonymous_manuscript.pdf`.
 - `submission_bundle_manifest.json` now records `paper_pdf.status = included` and
   `identity_token_scan_passed = true`.
+- `submission_bundle_manifest.json` uses bundle-relative paths and redacts the local source-root path.
 - PDF metadata and extracted text were checked after the anonymous build; no author name, email,
   or public repository URL survived into the generated PDF.
 

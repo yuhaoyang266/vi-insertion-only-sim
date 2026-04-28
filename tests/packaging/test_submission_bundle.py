@@ -83,6 +83,12 @@ def _scan_snapshot_for_identity_strings(snapshot_dir: Path) -> list[str]:
     return findings
 
 
+def _serialized_path_tokens(path: Path) -> set[str]:
+    resolved = path.resolve()
+    windows_text = str(resolved)
+    return {windows_text, windows_text.replace("\\", "\\\\"), resolved.as_posix()}
+
+
 def test_build_submission_bundle_anonymizes_identity_surfaces(tmp_path: Path) -> None:
     source_root = _create_minimal_submission_source_tree(tmp_path)
     output_dir = tmp_path / "bundle_output"
@@ -156,11 +162,45 @@ def test_snapshot_includes_reviewer_guide_and_reviewer_tests(tmp_path: Path) -> 
     assert "tests/reviewer/" in manifest["copied_directories"]
 
 
+def test_build_submission_bundle_manifest_uses_portable_paths(tmp_path: Path) -> None:
+    source_root = _create_minimal_submission_source_tree(tmp_path)
+    output_dir = tmp_path / "bundle_output"
+
+    artifacts = build_submission_bundle(
+        source_root=source_root,
+        output_dir=output_dir,
+        venue="journal-double-blind",
+        create_archives=True,
+    )
+
+    manifest_path = artifacts["manifest_path"]
+    manifest_text = manifest_path.read_text(encoding="utf-8")
+    manifest = json.loads(manifest_text)
+
+    assert manifest["source_root"] == "redacted_for_anonymity"
+    assert manifest["anonymous_snapshot_dir"] == "anonymous_snapshot"
+    assert manifest["editor_materials_dir"] == "editor_materials"
+    assert manifest["archives"]["anonymous_snapshot_zip"] == "anonymous_snapshot.zip"
+    assert manifest["archives"]["editor_materials_zip"] == "editor_materials.zip"
+
+    forbidden_path_tokens = set()
+    for path in (
+        source_root,
+        output_dir,
+        artifacts["anonymous_snapshot_dir"],
+        artifacts["editor_materials_dir"],
+    ):
+        forbidden_path_tokens.update(_serialized_path_tokens(path))
+
+    leaks = [token for token in forbidden_path_tokens if token in manifest_text]
+    assert leaks == []
+
+
 def test_build_submission_bundle_rejects_source_root_path_leaks(tmp_path: Path) -> None:
     source_root = _create_minimal_submission_source_tree(tmp_path)
     _write_text(
         source_root / "outputs" / "pilot_report" / "leaky_report.json",
-        f'{{"chunk_dir": "{source_root}"}}\n',
+        json.dumps({"chunk_dir": str(source_root)}, indent=2),
     )
 
     with pytest.raises(ValueError, match="Anonymity leak detected"):
@@ -273,4 +313,6 @@ def test_submission_docs_match_completed_local_pdf_build_path() -> None:
     assert "outside the staged bundle directory" in readme
     assert "point at the repository root" in readme
     assert "were all missing when the Phase 5 submission staging pass was checked" not in readme
+    assert "bundle-relative paths and redacts the local source-root path" in readme
+    assert "bundle-relative paths and redacts the local source-root path" in checklist
     assert "dedicated staging path such as `tmp/submission_bundle/...`" in checklist

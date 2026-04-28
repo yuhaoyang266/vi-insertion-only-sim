@@ -4,7 +4,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = REPO_ROOT / "artifacts" / "main_benchmark" / "main_benchmark_manifest.json"
 CANONICAL_MAIN_KEY = "canonical_main_benchmark"
-LOCAL_PATH_TOKENS = ("F:\\", "full_projects")
+LOCAL_PATH_TOKENS = ("F:\\", "F:/", "full_projects")
 
 
 def test_reviewer_snapshot_has_core_release_layout() -> None:
