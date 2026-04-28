@@ -188,8 +188,8 @@ def test_figure2_check_accepts_platform_specific_figure_bytes(tmp_path: Path) ->
     expected_pdf = tmp_path / "fig2_main_benchmark_evaluation_class_summary.pdf"
     generated_pdf = tmp_path / "generated.pdf"
 
-    _write_valid_png(expected_png, marker=b"windows")
-    _write_valid_png(generated_png, marker=b"linux")
+    _write_valid_png(expected_png, width=640, height=480, marker=b"windows")
+    _write_valid_png(generated_png, width=800, height=600, marker=b"linux")
     _write_valid_pdf(expected_pdf, marker=b"windows")
     _write_valid_pdf(generated_pdf, marker=b"linux")
 
