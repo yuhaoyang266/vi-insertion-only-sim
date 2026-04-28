@@ -45,6 +45,8 @@ def _write_evidence_fixture(path: Path) -> None:
         _write_valid_png(path)
     elif path.suffix == ".pdf":
         _write_valid_pdf(path)
+    elif path.suffix == ".json":
+        path.write_text('{"value": 1}\n', encoding="utf-8")
     else:
         path.write_bytes(b"same")
 
@@ -265,3 +267,29 @@ def test_build_paper_assets_check_rejects_invalid_evidence_figures(
 
     assert not module._same_evidence_output(expected_png, generated_png)
     assert not module._same_evidence_output(expected_pdf, generated_pdf)
+
+
+def test_build_paper_assets_check_normalizes_text_evidence_line_endings(
+    tmp_path: Path,
+) -> None:
+    module = _load_script(
+        "scripts/export/build_paper_assets.py",
+        "build_paper_assets_text_eol_under_test",
+    )
+    expected_json = tmp_path / "three_dof_evidence_matrix.json"
+    generated_json = tmp_path / "generated_three_dof_evidence_matrix.json"
+    expected_csv = tmp_path / "three_dof_evidence_matrix.csv"
+    generated_csv = tmp_path / "generated_three_dof_evidence_matrix.csv"
+    expected_md = tmp_path / "three_dof_evidence_matrix.md"
+    generated_md = tmp_path / "generated_three_dof_evidence_matrix.md"
+
+    expected_json.write_bytes(b'{\n  "value": 1\n}\n')
+    generated_json.write_bytes(b'{\r\n  "value": 1\r\n}\r\n')
+    expected_csv.write_bytes(b"method,success\nppo,0.1\n")
+    generated_csv.write_bytes(b"method,success\r\nppo,0.1\r\n")
+    expected_md.write_bytes(b"# Evidence\n\nsame\n")
+    generated_md.write_bytes(b"# Evidence\r\n\r\nsame\r\n")
+
+    assert module._same_evidence_output(expected_json, generated_json)
+    assert module._same_evidence_output(expected_csv, generated_csv)
+    assert module._same_evidence_output(expected_md, generated_md)

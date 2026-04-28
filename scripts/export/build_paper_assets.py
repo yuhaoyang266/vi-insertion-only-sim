@@ -30,6 +30,7 @@ EVIDENCE_FIGURE_FILENAMES = frozenset(
         "three_dof_contact_gate_matrix.pdf",
     }
 )
+TEXT_EVIDENCE_SUFFIXES = frozenset({".csv", ".md"})
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PDF_SIGNATURE = b"%PDF-"
 
@@ -131,7 +132,29 @@ def _same_evidence_output(expected_path: Path, generated_path: Path) -> bool:
         return _normalize_sprint2_markdown(expected) == _normalize_sprint2_markdown(generated)
     if expected_path.name in EVIDENCE_FIGURE_FILENAMES:
         return _same_evidence_figure(expected_path, generated_path)
+    if expected_path.suffix == ".json":
+        return _same_json(expected_path, generated_path)
+    if expected_path.suffix in TEXT_EVIDENCE_SUFFIXES:
+        return _same_text_lines(expected_path, generated_path)
     return filecmp.cmp(expected_path, generated_path, shallow=False)
+
+
+def _same_json(expected_path: Path, generated_path: Path) -> bool:
+    try:
+        expected = json.loads(expected_path.read_text(encoding="utf-8"))
+        generated = json.loads(generated_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return expected == generated
+
+
+def _same_text_lines(expected_path: Path, generated_path: Path) -> bool:
+    try:
+        expected = expected_path.read_text(encoding="utf-8").splitlines()
+        generated = generated_path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return False
+    return expected == generated
 
 
 def _same_evidence_figure(expected_path: Path, generated_path: Path) -> bool:
