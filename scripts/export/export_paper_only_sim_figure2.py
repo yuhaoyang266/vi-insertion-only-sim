@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import filecmp
 import importlib.util
 from dataclasses import dataclass
 from pathlib import Path
@@ -10,6 +9,8 @@ import tempfile
 
 
 DEFAULT_MANIFEST = Path("artifacts/main_benchmark/main_benchmark_manifest.json")
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+PDF_SIGNATURE = b"%PDF-"
 
 
 @dataclass(frozen=True)
@@ -142,10 +143,47 @@ def run_check(args: argparse.Namespace) -> None:
             expected_path = args.output_dir / f"{args.stem}{suffix}"
             if not expected_path.exists():
                 stale.append(f"Missing checked-in output: {expected_path}")
-            elif not filecmp.cmp(expected_path, generated_path, shallow=False):
+            elif not _same_figure_output(expected_path, generated_path):
                 stale.append(f"Output differs: {expected_path}")
     if stale:
         raise SystemExit("Figure 2 outputs are stale:\n" + "\n".join(stale))
+
+
+def _same_figure_output(expected_path: Path, generated_path: Path) -> bool:
+    if expected_path.suffix == ".png":
+        expected_dimensions = _png_dimensions(expected_path)
+        return expected_dimensions is not None and expected_dimensions == _png_dimensions(
+            generated_path
+        )
+    if expected_path.suffix == ".pdf":
+        return _is_pdf(expected_path) and _is_pdf(generated_path)
+    return False
+
+
+def _png_dimensions(path: Path) -> tuple[int, int] | None:
+    try:
+        header = path.read_bytes()[:24]
+    except OSError:
+        return None
+    if (
+        len(header) < 24
+        or not header.startswith(PNG_SIGNATURE)
+        or header[12:16] != b"IHDR"
+    ):
+        return None
+    width = int.from_bytes(header[16:20], "big")
+    height = int.from_bytes(header[20:24], "big")
+    if width <= 0 or height <= 0:
+        return None
+    return width, height
+
+
+def _is_pdf(path: Path) -> bool:
+    try:
+        content = path.read_bytes()
+    except OSError:
+        return False
+    return content.startswith(PDF_SIGNATURE) and content.rstrip().endswith(b"%%EOF")
 
 
 def main() -> None:

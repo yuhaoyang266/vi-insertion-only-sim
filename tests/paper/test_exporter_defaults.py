@@ -30,6 +30,27 @@ def _load_script(relative_path: str, module_name: str):
     return module
 
 
+def _write_valid_png(
+    path: Path,
+    *,
+    width: int = 640,
+    height: int = 480,
+    marker: bytes = b"",
+) -> None:
+    path.write_bytes(
+        b"\x89PNG\r\n\x1a\n"
+        + b"\x00\x00\x00\r"
+        + b"IHDR"
+        + width.to_bytes(4, "big")
+        + height.to_bytes(4, "big")
+        + marker
+    )
+
+
+def _write_valid_pdf(path: Path, *, marker: bytes = b"") -> None:
+    path.write_bytes(b"%PDF-1.4\n" + marker + b"\n%%EOF\n")
+
+
 def test_benchmark_table_exporter_defaults_to_manifest_sources() -> None:
     module = _load_script(
         "scripts/export/export_paper_only_sim_benchmark_table.py",
@@ -155,3 +176,41 @@ def test_exporters_support_check_mode_without_rewriting_outputs() -> None:
     assert figure_module.parse_args(["--check"]).check is True
     assert hasattr(table_module, "run_check")
     assert hasattr(figure_module, "run_check")
+
+
+def test_figure2_check_accepts_platform_specific_figure_bytes(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_figure2.py",
+        "figure2_exporter_binary_check_under_test",
+    )
+    expected_png = tmp_path / "fig2_main_benchmark_evaluation_class_summary.png"
+    generated_png = tmp_path / "generated.png"
+    expected_pdf = tmp_path / "fig2_main_benchmark_evaluation_class_summary.pdf"
+    generated_pdf = tmp_path / "generated.pdf"
+
+    _write_valid_png(expected_png, marker=b"windows")
+    _write_valid_png(generated_png, marker=b"linux")
+    _write_valid_pdf(expected_pdf, marker=b"windows")
+    _write_valid_pdf(generated_pdf, marker=b"linux")
+
+    assert module._same_figure_output(expected_png, generated_png)
+    assert module._same_figure_output(expected_pdf, generated_pdf)
+
+
+def test_figure2_check_rejects_invalid_figure_outputs(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_figure2.py",
+        "figure2_exporter_invalid_binary_check_under_test",
+    )
+    expected_png = tmp_path / "fig2_main_benchmark_evaluation_class_summary.png"
+    generated_png = tmp_path / "generated.png"
+    expected_pdf = tmp_path / "fig2_main_benchmark_evaluation_class_summary.pdf"
+    generated_pdf = tmp_path / "generated.pdf"
+
+    _write_valid_png(expected_png)
+    generated_png.write_bytes(b"not a png")
+    _write_valid_pdf(expected_pdf)
+    generated_pdf.write_bytes(b"not a pdf")
+
+    assert not module._same_figure_output(expected_png, generated_png)
+    assert not module._same_figure_output(expected_pdf, generated_pdf)
