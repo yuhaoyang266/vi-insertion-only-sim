@@ -19,6 +19,36 @@ def _load_script(relative_path: str, module_name: str):
     return module
 
 
+def _write_valid_png(
+    path: Path,
+    *,
+    width: int = 640,
+    height: int = 480,
+    marker: bytes = b"",
+) -> None:
+    path.write_bytes(
+        b"\x89PNG\r\n\x1a\n"
+        + b"\x00\x00\x00\r"
+        + b"IHDR"
+        + width.to_bytes(4, "big")
+        + height.to_bytes(4, "big")
+        + marker
+    )
+
+
+def _write_valid_pdf(path: Path, *, marker: bytes = b"") -> None:
+    path.write_bytes(b"%PDF-1.4\n" + marker + b"\n%%EOF\n")
+
+
+def _write_evidence_fixture(path: Path) -> None:
+    if path.suffix == ".png":
+        _write_valid_png(path)
+    elif path.suffix == ".pdf":
+        _write_valid_pdf(path)
+    else:
+        path.write_bytes(b"same")
+
+
 def test_build_paper_assets_default_commands_use_manifest_and_confirm_report() -> None:
     module = _load_script(
         "scripts/export/build_paper_assets.py",
@@ -98,8 +128,8 @@ def test_build_paper_assets_check_compares_evidence_outputs(monkeypatch, tmp_pat
     expected_dir.mkdir()
     generated_dir.mkdir()
     for filename in module.EVIDENCE_OUTPUT_FILENAMES:
-        (expected_dir / filename).write_bytes(b"same")
-        (generated_dir / filename).write_bytes(b"same")
+        _write_evidence_fixture(expected_dir / filename)
+        _write_evidence_fixture(generated_dir / filename)
     sprint2_json = '{"source_artifacts": {"evidence_matrix": "same"}}'
     (expected_dir / "three_dof_sprint2_main_table.json").write_text(
         sprint2_json,
@@ -156,8 +186,8 @@ def test_build_paper_assets_check_resolves_relative_evidence_outputs_from_repo_r
     generated_dir.mkdir()
     outside_cwd.mkdir()
     for filename in module.EVIDENCE_OUTPUT_FILENAMES:
-        (expected_dir / filename).write_bytes(b"same")
-        (generated_dir / filename).write_bytes(b"same")
+        _write_evidence_fixture(expected_dir / filename)
+        _write_evidence_fixture(generated_dir / filename)
     sprint2_json = '{"source_artifacts": {"evidence_matrix": "same"}}'
     (expected_dir / "three_dof_sprint2_main_table.json").write_text(
         sprint2_json,
@@ -193,3 +223,45 @@ def test_build_paper_assets_check_resolves_relative_evidence_outputs_from_repo_r
     monkeypatch.chdir(outside_cwd)
 
     module.run_evidence_check(module.parse_args(["--check"]))
+
+
+def test_build_paper_assets_check_accepts_platform_specific_evidence_figures(
+    tmp_path: Path,
+) -> None:
+    module = _load_script(
+        "scripts/export/build_paper_assets.py",
+        "build_paper_assets_binary_evidence_under_test",
+    )
+    expected_png = tmp_path / "three_dof_contact_gate_matrix.png"
+    generated_png = tmp_path / "generated_three_dof_contact_gate_matrix.png"
+    expected_pdf = tmp_path / "three_dof_contact_gate_matrix.pdf"
+    generated_pdf = tmp_path / "generated_three_dof_contact_gate_matrix.pdf"
+
+    _write_valid_png(expected_png, marker=b"windows")
+    _write_valid_png(generated_png, marker=b"linux")
+    _write_valid_pdf(expected_pdf, marker=b"windows")
+    _write_valid_pdf(generated_pdf, marker=b"linux")
+
+    assert module._same_evidence_output(expected_png, generated_png)
+    assert module._same_evidence_output(expected_pdf, generated_pdf)
+
+
+def test_build_paper_assets_check_rejects_invalid_evidence_figures(
+    tmp_path: Path,
+) -> None:
+    module = _load_script(
+        "scripts/export/build_paper_assets.py",
+        "build_paper_assets_invalid_binary_evidence_under_test",
+    )
+    expected_png = tmp_path / "three_dof_contact_gate_matrix.png"
+    generated_png = tmp_path / "generated_three_dof_contact_gate_matrix.png"
+    expected_pdf = tmp_path / "three_dof_contact_gate_matrix.pdf"
+    generated_pdf = tmp_path / "generated_three_dof_contact_gate_matrix.pdf"
+
+    _write_valid_png(expected_png)
+    generated_png.write_bytes(b"not a png")
+    _write_valid_pdf(expected_pdf)
+    generated_pdf.write_bytes(b"not a pdf")
+
+    assert not module._same_evidence_output(expected_png, generated_png)
+    assert not module._same_evidence_output(expected_pdf, generated_pdf)

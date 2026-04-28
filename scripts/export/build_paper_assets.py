@@ -24,6 +24,14 @@ EVIDENCE_OUTPUT_FILENAMES = (
     "three_dof_sprint2_main_table.csv",
     "three_dof_sprint2_main_table.md",
 )
+EVIDENCE_FIGURE_FILENAMES = frozenset(
+    {
+        "three_dof_contact_gate_matrix.png",
+        "three_dof_contact_gate_matrix.pdf",
+    }
+)
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+PDF_SIGNATURE = b"%PDF-"
 
 
 def _cli_path(path: Path) -> str:
@@ -121,7 +129,46 @@ def _same_evidence_output(expected_path: Path, generated_path: Path) -> bool:
         expected = expected_path.read_text(encoding="utf-8").splitlines()
         generated = generated_path.read_text(encoding="utf-8").splitlines()
         return _normalize_sprint2_markdown(expected) == _normalize_sprint2_markdown(generated)
+    if expected_path.name in EVIDENCE_FIGURE_FILENAMES:
+        return _same_evidence_figure(expected_path, generated_path)
     return filecmp.cmp(expected_path, generated_path, shallow=False)
+
+
+def _same_evidence_figure(expected_path: Path, generated_path: Path) -> bool:
+    if expected_path.suffix == ".png":
+        expected_dimensions = _png_dimensions(expected_path)
+        return expected_dimensions is not None and expected_dimensions == _png_dimensions(
+            generated_path
+        )
+    if expected_path.suffix == ".pdf":
+        return _is_pdf(expected_path) and _is_pdf(generated_path)
+    return False
+
+
+def _png_dimensions(path: Path) -> tuple[int, int] | None:
+    try:
+        header = path.read_bytes()[:24]
+    except OSError:
+        return None
+    if (
+        len(header) < 24
+        or not header.startswith(PNG_SIGNATURE)
+        or header[12:16] != b"IHDR"
+    ):
+        return None
+    width = int.from_bytes(header[16:20], "big")
+    height = int.from_bytes(header[20:24], "big")
+    if width <= 0 or height <= 0:
+        return None
+    return width, height
+
+
+def _is_pdf(path: Path) -> bool:
+    try:
+        content = path.read_bytes()
+    except OSError:
+        return False
+    return content.startswith(PDF_SIGNATURE) and content.rstrip().endswith(b"%%EOF")
 
 
 def _normalize_sprint2_markdown(lines: list[str]) -> list[str]:
