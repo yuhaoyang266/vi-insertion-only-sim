@@ -1,5 +1,21 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
+- **Status:** complete on commit `8f46792`.
+- Actions taken:
+  - Pushed local `main` to `origin/main` through the local HTTP(S) proxy.
+  - Repaired CI setup and paper-asset portability without changing paper numbers.
+  - Verified GitHub Actions workflows `reviewer-smoke` and `paper-assets-check`.
+- Verification:
+  - `git push -u origin main` with proxy -> exit 0; pushed `c97f6b1`.
+  - CI repair pushes through `8f46792` with `git -c http.proxy=http://127.0.0.1:7890 -c https.proxy=http://127.0.0.1:7890 push` -> exit 0.
+  - `reviewer-smoke` -> passed, run: https://github.com/yuhaoyang266/vi-insertion-only-sim/actions/runs/25091855519.
+  - `paper-assets-check` -> passed, run: https://github.com/yuhaoyang266/vi-insertion-only-sim/actions/runs/25091855522.
+  - Local pre-push checks: `python scripts/export/build_paper_assets.py --check` -> exit 0; `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_build_paper_assets.py` -> 72 passed.
+- Gate readout:
+  - Sprint A Gate A1 is complete.
+  - Sprint B remains unchanged and should start only after this record and the roadmap checkbox are committed.
+
 ### Phase 7.1 Sprint A: Gate A1 Publish Retry 2 (2026-04-29)
 - **Status:** remote CI sign-off remains blocked by network access to GitHub.
 - Actions taken:
