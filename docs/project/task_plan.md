@@ -130,13 +130,13 @@ _A-category work. 鍙笌 Phase 2.5 骞惰鍚姩銆俖
 - [ ] P1: Claim-to-evidence table and full reproducibility package
 - [ ] P2: Orientation or cross-sim/contact-model stress layer if targeting a top-tier venue
 
-### Phase 7.1: Sprint A Tier-3 Submission Readiness (status: local gate complete; remote CI pending)
+### Phase 7.1: Sprint A Tier-3 Submission Readiness (status: local gate complete; remote CI blocked by GitHub network access)
 - [x] Canonical artifact unification: default exporters and evidence-matrix outputs resolve through `artifacts/main_benchmark/main_benchmark_manifest.json`.
 - [x] LaTeX build hardening: `scripts/export/build_paper_pdf.py` builds the manuscript through a direct MiKTeX-aware `pdflatex` / `bibtex` chain.
 - [x] Reviewer surface: top-level `REVIEWER_GUIDE.md` and `tests/reviewer/` are copied into anonymous snapshots.
 - [x] Provenance cleanup: local absolute path leakage is covered by paper-facing artifact provenance tests.
 - [x] Tier-3 submission material: Robotica primary / Advanced Robotics fallback recorded; `docs/submission/cover_letter_tier3_template.md` added.
-- [ ] Gate A1 remote sign-off: mark only after `reviewer-smoke` and `paper-assets-check` pass in CI on the committed branch.
+- [!] Gate A1 remote sign-off: mark only after `reviewer-smoke` and `paper-assets-check` pass in CI on the committed branch; 2026-04-29 push attempt blocked because GitHub HTTPS was unreachable from this machine.
 
 ## Key Questions 鈥?Resolved (2026-04-22)
 1. **Phase 2.5 鈫?No-hardware**銆俈enue ceiling: Q3 upper / Q2 marginal銆侾hase 3.5/H cancelled銆?

@@ -1,5 +1,20 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: Gate A1 Publish Attempt (2026-04-29)
+- **Status:** remote CI sign-off blocked by network access to GitHub.
+- Actions taken:
+  - Refreshed `docs/submission/github_upload.md` so it matches the current repository state: `origin` already points at `https://github.com/yuhaoyang266/vi-insertion-only-sim`, and the next publish command is `git push -u origin main`.
+  - Attempted to push the committed `main` branch to `origin/main` to trigger `reviewer-smoke` and `paper-assets-check`.
+  - Confirmed the branch remains ahead of `origin/main`; Sprint B must stay closed until Gate A1 gets a real remote pass.
+- Verification / blocker evidence:
+  - `git push -u origin main` -> failed with `Recv failure: Connection was reset`.
+  - `git ls-remote origin refs/heads/main` -> failed after GitHub TCP 443 could not connect.
+  - `Test-NetConnection github.com -Port 443` -> `TcpTestSucceeded: False`, `PingSucceeded: True`.
+  - `Invoke-WebRequest https://github.com` -> timed out.
+  - SSH fallback check -> `Permission denied (publickey)`; no local GitHub SSH key is configured.
+- Next blocker:
+  - Retry `git push -u origin main` when HTTPS access to GitHub is available, then mark Gate A1 only after `reviewer-smoke` and `paper-assets-check` pass on the pushed commit.
+
 ### Phase 7.1 Sprint A: PDF Wrapper Path Hardening (2026-04-29)
 - **Status:** local gate strengthened; remote CI sign-off still pending.
 - Actions taken:
