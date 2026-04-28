@@ -1,5 +1,19 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: Post-Commit Gate A1 Checkpoint (2026-04-29)
+- **Status:** local gate remains complete; remote CI sign-off still pending.
+- Actions taken:
+  - Committed the staged Sprint A readiness package as `46cfef70183f22246f2ecf1f52620d674f3f0715` (`feat: finalize sprint a submission readiness`).
+  - Fixed one trailing-space issue in `docs/plans/2026-04-25-review-driven-revision-plan.md` before committing so `git diff --cached --check` passes.
+  - Reviewed `docs/plans/2026-04-28-12-month-tier2-roadmap-task-list.md` after commit; the only remaining Sprint A item is Gate A1 remote sign-off. Sprint B must not start until the CI workflows pass on the committed branch.
+- Verification:
+  - `git diff --cached --check` -> exit 0.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_build_paper_pdf.py tests/packaging/test_submission_bundle.py tests/reviewer tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py` -> 43 passed, 9 warnings.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `python scripts/export/build_paper_pdf.py` -> exit 0; `paper/main.pdf` had 23 pages / 658450 bytes. MiKTeX printed update-check notices and the existing overfull hbox warning, but the build succeeded.
+- Next blocker:
+  - Push the committed branch or open a PR, then mark Gate A1 only after GitHub Actions `reviewer-smoke` and `paper-assets-check` pass.
+
 ### Phase 7.1 Sprint A: Tier-3 Submission Readiness (2026-04-28)
 - **Status:** local gate complete; remote CI sign-off still pending.
 - Actions taken:
