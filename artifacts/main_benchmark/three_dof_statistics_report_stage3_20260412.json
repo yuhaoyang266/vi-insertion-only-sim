@@ -3647,7 +3647,7 @@
   ],
   "schema_version": 3,
   "source_hashes": {
-    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+    "benchmark_report": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
   },
   "generating_command": "python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
   "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"

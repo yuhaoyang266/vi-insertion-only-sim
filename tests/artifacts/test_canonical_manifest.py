@@ -1,12 +1,13 @@
 ﻿from __future__ import annotations
 
 import importlib.util
-import hashlib
 import json
 from pathlib import Path
 import sys
 
 import pytest
+
+from vi_full.artifact_provenance import calculate_sha256
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -90,7 +91,7 @@ def test_schema2_diagnostic_gate_does_not_depend_on_manifest_key(tmp_path: Path)
             "canonical_main_benchmark": {
                 "role": "canonical_main_benchmark",
                 "path": artifact_path.name,
-                "sha256": hashlib.sha256(artifact_path.read_bytes()).hexdigest(),
+                "sha256": calculate_sha256(artifact_path),
                 "schema_version": 2,
                 "claim_scope": "main manuscript Table 1",
                 "source_role": "renamed_schema2_source",

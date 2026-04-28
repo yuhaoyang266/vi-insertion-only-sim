@@ -9,10 +9,10 @@
     "evidence_matrix": "outputs/evidence_matrix/three_dof_evidence_matrix.json"
   },
   "source_hashes": {
-    "confirm_report": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb",
-    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
-    "benchmark_manifest": "556bf4b07388bad03946a99fc4b082bc8e769757cbaf5b42e639147b23239cc3",
-    "evidence_matrix": "ea54037c6634b366f31f5bab05dd78716143481492374da6b98bbf56bfb75cfe"
+    "confirm_report": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3",
+    "benchmark_report": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2",
+    "benchmark_manifest": "2ca2c3b932843c1e07fa22ffa87f6bfd6960f25419ee564104a2a717e38f73d5",
+    "evidence_matrix": "5f78824e3c5d4ec469e3e2ec52e62bae04c035d97e719e753c73b285eb153ec1"
   },
   "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
   "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
@@ -55,7 +55,7 @@
           "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
           "source_role": "confirm_report",
           "source_artifact": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-          "source_sha256": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb"
+          "source_sha256": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3"
         },
         {
           "method_name": "sac_no_bc",
@@ -76,7 +76,7 @@
           "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
           "source_role": "confirm_report",
           "source_artifact": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-          "source_sha256": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb"
+          "source_sha256": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3"
         },
         {
           "method_name": "td3_no_bc",
@@ -97,7 +97,7 @@
           "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
           "source_role": "confirm_report",
           "source_artifact": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-          "source_sha256": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb"
+          "source_sha256": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3"
         }
       ]
     },
@@ -130,7 +130,7 @@
           "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
           "source_role": "canonical_main_benchmark",
           "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-          "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+          "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
         },
         {
           "method_name": "repaired_mainline_bc_to_ppo",
@@ -151,7 +151,7 @@
           "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
           "source_role": "canonical_main_benchmark",
           "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-          "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+          "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
         },
         {
           "method_name": "dapg_lite_repaired_mainline",
@@ -172,7 +172,7 @@
           "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
           "source_role": "canonical_main_benchmark",
           "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-          "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+          "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
         }
       ]
     },
@@ -203,7 +203,7 @@
           "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
           "source_role": "canonical_main_benchmark",
           "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-          "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+          "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
         }
       ]
     }
@@ -230,7 +230,7 @@
       "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
       "source_role": "confirm_report",
       "source_artifact": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-      "source_sha256": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb"
+      "source_sha256": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3"
     },
     {
       "layer_name": "pure_rl_nominal_only_negative",
@@ -253,7 +253,7 @@
       "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
       "source_role": "confirm_report",
       "source_artifact": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-      "source_sha256": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb"
+      "source_sha256": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3"
     },
     {
       "layer_name": "pure_rl_nominal_only_negative",
@@ -276,7 +276,7 @@
       "source_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
       "source_role": "confirm_report",
       "source_artifact": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-      "source_sha256": "48436292ecbbb2d328f4fd6fc3f2b640ef63a670dc2e339aaac79d871463e3bb"
+      "source_sha256": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3"
     },
     {
       "layer_name": "demo_supported_contact_reopening",
@@ -299,7 +299,7 @@
       "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "source_role": "canonical_main_benchmark",
       "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
     },
     {
       "layer_name": "demo_supported_contact_reopening",
@@ -322,7 +322,7 @@
       "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "source_role": "canonical_main_benchmark",
       "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
     },
     {
       "layer_name": "demo_supported_contact_reopening",
@@ -345,7 +345,7 @@
       "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "source_role": "canonical_main_benchmark",
       "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
     },
     {
       "layer_name": "mechanics_fixed_impedance_anchor",
@@ -368,7 +368,7 @@
       "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
       "source_role": "canonical_main_benchmark",
       "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
     }
   ]
 }

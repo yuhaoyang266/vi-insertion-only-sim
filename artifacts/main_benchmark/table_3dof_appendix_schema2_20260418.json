@@ -487,7 +487,7 @@
   "schema_version": 2,
   "claim_scope": "appendix teacher/termination diagnostics only",
   "source_hashes": {
-    "benchmark_report": "4a4ca8b98446e34a19cdb31593d647b1fabc7bb443f68c6f7788268ced214c1b"
+    "benchmark_report": "713932e8a1e41253886013ae811ea77295cd8c7e03f50dbad9c88558330a9fa5"
   },
   "generating_command": "python scripts/export/export_paper_only_sim_appendix_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json --output-dir artifacts/main_benchmark --stem table_3dof_appendix_schema2_20260418",
   "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"

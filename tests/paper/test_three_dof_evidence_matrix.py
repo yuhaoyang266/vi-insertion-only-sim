@@ -3,9 +3,10 @@ from pathlib import Path
 import shutil
 import tempfile
 import time
-import hashlib
 
 import pytest
+
+from vi_full.artifact_provenance import calculate_sha256
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -21,7 +22,7 @@ SCHEMA2_DIAGNOSTIC = (
 
 
 def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return calculate_sha256(path)
 
 
 PURE_RL_CONFIRM_ROWS = {

@@ -8,8 +8,8 @@
     "statistics_report": "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json"
   },
   "source_hashes": {
-    "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568",
-    "statistics_report": "3a896e02e9bcd2866c2bb4a2e7e9335e3a94833c4999655265dd6651bd0e0192"
+    "benchmark_report": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2",
+    "statistics_report": "b0c5986463ea506c755f5456922554fb1ed8f589952ae9467404fb83836ce031"
   },
   "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py --manifest artifacts/main_benchmark/main_benchmark_manifest.json",
   "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
@@ -5955,7 +5955,7 @@
     ],
     "schema_version": 3,
     "source_hashes": {
-      "benchmark_report": "3fb7f429979400eb2d6ae7c5b7652d0b6ee73b852f20b96558db8f1c81ad4568"
+      "benchmark_report": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
     },
     "generating_command": "python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
     "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297"

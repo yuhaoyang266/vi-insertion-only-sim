@@ -5,9 +5,17 @@ from pathlib import Path
 import subprocess
 
 
+TEXT_HASH_SUFFIXES = {".bib", ".csv", ".json", ".md", ".tex", ".yaml", ".yml"}
+
+
 def calculate_sha256(path: Path) -> str:
+    path = Path(path)
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        payload = path.read_text(encoding="utf-8").encode("utf-8")
+        return hashlib.sha256(payload).hexdigest()
+
     digest = hashlib.sha256()
-    with Path(path).open("rb") as handle:
+    with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()

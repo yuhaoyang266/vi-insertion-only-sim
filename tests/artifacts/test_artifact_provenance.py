@@ -1,10 +1,11 @@
 ﻿from __future__ import annotations
 
-import hashlib
 import json
 import re
 from pathlib import Path
 from typing import Any
+
+from vi_full.artifact_provenance import calculate_sha256
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -41,7 +42,7 @@ EVIDENCE_MATRIX = "outputs/evidence_matrix/three_dof_evidence_matrix.json"
 
 
 def _sha256(relative_path: str) -> str:
-    return hashlib.sha256((REPO_ROOT / relative_path).read_bytes()).hexdigest()
+    return calculate_sha256(REPO_ROOT / relative_path)
 
 
 def _paper_facing_text_paths() -> list[Path]:

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -13,6 +12,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
+from vi_full.artifact_provenance import calculate_sha256
 from vi_full.artifact_registry import load_manifest
 
 
@@ -71,11 +71,7 @@ ROW_FIELD_ORDER = [
 
 
 def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with Path(path).open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return calculate_sha256(Path(path))
 
 
 def _source_hashes(source_artifacts: dict[str, str | None]) -> dict[str, str]:
