@@ -1,5 +1,21 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: Gate A1 Publish Retry (2026-04-29)
+- **Status:** remote CI sign-off remains blocked by network access to GitHub.
+- Actions taken:
+  - Rechecked the committed `main` branch state after the previous publish-blocker commits; local `main` is still ahead of `origin/main`.
+  - Confirmed the required GitHub Actions workflows are present: `reviewer-smoke` and `paper-assets-check`.
+  - Retried GitHub HTTPS reachability and attempted a non-interactive push to `origin/main`.
+- Verification / blocker evidence:
+  - `Test-NetConnection github.com -Port 443` -> `TcpTestSucceeded: False`, `PingSucceeded: True`.
+  - `git ls-remote origin refs/heads/main` with `GIT_TERMINAL_PROMPT=0` -> failed with `Recv failure: Connection was reset`.
+  - `Invoke-WebRequest https://github.com -TimeoutSec 15` -> timed out.
+  - `git push -u origin main` with `GIT_TERMINAL_PROMPT=0` -> failed after GitHub TCP 443 could not connect.
+  - SSH fallback remains unavailable: `ssh -T git@github.com` -> `Permission denied (publickey)`.
+  - GitHub CLI remains unavailable: `gh --version` -> command not found.
+- Next blocker:
+  - Retry `git push -u origin main` when HTTPS access to GitHub is available, then mark Gate A1 only after `reviewer-smoke` and `paper-assets-check` pass on the pushed commit.
+
 ### Phase 7.1 Sprint A: Gate A1 Publish Attempt (2026-04-29)
 - **Status:** remote CI sign-off blocked by network access to GitHub.
 - Actions taken:
