@@ -4,20 +4,16 @@ The package is prepared for this target URL:
 
 `https://github.com/yuhaoyang266/vi-insertion-only-sim`
 
-This machine does not currently have the GitHub CLI (`gh`) installed, and the source repository's
-`origin` remote points to a local filesystem path rather than GitHub. To publish this package,
-create the GitHub repository first, then run the commands below from this directory.
+This machine does not currently have the GitHub CLI (`gh`) installed. The local repository already
+has `origin` set to the GitHub target, so publish the committed branch directly from this directory.
 
 ```bash
-git init
-git branch -M main
-git add .
-git commit -m "docs: add paper project package"
-git remote add origin https://github.com/yuhaoyang266/vi-insertion-only-sim.git
 git push -u origin main
 ```
 
 After pushing, the URL embedded in `paper/main.tex` will resolve to the public project page.
+Gate A1 should be marked complete only after the latest `main` push reports passing
+`reviewer-smoke` and `paper-assets-check` GitHub Actions runs.
 
 ## Suggested Cover Letter Positioning
 
