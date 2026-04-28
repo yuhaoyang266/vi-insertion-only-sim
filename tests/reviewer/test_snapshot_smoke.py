@@ -4,7 +4,13 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = REPO_ROOT / "artifacts" / "main_benchmark" / "main_benchmark_manifest.json"
 CANONICAL_MAIN_KEY = "canonical_main_benchmark"
-LOCAL_PATH_TOKENS = ("F:\\", "F:/", "full_projects")
+LOCAL_PATH_TOKENS = (
+    "F:\\",
+    "F:/",
+    "C:\\Users\\Windows",
+    "C:/Users/Windows",
+    "full_projects",
+)
 
 
 def test_reviewer_snapshot_has_core_release_layout() -> None:
@@ -55,6 +61,7 @@ def test_reviewer_snapshot_inputs_do_not_embed_local_paths() -> None:
         REPO_ROOT / "outputs",
         REPO_ROOT / "docs" / "figure_asset_manifest.md",
         REPO_ROOT / "REVIEWER_GUIDE.md",
+        REPO_ROOT / "scripts" / "export" / "build_paper_pdf.py",
     ]
     leaks: list[str] = []
     for root in scanned_roots:

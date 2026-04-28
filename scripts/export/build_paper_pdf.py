@@ -10,10 +10,8 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PAPER_DIR = Path("paper")
 DEFAULT_TEX = "main.tex"
-MIKTEX_WINDOWS_BIN = Path(
-    r"C:\Users\Windows\AppData\Local\Programs\MiKTeX\miktex\bin\x64"
-)
 LOCAL_MIKTEX_WINDOWS_BIN = Path.home() / "AppData/Local/Programs/MiKTeX/miktex/bin/x64"
+MIKTEX_WINDOWS_BIN = LOCAL_MIKTEX_WINDOWS_BIN
 
 
 def _repo_path(path: Path) -> Path:

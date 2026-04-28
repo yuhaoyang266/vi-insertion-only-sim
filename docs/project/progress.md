@@ -1,5 +1,22 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: PDF Wrapper Path Hardening (2026-04-29)
+- **Status:** local gate strengthened; remote CI sign-off still pending.
+- Actions taken:
+  - Strict review found the PDF wrapper still had a copied source literal for the local MiKTeX user path (`C:/Users/Windows/...`) even though the wrapper should be portable across reviewer machines.
+  - Replaced the static path literal with the current-user MiKTeX path derived from `Path.home()`, preserving local MiKTeX discovery without embedding the development-machine profile path in the anonymous snapshot.
+  - Extended reviewer-smoke scanning to include `scripts/export/build_paper_pdf.py` and to catch the old static user-profile path in both slash styles.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_build_paper_pdf.py tests/reviewer` -> 6 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> 5 passed.
+  - `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/gate_a1_pdf_wrapper_check` -> exit 0.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/packaging/test_submission_bundle.py` -> 9 passed.
+  - From `tmp/submission_bundle/gate_a1_pdf_wrapper_check/anonymous_snapshot`: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/reviewer` -> 4 passed.
+  - `python scripts/export/build_paper_pdf.py` -> exit 0; produced a 23-page / 658450-byte `paper/main.pdf`, with MiKTeX update notices and the existing overfull hbox warning.
+  - `git diff --check` -> exit 0.
+- Next blocker:
+  - Push the committed branch or open a PR, then mark Gate A1 only after GitHub Actions `reviewer-smoke` and `paper-assets-check` pass.
+
 ### Phase 7.1 Sprint A: Bundle Manifest Path Hardening (2026-04-29)
 - **Status:** local gate strengthened; remote CI sign-off still pending.
 - Actions taken:
