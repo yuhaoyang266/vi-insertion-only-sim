@@ -209,6 +209,35 @@ def test_build_cross_family_pilot_report_merges_partial_grid(tmp_path: Path) -> 
     assert sac_row["mean_contact_steps"] == pytest.approx(4.0)
 
 
+def test_build_cross_family_pilot_report_keeps_relative_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load_report_module()
+    monkeypatch.chdir(tmp_path)
+    chunk_dir = Path("pilot_chunks")
+    chunk_dir.mkdir()
+    _write_chunk(
+        chunk_dir,
+        method_name="ppo_no_bc",
+        algorithm="ppo",
+        label="PPO w/o BC",
+        budget=50_000,
+        success_rate=0.0,
+        first_contact_step=64.0,
+        final_distance_m=0.031,
+        contact_steps=0.0,
+    )
+
+    report = module.build_3dof_cross_family_pilot_report(chunk_dir)
+
+    assert report["chunk_dir"] == "pilot_chunks"
+    assert (
+        report["summary_rows"][0]["source_chunk_path"]
+        == "pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__50000.json"
+    )
+
+
 def test_export_cross_family_pilot_report_and_figures_write_artifacts(
     tmp_path: Path,
 ) -> None:

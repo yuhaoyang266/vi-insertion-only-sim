@@ -4,6 +4,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = REPO_ROOT / "artifacts" / "main_benchmark" / "main_benchmark_manifest.json"
 CANONICAL_MAIN_KEY = "canonical_main_benchmark"
+LOCAL_PATH_TOKENS = ("F:\\", "full_projects")
 
 
 def test_reviewer_snapshot_has_core_release_layout() -> None:
@@ -46,3 +47,27 @@ def test_reviewer_snapshot_paper_and_figure_manifest_use_canonical_source() -> N
     assert "artifacts/main_benchmark/main_benchmark_manifest.json" in paper
     assert "canonical_main_benchmark" in figure_manifest
     assert "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json" in figure_manifest
+
+
+def test_reviewer_snapshot_inputs_do_not_embed_local_paths() -> None:
+    scanned_roots = [
+        REPO_ROOT / "artifacts",
+        REPO_ROOT / "outputs",
+        REPO_ROOT / "docs" / "figure_asset_manifest.md",
+        REPO_ROOT / "REVIEWER_GUIDE.md",
+    ]
+    leaks: list[str] = []
+    for root in scanned_roots:
+        paths = [root] if root.is_file() else list(root.rglob("*"))
+        for path in paths:
+            if not path.is_file():
+                continue
+            try:
+                text = path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                continue
+            matches = [token for token in LOCAL_PATH_TOKENS if token in text]
+            if matches:
+                leaks.append(f"{path.relative_to(REPO_ROOT)}: {', '.join(matches)}")
+
+    assert leaks == []

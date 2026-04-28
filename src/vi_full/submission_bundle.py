@@ -162,9 +162,14 @@ def _collect_identity_tokens(source_root: Path) -> list[str]:
     return sorted(token for token in tokens if token and "Anonymous" not in token)
 
 
-def _scan_for_identity_leaks(snapshot_dir: Path, identity_tokens: list[str]) -> dict[str, list[str]]:
+def _collect_source_path_tokens(source_root: Path) -> list[str]:
+    resolved = source_root.resolve()
+    return sorted({str(resolved), resolved.as_posix()})
+
+
+def _scan_for_forbidden_tokens(snapshot_dir: Path, forbidden_tokens: list[str]) -> dict[str, list[str]]:
     leaks: dict[str, list[str]] = {}
-    if not identity_tokens:
+    if not forbidden_tokens:
         return leaks
 
     for path in snapshot_dir.rglob("*"):
@@ -174,7 +179,7 @@ def _scan_for_identity_leaks(snapshot_dir: Path, identity_tokens: list[str]) -> 
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        matches = [token for token in identity_tokens if token in text]
+        matches = [token for token in forbidden_tokens if token in text]
         if matches:
             leaks[str(path.relative_to(snapshot_dir))] = matches
     return leaks
@@ -265,15 +270,17 @@ def build_submission_bundle(
         anonymized_main_tex = _anonymize_main_tex(main_tex_path.read_text(encoding="utf-8"))
         main_tex_path.write_text(anonymized_main_tex, encoding="utf-8")
 
-    identity_tokens = _collect_identity_tokens(source_root)
-    identity_leaks = _scan_for_identity_leaks(anonymous_snapshot_dir, identity_tokens)
-    if identity_leaks:
+    forbidden_tokens = sorted(
+        {*_collect_identity_tokens(source_root), *_collect_source_path_tokens(source_root)}
+    )
+    anonymity_leaks = _scan_for_forbidden_tokens(anonymous_snapshot_dir, forbidden_tokens)
+    if anonymity_leaks:
         leak_lines = [
             f"{path}: {', '.join(matches)}"
-            for path, matches in sorted(identity_leaks.items())
+            for path, matches in sorted(anonymity_leaks.items())
         ]
         raise ValueError(
-            "Identity leak detected in anonymous snapshot:\n" + "\n".join(leak_lines)
+            "Anonymity leak detected in anonymous snapshot:\n" + "\n".join(leak_lines)
         )
 
     editor_materials_dir.mkdir(parents=True, exist_ok=True)

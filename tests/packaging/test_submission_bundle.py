@@ -156,6 +156,22 @@ def test_snapshot_includes_reviewer_guide_and_reviewer_tests(tmp_path: Path) -> 
     assert "tests/reviewer/" in manifest["copied_directories"]
 
 
+def test_build_submission_bundle_rejects_source_root_path_leaks(tmp_path: Path) -> None:
+    source_root = _create_minimal_submission_source_tree(tmp_path)
+    _write_text(
+        source_root / "outputs" / "pilot_report" / "leaky_report.json",
+        f'{{"chunk_dir": "{source_root}"}}\n',
+    )
+
+    with pytest.raises(ValueError, match="Anonymity leak detected"):
+        build_submission_bundle(
+            source_root=source_root,
+            output_dir=tmp_path / "bundle_output",
+            venue="journal-double-blind",
+            create_archives=False,
+        )
+
+
 def test_build_submission_bundle_can_include_optional_pdf_and_archives(
     tmp_path: Path,
 ) -> None:

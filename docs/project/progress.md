@@ -1,5 +1,23 @@
 ﻿# Progress Log
 
+### Phase 7.1 Sprint A: Local Gate A1 Strict Review (2026-04-29)
+- **Status:** local gate strengthened; remote CI sign-off still pending.
+- Actions taken:
+  - Found one reviewer-snapshot leakage risk during strict review: `outputs/pilot_report/three_dof_cross_family_pilot_report.json` embedded the local source path in `chunk_dir`.
+  - Updated the cross-family pilot report exporter to keep default chunk paths repo-relative / slash-normalized, then regenerated `outputs/pilot_report/three_dof_cross_family_pilot_report.json` and the companion internal PDFs.
+  - Hardened anonymous bundle assembly so copied snapshot files are scanned for the resolved source-root path as well as identity tokens.
+  - Added reviewer-smoke coverage that scans reviewer-facing artifact inputs for local path tokens, so Gate A1 catches this class locally and in CI.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_cross_family_pilot_report.py tests/packaging/test_submission_bundle.py tests/reviewer` -> 15 passed, 1 warning.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> 5 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_paper_claim_boundaries.py` -> 62 passed, 9 warnings.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/gate_a1_local_check --paper-pdf paper/main.pdf` -> exit 0 after a local PDF wrapper build; MiKTeX printed update-check notices and the existing overfull hbox warning.
+  - From `tmp/submission_bundle/gate_a1_local_check/anonymous_snapshot`: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/reviewer` -> 4 passed.
+  - `git diff --check` -> exit 0.
+- Next blocker:
+  - Push the committed branch or open a PR, then mark Gate A1 only after GitHub Actions `reviewer-smoke` and `paper-assets-check` pass.
+
 ### Phase 7.1 Sprint A: Post-Commit Gate A1 Checkpoint (2026-04-29)
 - **Status:** local gate remains complete; remote CI sign-off still pending.
 - Actions taken:

@@ -1,7 +1,7 @@
 {
   "experiment_name": "three_dof_cross_family_pilot",
-  "generated_at": "2026-04-20T17:05:50",
-  "chunk_dir": "F:\\edge download\\learning\\vi-insertion-only-sim\\outputs\\pilot_chunks",
+  "generated_at": "2026-04-29T01:38:04",
+  "chunk_dir": "outputs/pilot_chunks",
   "expected_grid": {
     "method_names": [
       "ppo_no_bc",
@@ -64,7 +64,7 @@
       "points": [
         {
           "budget": 50000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__ppo_no_bc__50000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__50000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -84,7 +84,7 @@
         },
         {
           "budget": 100000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__ppo_no_bc__100000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__100000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -104,7 +104,7 @@
         },
         {
           "budget": 200000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__ppo_no_bc__200000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__200000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -131,7 +131,7 @@
       "points": [
         {
           "budget": 50000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__50000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__sac_no_bc__50000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -151,7 +151,7 @@
         },
         {
           "budget": 100000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__100000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__sac_no_bc__100000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -171,7 +171,7 @@
         },
         {
           "budget": 200000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__200000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__sac_no_bc__200000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -198,7 +198,7 @@
       "points": [
         {
           "budget": 50000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__50000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__td3_no_bc__50000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -218,7 +218,7 @@
         },
         {
           "budget": 100000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__100000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__td3_no_bc__100000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -238,7 +238,7 @@
         },
         {
           "budget": 200000,
-          "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__200000.json",
+          "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__td3_no_bc__200000.json",
           "five_profile_mean": {
             "success_rate": 0.0,
             "mean_first_contact_step": 64.0,
@@ -271,7 +271,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__ppo_no_bc__50000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__50000.json"
     },
     {
       "method_name": "ppo_no_bc",
@@ -284,7 +284,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__ppo_no_bc__100000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__100000.json"
     },
     {
       "method_name": "ppo_no_bc",
@@ -297,7 +297,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__ppo_no_bc__200000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__ppo_no_bc__200000.json"
     },
     {
       "method_name": "sac_no_bc",
@@ -310,7 +310,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__50000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__sac_no_bc__50000.json"
     },
     {
       "method_name": "sac_no_bc",
@@ -323,7 +323,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__100000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__sac_no_bc__100000.json"
     },
     {
       "method_name": "sac_no_bc",
@@ -336,7 +336,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__sac_no_bc__200000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__sac_no_bc__200000.json"
     },
     {
       "method_name": "td3_no_bc",
@@ -349,7 +349,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__50000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__td3_no_bc__50000.json"
     },
     {
       "method_name": "td3_no_bc",
@@ -362,7 +362,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__100000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__td3_no_bc__100000.json"
     },
     {
       "method_name": "td3_no_bc",
@@ -375,7 +375,7 @@
       "mean_contact_steps": 0.0,
       "mean_peak_contact_force_n": 0.0,
       "jam_rate": 0.0,
-      "source_chunk_path": "outputs\\pilot_chunks\\three_dof_cross_family_pilot__td3_no_bc__200000.json"
+      "source_chunk_path": "outputs/pilot_chunks/three_dof_cross_family_pilot__td3_no_bc__200000.json"
     }
   ]
 }

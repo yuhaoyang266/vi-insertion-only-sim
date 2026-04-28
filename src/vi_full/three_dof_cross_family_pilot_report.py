@@ -26,6 +26,16 @@ def _write_json(path: Path, payload: dict[str, object]) -> Path:
     return path
 
 
+def _portable_path(path: Path) -> str:
+    path = Path(path)
+    if path.is_absolute():
+        try:
+            path = path.relative_to(Path.cwd())
+        except ValueError:
+            pass
+    return path.as_posix()
+
+
 def _method_specs() -> dict[str, dict[str, Any]]:
     registry = build_3dof_cross_family_pilot_registry()
     return {
@@ -59,7 +69,7 @@ def _load_chunk(path: Path) -> list[dict[str, Any]]:
                     "label": label,
                     "algorithm": algorithm,
                     "budget": budget,
-                    "source_chunk_path": str(path),
+                    "source_chunk_path": _portable_path(path),
                     "five_profile_mean": {
                         "success_rate": _safe_float(
                             five_profile_mean.get("success_rate_mean_over_profiles")
@@ -196,7 +206,7 @@ def build_3dof_cross_family_pilot_report(
     return {
         "experiment_name": registry["experiment_name"],
         "generated_at": datetime.now().isoformat(timespec="seconds"),
-        "chunk_dir": str(chunk_dir.resolve()),
+        "chunk_dir": _portable_path(chunk_dir),
         "expected_grid": {
             "method_names": method_names,
             "budget_points": budget_points,
