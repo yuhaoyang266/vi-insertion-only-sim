@@ -220,7 +220,7 @@ def _as_float(value: object) -> float:
 
 
 def _round_metric(value: object) -> float:
-    return round(_as_float(value), 2)
+    return round(_as_float(value), 3)
 
 
 def _require_field(mapping: dict[str, Any], field_name: str, *, context: str) -> Any:
@@ -742,9 +742,9 @@ def render_3dof_evidence_matrix_markdown(payload: dict[str, Any]) -> str:
             f"{row['train_budget']} | "
             f"{row['source_report']} | "
             f"{'yes' if row['entered_contact'] else 'no'} | "
-            f"{row['success_rate']:.2f} | "
-            f"{row['mean_final_distance_mm']:.2f} | "
-            f"{row['mean_contact_steps']:.2f} | "
+            f"{row['success_rate']:.3f} | "
+            f"{row['mean_final_distance_mm']:.3f} | "
+            f"{row['mean_contact_steps']:.3f} | "
             f"{row['evidence_role']} |"
         )
     lines.extend(
@@ -945,9 +945,9 @@ def render_sprint2_main_table_markdown(payload: dict[str, Any]) -> str:
                 f"{row['source_contract']} | "
                 f"{row['train_budget']} | "
                 f"{'yes' if row['entered_contact'] else 'no'} | "
-                f"{row['success_rate']:.2f} | "
-                f"{row['mean_final_distance_mm']:.2f} | "
-                f"{row['mean_contact_steps']:.2f} | "
+                f"{row['success_rate']:.3f} | "
+                f"{row['mean_final_distance_mm']:.3f} | "
+                f"{row['mean_contact_steps']:.3f} | "
                 f"{row['evidence_role']} | "
                 f"{row['allowed_claim']} |"
             )
@@ -1008,7 +1008,7 @@ def export_contact_gate_matrix_figure(
         ax.text(
             1,
             row_index,
-            f"{row['success_rate']:.2f}",
+            f"{row['success_rate']:.3f}",
             ha="center",
             va="center",
             color="black",

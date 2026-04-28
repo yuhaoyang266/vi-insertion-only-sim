@@ -57,7 +57,7 @@
   }%
 }
 
-\title{Support-Gated Variable-Impedance Learning in a 3DoF Insertion Benchmark}
+\title{Support-Gated Learnability and Variable-Impedance Load Paths in a 3DoF Insertion Benchmark}
 \author{Yu Haoyang\\Shanghai University\\Shanghai Institute of Applied Mathematics and Mechanics\\\texttt{yuhaoyang@shu.edu.cn}}
 \date{\small Project repository: \repositoryurl}
 
@@ -66,12 +66,12 @@
 \maketitle
 
 \begin{abstract}
-We study Support-Gated Variable-Impedance Learning (SG-VI) in a simulation-only 3DoF final-stage
-insertion benchmark with a structured variable-impedance action space
+We study support-gated learnability and variable-impedance load paths in a simulation-only 3DoF
+final-stage insertion benchmark with a structured variable-impedance action space
 $(\Delta x, \Delta y, \Delta z, K_{xy}, K_z)$. In this paper SG-VI denotes a benchmark-local
-recipe that combines explicit variable-impedance commands, behavior-cloning warm-start, and
+protocol that combines explicit variable-impedance commands, behavior-cloning warm-start, and
 factorized support controls over demonstrations, resets, and PPO budget. To make the gate
-measurable, we define a Support Coverage Index (SCI), a quantized rollout-to-demonstration
+measurable, we use a Support Coverage Index (SCI), a quantized rollout-to-demonstration
 state-action overlap diagnostic under the same relative-frame interface. Under a matched
 cross-family pure-RL pilot, PPO, SAC, and TD3 from scratch remain outside useful contact from 50k
 to 200k environment steps, so optimizer family alone does not reopen the gate. A factorized
@@ -168,11 +168,15 @@ particularly influential in dexterous and contact-rich manipulation
 \citep{vecerik2017_demo_sparse_rewards,rajeswaran2018_dexterous_demo_rl,
 johannink2019_residual_rl,wang2022_adaptive_imitation_insertion}. Off-policy and offline RL
 baselines such as SAC, benchmark suites such as robosuite, and offline datasets and algorithms
-such as D4RL and CQL define a broader comparison space that this paper does not exhaust
-\citep{haarnoja2018_sac,zhu2020_robosuite,fu2020_d4rl,kumar2020_cql}. Our emphasis is
-different from the usual sample-efficiency story. In the present benchmark, demonstrations are not
-merely a data-efficiency boost; they are a precondition for entering the contact-relevant state
-distribution at all.
+such as D4RL, CQL, and IQL define a broader comparison space that this paper does not exhaust
+\citep{haarnoja2018_sac,zhu2020_robosuite,fu2020_d4rl,kumar2020_cql,
+kostrikov2022_iql}. Modern sequence-imitation and visuomotor methods such as ACT and Diffusion
+Policy are scope-setting references rather than same-interface competitors here because they
+change the observation, data, and deployment regime
+\citep{zhao2023_action_chunking_transformers,chi2023_diffusion_policy}. Our emphasis is different
+from the usual sample-efficiency story. In the present benchmark, demonstrations are not merely a
+data-efficiency boost; they are a precondition for entering the contact-relevant state distribution
+at all.
 
 \section{Task Setup and Experimental Protocol}
 \label{sec:setup}
@@ -456,11 +460,10 @@ not as a single-p-value basis for ranking algorithms.
 
 The experiments use separate evidence layers. Figure~\ref{fig:main_results_matrix} and
 Table~\ref{tab:main_benchmark} report the final five-seed benchmark with 100 evaluation episodes
-per seed and profile. The reviewer-facing main table exported as
-\code{outputs/evidence_matrix/three_dof_sprint2_main_table.md} serves a different role: it is a
-three-layer claim-control table tying nominal-only pure-RL negatives, demo-supported
-contact-reopening rows, and a mechanics / fixed-impedance anchor without turning them into a
-single leaderboard. The cross-family PPO/SAC/TD3 pilot and its confirm report provide a separate
+per seed and profile. The reviewer-facing claim-control table serves a different role: it ties
+nominal-only pure-RL negatives, demo-supported contact-reopening rows, and a mechanics /
+fixed-impedance anchor without turning them into a single leaderboard. The cross-family PPO/SAC/TD3
+pilot and its confirm report provide a separate
 pure-RL negative-evidence layer, Table~\ref{tab:mechanism_matrix} and
 Table~\ref{tab:behavioral_similarity} are smaller diagnostic sweeps intended for directional
 mechanism analysis, the frozen teacher mini-ablation boundary fixes the next
@@ -537,8 +540,7 @@ it is not a success baseline, and the mixed-contract matrix is not read as a dir
 Each matrix row cites either the direct controlled-benchmark report or the canonical main-benchmark manifest
 (\code{artifacts/main_benchmark/main_benchmark_manifest.json}) and its resolved source hash,
 rather than a separate paper-table export, so the provenance stays inspectable at row level.
-The same row contract is rendered as \code{outputs/evidence_matrix/three_dof_sprint2_main_table.md}.
-Its companion pure-RL budget-curve figure,
+The same row contract is rendered by the evidence-matrix export. Its companion pure-RL budget-curve figure,
 \code{outputs/cross_family_confirm/three_dof_cross_family_confirm_learning_curve_summary.png},
 plots distance proxy, success, and contact steps against the 50k--200k training budgets within the
 nominal-only confirm contract. Thus \code{SAC w/o BC} appears only as a zero-contact distance
@@ -840,13 +842,14 @@ clearance-only and external-validity proxy stress tests.
 
 Several limitations remain important. The environment is still simulation-only, translational, and
 3DoF. It uses a relative observation frame, a synthetic force signal, diagonal stiffness decoding,
-and an analytical contact model rather than torque sensing, 6D pose error, multi-point collision,
-or hardware force/torque calibration. The pose-perturbation study improves stress coverage, but it
-is still a proxy study rather than a hardware validation or a full 6D orientation benchmark. The
-current statements about force-control accuracy, force-pose coupling, and compliant load paths
-must therefore remain benchmark-local. The present project is also explicitly on the no-hardware
-path, so the paper currently has no real-robot or cross-simulator transfer evidence to lift that
-scope ceiling.
+and an analytical contact model rather than torque sensing, full 6D wrench dynamics, multi-point
+collision, or hardware force/torque calibration. The benchmark also omits orientation-induced jamming
+from roll/pitch/yaw contact, sensor drift, and vision-based perception. The pose-perturbation study
+improves stress coverage, but it is still a proxy study rather than a hardware validation or a full
+6D orientation benchmark. The current statements about force-control accuracy, force-pose coupling,
+and compliant load paths must therefore remain benchmark-local. The present project is also
+explicitly on the no-hardware path, so the paper currently has no real-robot or cross-simulator
+transfer evidence to lift that scope ceiling.
 
 The learning evidence also leaves several deliberate separations unresolved. The large-budget
 PPO-only audit covers two PPO contracts rather than an exhaustive hyperparameter search, so it

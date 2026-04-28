@@ -53,6 +53,9 @@ class ThreeDoFInsertionConfig:
     contact_xy_scale: float = 4200.0
     contact_z_scale: float = 3400.0
     in_hole_drag_scale: float = 120.0
+    hard_blocked_lateral_jam_load_scale: float = 0.25
+    hard_blocked_rebound_m: float = 0.00005
+    hard_blocked_min_z_m: float = 0.00005
     contact_transition_band_m: float = 0.001
     contact_transition_stiffness_aware_force_scaling: bool = False
     contact_transition_stiffness_aware_force_scaling_xy: bool = True
@@ -92,6 +95,8 @@ class ThreeDoFInsertionConfig:
     approach_bonus_scale: float = 30.0
     insertion_bonus_scale: float = 20.0
     hover_penalty: float = 0.05
+    success_bonus: float = 6.0
+    jam_penalty: float = 6.0
     reset_config: ThreeDoFResetConfig = field(default_factory=ThreeDoFResetConfig)
 
     def transition_stiffness_force_scaling_components(self) -> tuple[bool, bool, bool]:

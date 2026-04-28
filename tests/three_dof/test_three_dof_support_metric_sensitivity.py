@@ -4,6 +4,7 @@ import numpy as np
 
 from vi_full.three_dof_support_metric_sensitivity import (
     audit_support_metric_rows,
+    build_support_metric_sensitivity_report,
     build_sci_sensitivity_configs,
     compute_action_only_sci,
     compute_nearest_demo_distance,
@@ -36,6 +37,10 @@ def test_sci_sensitivity_configs_cover_fine_default_coarse() -> None:
         for cfg in configs
     }
 
+    assert len(configs) >= 9
+    assert {cfg.obs_xy_norm_bin_m for cfg in configs} >= {2.5e-4, 5e-4, 1e-3}
+    assert {cfg.force_norm_bin_n for cfg in configs} >= {0.125, 0.25, 0.5}
+    assert {cfg.action_xy_norm_bin for cfg in configs} >= {0.05, 0.1, 0.2}
     assert (2.5e-4, 0.125, 0.05, 0.05) in triples
     assert (5e-4, 0.25, 0.1, 0.1) in triples
     assert (1e-3, 0.5, 0.2, 0.2) in triples
@@ -85,6 +90,26 @@ def test_alternative_metrics_prefer_identical_rollout() -> None:
         demo_actions=demo_actions,
         rollout_actions=shifted_actions,
     )
+
+
+def test_sci_rank_stability_prefers_supported_rollout_for_all_bin_configs() -> None:
+    report = build_support_metric_sensitivity_report([])
+    rows = report["sci_rank_stability"]
+
+    assert len(rows) == 9
+    assert {row["bin_config"] for row in rows} == {
+        "fine_state_fine_action",
+        "fine_state_default_action",
+        "fine_state_coarse_action",
+        "default_state_fine_action",
+        "default_state_default_action",
+        "default_state_coarse_action",
+        "coarse_state_fine_action",
+        "coarse_state_default_action",
+        "coarse_state_coarse_action",
+    }
+    assert all(row["supported_sci"] > row["shifted_sci"] for row in rows)
+    assert all(row["rank_stable"] is True for row in rows)
 
 
 def test_predictive_audit_rows_include_required_schema() -> None:

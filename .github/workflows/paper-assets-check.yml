@@ -1,4 +1,4 @@
-name: Paper Assets Check
+﻿name: Paper Assets Check
 
 on:
   push:
@@ -27,25 +27,25 @@ jobs:
         run: pip install -e . 2>/dev/null || pip install pytest 2>/dev/null || true
 
       - name: Canonical manifest test
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_canonical_manifest.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py
 
       - name: Artifact provenance scan
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_artifact_provenance.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_artifact_provenance.py
 
       - name: Exporter defaults sync
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_exporter_defaults.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_exporter_defaults.py
 
       - name: Paper table sync
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_paper_table_sync.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_table_sync.py
 
       - name: Evidence row sync
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_three_dof_evidence_matrix.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_three_dof_evidence_matrix.py
 
       - name: Sprint 2 paper sync
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_sprint2_paper_sync.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_sprint2_paper_sync.py
 
       - name: Claim boundary tests
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_paper_claim_boundaries.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py
 
       - name: Build paper assets check
         run: python scripts/export/build_paper_assets.py --check

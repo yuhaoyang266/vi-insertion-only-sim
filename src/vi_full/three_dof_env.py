@@ -429,6 +429,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
                     contact_debug.update(
                         {
                             "within_transition_band": True,
+                            "blocked_contact_suppressed_in_transition_band": True,
                             "overflow_ratio_in_band": float(transition_ratio),
                             "transition_blend": float(transition_blend),
                             "soft_contact_z_n": float(soft_wall_z),
@@ -520,7 +521,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         contact_force = np.zeros(3, dtype=np.float64)
         wall_proximity = max(lateral_error - 0.5 * clearance, 0.0)
         contact_force[:2] = (
-            stiffness_xy
+            -stiffness_xy
             * wall_proximity
             * self.config.in_hole_drag_scale
             * candidate_xy_error
@@ -546,22 +547,33 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         stiffness_z: float,
     ) -> tuple[bool, np.ndarray, np.ndarray, float, float]:
         lateral_dir = candidate_xy_error / max(lateral_error, 1e-6)
+        reaction_dir = -lateral_dir
         contact_force = np.zeros(3, dtype=np.float64)
         contact_xy = (
             stiffness_xy * overflow * self.config.contact_xy_scale
-        ) * lateral_dir
+        ) * reaction_dir
         contact_z = (
             stiffness_z
             * abs(min(cartesian_delta[2], 0.0))
             * self.config.contact_z_scale
         )
         friction_load = self.uncertainty["wall_friction"] * max(contact_z, 0.0)
-        contact_force[:2] = contact_xy + 0.25 * friction_load * lateral_dir
+        # This term intentionally models wedging/jam load amplification, not
+        # velocity-opposing Coulomb friction.
+        contact_force[:2] = (
+            contact_xy
+            + self.config.hard_blocked_lateral_jam_load_scale
+            * friction_load
+            * reaction_dir
+        )
         contact_z_coupling = 0.2 * np.linalg.norm(contact_xy)
         contact_force[2] = contact_z + contact_z_coupling
 
         new_position = proposed_position.copy()
-        new_position[2] = max(self.position[2] - 0.00005, 0.00005)
+        new_position[2] = max(
+            self.position[2] - self.config.hard_blocked_rebound_m,
+            self.config.hard_blocked_min_z_m,
+        )
         new_position[:2] = proposed_position[:2] - self.config.contact_lateral_relaxation * (
             candidate_xy_error
         )
@@ -951,9 +963,14 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
             if aligned
             else 0.0
         )
-        hover_penalty = self.config.hover_penalty if near_contact and aligned and not has_contact else 0.0
-        success_bonus = 6.0 if is_success else 0.0
-        jam_penalty = 6.0 if is_jammed else 0.0
+        descending_toward_surface = current_surface_height < previous_surface_height
+        hover_penalty = (
+            self.config.hover_penalty
+            if near_contact and aligned and not has_contact and not descending_toward_surface
+            else 0.0
+        )
+        success_bonus = self.config.success_bonus if is_success else 0.0
+        jam_penalty = self.config.jam_penalty if is_jammed else 0.0
         total_reward = (
             progress_reward
             - force_penalty
@@ -1006,6 +1023,7 @@ class ThreeDoFInsertionEnv(gym.Env[np.ndarray, np.ndarray]):
         return {
             "within_hole_contact": False,
             "within_transition_band": False,
+            "blocked_contact_suppressed_in_transition_band": False,
             "blocked_contact": False,
             "clearance_m": 0.0,
             "lateral_error_m": 0.0,

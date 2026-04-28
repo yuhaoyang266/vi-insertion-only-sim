@@ -9,12 +9,14 @@ CANONICAL_MAIN_KEY = "canonical_main_benchmark"
 def test_reviewer_snapshot_has_core_release_layout() -> None:
     expected_paths = [
         "README.md",
+        "REVIEWER_GUIDE.md",
         "paper/main.tex",
         "docs/figure_asset_manifest.md",
         "figures/main/fig1_task_policy_impedance_overview.pdf",
         "figures/main/fig2_main_benchmark_evaluation_class_summary.pdf",
         "figures/main/fig3_high_friction_impedance_mechanism.pdf",
         "scripts/export/build_paper_assets.py",
+        "scripts/export/build_paper_pdf.py",
         "src/vi_full",
         "tests/reviewer",
     ]

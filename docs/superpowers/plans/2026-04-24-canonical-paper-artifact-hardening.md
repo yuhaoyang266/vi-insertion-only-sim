@@ -688,23 +688,23 @@ python -m pytest -q tests/reviewer
   - training modules
 - Scripts must use explicit submodule imports.
 
-- [ ] **Step 1: Write import warning test**
+- [x] **Step 1: Write import warning test**
 
   Assert `python -c "import vi_full"` does not emit Gym deprecation warnings.
 
-- [ ] **Step 2: Write module-load test**
+- [x] **Step 2: Write module-load test**
 
   Assert `stable_baselines3` and `mujoco` are not in `sys.modules` after `import vi_full`.
 
-- [ ] **Step 3: Slim `__init__.py`**
+- [x] **Step 3: Slim `__init__.py`**
 
   Remove top-level imports of env, training, benchmark, MuJoCo, and SB3 modules.
 
-- [ ] **Step 4: Fix call sites**
+- [x] **Step 4: Fix call sites**
 
   Replace `from vi_full import ...` with explicit submodule imports where needed.
 
-- [ ] **Step 5: Document the import contract**
+- [x] **Step 5: Document the import contract**
 
   Update README with explicit import examples.
 
@@ -741,15 +741,15 @@ python -c "import vi_full; print(vi_full.__version__)"
 - expensive sensitivity runs
 - mandatory TeX build unless TeX environment is available
 
-- [ ] **Step 1: Add reviewer smoke workflow**
+- [x] **Step 1: Add reviewer smoke workflow**
 
   Run reviewer tests and import-boundary checks.
 
-- [ ] **Step 2: Add paper assets check workflow**
+- [x] **Step 2: Add paper assets check workflow**
 
   Run manifest validation, provenance scan, sync tests, and `build_paper_assets.py --check`.
 
-- [ ] **Step 3: Document CI expectations**
+- [x] **Step 3: Document CI expectations**
 
   Update README with local equivalents and CI purpose.
 
@@ -838,23 +838,23 @@ python scripts/export/build_paper_assets.py --check
 - PPO w/o BC = did not reach useful contact under tested contracts, not all PPO failure.
 - Near-ceiling success = avoid success-rate ranking; emphasize force/contact work/Pareto.
 
-- [ ] **Step 1: Add claim-boundary grep tests**
+- [x] **Step 1: Add claim-boundary grep tests**
 
   Prevent problematic phrases such as `PPO fails`, `proves generalization`, `DAPG reproduction`, `universal SCI`, and `state-of-the-art` unless intentionally whitelisted.
 
-- [ ] **Step 2: Review SG-VI / SCI wording**
+- [x] **Step 2: Review SG-VI / SCI wording**
 
   Ensure every broad concept is scoped to this benchmark.
 
-- [ ] **Step 3: Review DAPG-lite wording**
+- [x] **Step 3: Review DAPG-lite wording**
 
   Keep the matched-protocol mechanism-control boundary.
 
-- [ ] **Step 4: Review PPO negative wording**
+- [x] **Step 4: Review PPO negative wording**
 
   Keep negative claims limited to tested contracts and budgets.
 
-- [ ] **Step 5: Defer PDF rebuild to external/editor environment**
+- [x] **Step 5: Defer PDF rebuild to external/editor environment**
 
   Do not require local LaTeX/PDF deployment for Milestone 3 closure. Confirm wording with claim-boundary tests locally; if PDF inspection is needed, use an external/editor build or an already generated anonymous PDF.
 
@@ -1047,11 +1047,11 @@ python -m pytest -q tests/test_paper_claim_boundaries.py
 
 ### Milestone 1: P0 Provenance Closure
 
-- [ ] Task 1: Canonical manifest spine
-- [ ] Task 2: Provenance schema and no-absolute-path gate
-- [ ] Task 3: Exporter defaults read manifest
-- [ ] Task 5: Evidence matrix layered source refactor
-- [ ] Task 4: Generated main table
+- [x] Task 1: Canonical manifest spine
+- [x] Task 2: Provenance schema and no-absolute-path gate
+- [x] Task 3: Exporter defaults read manifest
+- [x] Task 5: Evidence matrix layered source refactor
+- [x] Task 4: Generated main table
 
 ### Milestone 2: Paper-Facing Reproducibility
 
@@ -1062,9 +1062,9 @@ python -m pytest -q tests/test_paper_claim_boundaries.py
 
 ### Milestone 3: Engineering Trust
 
-- [ ] Task 10: Lightweight import boundary
-- [ ] Task 11: No-training CI gate
-- [ ] Task 13: Claim boundary cleanup
+- [x] Task 10: Lightweight import boundary
+- [x] Task 11: No-training CI gate
+- [x] Task 13: Claim boundary cleanup
 
 ### Milestone 3b: Optional Post-Closure Refactor
 
@@ -1080,22 +1080,22 @@ python -m pytest -q tests/test_paper_claim_boundaries.py
 
 ## Final Acceptance Checklist
 
-- [ ] `main_benchmark_manifest.json` declares exactly one canonical main benchmark.
-- [ ] schema2 appears only in appendix / diagnostic whitelist roles.
-- [ ] Figure 2 default source equals canonical manifest source.
-- [ ] benchmark table default source equals canonical manifest source.
-- [ ] evidence matrix benchmark rows equal canonical source values after documented rounding.
-- [ ] pure-RL evidence rows remain from confirm report and are clearly marked as a separate contract.
-- [ ] `paper/main.tex` no longer hardcodes main benchmark rows.
-- [ ] generated LaTeX table includes a do-not-edit provenance comment.
-- [ ] paper-facing artifacts contain no local absolute paths.
-- [ ] all paper-facing artifacts include repo-relative source paths and source hashes.
-- [ ] README primary reproduction command is `build_paper_assets.py`.
-- [ ] README primary PDF build command is `build_paper_pdf.py`.
-- [ ] anonymous snapshot contains `tests/reviewer/`.
-- [ ] `python -m pytest -q tests/reviewer` passes inside the snapshot.
-- [ ] `python -c "import vi_full"` is lightweight.
-- [ ] CI / local no-training gate catches source drift.
+- [x] `main_benchmark_manifest.json` declares exactly one canonical main benchmark.
+- [x] schema2 appears only in appendix / diagnostic whitelist roles.
+- [x] Figure 2 default source equals canonical manifest source.
+- [x] benchmark table default source equals canonical manifest source.
+- [x] evidence matrix benchmark rows equal canonical source values after documented rounding.
+- [x] pure-RL evidence rows remain from confirm report and are clearly marked as a separate contract.
+- [x] `paper/main.tex` no longer hardcodes main benchmark rows.
+- [x] generated LaTeX table includes a do-not-edit provenance comment.
+- [x] paper-facing artifacts contain no local absolute paths.
+- [x] all paper-facing artifacts include repo-relative source paths and source hashes.
+- [x] README primary reproduction command is `build_paper_assets.py`.
+- [x] README primary PDF build command is `build_paper_pdf.py`.
+- [x] anonymous snapshot contains `tests/reviewer/`.
+- [x] `python -m pytest -q tests/reviewer` passes inside the snapshot.
+- [x] `python -c "import vi_full"` is lightweight.
+- [x] CI / local no-training gate catches source drift.
 - [ ] optional v2 experiments are versioned, compared, and promoted only by explicit manifest decision.
 
 ---

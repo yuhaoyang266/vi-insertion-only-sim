@@ -30,10 +30,24 @@ AUDIT_FIELDS = (
 
 
 def build_sci_sensitivity_configs() -> list[ThreeDoFSupportMetricConfig]:
+    state_bins = (
+        (2.5e-4, 0.125),
+        (5e-4, 0.25),
+        (1e-3, 0.5),
+    )
+    action_bins = (0.05, 0.1, 0.2)
     return [
-        ThreeDoFSupportMetricConfig(2.5e-4, 5e-4, 0.125, 0.05, 0.05, 0.05, 0.05),
-        ThreeDoFSupportMetricConfig(5e-4, 5e-4, 0.25, 0.1, 0.1, 0.1, 0.1),
-        ThreeDoFSupportMetricConfig(1e-3, 1e-3, 0.5, 0.2, 0.2, 0.2, 0.2),
+        ThreeDoFSupportMetricConfig(
+            obs_xy_norm_bin_m=position_bin,
+            obs_z_bin_m=position_bin,
+            force_norm_bin_n=force_bin,
+            action_xy_norm_bin=action_bin,
+            action_dz_bin=action_bin,
+            action_k_xy_bin=action_bin,
+            action_k_z_bin=action_bin,
+        )
+        for position_bin, force_bin in state_bins
+        for action_bin in action_bins
     ]
 
 
@@ -242,16 +256,11 @@ def audit_support_metric_rows(artifact: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def compute_synthetic_bin_sensitivity() -> list[dict[str, Any]]:
-    demo_observations = np.zeros((4, 9), dtype=np.float32)
-    rollout_observations = np.zeros((4, 9), dtype=np.float32)
-    demo_actions = np.zeros((4, 5), dtype=np.float32)
-    rollout_actions = np.zeros((4, 5), dtype=np.float32)
-    demo_observations[:, 0] = np.array([0.0, 0.0002, 0.0004, 0.0006], dtype=np.float32)
-    rollout_observations[:, 0] = demo_observations[:, 0]
-    demo_actions[:, 3:] = 0.5
-    rollout_actions[:, 3:] = 0.5
+    demo_observations, demo_actions = _synthetic_support_samples()
+    rollout_observations = demo_observations.copy()
+    rollout_actions = demo_actions.copy()
     rows: list[dict[str, Any]] = []
-    for label, config in zip(("fine", "default", "coarse"), build_sci_sensitivity_configs()):
+    for config in build_sci_sensitivity_configs():
         metrics = compute_3dof_support_coverage_index(
             demo_observations=demo_observations,
             demo_actions=demo_actions,
@@ -261,7 +270,7 @@ def compute_synthetic_bin_sensitivity() -> list[dict[str, Any]]:
         )
         rows.append(
             {
-                "bin_config": label,
+                "bin_config": _config_label(config),
                 "support_coverage_index": float(metrics["support_coverage_index"]),
                 "support_cell_coverage": float(metrics["support_cell_coverage"]),
                 "obs_xy_norm_bin_m": config.obs_xy_norm_bin_m,
@@ -273,6 +282,71 @@ def compute_synthetic_bin_sensitivity() -> list[dict[str, Any]]:
     return rows
 
 
+def _synthetic_support_samples() -> tuple[np.ndarray, np.ndarray]:
+    # Shape contract: observations are [N, >=9], actions are [N, >=5].
+    observations = np.zeros((4, 9), dtype=np.float32)
+    actions = np.zeros((4, 5), dtype=np.float32)
+    observations[:, 0] = np.array([0.0, 0.0002, 0.0004, 0.0006], dtype=np.float32)
+    observations[:, 2] = np.array([0.0, -0.0002, -0.0004, -0.0006], dtype=np.float32)
+    observations[:, 6] = np.array([0.0, 0.1, 0.2, 0.3], dtype=np.float32)
+    actions[:, 0] = np.array([0.0, 0.05, 0.1, 0.15], dtype=np.float32)
+    actions[:, 2] = np.array([-0.1, -0.05, 0.0, 0.05], dtype=np.float32)
+    actions[:, 3] = np.array([0.3, 0.4, 0.5, 0.6], dtype=np.float32)
+    actions[:, 4] = np.array([0.7, 0.6, 0.5, 0.4], dtype=np.float32)
+    return observations, actions
+
+
+def compute_synthetic_sci_rank_stability() -> list[dict[str, Any]]:
+    demo_observations, demo_actions = _synthetic_support_samples()
+    supported_observations = demo_observations.copy()
+    supported_actions = demo_actions.copy()
+    shifted_observations = demo_observations.copy()
+    shifted_actions = demo_actions.copy()
+    shifted_observations[:, 0] += 0.01
+    shifted_actions[:, 0] += 1.0
+    rows: list[dict[str, Any]] = []
+    for config in build_sci_sensitivity_configs():
+        supported_metrics = compute_3dof_support_coverage_index(
+            demo_observations=demo_observations,
+            demo_actions=demo_actions,
+            rollout_observations=supported_observations,
+            rollout_actions=supported_actions,
+            config=config,
+        )
+        shifted_metrics = compute_3dof_support_coverage_index(
+            demo_observations=demo_observations,
+            demo_actions=demo_actions,
+            rollout_observations=shifted_observations,
+            rollout_actions=shifted_actions,
+            config=config,
+        )
+        supported_sci = float(supported_metrics["support_coverage_index"])
+        shifted_sci = float(shifted_metrics["support_coverage_index"])
+        rows.append(
+            {
+                "bin_config": _config_label(config),
+                "supported_sci": supported_sci,
+                "shifted_sci": shifted_sci,
+                "rank_stable": bool(supported_sci > shifted_sci),
+            }
+        )
+    return rows
+
+
+def _config_label(config: ThreeDoFSupportMetricConfig) -> str:
+    state_label = {
+        2.5e-4: "fine_state",
+        5e-4: "default_state",
+        1e-3: "coarse_state",
+    }.get(config.obs_xy_norm_bin_m, "custom_state")
+    action_label = {
+        0.05: "fine_action",
+        0.1: "default_action",
+        0.2: "coarse_action",
+    }.get(config.action_xy_norm_bin, "custom_action")
+    return f"{state_label}_{action_label}"
+
+
 def build_support_metric_sensitivity_report(
     artifacts: Iterable[dict[str, Any]],
 ) -> dict[str, Any]:
@@ -282,6 +356,7 @@ def build_support_metric_sensitivity_report(
     return {
         "schema_version": 1,
         "sci_bin_sensitivity": compute_synthetic_bin_sensitivity(),
+        "sci_rank_stability": compute_synthetic_sci_rank_stability(),
         "predictive_audit_rows": audit_rows,
         "gate_c_interpretation": _interpret_gate_c(audit_rows),
     }
@@ -321,6 +396,19 @@ def write_support_metric_sensitivity_outputs(
     for row in report["sci_bin_sensitivity"]:
         lines.append(
             f"| {row['bin_config']} | {row['support_coverage_index']:.3f} | {row['support_cell_coverage']:.3f} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Synthetic SCI Rank Stability",
+            "",
+            "| bin_config | supported_sci | shifted_sci | rank_stable |",
+            "| --- | ---: | ---: | --- |",
+        ]
+    )
+    for row in report["sci_rank_stability"]:
+        lines.append(
+            f"| {row['bin_config']} | {row['supported_sci']:.3f} | {row['shifted_sci']:.3f} | {row['rank_stable']} |"
         )
     lines.extend(["", "## Predictive Audit Rows", "", f"- row_count: {len(report['predictive_audit_rows'])}"])
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

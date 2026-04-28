@@ -1,4 +1,4 @@
-name: Reviewer Smoke
+﻿name: Reviewer Smoke
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
         run: PYTHONPATH=src python -c "import vi_full; print(vi_full.__version__)"
 
       - name: Import boundary test
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_import_boundaries.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py
 
       - name: Reviewer snapshot smoke
         run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/reviewer

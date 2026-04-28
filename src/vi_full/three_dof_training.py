@@ -2039,9 +2039,9 @@ def _behavior_clone_3dof_dataset(
             device=policy.device,
             dtype=torch.float32,
         )
-    use_weighted_mse = action_loss_weights is not None
+    use_weighted_log_prob = action_loss_weights is not None
     weight_tensor = None
-    if use_weighted_mse:
+    if use_weighted_log_prob:
         weight_tensor = torch.as_tensor(
             action_loss_weights,
             device=policy.device,
@@ -2093,10 +2093,12 @@ def _behavior_clone_3dof_dataset(
                 if sample_weight_tensor is not None:
                     batch_sample_weights = sample_weight_tensor[batch_indices]
                 distribution = policy.get_distribution(batch_obs)
-                if use_weighted_mse:
-                    predicted_actions = distribution.distribution.mean
-                    squared_error = (predicted_actions - batch_actions) ** 2
-                    per_sample_loss = (squared_error * weight_tensor).mean(dim=1)
+                if use_weighted_log_prob:
+                    per_dim_log_prob = distribution.distribution.log_prob(batch_actions)
+                    # Tensor contract: per_dim_log_prob is (batch, action_dim);
+                    # action_loss_weights is (1, action_dim) and gates dimensions
+                    # without freezing the Gaussian log_std parameters.
+                    per_sample_loss = -(per_dim_log_prob * weight_tensor).sum(dim=1)
                 else:
                     per_sample_loss = -distribution.log_prob(batch_actions)
                 if batch_sample_weights is not None:

@@ -1480,7 +1480,6 @@ def export_3dof_paper_table(
         git_commit=git_commit,
     )
     markdown = render_3dof_paper_table_markdown(export_payload)
-    latex = render_3dof_paper_table_latex(export_payload)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{stem}.json"
@@ -1491,6 +1490,7 @@ def export_3dof_paper_table(
     )
     markdown_path.write_text(markdown, encoding="utf-8")
     if latex_output_path is not None:
+        latex = render_3dof_paper_table_latex(export_payload)
         latex_output_path = Path(latex_output_path)
         latex_output_path.parent.mkdir(parents=True, exist_ok=True)
         latex_output_path.write_text(latex, encoding="utf-8")

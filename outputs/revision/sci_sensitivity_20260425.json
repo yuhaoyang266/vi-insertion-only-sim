@@ -2,7 +2,7 @@
   "schema_version": 1,
   "sci_bin_sensitivity": [
     {
-      "bin_config": "fine",
+      "bin_config": "fine_state_fine_action",
       "support_coverage_index": 1.0,
       "support_cell_coverage": 1.0,
       "obs_xy_norm_bin_m": 0.00025,
@@ -11,7 +11,34 @@
       "action_k_xy_bin": 0.05
     },
     {
-      "bin_config": "default",
+      "bin_config": "fine_state_default_action",
+      "support_coverage_index": 1.0,
+      "support_cell_coverage": 1.0,
+      "obs_xy_norm_bin_m": 0.00025,
+      "force_norm_bin_n": 0.125,
+      "action_xy_norm_bin": 0.1,
+      "action_k_xy_bin": 0.1
+    },
+    {
+      "bin_config": "fine_state_coarse_action",
+      "support_coverage_index": 1.0,
+      "support_cell_coverage": 1.0,
+      "obs_xy_norm_bin_m": 0.00025,
+      "force_norm_bin_n": 0.125,
+      "action_xy_norm_bin": 0.2,
+      "action_k_xy_bin": 0.2
+    },
+    {
+      "bin_config": "default_state_fine_action",
+      "support_coverage_index": 1.0,
+      "support_cell_coverage": 1.0,
+      "obs_xy_norm_bin_m": 0.0005,
+      "force_norm_bin_n": 0.25,
+      "action_xy_norm_bin": 0.05,
+      "action_k_xy_bin": 0.05
+    },
+    {
+      "bin_config": "default_state_default_action",
       "support_coverage_index": 1.0,
       "support_cell_coverage": 1.0,
       "obs_xy_norm_bin_m": 0.0005,
@@ -20,13 +47,96 @@
       "action_k_xy_bin": 0.1
     },
     {
-      "bin_config": "coarse",
+      "bin_config": "default_state_coarse_action",
+      "support_coverage_index": 1.0,
+      "support_cell_coverage": 1.0,
+      "obs_xy_norm_bin_m": 0.0005,
+      "force_norm_bin_n": 0.25,
+      "action_xy_norm_bin": 0.2,
+      "action_k_xy_bin": 0.2
+    },
+    {
+      "bin_config": "coarse_state_fine_action",
+      "support_coverage_index": 1.0,
+      "support_cell_coverage": 1.0,
+      "obs_xy_norm_bin_m": 0.001,
+      "force_norm_bin_n": 0.5,
+      "action_xy_norm_bin": 0.05,
+      "action_k_xy_bin": 0.05
+    },
+    {
+      "bin_config": "coarse_state_default_action",
+      "support_coverage_index": 1.0,
+      "support_cell_coverage": 1.0,
+      "obs_xy_norm_bin_m": 0.001,
+      "force_norm_bin_n": 0.5,
+      "action_xy_norm_bin": 0.1,
+      "action_k_xy_bin": 0.1
+    },
+    {
+      "bin_config": "coarse_state_coarse_action",
       "support_coverage_index": 1.0,
       "support_cell_coverage": 1.0,
       "obs_xy_norm_bin_m": 0.001,
       "force_norm_bin_n": 0.5,
       "action_xy_norm_bin": 0.2,
       "action_k_xy_bin": 0.2
+    }
+  ],
+  "sci_rank_stability": [
+    {
+      "bin_config": "fine_state_fine_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "fine_state_default_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "fine_state_coarse_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "default_state_fine_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "default_state_default_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "default_state_coarse_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "coarse_state_fine_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "coarse_state_default_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
+    },
+    {
+      "bin_config": "coarse_state_coarse_action",
+      "supported_sci": 1.0,
+      "shifted_sci": 0.0,
+      "rank_stable": true
     }
   ],
   "predictive_audit_rows": [
@@ -620,13 +730,349 @@
     },
     {
       "metric_name": "success_rate",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 1.0,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "contact_entry_rate",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 1.0,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "jam_rate",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 0.0,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "peak_force",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 0.7043623881469004,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "contact_work",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 0.002071699990200759,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "final_distance",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 0.94875998532171,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "contact_steps",
+      "condition_name": "vi_teacher_vi_student",
+      "value": 27.65416666666667,
+      "success_rate": 1.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.7043623881469004,
+      "contact_work": 0.002071699990200759,
+      "final_distance": 0.94875998532171,
+      "contact_steps": 27.65416666666667
+    },
+    {
+      "metric_name": "success_rate",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 0.6666666666666666,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "contact_entry_rate",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 1.0,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "jam_rate",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 0.0,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "peak_force",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 0.9351694968109492,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "contact_work",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 0.0027056916540126787,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "final_distance",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 1.184435352394092,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "contact_steps",
+      "condition_name": "vi_teacher_fi_student",
+      "value": 37.11666666666666,
+      "success_rate": 0.6666666666666666,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.9351694968109492,
+      "contact_work": 0.0027056916540126787,
+      "final_distance": 1.184435352394092,
+      "contact_steps": 37.11666666666666
+    },
+    {
+      "metric_name": "success_rate",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 0.0,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "contact_entry_rate",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 1.0,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "jam_rate",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 0.0,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "peak_force",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 0.3890985305995262,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "contact_work",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 0.00047314668739578523,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "final_distance",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 4.6113736948290205,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "contact_steps",
+      "condition_name": "fi_teacher_fi_student",
+      "value": 16.579166666666666,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.3890985305995262,
+      "contact_work": 0.00047314668739578523,
+      "final_distance": 4.6113736948290205,
+      "contact_steps": 16.579166666666666
+    },
+    {
+      "metric_name": "success_rate",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 0.0,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "contact_entry_rate",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 1.0,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "jam_rate",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 0.0,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "peak_force",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 0.2876177608114511,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "contact_work",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 0.0002660293281180924,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "final_distance",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 4.9161369932046055,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "contact_steps",
+      "condition_name": "fi_teacher_vi_student",
+      "value": 16.033333333333335,
+      "success_rate": 0.0,
+      "contact_entry_rate": 1.0,
+      "jam_rate": 0.0,
+      "peak_force": 0.2876177608114511,
+      "contact_work": 0.0002660293281180924,
+      "final_distance": 4.9161369932046055,
+      "contact_steps": 16.033333333333335
+    },
+    {
+      "metric_name": "success_rate",
       "condition_name": "vi_full",
       "value": 1.0,
       "success_rate": 1.0,
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
@@ -638,7 +1084,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
@@ -650,7 +1096,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
@@ -662,19 +1108,19 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
     {
       "metric_name": "contact_work",
       "condition_name": "vi_full",
-      "value": 19.478554875545743,
+      "value": 0.002071699990200759,
       "success_rate": 1.0,
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
@@ -686,7 +1132,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
@@ -698,7 +1144,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.7043623881469004,
-      "contact_work": 19.478554875545743,
+      "contact_work": 0.002071699990200759,
       "final_distance": 0.94875998532171,
       "contact_steps": 27.65416666666667
     },
@@ -710,7 +1156,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
@@ -722,7 +1168,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
@@ -734,7 +1180,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
@@ -746,19 +1192,19 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
     {
       "metric_name": "contact_work",
       "condition_name": "fi_full",
-      "value": 6.450929388564645,
+      "value": 0.00047314668739578523,
       "success_rate": 0.0,
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
@@ -770,7 +1216,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
@@ -782,7 +1228,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.3890985305995262,
-      "contact_work": 6.450929388564645,
+      "contact_work": 0.00047314668739578523,
       "final_distance": 4.6113736948290205,
       "contact_steps": 16.579166666666666
     },
@@ -794,7 +1240,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
@@ -806,7 +1252,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
@@ -818,7 +1264,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
@@ -830,19 +1276,19 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
     {
       "metric_name": "contact_work",
       "condition_name": "vi_motion_fi_k",
-      "value": 6.722489305209373,
+      "value": 0.0005207489715742593,
       "success_rate": 0.0,
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
@@ -854,7 +1300,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
@@ -866,7 +1312,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.04166666666666667,
       "peak_force": 1.85447980833362,
-      "contact_work": 6.722489305209373,
+      "contact_work": 0.0005207489715742593,
       "final_distance": 9.255605015714686,
       "contact_steps": 3.625
     },
@@ -878,7 +1324,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
@@ -890,7 +1336,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
@@ -902,7 +1348,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
@@ -914,19 +1360,19 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
     {
       "metric_name": "contact_work",
       "condition_name": "fi_motion_vi_k",
-      "value": 16.33256660120356,
+      "value": 0.006673311081295709,
       "success_rate": 1.0,
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
@@ -938,7 +1384,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
@@ -950,7 +1396,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 1.9599079921444271,
-      "contact_work": 16.33256660120356,
+      "contact_work": 0.006673311081295709,
       "final_distance": 0.8036113209363807,
       "contact_steps": 8.333333333333334
     },
@@ -962,7 +1408,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     },
@@ -974,7 +1420,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     },
@@ -986,7 +1432,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     },
@@ -998,19 +1444,19 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     },
     {
       "metric_name": "contact_work",
       "condition_name": "tuned_fi_k",
-      "value": 5.816443609783991,
+      "value": 5.206341424818517e-06,
       "success_rate": 0.0,
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     },
@@ -1022,7 +1468,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     },
@@ -1034,7 +1480,7 @@
       "contact_entry_rate": 1.0,
       "jam_rate": 0.0,
       "peak_force": 0.27355407923734226,
-      "contact_work": 5.816443609783991,
+      "contact_work": 5.206341424818517e-06,
       "final_distance": 3.70476326331813,
       "contact_steps": 21.262500000000003
     }

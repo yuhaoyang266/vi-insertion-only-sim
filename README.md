@@ -2,7 +2,7 @@
 
 Simulation-only research package for the manuscript:
 
-**Support-Gated Variable-Impedance Learning in a 3DoF Insertion Benchmark**
+**Support-Gated Learnability and Variable-Impedance Load Paths in a 3DoF Insertion Benchmark**
 
 This repository contains the LaTeX source, paper figures, frozen result artifacts, and focused
 reproduction scripts for a controlled 3DoF analytical insertion benchmark. The central claim is
@@ -10,7 +10,7 @@ deliberately scoped: in this matched-demonstration benchmark, behavior-cloning d
 the cleanest gate into useful contact, while variable impedance has a localized high-friction
 mechanics signal that remains diagnostic pending a success-matched split rather than implying a
 general algorithm ranking. The current paper-facing
-constructive layer packages the main recipe as Support-Gated Variable-Impedance Learning (SG-VI):
+constructive layer packages the main controlled protocol as Support-Gated Variable-Impedance Learning (SG-VI):
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
 implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
@@ -42,6 +42,7 @@ Repository URL embedded in the manuscript:
 | Stress-test artifacts | [`artifacts/stress_tests/`](artifacts/stress_tests/) |
 | Mechanics trace artifacts | [`artifacts/mechanics/`](artifacts/mechanics/) |
 | Figure/table export scripts | [`scripts/export/`](scripts/export/) |
+| Reviewer guide | [`REVIEWER_GUIDE.md`](REVIEWER_GUIDE.md) |
 | Submission bundle builder | [`scripts/export/build_submission_bundle.py`](scripts/export/build_submission_bundle.py) |
 | Experiment runners | [`scripts/experiments/`](scripts/experiments/) |
 | Paper-facing source modules | [`src/vi_full/`](src/vi_full/) |
@@ -96,9 +97,9 @@ The TeX source uses relative paths to `../figures/main/`, `../figures/appendix/`
 `../supplement/figures/`.
 
 The wrapper checks for `pdflatex` and `bibtex`, prints actionable MiKTeX/PATH diagnostics when they
-are missing, then runs the direct `pdflatex -> bibtex -> pdflatex -> pdflatex` chain. Manual fallback
+are missing, then runs the direct `pdflatex -> bibtex -> pdflatex -> pdflatex -> pdflatex` chain. Manual fallback
 is the same sequence from inside `paper/` if wrapper diagnostics are not needed:
-`pdflatex -interaction=nonstopmode -halt-on-error main.tex`, `bibtex main`, then two more
+`pdflatex -interaction=nonstopmode -halt-on-error main.tex`, `bibtex main`, then three more
 `pdflatex` passes.
 
 ## Build The Submission Bundle
@@ -113,7 +114,7 @@ python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bun
 This writes an `anonymous_snapshot/` tree, an `editor_materials/` tree, a
 `submission_bundle_manifest.json`, a `submission_bundle_summary.md`, and zip archives for both
 directories. The anonymous snapshot deliberately rewrites `README.md` and `paper/main.tex`, includes
-`docs/figure_asset_manifest.md` plus the reviewer-facing `tests/reviewer/` smoke subset, and excludes
+`REVIEWER_GUIDE.md`, `docs/figure_asset_manifest.md`, plus the reviewer-facing `tests/reviewer/` smoke subset, and excludes
 reviewer-irrelevant staging content such as `docs/submission/github_upload.md`, the rest of `tests/`, and the
 editor-only submission notes from the reviewer-facing copy.
 

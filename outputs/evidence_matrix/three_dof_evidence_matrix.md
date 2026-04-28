@@ -14,13 +14,13 @@ Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full
 
 | Method | Family | Source contract | Train budget | Source report | Contact? | Success | Final dist (mm) | Contact steps | Role |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
-| PPO w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.00 | 25.48 | 0.00 | contact_gate_negative |
-| SAC w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.00 | 16.67 | 0.00 | contact_gate_negative |
-| TD3 w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.00 | 25.56 | 0.00 | contact_gate_negative |
-| BC-only (stable 32/32) | imitation_anchor | five-profile benchmark | BC 32/32 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.00 | 0.90 | 29.97 | support_reopens_contact |
-| BC -> PPO | demo_augmented_rl | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.00 | 0.90 | 29.76 | support_reopens_contact |
-| DAPG-lite | demo_augmented_rl | five-profile benchmark | BC 32/32 + DAPG-lite 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.00 | 0.90 | 29.56 | support_reopens_contact |
-| Fixed-impedance RL (stable BC 32/32) | fixed_impedance | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 0.95 | 0.92 | 36.49 | mechanics_anchor |
+| PPO w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.000 | 25.482 | 0.000 | contact_gate_negative |
+| SAC w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.000 | 16.674 | 0.000 | contact_gate_negative |
+| TD3 w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.000 | 25.556 | 0.000 | contact_gate_negative |
+| BC-only (stable 32/32) | imitation_anchor | five-profile benchmark | BC 32/32 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.000 | 0.901 | 29.972 | support_reopens_contact |
+| BC -> PPO | demo_augmented_rl | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.000 | 0.902 | 29.759 | support_reopens_contact |
+| DAPG-lite | demo_augmented_rl | five-profile benchmark | BC 32/32 + DAPG-lite 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.000 | 0.895 | 29.556 | support_reopens_contact |
+| Fixed-impedance RL (stable BC 32/32) | fixed_impedance | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 0.947 | 0.916 | 36.492 | mechanics_anchor |
 
 ## Claim Boundary
 

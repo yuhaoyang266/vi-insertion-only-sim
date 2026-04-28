@@ -12,6 +12,7 @@ from pathlib import Path
 
 PAPER = Path(__file__).resolve().parents[2] / "paper" / "main.tex"
 README = Path(__file__).resolve().parents[2] / "README.md"
+REFERENCES = Path(__file__).resolve().parents[2] / "paper" / "references.bib"
 
 
 def _lines() -> list[str]:
@@ -165,6 +166,37 @@ def test_sgvi_is_benchmark_local() -> None:
     assert "benchmark-local" in text or "benchmark.local" in text, (
         "paper must contain 'benchmark-local' scoping for SG-VI"
     )
+
+
+def test_manuscript_hides_internal_process_artifact_names() -> None:
+    text = PAPER.read_text(encoding="utf-8").lower()
+
+    assert "sprint" not in text
+    assert "confirm json" not in text
+    assert "benchmark-local recipe" not in text
+
+
+def test_limitations_name_out_of_scope_robotics_axes() -> None:
+    text = PAPER.read_text(encoding="utf-8").lower()
+
+    for phrase in (
+        "6d wrench",
+        "orientation-induced jamming",
+        "sensor drift",
+        "vision",
+    ):
+        assert phrase in text
+
+
+def test_references_cover_modern_scope_setting_baselines() -> None:
+    text = REFERENCES.read_text(encoding="utf-8").lower()
+
+    for phrase in (
+        "diffusion policy",
+        "action chunking",
+        "implicit q-learning",
+    ):
+        assert phrase in text
 
 
 _SIM2REAL_WHITELIST = [

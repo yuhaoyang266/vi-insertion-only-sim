@@ -17,18 +17,19 @@ ANONYMOUS_SNAPSHOT_DIRS = (
     "supplement",
 )
 ANONYMOUS_SNAPSHOT_TEST_DIRS = ("tests/reviewer",)
-ANONYMOUS_SNAPSHOT_FILES = ("environment.yml", "pyproject.toml")
+ANONYMOUS_SNAPSHOT_FILES = ("environment.yml", "pyproject.toml", "REVIEWER_GUIDE.md")
 ANONYMOUS_SNAPSHOT_DOC_FILES = ("docs/figure_asset_manifest.md",)
-EDITOR_ONLY_DOCS = ("cover_letter_draft.md", "submission_package_checklist.md")
+EDITOR_ONLY_DOCS = (
+    "submission/cover_letter_draft.md",
+    "submission/submission_package_checklist.md",
+)
 EXCLUDED_PATHS = (
-    "docs/github_upload.md",
-    "docs/cover_letter_draft.md",
-    "docs/submission_package_checklist.md",
-    "findings.md",
-    "narrative_branches.md",
-    "progress.md",
-    "protocol_freeze.md",
-    "task_plan.md",
+    "docs/submission/github_upload.md",
+    "docs/submission/cover_letter_draft.md",
+    "docs/submission/submission_package_checklist.md",
+    "docs/project/",
+    "docs/plans/",
+    "docs/reviews/",
     "tests/",
 )
 IGNORE_PATTERNS = shutil.ignore_patterns(
@@ -120,7 +121,7 @@ def _write_summary(
 - Editor materials: `{editor_materials_dir.name}/`
 - Paper PDF: {paper_status}
 - Identity redactions: `README.md`, `paper/main.tex`
-- Explicitly excluded from anonymous snapshot: `docs/github_upload.md`
+- Explicitly excluded from anonymous snapshot: `docs/submission/github_upload.md`
 """
     summary_path = output_dir / "submission_bundle_summary.md"
     summary_path.write_text(summary, encoding="utf-8")
@@ -279,7 +280,7 @@ def build_submission_bundle(
     for doc_name in EDITOR_ONLY_DOCS:
         source_doc = source_root / "docs" / doc_name
         if source_doc.exists():
-            shutil.copy2(source_doc, editor_materials_dir / doc_name)
+            shutil.copy2(source_doc, editor_materials_dir / Path(doc_name).name)
     _write_editor_readme(editor_materials_dir)
 
     copied_paper_pdf_path: Path | None = None
