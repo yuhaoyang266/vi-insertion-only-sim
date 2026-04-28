@@ -569,9 +569,9 @@ def test_evidence_matrix_uses_repo_relative_provenance_for_repo_local_inputs() -
     from vi_full.three_dof_evidence_matrix import build_3dof_evidence_matrix
 
     repo_root = Path(__file__).resolve().parents[2]
-    staging_dir = Path(
-        tempfile.mkdtemp(prefix="evidence-matrix-", dir=repo_root / "tmp")
-    )
+    tmp_root = repo_root / "tmp"
+    tmp_root.mkdir(exist_ok=True)
+    staging_dir = Path(tempfile.mkdtemp(prefix="evidence-matrix-", dir=tmp_root))
     try:
         confirm_path = _write_json(
             staging_dir / "confirm.json",
