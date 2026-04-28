@@ -45,6 +45,26 @@ def _sha256(relative_path: str) -> str:
     return calculate_sha256(REPO_ROOT / relative_path)
 
 
+def test_text_artifact_sha256_normalizes_line_endings(tmp_path: Path) -> None:
+    lf_path = tmp_path / "artifact.json"
+    crlf_path = tmp_path / "artifact_crlf.json"
+
+    lf_path.write_bytes(b'{\n  "value": 1\n}\n')
+    crlf_path.write_bytes(b'{\r\n  "value": 1\r\n}\r\n')
+
+    assert calculate_sha256(lf_path) == calculate_sha256(crlf_path)
+
+
+def test_binary_artifact_sha256_is_byte_exact(tmp_path: Path) -> None:
+    a = tmp_path / "figure.png"
+    b = tmp_path / "figure_other.png"
+
+    a.write_bytes(b"\x89PNG\r\n\x1a\nsame")
+    b.write_bytes(b"\x89PNG\r\n\x1a\nchanged")
+
+    assert calculate_sha256(a) != calculate_sha256(b)
+
+
 def _paper_facing_text_paths() -> list[Path]:
     paths: list[Path] = [REPO_ROOT / "README.md", REPO_ROOT / "docs" / "figure_asset_manifest.md"]
     for directory in (

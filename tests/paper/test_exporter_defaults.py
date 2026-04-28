@@ -178,7 +178,9 @@ def test_exporters_support_check_mode_without_rewriting_outputs() -> None:
     assert hasattr(figure_module, "run_check")
 
 
-def test_figure2_check_accepts_platform_specific_figure_bytes(tmp_path: Path) -> None:
+def test_figure2_check_accepts_same_dimension_platform_specific_png_bytes(
+    tmp_path: Path,
+) -> None:
     module = _load_script(
         "scripts/export/export_paper_only_sim_figure2.py",
         "figure2_exporter_binary_check_under_test",
@@ -189,12 +191,26 @@ def test_figure2_check_accepts_platform_specific_figure_bytes(tmp_path: Path) ->
     generated_pdf = tmp_path / "generated.pdf"
 
     _write_valid_png(expected_png, width=640, height=480, marker=b"windows")
-    _write_valid_png(generated_png, width=800, height=600, marker=b"linux")
+    _write_valid_png(generated_png, width=640, height=480, marker=b"linux")
     _write_valid_pdf(expected_pdf, marker=b"windows")
     _write_valid_pdf(generated_pdf, marker=b"linux")
 
     assert module._same_figure_output(expected_png, generated_png)
     assert module._same_figure_output(expected_pdf, generated_pdf)
+
+
+def test_figure2_check_rejects_png_dimension_changes(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_figure2.py",
+        "figure2_exporter_png_dimension_check_under_test",
+    )
+    expected_png = tmp_path / "fig2_main_benchmark_evaluation_class_summary.png"
+    generated_png = tmp_path / "generated.png"
+
+    _write_valid_png(expected_png, width=640, height=480)
+    _write_valid_png(generated_png, width=800, height=600)
+
+    assert not module._same_figure_output(expected_png, generated_png)
 
 
 def test_figure2_check_rejects_invalid_figure_outputs(tmp_path: Path) -> None:

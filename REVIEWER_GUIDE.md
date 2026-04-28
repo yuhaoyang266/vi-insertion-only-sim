@@ -25,6 +25,13 @@ diagnostics if TeX tools are not discoverable.
 - Schema-2 artifacts are retained only for appendix diagnostics.
 - SCI is a benchmark-local support diagnostic, not a general sim-to-real metric.
 
+## Artifact Hashes
+
+For text artifacts (`.json`, `.csv`, `.md`, `.tex`, `.bib`, `.yaml`, `.yml`), recorded
+`sha256` values are computed from UTF-8 text after normalizing line endings to LF. This
+matches the Git blob content and avoids Windows/Unix checkout differences. Binary artifacts
+are hashed byte-for-byte.
+
 ## Layout Map
 
 - `paper/`: LaTeX manuscript and generated table include.

@@ -151,26 +151,31 @@ def run_check(args: argparse.Namespace) -> None:
 
 def _same_figure_output(expected_path: Path, generated_path: Path) -> bool:
     if expected_path.suffix == ".png":
-        return _is_png(expected_path) and _is_png(generated_path)
+        expected_dimensions = _png_dimensions(expected_path)
+        return expected_dimensions is not None and expected_dimensions == _png_dimensions(
+            generated_path
+        )
     if expected_path.suffix == ".pdf":
         return _is_pdf(expected_path) and _is_pdf(generated_path)
     return False
 
 
-def _is_png(path: Path) -> bool:
+def _png_dimensions(path: Path) -> tuple[int, int] | None:
     try:
         header = path.read_bytes()[:24]
     except OSError:
-        return False
+        return None
     if (
         len(header) < 24
         or not header.startswith(PNG_SIGNATURE)
         or header[12:16] != b"IHDR"
     ):
-        return False
+        return None
     width = int.from_bytes(header[16:20], "big")
     height = int.from_bytes(header[20:24], "big")
-    return width > 0 and height > 0
+    if width <= 0 or height <= 0:
+        return None
+    return width, height
 
 
 def _is_pdf(path: Path) -> bool:
