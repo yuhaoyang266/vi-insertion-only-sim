@@ -50,7 +50,7 @@
 - [x] Decide target venue (recommendation: Robotica primary; Advanced Robotics fallback). Record decision in `docs/project/progress.md`.
 - [x] Final manuscript build: `python scripts/export/build_paper_pdf.py` -> verify page count and references resolved.
 - [x] Final bundle: `python scripts/export/build_submission_bundle.py --output-dir tmp/submission_bundle/journal_double_blind --paper-pdf <pdf>`.
-- [!] **Sprint A Gate A1 sign-off:** mark `[x]` only when CI workflows (`reviewer-smoke`, `paper-assets-check`) pass and bundle build produces a self-consistent snapshot. 2026-04-29 publish attempt blocked because GitHub HTTPS was unreachable from this machine.
+- [!] **Sprint A Gate A1 sign-off:** mark `[x]` only when CI workflows (`reviewer-smoke`, `paper-assets-check`) pass and bundle build produces a self-consistent snapshot. 2026-04-29 publish retries blocked because GitHub HTTPS was unreachable from this machine; SSH lacks a configured GitHub key and `gh` is unavailable.
 
 ---
 
