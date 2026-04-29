@@ -16,13 +16,21 @@ STAGE3_BENCHMARK_PATH = (
     "artifacts/main_benchmark/"
     "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
 )
+STAGE4_BENCHMARK_PATH = (
+    "artifacts/main_benchmark/"
+    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json"
+)
 SCHEMA2_BENCHMARK_PATH = (
     "artifacts/main_benchmark/"
     "three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
 )
 REQUIRED_ROLES = {
     "canonical_main_benchmark",
+    "canonical_main_benchmark_stage4",
+    "canonical_main_benchmark_stage3",
     "canonical_statistics_report",
+    "canonical_statistics_report_stage4",
+    "canonical_statistics_report_stage3",
     "schema2_diagnostic",
 }
 
@@ -48,10 +56,16 @@ def test_manifest_declares_single_canonical_main_benchmark() -> None:
 
     canonical = registry.get_artifact("canonical_main_benchmark", manifest=manifest)
     assert canonical["role"] == "canonical_main_benchmark"
-    assert canonical["path"] == STAGE3_BENCHMARK_PATH
-    assert canonical["source_role"] == "stage3_current_manuscript_claim"
+    assert canonical["path"] == STAGE4_BENCHMARK_PATH
+    assert canonical["source_role"] == "stage4_current_manuscript_claim"
     assert canonical["schema_version"] == 3
     assert canonical["claim_scope"] == "main manuscript Table 1 and Figure 2"
+    assert canonical["supersedes"] == "canonical_main_benchmark_stage3"
+
+    stage3 = registry.get_artifact("canonical_main_benchmark_stage3", manifest=manifest)
+    assert stage3["role"] == "superseded_main_benchmark"
+    assert stage3["path"] == STAGE3_BENCHMARK_PATH
+    assert stage3["superseded_by"] == "canonical_main_benchmark_stage4"
 
     canonical_benchmark_roles = [
         role

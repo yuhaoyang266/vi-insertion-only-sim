@@ -2,7 +2,7 @@
 
 Confirm source: `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`
 Manifest source: `artifacts/main_benchmark/main_benchmark_manifest.json`
-Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`
+Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json`
 
 ## Mixed-Contract Boundary
 
@@ -17,10 +17,10 @@ Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full
 | PPO w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.000 | 25.482 | 0.000 | contact_gate_negative |
 | SAC w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.000 | 16.674 | 0.000 | contact_gate_negative |
 | TD3 w/o BC | pure_rl | nominal-only pilot | 200000 | outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json | no | 0.000 | 25.556 | 0.000 | contact_gate_negative |
-| BC-only (stable 32/32) | imitation_anchor | five-profile benchmark | BC 32/32 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.000 | 0.901 | 29.972 | support_reopens_contact |
-| BC -> PPO | demo_augmented_rl | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.000 | 0.902 | 29.759 | support_reopens_contact |
-| DAPG-lite | demo_augmented_rl | five-profile benchmark | BC 32/32 + DAPG-lite 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 1.000 | 0.895 | 29.556 | support_reopens_contact |
-| Fixed-impedance RL (stable BC 32/32) | fixed_impedance | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json | yes | 0.947 | 0.916 | 36.492 | mechanics_anchor |
+| BC-only (stable 32/32) | imitation_anchor | five-profile benchmark | BC 32/32 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json | yes | 1.000 | 0.899 | 28.940 | support_reopens_contact |
+| BC -> PPO | demo_augmented_rl | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json | yes | 0.838 | 0.980 | 24.886 | support_reopens_contact |
+| DAPG-lite | demo_augmented_rl | five-profile benchmark | BC 32/32 + DAPG-lite 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json | yes | 0.853 | 1.020 | 24.712 | support_reopens_contact |
+| Fixed-impedance RL (stable BC 32/32) | fixed_impedance | five-profile benchmark | BC 32/32 + PPO 128 | artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json | yes | 0.884 | 0.994 | 30.198 | mechanics_anchor |
 
 ## Claim Boundary
 

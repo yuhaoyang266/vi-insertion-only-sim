@@ -90,7 +90,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--stem",
         type=str,
-        default="table_3dof_paper_benchmark_stage3_20260412",
+        default="table_3dof_paper_benchmark_stage4_20260429",
         help="Canonical output filename stem.",
     )
     parser.add_argument(

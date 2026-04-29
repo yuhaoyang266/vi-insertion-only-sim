@@ -46,6 +46,19 @@
   - Updated `docs/reviews/review_response_matrix_2026-04-25.md` Gate C row/readout to record the formal downgrade.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 16 passed.
   - `git diff --check` -> exit 0.
+- B.4 10-seed canonical stage4 benchmark:
+  - Config: same paper-facing suite as stage3 via `scripts/experiments/run_3dof_uncertainty_benchmark.py`; method suite `ppo_no_bc`, `bc_only_stable_r32_p32`, `fixed_impedance_rl_stable_r32_p32`, `repaired_mainline_bc_to_ppo`, `dapg_lite_repaired_mainline`, and four DAPG mechanism rows; profiles `nominal`, `tight_clearance`, `high_friction`, `offset_bias`, `noisy_force`; seeds `0..9`; episodes per seed/profile `100`; PPO budget `128`; output `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json`.
+  - `python scripts/experiments/run_3dof_uncertainty_benchmark.py --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 100 --profiles nominal tight_clearance high_friction offset_bias noisy_force --include-paper-learned-block --include-dapg-mechanism-block --output artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json` -> exit 0.
+  - Stage4 readout: `ppo_no_bc` success 0.000; `bc_only_stable_r32_p32` 0.9998; `fixed_impedance_rl_stable_r32_p32` 0.884; `repaired_mainline_bc_to_ppo` 0.8382; `dapg_lite_repaired_mainline` 0.8528. This invalidates the prior near-equal BC/PPO/DAPG story; B5 must rewrite Section 3.1 conservatively around the widened gaps.
+  - `python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json --output-dir artifacts/main_benchmark --stem three_dof_statistics_report_stage4_20260429` -> first exit 1 because the entrypoint did not add `src` to `sys.path`.
+  - Added `src` path handling to `scripts/experiments/run_3dof_statistics_report.py` and CSV export support to `src/vi_full/paper_tables.py`; committed as `7ad0bc2`.
+  - Same statistics command after fix -> exit 0; generated `artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.{json,md}`.
+  - `python scripts/export/export_paper_only_sim_benchmark_table.py --manifest artifacts/main_benchmark/main_benchmark_manifest.json --output-dir artifacts/main_benchmark --latex-output paper/generated/main_benchmark_table.tex` -> exit 0; generated `artifacts/main_benchmark/table_3dof_paper_benchmark_stage4_20260429.{json,md,csv}` and refreshed the generated LaTeX table.
+  - `python scripts/experiments/export_3dof_evidence_matrix.py --confirm-report outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json --manifest artifacts/main_benchmark/main_benchmark_manifest.json --output-dir outputs/evidence_matrix` -> exit 0; refreshed evidence matrix and sprint2 main-table artifacts from the stage4 manifest.
+  - Updated `artifacts/main_benchmark/main_benchmark_manifest.json` so `canonical_main_benchmark` and `canonical_statistics_report` point to stage4, while stage3 remains available as superseded entries.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py` -> exit 0; 52 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `git diff --check` -> exit 0.
 
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.

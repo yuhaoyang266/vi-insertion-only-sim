@@ -4,16 +4,16 @@
   "schema_version": 1,
   "source_artifacts": {
     "confirm_report": "outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json",
-    "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+    "benchmark_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
     "benchmark_manifest": "artifacts/main_benchmark/main_benchmark_manifest.json"
   },
   "source_hashes": {
     "confirm_report": "35a9ac697a0f97275a7c5feaf35ce79361aeb411b29bcbd0d3f5905bef982be3",
-    "benchmark_report": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2",
-    "benchmark_manifest": "2ca2c3b932843c1e07fa22ffa87f6bfd6960f25419ee564104a2a717e38f73d5"
+    "benchmark_report": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec",
+    "benchmark_manifest": "d5bf654ff6a3bd92a6b1af75eb69d9c7cb9e3a67393ab5b05d3d8d40d80b7ecc"
   },
   "generating_command": "python scripts/experiments/export_3dof_evidence_matrix.py",
-  "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
+  "git_commit": "7ad0bc226d37ab17ec15e22e87fe57e814616597",
   "matrix_contract": {
     "mixed_contracts": true,
     "allowed": "Use only for contact-gate contrast across nominal-only pilot and five-profile benchmark evidence.",
@@ -103,17 +103,17 @@
       "train_budget": "BC 32/32",
       "entered_contact": true,
       "success_rate": 1.0,
-      "mean_final_distance_mm": 0.901,
-      "mean_contact_steps": 29.972,
+      "mean_final_distance_mm": 0.899,
+      "mean_contact_steps": 28.94,
       "jam_rate": 0.0,
-      "mean_peak_contact_force_n": 0.932,
+      "mean_peak_contact_force_n": 0.979,
       "evidence_role": "support_reopens_contact",
       "allowed_claim": "Demonstration support alone reopens contact and near-ceiling success under the five-profile benchmark.",
       "not_allowed_claim": "Do not compare this row as a mixed-contract leaderboard winner against nominal-only pure-RL pilot rows.",
-      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
       "source_role": "canonical_main_benchmark",
-      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "source_sha256": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec"
     },
     {
       "method_name": "repaired_mainline_bc_to_ppo",
@@ -123,18 +123,18 @@
       "benchmark": "3dof_main_benchmark",
       "train_budget": "BC 32/32 + PPO 128",
       "entered_contact": true,
-      "success_rate": 1.0,
-      "mean_final_distance_mm": 0.902,
-      "mean_contact_steps": 29.759,
+      "success_rate": 0.838,
+      "mean_final_distance_mm": 0.98,
+      "mean_contact_steps": 24.886,
       "jam_rate": 0.0,
-      "mean_peak_contact_force_n": 0.902,
+      "mean_peak_contact_force_n": 0.794,
       "evidence_role": "support_reopens_contact",
       "allowed_claim": "Demo-supported RL reopens contact and non-zero success under the five-profile benchmark.",
       "not_allowed_claim": "Do not compare this row as a mixed-contract leaderboard winner against nominal-only pure-RL pilot rows.",
-      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
       "source_role": "canonical_main_benchmark",
-      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "source_sha256": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec"
     },
     {
       "method_name": "dapg_lite_repaired_mainline",
@@ -144,18 +144,18 @@
       "benchmark": "3dof_main_benchmark",
       "train_budget": "BC 32/32 + DAPG-lite 128",
       "entered_contact": true,
-      "success_rate": 1.0,
-      "mean_final_distance_mm": 0.895,
-      "mean_contact_steps": 29.556,
+      "success_rate": 0.853,
+      "mean_final_distance_mm": 1.02,
+      "mean_contact_steps": 24.712,
       "jam_rate": 0.0,
-      "mean_peak_contact_force_n": 1.009,
+      "mean_peak_contact_force_n": 0.922,
       "evidence_role": "support_reopens_contact",
       "allowed_claim": "Demo-supported RL reopens contact and non-zero success under the five-profile benchmark.",
       "not_allowed_claim": "Do not compare this row as a mixed-contract leaderboard winner against nominal-only pure-RL pilot rows.",
-      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
       "source_role": "canonical_main_benchmark",
-      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "source_sha256": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec"
     },
     {
       "method_name": "fixed_impedance_rl_stable_r32_p32",
@@ -165,18 +165,18 @@
       "benchmark": "3dof_main_benchmark",
       "train_budget": "BC 32/32 + PPO 128",
       "entered_contact": true,
-      "success_rate": 0.947,
-      "mean_final_distance_mm": 0.916,
-      "mean_contact_steps": 36.492,
+      "success_rate": 0.884,
+      "mean_final_distance_mm": 0.994,
+      "mean_contact_steps": 30.198,
       "jam_rate": 0.0,
-      "mean_peak_contact_force_n": 1.071,
+      "mean_peak_contact_force_n": 1.002,
       "evidence_role": "mechanics_anchor",
       "allowed_claim": "Fixed impedance still enters contact and succeeds under support, so this row acts as a mechanics anchor.",
       "not_allowed_claim": "Do not read this row as proof that impedance type alone determines learnability or as a mixed-contract leaderboard winner.",
-      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "source_report": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
       "source_role": "canonical_main_benchmark",
-      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
-      "source_sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2"
+      "source_artifact": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "source_sha256": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec"
     }
   ]
 }

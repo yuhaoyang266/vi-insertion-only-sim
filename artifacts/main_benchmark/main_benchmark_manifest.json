@@ -3,27 +3,81 @@
   "artifacts": {
     "canonical_main_benchmark": {
       "role": "canonical_main_benchmark",
-      "path": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "path": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
       "schema_version": 3,
       "claim_scope": "main manuscript Table 1 and Figure 2",
-      "source_role": "stage3_current_manuscript_claim",
+      "source_role": "stage4_current_manuscript_claim",
+      "generating_command": "python scripts/experiments/run_3dof_uncertainty_benchmark.py --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 100 --profiles nominal tight_clearance high_friction offset_bias noisy_force --include-paper-learned-block --include-dapg-mechanism-block --output artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "sha256": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec",
+      "git_commit": "7ad0bc226d37ab17ec15e22e87fe57e814616597",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-29T00:00:00Z",
+      "supersedes": "canonical_main_benchmark_stage3"
+    },
+    "canonical_main_benchmark_stage4": {
+      "role": "canonical_main_benchmark_stage4",
+      "path": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "schema_version": 3,
+      "claim_scope": "main manuscript Table 1 and Figure 2",
+      "source_role": "stage4_current_manuscript_claim",
+      "generating_command": "python scripts/experiments/run_3dof_uncertainty_benchmark.py --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 100 --profiles nominal tight_clearance high_friction offset_bias noisy_force --include-paper-learned-block --include-dapg-mechanism-block --output artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json",
+      "sha256": "c8522d02e306e35251ba49044685bb99bd60e334740726bf543d8c2d64f61cec",
+      "git_commit": "7ad0bc226d37ab17ec15e22e87fe57e814616597",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-29T00:00:00Z",
+      "supersedes": "canonical_main_benchmark_stage3"
+    },
+    "canonical_statistics_report": {
+      "role": "canonical_statistics_report",
+      "path": "artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.json",
+      "schema_version": 3,
+      "claim_scope": "main manuscript benchmark statistics",
+      "source_role": "stage4_current_manuscript_statistics",
+      "generating_command": "python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json --output-dir artifacts/main_benchmark --stem three_dof_statistics_report_stage4_20260429",
+      "sha256": "c5fe28c37f09fe80a5de77cc13820f30900dd5c0c04d8309a060df245d19f83d",
+      "git_commit": "7ad0bc226d37ab17ec15e22e87fe57e814616597",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-29T00:00:00Z",
+      "supersedes": "canonical_statistics_report_stage3"
+    },
+    "canonical_statistics_report_stage4": {
+      "role": "canonical_statistics_report_stage4",
+      "path": "artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.json",
+      "schema_version": 3,
+      "claim_scope": "main manuscript benchmark statistics",
+      "source_role": "stage4_current_manuscript_statistics",
+      "generating_command": "python scripts/experiments/run_3dof_statistics_report.py --input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json --output-dir artifacts/main_benchmark --stem three_dof_statistics_report_stage4_20260429",
+      "sha256": "c5fe28c37f09fe80a5de77cc13820f30900dd5c0c04d8309a060df245d19f83d",
+      "git_commit": "7ad0bc226d37ab17ec15e22e87fe57e814616597",
+      "git_dirty": true,
+      "generated_at_utc": "2026-04-29T00:00:00Z",
+      "supersedes": "canonical_statistics_report_stage3"
+    },
+    "canonical_main_benchmark_stage3": {
+      "role": "superseded_main_benchmark",
+      "path": "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json",
+      "schema_version": 3,
+      "claim_scope": "superseded main manuscript Table 1 and Figure 2 source",
+      "source_role": "stage3_superseded_by_stage4",
       "generating_command": "python scripts/experiments/run_3dof_cross_family_benchmark.py --config configs/benchmark/three_dof_paper9suite_full5profile_bc32x32_stage3.yaml",
       "sha256": "9bf67fc5591a4962a585a5bd5d032e4dee5ef6d4accaf3c810ab0a963ab2dad2",
       "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
       "git_dirty": true,
-      "generated_at_utc": "2026-04-24T00:00:00Z"
+      "generated_at_utc": "2026-04-24T00:00:00Z",
+      "superseded_by": "canonical_main_benchmark_stage4"
     },
-    "canonical_statistics_report": {
-      "role": "canonical_statistics_report",
+    "canonical_statistics_report_stage3": {
+      "role": "superseded_statistics_report",
       "path": "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json",
       "schema_version": 3,
-      "claim_scope": "main manuscript benchmark statistics",
-      "source_role": "stage3_current_manuscript_statistics",
+      "claim_scope": "superseded main manuscript benchmark statistics",
+      "source_role": "stage3_statistics_superseded_by_stage4",
       "generating_command": "python scripts/export/export_paper_only_sim_benchmark_table.py --benchmark-input artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json --statistics-report-input artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json",
       "sha256": "b0c5986463ea506c755f5456922554fb1ed8f589952ae9467404fb83836ce031",
       "git_commit": "b6a141041f9d261bbaad19f2c5eeca1fd28d5297",
       "git_dirty": true,
-      "generated_at_utc": "2026-04-24T00:00:00Z"
+      "generated_at_utc": "2026-04-24T00:00:00Z",
+      "superseded_by": "canonical_statistics_report_stage4"
     },
     "schema2_diagnostic": {
       "role": "appendix_diagnostic_legacy",

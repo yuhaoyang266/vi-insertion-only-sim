@@ -1,0 +1,10 @@
+suite_name,display_name,baseline_success_mean,high_friction_success_mean,noisy_force_success_mean,five_profile_success_rate_mean,five_profile_success_rate_std,five_profile_jam_rate_mean,five_profile_jam_rate_std,five_profile_mean_final_distance_mm_mean,five_profile_mean_peak_contact_force_n_mean,five_profile_mean_contact_steps_mean
+ppo_no_bc,PPO w/o BC,0.0,0.0,0.0,0.0,0.0,0.0,0.0,18.36610410982444,0.0,0.0
+bc_only_stable_r32_p32,BC-only (stable 32/32),1.0,1.0,0.999,0.9998000000000001,0.0006000000000000005,0.0,0.0,0.8994194261318708,0.9794894056017862,28.9404
+fixed_impedance_rl_stable_r32_p32,Fixed-impedance RL (stable BC 32/32),0.9,0.8210000000000001,0.899,0.884,0.2964860873633028,0.0,0.0,0.9939519626702635,1.00151729045328,30.1976
+repaired_mainline_bc_to_ppo,BC -> PPO,0.8463333333333334,0.8,0.852,0.8382,0.33468367154673084,0.0,0.0,0.9800792013584612,0.794172696812077,24.8862
+dapg_lite_repaired_mainline,DAPG-lite,0.8393333333333334,0.9,0.8460000000000001,0.8528,0.31719167706609197,0.0,0.0,1.019798008572486,0.9221665199895671,24.712399999999995
+dapg_lite_contact_old__reset_coverage_collapse,DAPG-lite old reset (coverage collapse),0.1,0.1,0.1,0.1,0.30000000000000004,0.07339999999999999,0.18008453570476282,2.350018485270342,37.606521638923866,19.478
+dapg_lite_contact_old__reset_repaired,DAPG-lite old reset (repaired),0.7,0.7,0.7,0.7,0.45825756949558405,0.0,0.0,1.1102313057622333,0.9247258682706054,24.888600000000004
+dapg_lite_contact_new__reset_coverage_collapse,DAPG-lite new reset (coverage collapse),0.2,0.2,0.2,0.2,0.4000000000000001,0.1246,0.26216643568542486,2.1548390870051057,13.359526905200479,19.091
+dapg_lite_contact_new__reset_repaired,DAPG-lite new reset (repaired),0.8393333333333334,0.9,0.8460000000000001,0.8528,0.31719167706609197,0.0,0.0,1.019798008572486,0.9221665199895671,24.712399999999995

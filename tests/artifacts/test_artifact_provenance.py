@@ -32,6 +32,13 @@ CANONICAL_STAGE3 = (
 CANONICAL_STATISTICS = (
     "artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json"
 )
+CANONICAL_STAGE4 = (
+    "artifacts/main_benchmark/"
+    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json"
+)
+CANONICAL_STATISTICS_STAGE4 = (
+    "artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.json"
+)
 SCHEMA2_DIAGNOSTIC = (
     "artifacts/main_benchmark/"
     "three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
@@ -175,7 +182,7 @@ def test_evidence_artifacts_have_manifest_level_provenance() -> None:
         {
             "confirm_report": CONFIRM_REPORT,
             "benchmark_manifest": CANONICAL_MANIFEST,
-            "benchmark_report": CANONICAL_STAGE3,
+            "benchmark_report": CANONICAL_STAGE4,
         },
     )
 
@@ -186,7 +193,7 @@ def test_evidence_artifacts_have_manifest_level_provenance() -> None:
         {
             "confirm_report": CONFIRM_REPORT,
             "benchmark_manifest": CANONICAL_MANIFEST,
-            "benchmark_report": CANONICAL_STAGE3,
+            "benchmark_report": CANONICAL_STAGE4,
             "evidence_matrix": EVIDENCE_MATRIX,
         },
     )

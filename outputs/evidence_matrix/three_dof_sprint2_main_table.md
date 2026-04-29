@@ -3,7 +3,7 @@
 Confirm source: `outputs/cross_family_confirm/three_dof_cross_family_confirm_report.json`
 Evidence-matrix source: `outputs/evidence_matrix/three_dof_evidence_matrix.json`
 Manifest source: `artifacts/main_benchmark/main_benchmark_manifest.json`
-Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`
+Benchmark source: `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json`
 
 ## Boundary
 
@@ -27,9 +27,9 @@ Five-profile benchmark rows showing that demonstration support reopens contact a
 
 | Method | Source contract | Train budget | Contact? | Success | Final dist (mm) | Contact steps | Role | Claim boundary |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
-| BC-only (stable 32/32) | five-profile benchmark | BC 32/32 | yes | 1.000 | 0.901 | 29.972 | support_reopens_contact | Demonstration support alone reopens contact and near-ceiling success under the five-profile benchmark. |
-| BC -> PPO | five-profile benchmark | BC 32/32 + PPO 128 | yes | 1.000 | 0.902 | 29.759 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
-| DAPG-lite | five-profile benchmark | BC 32/32 + DAPG-lite 128 | yes | 1.000 | 0.895 | 29.556 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
+| BC-only (stable 32/32) | five-profile benchmark | BC 32/32 | yes | 1.000 | 0.899 | 28.940 | support_reopens_contact | Demonstration support alone reopens contact and near-ceiling success under the five-profile benchmark. |
+| BC -> PPO | five-profile benchmark | BC 32/32 + PPO 128 | yes | 0.838 | 0.980 | 24.886 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
+| DAPG-lite | five-profile benchmark | BC 32/32 + DAPG-lite 128 | yes | 0.853 | 1.020 | 24.712 | support_reopens_contact | Demo-supported RL reopens contact and non-zero success under the five-profile benchmark. |
 
 ## Mechanics / fixed-impedance anchor rows
 
@@ -37,4 +37,4 @@ Five-profile fixed-impedance row retained as a mechanics anchor, not as a leader
 
 | Method | Source contract | Train budget | Contact? | Success | Final dist (mm) | Contact steps | Role | Claim boundary |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
-| Fixed-impedance RL (stable BC 32/32) | five-profile benchmark | BC 32/32 + PPO 128 | yes | 0.947 | 0.916 | 36.492 | mechanics_anchor | Fixed impedance still enters contact and succeeds under support, so this row acts as a mechanics anchor. |
+| Fixed-impedance RL (stable BC 32/32) | five-profile benchmark | BC 32/32 + PPO 128 | yes | 0.884 | 0.994 | 30.198 | mechanics_anchor | Fixed impedance still enters contact and succeeds under support, so this row acts as a mechanics anchor. |

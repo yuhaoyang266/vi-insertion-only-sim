@@ -13,7 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CANONICAL_MANIFEST_PATH = REPO_ROOT / "artifacts" / "main_benchmark" / "main_benchmark_manifest.json"
 CANONICAL_BENCHMARK = (
     "artifacts/main_benchmark/"
-    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json"
 )
 SCHEMA2_DIAGNOSTIC = (
     "artifacts/main_benchmark/"
@@ -559,10 +559,24 @@ def test_sprint2_main_table_preserves_three_decimal_success_from_canonical_manif
             encoding="utf-8"
         )
     )
+    manifest = json.loads(CANONICAL_MANIFEST_PATH.read_text(encoding="utf-8"))
+    canonical = manifest["artifacts"]["canonical_main_benchmark"]
+    benchmark = json.loads((REPO_ROOT / canonical["path"]).read_text(encoding="utf-8"))
     rows_by_method = {row["method_name"]: row for row in table["rows"]}
 
-    assert rows_by_method["fixed_impedance_rl_stable_r32_p32"]["success_rate"] == pytest.approx(0.947)
-    assert rows_by_method["dapg_lite_repaired_mainline"]["success_rate"] == pytest.approx(1.000)
+    for method_name in (
+        "fixed_impedance_rl_stable_r32_p32",
+        "dapg_lite_repaired_mainline",
+    ):
+        expected = round(
+            float(
+                benchmark["learned_results"][method_name]["five_profile_mean"][
+                    "success_rate_mean_over_profiles"
+                ]
+            ),
+            3,
+        )
+        assert rows_by_method[method_name]["success_rate"] == pytest.approx(expected)
 
 
 def test_evidence_matrix_uses_repo_relative_provenance_for_repo_local_inputs() -> None:

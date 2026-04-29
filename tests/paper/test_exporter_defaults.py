@@ -14,6 +14,10 @@ STAGE3_BENCHMARK = Path(
     "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
 )
 STAGE3_STATISTICS = Path("artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json")
+STAGE4_BENCHMARK = Path(
+    "artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json"
+)
+STAGE4_STATISTICS = Path("artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.json")
 SCHEMA2_DIAGNOSTIC = Path(
     "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
 )
@@ -61,8 +65,8 @@ def test_benchmark_table_exporter_defaults_to_manifest_sources() -> None:
     resolved = module.resolve_export_inputs(args)
 
     assert args.manifest == MANIFEST_PATH
-    assert resolved.benchmark_input == STAGE3_BENCHMARK
-    assert resolved.statistics_report_input == STAGE3_STATISTICS
+    assert resolved.benchmark_input == STAGE4_BENCHMARK
+    assert resolved.statistics_report_input == STAGE4_STATISTICS
     assert resolved.provenance_label == "canonical_main_benchmark"
     assert args.benchmark_input is None
     assert "schema2" in module.build_parser().format_help()
@@ -108,8 +112,8 @@ def test_figure2_exporter_defaults_to_manifest_sources() -> None:
     resolved = module.resolve_export_inputs(args)
 
     assert args.manifest == MANIFEST_PATH
-    assert resolved.benchmark_input == STAGE3_BENCHMARK
-    assert resolved.statistics_report_input == STAGE3_STATISTICS
+    assert resolved.benchmark_input == STAGE4_BENCHMARK
+    assert resolved.statistics_report_input == STAGE4_STATISTICS
     assert resolved.provenance_label == "canonical_main_benchmark"
     assert args.benchmark_input is None
 
