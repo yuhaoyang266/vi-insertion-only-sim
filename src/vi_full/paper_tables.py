@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import subprocess
 from typing import Any
+import csv
+from io import StringIO
 
 import numpy as np
 
@@ -1481,17 +1483,65 @@ def export_3dof_paper_table(
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{stem}.json"
     markdown_path = output_dir / f"{stem}.md"
+    csv_path = output_dir / f"{stem}.csv"
     json_path.write_text(
         json.dumps(export_payload, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
     markdown_path.write_text(markdown, encoding="utf-8")
+    csv_path.write_text(render_3dof_paper_table_csv(export_payload), encoding="utf-8")
     if latex_output_path is not None:
         latex = render_3dof_paper_table_latex(export_payload)
         latex_output_path = Path(latex_output_path)
         latex_output_path.parent.mkdir(parents=True, exist_ok=True)
         latex_output_path.write_text(latex, encoding="utf-8")
     return json_path, markdown_path
+
+
+def render_3dof_paper_table_csv(export_payload: dict[str, Any]) -> str:
+    fieldnames = [
+        "suite_name",
+        "display_name",
+        "baseline_success_mean",
+        "high_friction_success_mean",
+        "noisy_force_success_mean",
+        "five_profile_success_rate_mean",
+        "five_profile_success_rate_std",
+        "five_profile_jam_rate_mean",
+        "five_profile_jam_rate_std",
+        "five_profile_mean_final_distance_mm_mean",
+        "five_profile_mean_peak_contact_force_n_mean",
+        "five_profile_mean_contact_steps_mean",
+    ]
+    buffer = StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=fieldnames, lineterminator="\n")
+    writer.writeheader()
+    for row in export_payload["suite_rows"]:
+        stats = row["five_profile_statistics"]
+        class_stats = row["class_success_statistics"]
+        writer.writerow(
+            {
+                "suite_name": row["suite_name"],
+                "display_name": row["display_name"],
+                "baseline_success_mean": class_stats["baseline"]["mean"],
+                "high_friction_success_mean": class_stats["high_friction"]["mean"],
+                "noisy_force_success_mean": class_stats["noisy_force"]["mean"],
+                "five_profile_success_rate_mean": stats["success_rate"]["mean"],
+                "five_profile_success_rate_std": stats["success_rate"]["std"],
+                "five_profile_jam_rate_mean": stats["jam_rate"]["mean"],
+                "five_profile_jam_rate_std": stats["jam_rate"]["std"],
+                "five_profile_mean_final_distance_mm_mean": stats[
+                    "mean_final_distance_mm"
+                ]["mean"],
+                "five_profile_mean_peak_contact_force_n_mean": stats[
+                    "mean_peak_contact_force_n"
+                ]["mean"],
+                "five_profile_mean_contact_steps_mean": stats[
+                    "mean_contact_steps"
+                ]["mean"],
+            }
+        )
+    return buffer.getvalue()
 
 
 def build_3dof_appendix_table_export(
