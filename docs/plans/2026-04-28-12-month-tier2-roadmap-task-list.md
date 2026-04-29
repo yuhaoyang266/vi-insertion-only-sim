@@ -79,12 +79,12 @@
 
 ### B.3 Real-trace SCI association audit
 
-- [ ] Add failing test `tests/three_dof/test_three_dof_real_trace_sci_audit.py::test_real_trace_audit_emits_predictive_rows`.
-- [ ] Create `src/vi_full/three_dof_real_trace_sci_audit.py`. Pull demo and rollout traces from canonical artifacts (or add a trace-export step to canonical benchmark runner if traces are not currently persisted).
+- [-] Add failing test `tests/three_dof/test_three_dof_real_trace_sci_audit.py::test_real_trace_audit_emits_predictive_rows` (dropped: B3-B formal downgrade path chosen because canonical artifacts do not persist raw trace fields).
+- [-] Create `src/vi_full/three_dof_real_trace_sci_audit.py` (dropped: B3-B formal downgrade path chosen; no real-trace SCI audit artifact is claimed).
 - [x] Decision point `[!]`: if canonical artifact does not store raw traces, decide between (a) re-running the canonical benchmark with `--persist-traces`, or (b) keeping SCI demoted to exploratory appendix-only diagnostic. Record decision in `docs/project/progress.md`.
-- [ ] If (a): rerun canonical benchmark with traces; refresh manifest; refresh statistics report.
+- [-] If (a): rerun canonical benchmark with traces; refresh manifest; refresh statistics report (not chosen; SCI was formally downgraded instead).
 - [x] If (b): rewrite `paper/main.tex` Section 2.4 to demote SCI to "exploratory benchmark-local diagnostic, currently without strong real-trace association".
-- [ ] Run audit; export `outputs/revision/sci_real_trace_<date>.{json,csv,md}`.
+- [-] Run audit; export `outputs/revision/sci_real_trace_<date>.{json,csv,md}` (not run because no persisted raw demo/rollout traces are available in the audited artifacts).
 - [x] Update `docs/reviews/review_response_matrix_2026-04-25.md` Gate C row.
 
 ### B.4 10-seed canonical benchmark expansion
@@ -103,7 +103,7 @@
 
 ### B.6 Sprint B revision submission
 
-- [ ] If Tier-3 reviews have arrived: bundle into a revision; otherwise prepare a supplementary update for the active submission.
+- [-] If Tier-3 reviews have arrived: bundle into a revision; otherwise prepare a supplementary update for the active submission (deferred outside Gate B1; no review packet is present in this workspace state).
 - [x] **Sprint B Gate B1 sign-off:** all four B.1-B.4 evidence blocks live, manuscript Section 3 restructured, all CI passes.
 
 ---
