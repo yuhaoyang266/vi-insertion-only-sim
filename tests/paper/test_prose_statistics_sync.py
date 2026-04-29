@@ -6,7 +6,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATISTICS_REPORT = (
-    REPO_ROOT / "artifacts" / "main_benchmark" / "three_dof_statistics_report_stage3_20260412.json"
+    REPO_ROOT / "artifacts" / "main_benchmark" / "three_dof_statistics_report_stage4_20260429.json"
+)
+MOTION_MATCHED_REPORT = (
+    REPO_ROOT / "artifacts" / "main_benchmark" / "three_dof_motion_matched_main_20260429.json"
 )
 MAIN_TEX = REPO_ROOT / "paper" / "main.tex"
 
@@ -27,8 +30,16 @@ def _comparison(report: dict, comparison_id: str) -> dict:
     raise AssertionError(f"Missing selected comparison: {comparison_id}")
 
 
+def _motion_success(report: dict, condition_name: str) -> str:
+    stats = report["aggregate"]["condition_statistics"][condition_name]["five_profile_statistics"][
+        "success_rate"
+    ]
+    return f"${stats['mean']:.3f}$"
+
+
 def test_main_text_statistics_match_canonical_report() -> None:
     report = _statistics_report()
+    motion_report = json.loads(MOTION_MATCHED_REPORT.read_text(encoding="utf-8"))
     main_tex = MAIN_TEX.read_text(encoding="utf-8")
 
     expected_snippets = [
@@ -54,6 +65,16 @@ def test_main_text_statistics_match_canonical_report() -> None:
                 f"{fixed_vs_mainline['ci']['upper']:.4f}]$"
             ),
             f"p-value is still ${fixed_vs_mainline['p_value']:.4f}$",
+            "three\\_dof\\_benchmark\\_paper9suite\\_full5profile\\_bc32x32\\_stage4\\_20260429.json",
+            "three\\_dof\\_motion\\_matched\\_main\\_20260429.json",
+            (
+                f"\\code{{fi\\_motion\\_vi\\_k}} reaches "
+                f"{_motion_success(motion_report, 'fi_motion_vi_k')} five-profile success"
+            ),
+            (
+                f"\\code{{vi\\_motion\\_fi\\_k}} and \\code{{fi\\_full}} remain at "
+                f"{_motion_success(motion_report, 'vi_motion_fi_k')}"
+            ),
         ]
     )
 

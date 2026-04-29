@@ -4,7 +4,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = "artifacts/main_benchmark/main_benchmark_manifest.json"
 CANONICAL_MAIN_BENCHMARK = (
     "artifacts/main_benchmark/"
-    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+    "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json"
 )
 SCHEMA2_DIAGNOSTIC = (
     "artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
@@ -22,12 +22,12 @@ def _manifest_table_row(markdown: str, row_label: str) -> str:
     raise AssertionError(f"Missing figure manifest row: {row_label}")
 
 
-def test_readme_declares_stage3_manifest_as_main_source() -> None:
+def test_readme_declares_stage4_manifest_as_main_source() -> None:
     readme = _read("README.md")
 
     assert MANIFEST_PATH in readme
     assert CANONICAL_MAIN_BENCHMARK in readme
-    assert "schema-3\nstage3 artifact to the main manuscript Table 1 and Figure 2" in readme
+    assert "schema-3\nstage4 artifact to the main manuscript Table 1 and Figure 2" in readme
     assert "schema-2 benchmark artifacts remain appendix / diagnostic legacy inputs only" in readme
 
 
@@ -39,14 +39,14 @@ def test_paper_points_to_manifest_without_schema2_main_source_language() -> None
     assert "schema-2" not in paper.lower()
 
 
-def test_figure_manifest_uses_stage3_for_main_figure2_and_schema2_only_for_appendix() -> None:
+def test_figure_manifest_uses_stage4_for_main_figure2_and_schema2_only_for_appendix() -> None:
     manifest = _read("docs/figure_asset_manifest.md")
 
     figure2_row = _manifest_table_row(manifest, "Figure 2")
     assert MANIFEST_PATH in figure2_row
     assert "canonical_main_benchmark" in figure2_row
     assert CANONICAL_MAIN_BENCHMARK in figure2_row
-    assert "stage3" in figure2_row
+    assert "stage4" in figure2_row
     assert "schema2" not in figure2_row.lower()
     assert "schema-2" not in figure2_row.lower()
 

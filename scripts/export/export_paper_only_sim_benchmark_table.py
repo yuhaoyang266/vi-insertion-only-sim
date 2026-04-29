@@ -61,7 +61,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--manifest",
         type=Path,
         default=DEFAULT_MANIFEST,
-        help="Canonical benchmark manifest. Defaults to the stage3 main benchmark; schema2 is appendix diagnostic only.",
+        help="Canonical benchmark manifest. Defaults to the stage4 main benchmark; schema2 is appendix diagnostic only.",
     )
     parser.add_argument(
         "--benchmark-input",

@@ -59,6 +59,16 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py` -> exit 0; 52 passed.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0.
   - `git diff --check` -> exit 0.
+- B.5 manuscript Section 3 restructure:
+  - Updated `paper/main.tex` around the stage4 main benchmark, motion-matched teacher decoupling, success-matched mechanics, and SCI diagnostic boundary.
+  - Updated `README.md`, `docs/figure_asset_manifest.md`, exporter help strings, and paper sync tests so the paper-facing source is stage4 rather than stage3.
+  - Stage4 prose readout now states the widened learned-row gaps (`BC-only` 1.000, fixed-impedance RL 0.884, `BC->PPO` 0.838, `DAPG-lite` 0.853) and removes the old near-ceiling equality story.
+  - Motion-matched prose cites `artifacts/main_benchmark/three_dof_motion_matched_main_20260429.json` and reports `fi_motion_vi_k` 1.000, `vi_full` 0.800, fixed-K controls 0.000 under the 5-seed/100-episode/128-step control.
+  - First `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py tests/paper/test_paper_table_sync.py tests/paper/test_paper_figures.py` -> exit 1; prose-boundary wording and motion-matched line wrapping needed adjustment.
+  - Same B5 test command after prose fixes -> exit 0; 30 passed, 11 skipped.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_docs_claim_source_sync.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_tables.py::test_submission_main_table_references_stage4_statistics_artifacts` -> exit 0; 16 passed, 1 skipped.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `git diff --check` -> exit 0.
 
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.

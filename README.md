@@ -8,15 +8,14 @@ This repository contains the LaTeX source, paper figures, frozen result artifact
 reproduction scripts for a controlled 3DoF analytical insertion benchmark. The central claim is
 deliberately scoped: in this matched-demonstration benchmark, behavior-cloning demonstration support is
 the cleanest gate into useful contact, while variable impedance has a localized high-friction
-mechanics signal that remains diagnostic pending a success-matched split rather than implying a
-general algorithm ranking. The current paper-facing
+success-matched mechanics signal rather than a general algorithm-ranking claim. The current paper-facing
 constructive layer packages the main controlled protocol as Support-Gated Variable-Impedance Learning (SG-VI):
 explicit variable-impedance actions, BC warm-start, and factorized support controls. It also
 introduces Support Coverage Index (SCI), a quantized rollout-to-demo support-overlap diagnostic
 implemented in `src/vi_full/three_dof_support_metrics.py`. Both remain benchmark-local and
 matched-demonstration rather than general sim-to-real claims. The canonical paper-facing benchmark source
 is declared in `artifacts/main_benchmark/main_benchmark_manifest.json`; it assigns the schema-3
-stage3 artifact to the main manuscript Table 1 and Figure 2, while schema-2 artifacts are retained
+stage4 artifact to the main manuscript Table 1 and Figure 2, while schema-2 artifacts are retained
 for appendix / diagnostic legacy use only.
 
 Repository URL embedded in the manuscript:
@@ -73,7 +72,7 @@ The boundary is enforced by `tests/core/test_import_boundaries.py`.
 
 | Evidence block | Where to look | Role |
 | --- | --- | --- |
-| Main five-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
+| Main 10-seed benchmark | `paper/main.tex`, `figures/main/fig2_*`, `artifacts/main_benchmark/` | Final benchmark estimate |
 | Three-layer reviewer table | `outputs/evidence_matrix/three_dof_sprint2_main_table.*`, `outputs/evidence_matrix/three_dof_evidence_matrix.*` | Mixed-contract claim control, not a leaderboard |
 | Teacher mini-ablation boundary | `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff.{json,csv,md}` and `outputs/sprint3_teacher_mini_ablation/sprint3_teacher_mini_ablation_kickoff_matrix.{pdf,png}` | Frozen teacher support quality x demo rollout budget boundary before new training |
 | Pure-clearance shift sweep | `outputs/sprint4_clearance_shift/sprint4_clearance_shift.{json,csv,md}` and `outputs/sprint4_clearance_shift/sprint4_clearance_shift_summary.{pdf,png}` | Selected demo-supported suites under a pure easy/nominal/hard clearance ladder |
@@ -145,7 +144,7 @@ python scripts/export/build_paper_assets.py
 ```
 
 Advanced users can still run individual exporters; main-paper table and Figure 2 commands should pass
-`--manifest artifacts/main_benchmark/main_benchmark_manifest.json` so they resolve the stage3 source
+`--manifest artifacts/main_benchmark/main_benchmark_manifest.json` so they resolve the stage4 source
 through the canonical manifest.
 
 Appendix-only teacher/termination assets are exported from a Phase C benchmark artifact:
@@ -203,9 +202,9 @@ exports Support Coverage Index (SCI) and support-cell-coverage summaries alongsi
 confidence intervals.
 
 The bundled canonical main benchmark JSON is
-`artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json`;
+`artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json`;
 the paired canonical statistics report is
-`artifacts/main_benchmark/three_dof_statistics_report_stage3_20260412.json`;
+`artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.json`;
 schema-2 benchmark artifacts remain appendix / diagnostic legacy inputs only.
 
 ## Reproduce Experiments

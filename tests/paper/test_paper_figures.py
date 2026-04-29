@@ -66,26 +66,27 @@ def _phase2_algorithm_budget_artifact_path() -> Path:
     )
 
 
-def _stage3_benchmark_artifact_path() -> Path:
+def _stage4_benchmark_artifact_path() -> Path:
     return _require_test_asset(
         (
         Path(__file__).resolve().parents[2]
-        / "outputs"
-        / "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json"
+        / "artifacts"
+        / "main_benchmark"
+        / "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json"
         ),
-        "stage3 benchmark artifact",
+        "stage4 benchmark artifact",
     )
 
 
-def _stage3_statistics_artifact_path() -> Path:
+def _stage4_statistics_artifact_path() -> Path:
     return _require_test_asset(
         (
         Path(__file__).resolve().parents[2]
-        / "outputs"
-        / "paper_only_sim_tables"
-        / "three_dof_statistics_report_stage3_20260412.json"
+        / "artifacts"
+        / "main_benchmark"
+        / "three_dof_statistics_report_stage4_20260429.json"
         ),
-        "stage3 statistics artifact",
+        "stage4 statistics artifact",
     )
 
 
@@ -521,8 +522,8 @@ def test_export_figure2_main_benchmark_evaluation_class_summary_writes_pdf_and_p
 ) -> None:
     module = _load_paper_figures_module()
     pdf_path, png_path = module.export_figure2_main_benchmark_pressure_class_summary(
-        benchmark_report_path=_stage3_benchmark_artifact_path(),
-        statistics_report_path=_stage3_statistics_artifact_path(),
+        benchmark_report_path=_stage4_benchmark_artifact_path(),
+        statistics_report_path=_stage4_statistics_artifact_path(),
         output_dir=tmp_path,
     )
 

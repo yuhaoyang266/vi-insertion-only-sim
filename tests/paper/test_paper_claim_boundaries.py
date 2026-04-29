@@ -188,6 +188,21 @@ def test_near_ceiling_not_global_ranking() -> None:
                 )
 
 
+def test_stage4_main_benchmark_claims_do_not_reuse_stage3_ceiling_story() -> None:
+    text = PAPER.read_text(encoding="utf-8")
+
+    stale_snippets = (
+        "$0.9996 \\pm 0.0008$",
+        "$0.947 \\pm 0.067$",
+        "$0.776 \\pm 0.256$",
+        "ceiling-saturated success band",
+        "meaningful success-rate ranking among the near-ceiling BC-based methods",
+        "A larger 10-seed expansion would tighten",
+    )
+    for snippet in stale_snippets:
+        assert snippet not in text
+
+
 def test_sgvi_is_benchmark_local() -> None:
     text = PAPER.read_text(encoding="utf-8")
     assert "benchmark-local" in text or "benchmark.local" in text, (

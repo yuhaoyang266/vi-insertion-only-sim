@@ -1444,7 +1444,7 @@ def test_external_validity_docs_reference_pose_perturbation_study() -> None:
     assert "pose_perturbation_study" in readme
 
 
-def test_submission_main_table_references_stage3_statistics_artifacts() -> None:
+def test_submission_main_table_references_stage4_statistics_artifacts() -> None:
     repo_root = Path(__file__).resolve().parents[2]
     checked_paths = [
         repo_root / "README.md",
@@ -1464,7 +1464,7 @@ def test_submission_main_table_references_stage3_statistics_artifacts() -> None:
         )
     combined_text = "\n".join(path.read_text(encoding="utf-8") for path in existing_paths)
 
-    assert "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json" in combined_text
-    assert "three_dof_statistics_report_stage3_20260412.json" in combined_text
-    assert "table_3dof_paper_benchmark_stage3_20260412.json" in combined_text
+    assert "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json" in combined_text
+    assert "three_dof_statistics_report_stage4_20260429.json" in combined_text
+    assert "table_3dof_paper_benchmark_stage4_20260429" in combined_text
     assert "stage4_with_classical" not in combined_text
