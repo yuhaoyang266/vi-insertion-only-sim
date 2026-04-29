@@ -1,5 +1,21 @@
 ﻿# Progress Log
 
+### Phase 7.2 Sprint B: Matched-Protocol Main-Table Evidence (2026-04-29)
+- **Status:** in progress.
+- Scope:
+  - B.1 motion-matched main protocol.
+  - B.2 success-matched mechanics.
+  - B.3 real-trace SCI association audit or formal SCI downgrade.
+  - B.4 10-seed canonical benchmark expansion.
+  - B.5 manuscript Section 3 restructure after artifacts land.
+- Rule:
+  - No manuscript numbers before artifacts.
+- Startup checks:
+  - `git status --short --branch` -> exit 0; `## main...origin/main`.
+  - `git log --oneline -5` -> exit 0; head `89ef378 test: tighten figure asset checks`.
+  - `git rev-list --left-right --count origin/main...HEAD` -> exit 0; `0 0`.
+  - `rg -n "Gate A1|Sprint A|remote CI|Phase 7\.2|Status:|\[x\]" docs\plans\2026-04-28-12-month-tier2-roadmap-task-list.md docs\project\progress.md` -> exit 0; Sprint A Gate A1 is checked in the roadmap and recorded complete in this log.
+
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.
 - Actions taken:
