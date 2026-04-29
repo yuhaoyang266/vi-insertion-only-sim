@@ -15,6 +15,17 @@
   - `git log --oneline -5` -> exit 0; head `89ef378 test: tighten figure asset checks`.
   - `git rev-list --left-right --count origin/main...HEAD` -> exit 0; `0 0`.
   - `rg -n "Gate A1|Sprint A|remote CI|Phase 7\.2|Status:|\[x\]" docs\plans\2026-04-28-12-month-tier2-roadmap-task-list.md docs\project\progress.md` -> exit 0; Sprint A Gate A1 is checked in the roadmap and recorded complete in this log.
+- B.1 motion-matched main protocol:
+  - Added `tests/sprints/test_three_dof_motion_matched_main_protocol.py`, `src/vi_full/three_dof_motion_matched_main_protocol.py`, and `scripts/experiments/run_3dof_motion_matched_main_protocol.py`; committed as `600492c`.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/sprints/test_three_dof_motion_matched_main_protocol.py` -> exit 1 before implementation; missing protocol module.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/sprints/test_three_dof_motion_matched_main_protocol.py tests/sprints/test_three_dof_motion_matched_ablation.py tests/sprints/test_three_dof_teacher_coupling_ablation.py` -> exit 0; 8 passed.
+  - `python scripts/experiments/run_3dof_motion_matched_main_protocol.py --help` -> exit 0.
+  - `python scripts/experiments/run_3dof_motion_matched_main_protocol.py --seeds 0 1 2 3 4 --episodes-per-seed 100 --profiles nominal tight_clearance high_friction offset_bias noisy_force --output artifacts/main_benchmark/three_dof_motion_matched_main_20260429.json` -> first exit 1; metadata fields needed stripping before PPO training.
+  - Same command after metadata split fix -> exit 0; generated `artifacts/main_benchmark/three_dof_motion_matched_main_20260429.json`, `artifacts/main_benchmark/table_3dof_motion_matched_20260429.csv`, and `artifacts/main_benchmark/table_3dof_motion_matched_20260429.md`.
+  - Main readout: `vi_full` success 0.800; `vi_motion_fi_k` success 0.000; `fi_motion_vi_k` success 1.000; `fi_full` success 0.000. Keep manuscript claims bounded until B.2 mechanics lands.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/sprints/test_three_dof_motion_matched_main_protocol.py tests/sprints/test_three_dof_motion_matched_ablation.py tests/sprints/test_three_dof_teacher_coupling_ablation.py` -> exit 0; 8 passed after artifact generation.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_artifact_provenance.py` -> exit 0; 7 passed.
+  - `git diff --check` -> exit 0.
 
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.
