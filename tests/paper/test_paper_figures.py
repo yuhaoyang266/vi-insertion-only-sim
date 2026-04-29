@@ -794,3 +794,33 @@ def test_manuscript_figure_stems_match_manifest_canonical_stems() -> None:
     for stem in expected_stems:
         assert stem in manuscript
         assert f"`{stem}`" in manifest
+
+
+def test_figure3_success_matched_and_legacy_assets_exist() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    expected_assets = [
+        repo_root / "figures/main/fig3_high_friction_impedance_mechanism.pdf",
+        repo_root / "figures/main/fig3_high_friction_impedance_mechanism.png",
+        repo_root
+        / "figures/appendix/fig3_legacy_all_trace_high_friction_impedance_mechanism.pdf",
+        repo_root
+        / "figures/appendix/fig3_legacy_all_trace_high_friction_impedance_mechanism.png",
+    ]
+
+    for path in expected_assets:
+        assert path.is_file(), path
+        assert path.stat().st_size > 0
+
+
+def test_figure3_caption_uses_success_matched_framing() -> None:
+    manuscript = (
+        Path(__file__).resolve().parents[2] / "paper" / "main.tex"
+    ).read_text(encoding="utf-8")
+    figure_start = manuscript.index(r"\label{fig:high_friction_mechanism}")
+    caption_start = manuscript.rfind(r"\caption{", 0, figure_start)
+    caption_end = manuscript.index(r"\end{figure}", figure_start)
+    caption_block = manuscript[caption_start:caption_end]
+
+    caption_lower = caption_block.lower()
+    assert "success-matched" in caption_lower
+    assert "all-trace learned aggregates" not in caption_lower

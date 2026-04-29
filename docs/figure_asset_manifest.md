@@ -47,8 +47,9 @@ Slug rules:
 | --- | --- | --- | --- | --- | --- |
 | Figure 1 | `fig1_task_policy_impedance_overview` | `figures/main/fig1_task_policy_impedance_overview.pdf` and `.png` | main-body task/interface schematic for the structured 3DoF policy | generated directly by `src/vi_full/paper_figures.py` | exported |
 | Figure 2 | `fig2_main_benchmark_evaluation_class_summary` | `figures/main/fig2_main_benchmark_evaluation_class_summary.pdf` and `.png` | main-body summary of the final benchmark across evaluation classes | `artifacts/main_benchmark/main_benchmark_manifest.json` -> `canonical_main_benchmark` -> `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json` | exported |
-| Figure 3 | `fig3_high_friction_impedance_mechanism` | `figures/main/fig3_high_friction_impedance_mechanism.pdf` and `.png` | main-body direct mechanics evidence for the high-friction fixed-versus-variable comparison | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
+| Figure 3 | `fig3_high_friction_impedance_mechanism` | `figures/main/fig3_high_friction_impedance_mechanism.pdf` and `.png` | main-body success-matched high-friction mechanics evidence for the fixed-versus-variable comparison | `outputs/revision/three_dof_impedance_mechanics_20260429.json` | exported |
 | Figure 3 companion | `fig3_high_friction_impedance_mechanism_success_only` | `supplement/figures/fig3_high_friction_impedance_mechanism_success_only.pdf` and `.png` | supplementary successful-only companion view for the high-friction mechanics traces | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
+| Figure 3 legacy | `fig3_legacy_all_trace_high_friction_impedance_mechanism` | `figures/appendix/fig3_legacy_all_trace_high_friction_impedance_mechanism.pdf` and `.png` | appendix legacy heterogeneous all-trace mechanics diagnostic | `artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json` | exported |
 | Figure A1 | `figA1_evaluation_class_mapping` | `figures/appendix/figA1_evaluation_class_mapping.pdf` and `.png` | appendix mapping from nominal profiles to evaluation classes | generated directly by `src/vi_full/paper_figures.py` | exported |
 | Figure A2 | `fig1_contact_transition_audit` | `figures/appendix/fig1_contact_transition_audit.pdf` and `.png` | appendix contact-transition audit retained under a legacy stem for compatibility | `artifacts/mechanics/latest_three_dof_contact_model_audit.json` | exported |
 | Figure A3 | `figA3_teacher_ablation_summary` | `figures/appendix/figA3_teacher_ablation_summary.pdf` and `.png` | appendix teacher 2x2 motion-versus-impedance summary | `artifacts/main_benchmark/three_dof_benchmark_schema2_paper_teacher_20260418_034230.json`, `artifacts/main_benchmark/table_3dof_appendix_schema2_20260418.json` | exported |
@@ -101,11 +102,11 @@ These panel intents are locked only to keep export work aligned with the current
 
 ### Figure 3
 
-- four-suite direct-mechanics figure
-- panels: insertion depth / progress, total and decomposed force, stiffness schedule, cumulative work
+- four-suite success-matched direct-mechanics figure
+- panels: successful-contact force, cumulative contact work, force-position phase portrait, force-work Pareto
 - include `learned_fixed`, `learned_variable`, `handcrafted_fixed`, and `handcrafted_variable`
-- use `all_traces` as the primary manuscript view
-- keep `successful_only` as a secondary supporting export, not the default paper view
+- use equal-count successful traces as the primary manuscript view
+- keep the previous `all_traces` export as an appendix legacy diagnostic, not the main explanation
 
 ### Figure A1
 

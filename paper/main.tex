@@ -644,42 +644,33 @@ variable impedance, fixed impedance can succeed when tuned, but the main learned
 pipeline is less robust under the matched training budget, and the same-interface mechanics traces
 show that fixed strategies can operate at substantially higher contact load.
 
-Figure~\ref{fig:high_friction_mechanism} is a diagnostic mechanics slice, not a replot of the
-main five-seed benchmark. It aggregates high-friction trace rollouts from three training seeds and
-50 trace episodes per seed for learned fixed and learned variable suites, together with
-same-interface hand-crafted fixed and variable anchors. The hand-crafted fixed anchor uses the
-policy's default fixed command, which decodes to approximately $K_{xy}=74$ and $K_z=98$ under the
-default stiffness range; it is not the success-optimized fixed setting selected in
-Appendix~\ref{app:tuned-fixed}. The learned traces are intentionally shown
-as heterogeneous all-trace aggregates; their success rates should therefore not be compared
-numerically with Table~\ref{tab:main_benchmark}. The cleanest mechanics contrast comes from the
-two hand-crafted anchors because both succeed reliably under this diagnostic trace protocol while
-operating at different contact loads. By the end of the aggregated contact phase, the hand-crafted
-fixed controller remains near $0.87$~\N\ total contact force and about $1.87\times 10^{-2}$~J
-cumulative contact work, whereas the hand-crafted variable controller remains near $0.46$~\N\ and
-about $4.35\times 10^{-3}$~J. This diagnostic contrast supports only a bounded interpretation:
-fixed impedance is not physically impossible in this reduced task, and the same-interface
-hand-crafted variable controller suggests a lower-load, lower-work contact path under high
-friction, but a success-matched mechanics split is still needed before making a broader causal
-claim. The learned all-trace view remains
-heterogeneous, which is why the released figure family also includes a successful-only secondary
-aggregation rather than claiming a single clean monotone force ranking from the learned traces
-alone.
+Figure~\ref{fig:high_friction_mechanism} is a success-matched mechanics slice, not a replot of the
+main five-seed benchmark. It uses the existing high-friction trace artifact and keeps an equal
+75 successful traces per method for learned fixed, learned variable, hand-crafted fixed, and
+hand-crafted variable suites. The hand-crafted fixed anchor uses the policy's default fixed
+command, which decodes to approximately $K_{xy}=74$ and $K_z=98$ under the default stiffness range;
+it is not the success-optimized fixed setting selected in Appendix~\ref{app:tuned-fixed}. Under
+this success-only comparison, the learned variable suite has lower mean peak force than the learned
+fixed suite ($1.188$ versus $1.437$~\N) and a slightly lower final contact-work mean
+($3.22\times 10^{-3}$ versus $3.40\times 10^{-3}$). The hand-crafted pair shows the same direction
+more strongly: variable control remains near $1.252$~\N and $4.39\times 10^{-3}$ work, while the
+default fixed-command anchor reaches $4.524$~\N and $1.88\times 10^{-2}$. This supports only a
+bounded interpretation: fixed impedance is not physically impossible in this reduced task, but
+within the released high-friction success subset, variable impedance exposes a lower-load contact
+path. The previous heterogeneous all-trace view is retained as an appendix legacy asset rather
+than used as the main mechanics explanation.
 
 \begin{figure}[t]
   \centering
   \includeorplaceholder{fig3_high_friction_impedance_mechanism}{Final Figure 3: high-friction impedance mechanism}
-  \caption{Diagnostic high-friction mechanics traces under the shared 3DoF benchmark interface.
-  This figure is a trace-level mechanics slice, not the final five-seed benchmark table: the
-  learned fixed and learned variable traces use three training seeds with 50 trace episodes per
-  seed, while the hand-crafted anchors use the same trace count. The all-trace learned aggregates
-  are heterogeneous and are included to show rollout mechanics rather than to provide success-rate
-  estimates comparable to Table~\ref{tab:main_benchmark}. The cleanest physical contrast is the
-  hand-crafted fixed-vs-variable pair, where both controllers succeed reliably and the variable
-  strategy suggests a lower-load, lower-work contact path under the released trace protocol. The
-  hand-crafted fixed anchor is not the tuned fixed-stiffness setting from Appendix~\ref{app:tuned-fixed}; it is a same-interface
-  mechanics reference for fixed-command contact paths. A successful-only companion view is provided
-  in the supplementary material.}
+  \caption{Success-matched high-friction mechanics under the shared 3DoF benchmark interface.
+  This trace-level slice uses an equal 75 successful rollouts per method from
+  \code{outputs/revision/three\_dof\_impedance\_mechanics\_20260429.json}. The panels compare
+  successful-contact force, cumulative contact work, force-position phase portraits, and the
+  force-work Pareto readout. The hand-crafted fixed anchor is not the tuned fixed-stiffness setting
+  from Appendix~\ref{app:tuned-fixed}; it is a same-interface mechanics reference for fixed-command
+  contact paths. The heterogeneous all-trace version is archived in the appendix as a legacy
+  diagnostic rather than used as the main mechanics explanation.}
   \label{fig:high_friction_mechanism}
 \end{figure}
 

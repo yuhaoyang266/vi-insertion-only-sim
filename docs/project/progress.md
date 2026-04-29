@@ -26,6 +26,17 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/sprints/test_three_dof_motion_matched_main_protocol.py tests/sprints/test_three_dof_motion_matched_ablation.py tests/sprints/test_three_dof_teacher_coupling_ablation.py` -> exit 0; 8 passed after artifact generation.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_artifact_provenance.py` -> exit 0; 7 passed.
   - `git diff --check` -> exit 0.
+- B.2 success-matched mechanics / Figure 3:
+  - Added `tests/three_dof/test_three_dof_impedance_mechanics.py`, `src/vi_full/three_dof_impedance_mechanics.py`, and `scripts/experiments/export_3dof_impedance_mechanics.py`; committed as `4ca373e`.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_impedance_mechanics.py` -> exit 1 before implementation; missing mechanics module.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_impedance_mechanics.py` -> exit 0; 5 passed.
+  - `python scripts/experiments/export_3dof_impedance_mechanics.py --help` -> exit 0.
+  - `python scripts/experiments/export_3dof_impedance_mechanics.py --output-stem outputs/revision/three_dof_impedance_mechanics_20260429` -> exit 0; generated `outputs/revision/three_dof_impedance_mechanics_20260429.json`, `outputs/revision/three_dof_impedance_mechanics_20260429.csv`, `figures/main/fig3_high_friction_impedance_mechanism.{pdf,png}`, and archived `figures/appendix/fig3_legacy_all_trace_high_friction_impedance_mechanism.{pdf,png}`.
+  - Main readout: success-matched count is 75 successful traces per method; learned variable has lower mean peak force than learned fixed (1.188 N vs 1.437 N) and slightly lower contact work (0.003220 vs 0.003405).
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_impedance_mechanics.py tests/paper/test_paper_figures.py::test_figure3_success_matched_and_legacy_assets_exist tests/paper/test_paper_figures.py::test_figure3_caption_uses_success_matched_framing` -> exit 0; 7 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py` -> exit 0; 13 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `git diff --check` -> exit 0.
 
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.
