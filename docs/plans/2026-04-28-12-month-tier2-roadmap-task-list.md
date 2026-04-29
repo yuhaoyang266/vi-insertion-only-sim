@@ -58,53 +58,53 @@
 
 ### B.1 Motion-matched main protocol
 
-- [ ] Add failing test `tests/sprints/test_three_dof_motion_matched_main_protocol.py::test_motion_matched_main_grid_uses_main_benchmark_contract`.
-- [ ] Create `src/vi_full/three_dof_motion_matched_main_protocol.py` reusing `three_dof_teacher_coupling_ablation.py` condition definitions but binding to `DEFAULT_3DOF_BENCHMARK_CONTRACT` (5 seeds / 100 episodes / 5 profiles / paper-matched PPO budget).
-- [ ] Create runner `scripts/experiments/run_3dof_motion_matched_main_protocol.py` with `--seeds`, `--episodes-per-seed`, `--profiles`, `--output`.
-- [ ] Run real protocol: `python scripts/experiments/run_3dof_motion_matched_main_protocol.py --seeds 0..4 --episodes-per-seed 100 --output artifacts/main_benchmark/three_dof_motion_matched_main_<date>.json`.
-- [ ] Add bootstrap-CI + paired sign-permutation aggregation; export to `artifacts/main_benchmark/table_3dof_motion_matched_<date>.md`.
-- [ ] Update `paper/main.tex` Section 3 to add a "motion-matched teacher decoupling" main-table block; cite `vi_full + vi_K` vs `vi_motion + fi_K` vs `fi_motion + vi_K` vs `fi_full` results.
-- [ ] Update `docs/reviews/review_response_matrix_2026-04-25.md` Gate A row from "P0.3 evidence recorded" to "main-protocol evidence landed" with the new artifact path.
+- [x] Add failing test `tests/sprints/test_three_dof_motion_matched_main_protocol.py::test_motion_matched_main_grid_uses_main_benchmark_contract`.
+- [x] Create `src/vi_full/three_dof_motion_matched_main_protocol.py` reusing `three_dof_teacher_coupling_ablation.py` condition definitions but binding to `DEFAULT_3DOF_BENCHMARK_CONTRACT` (5 seeds / 100 episodes / 5 profiles / paper-matched PPO budget).
+- [x] Create runner `scripts/experiments/run_3dof_motion_matched_main_protocol.py` with `--seeds`, `--episodes-per-seed`, `--profiles`, `--output`.
+- [x] Run real protocol: `python scripts/experiments/run_3dof_motion_matched_main_protocol.py --seeds 0..4 --episodes-per-seed 100 --output artifacts/main_benchmark/three_dof_motion_matched_main_<date>.json`.
+- [x] Add bootstrap-CI + paired sign-permutation aggregation; export to `artifacts/main_benchmark/table_3dof_motion_matched_<date>.md`.
+- [x] Update `paper/main.tex` Section 3 to add a "motion-matched teacher decoupling" main-table block; cite `vi_full + vi_K` vs `vi_motion + fi_K` vs `fi_motion + vi_K` vs `fi_full` results.
+- [x] Update `docs/reviews/review_response_matrix_2026-04-25.md` Gate A row from "P0.3 evidence recorded" to "main-protocol evidence landed" with the new artifact path.
 
 ### B.2 Success-matched mechanics replacement for Figure 3
 
-- [ ] Add failing test `tests/three_dof/test_three_dof_impedance_mechanics.py::test_success_failure_split_partitions_traces`.
-- [ ] Create `src/vi_full/three_dof_impedance_mechanics.py` with: `partition_traces_by_outcome`, `compute_success_matched_force_curve`, `compute_success_matched_work_curve`, `compute_force_position_phase_portrait`, `compute_force_work_pareto_rows`.
-- [ ] Add tests for each function (synthetic traces; assert deterministic numpy outputs).
-- [ ] Create runner `scripts/experiments/export_3dof_impedance_mechanics.py`.
-- [ ] Generate new Figure 3 composite: success-only force/work curves + Pareto + phase-portrait subplot. Save as `figures/main/fig3_high_friction_impedance_mechanism.{pdf,png}`.
-- [ ] Move legacy heterogeneous figure to `figures/appendix/fig3_legacy_all_trace_*` for traceability.
-- [ ] Update `paper/main.tex` Figure 3 caption and Section 3.4 prose to reflect success-matched contrast.
-- [ ] Update `docs/reviews/review_response_matrix_2026-04-25.md` "VI value unclear" row from `Pending P1.1` to `Resolved` with new artifact path.
+- [x] Add failing test `tests/three_dof/test_three_dof_impedance_mechanics.py::test_success_failure_split_partitions_traces`.
+- [x] Create `src/vi_full/three_dof_impedance_mechanics.py` with: `partition_traces_by_outcome`, `compute_success_matched_force_curve`, `compute_success_matched_work_curve`, `compute_force_position_phase_portrait`, `compute_force_work_pareto_rows`.
+- [x] Add tests for each function (synthetic traces; assert deterministic numpy outputs).
+- [x] Create runner `scripts/experiments/export_3dof_impedance_mechanics.py`.
+- [x] Generate new Figure 3 composite: success-only force/work curves + Pareto + phase-portrait subplot. Save as `figures/main/fig3_high_friction_impedance_mechanism.{pdf,png}`.
+- [x] Move legacy heterogeneous figure to `figures/appendix/fig3_legacy_all_trace_*` for traceability.
+- [x] Update `paper/main.tex` Figure 3 caption and Section 3.4 prose to reflect success-matched contrast.
+- [x] Update `docs/reviews/review_response_matrix_2026-04-25.md` "VI value unclear" row from `Pending P1.1` to `Resolved` with new artifact path.
 
 ### B.3 Real-trace SCI association audit
 
 - [ ] Add failing test `tests/three_dof/test_three_dof_real_trace_sci_audit.py::test_real_trace_audit_emits_predictive_rows`.
 - [ ] Create `src/vi_full/three_dof_real_trace_sci_audit.py`. Pull demo and rollout traces from canonical artifacts (or add a trace-export step to canonical benchmark runner if traces are not currently persisted).
-- [ ] Decision point `[!]`: if canonical artifact does not store raw traces, decide between (a) re-running the canonical benchmark with `--persist-traces`, or (b) keeping SCI demoted to exploratory appendix-only diagnostic. Record decision in `docs/project/progress.md`.
+- [x] Decision point `[!]`: if canonical artifact does not store raw traces, decide between (a) re-running the canonical benchmark with `--persist-traces`, or (b) keeping SCI demoted to exploratory appendix-only diagnostic. Record decision in `docs/project/progress.md`.
 - [ ] If (a): rerun canonical benchmark with traces; refresh manifest; refresh statistics report.
-- [ ] If (b): rewrite `paper/main.tex` Section 2.4 to demote SCI to "exploratory benchmark-local diagnostic, currently without strong real-trace association".
+- [x] If (b): rewrite `paper/main.tex` Section 2.4 to demote SCI to "exploratory benchmark-local diagnostic, currently without strong real-trace association".
 - [ ] Run audit; export `outputs/revision/sci_real_trace_<date>.{json,csv,md}`.
-- [ ] Update `docs/reviews/review_response_matrix_2026-04-25.md` Gate C row.
+- [x] Update `docs/reviews/review_response_matrix_2026-04-25.md` Gate C row.
 
 ### B.4 10-seed canonical benchmark expansion
 
-- [ ] Run canonical benchmark with seeds 0..9: produce `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_<date>.json`.
-- [ ] Refresh `artifacts/main_benchmark/three_dof_statistics_report_stage4_<date>.json` with 10-seed bootstrap CI and paired sign-permutation tests.
-- [ ] Update `artifacts/main_benchmark/main_benchmark_manifest.json` to add a `canonical_main_benchmark_stage4` entry; flag stage3 as `superseded_by_stage4` while keeping it readable.
-- [ ] Update `paper/main.tex` main table to use stage4 numbers; verify near-ceiling success differences against the previous 5-seed numbers.
-- [ ] Decision point `[!]`: if stage4 invalidates the near-ceiling equality story, **rewrite Section 3.1 conservatively** before continuing.
+- [x] Run canonical benchmark with seeds 0..9: produce `artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_<date>.json`.
+- [x] Refresh `artifacts/main_benchmark/three_dof_statistics_report_stage4_<date>.json` with 10-seed bootstrap CI and paired sign-permutation tests.
+- [x] Update `artifacts/main_benchmark/main_benchmark_manifest.json` to add a `canonical_main_benchmark_stage4` entry; flag stage3 as `superseded_by_stage4` while keeping it readable.
+- [x] Update `paper/main.tex` main table to use stage4 numbers; verify near-ceiling success differences against the previous 5-seed numbers.
+- [x] Decision point `[!]`: if stage4 invalidates the near-ceiling equality story, **rewrite Section 3.1 conservatively** before continuing.
 
 ### B.5 Manuscript Section 3 restructure
 
-- [ ] Rewrite `paper/main.tex` so Section 3 has three explicit main evidence blocks: (i) main 5-profile benchmark (stage4), (ii) motion-matched teacher decoupling (B.1), (iii) success-matched mechanics (B.2).
-- [ ] Demote SG-VI from a contribution to a Section 2.4 "controlled benchmark protocol" header.
-- [ ] Run prose tests: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py`.
+- [x] Rewrite `paper/main.tex` so Section 3 has three explicit main evidence blocks: (i) main 5-profile benchmark (stage4), (ii) motion-matched teacher decoupling (B.1), (iii) success-matched mechanics (B.2).
+- [x] Demote SG-VI from a contribution to a Section 2.4 "controlled benchmark protocol" header.
+- [x] Run prose tests: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py`.
 
 ### B.6 Sprint B revision submission
 
 - [ ] If Tier-3 reviews have arrived: bundle into a revision; otherwise prepare a supplementary update for the active submission.
-- [ ] **Sprint B Gate B1 sign-off:** all four B.1-B.4 evidence blocks live, manuscript Section 3 restructured, all CI passes.
+- [x] **Sprint B Gate B1 sign-off:** all four B.1-B.4 evidence blocks live, manuscript Section 3 restructured, all CI passes.
 
 ---
 

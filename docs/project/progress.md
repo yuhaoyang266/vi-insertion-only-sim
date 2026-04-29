@@ -1,7 +1,7 @@
 ﻿# Progress Log
 
 ### Phase 7.2 Sprint B: Matched-Protocol Main-Table Evidence (2026-04-29)
-- **Status:** in progress.
+- **Status:** complete on commit pending final Gate B1 docs commit.
 - Scope:
   - B.1 motion-matched main protocol.
   - B.2 success-matched mechanics.
@@ -69,6 +69,18 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_docs_claim_source_sync.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_tables.py::test_submission_main_table_references_stage4_statistics_artifacts` -> exit 0; 16 passed, 1 skipped.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0.
   - `git diff --check` -> exit 0.
+- B.6 final verification and Gate B1 sign-off:
+  - Updated `docs/reviews/review_response_matrix_2026-04-25.md` Gate A / Gate B / Gate C rows and added a Sprint B Gate B1 readout covering B.1-B.4 artifacts.
+  - Updated `docs/plans/2026-04-28-12-month-tier2-roadmap-task-list.md` Sprint B checklist through B.5; B.3 follows the formal SCI downgrade path.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_build_paper_assets.py` -> exit 0; 78 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/sprints/test_three_dof_motion_matched_main_protocol.py tests/three_dof/test_three_dof_impedance_mechanics.py` -> exit 0; 6 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `python scripts/export/build_paper_pdf.py` -> exit 0; produced 24-page / 631919-byte `paper/main.pdf` during the build. MiKTeX printed update-check notices and existing overfull/underfull box warnings, but the build succeeded.
+  - First `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/reviewer` -> exit 1; reviewer smoke still expected stage3 manifest source role/path.
+  - Updated `tests/reviewer/test_snapshot_smoke.py` to stage4; rerun reviewer tests -> exit 0; 4 passed.
+  - Final rerun `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_canonical_manifest.py tests/artifacts/test_artifact_provenance.py tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py tests/paper/test_three_dof_evidence_matrix.py tests/paper/test_sprint2_paper_sync.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_build_paper_assets.py tests/paper/test_docs_claim_source_sync.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 82 passed.
+  - `git diff --check` -> exit 0.
+  - Sprint B Gate B1 sign-off: all B.1-B.4 evidence blocks live, Section 3 restructured around landed artifacts, SCI formally downgraded, stage4 canonical manifest active, and local verification passed.
 
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.

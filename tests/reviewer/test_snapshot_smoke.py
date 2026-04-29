@@ -39,7 +39,7 @@ def test_reviewer_snapshot_manifest_resolves_main_benchmark_artifact() -> None:
     benchmark_path = REPO_ROOT / canonical["path"]
 
     assert canonical["schema_version"] == 3
-    assert canonical["source_role"] == "stage3_current_manuscript_claim"
+    assert canonical["source_role"] == "stage4_current_manuscript_claim"
     assert "main manuscript" in canonical["claim_scope"]
     assert benchmark_path.is_file()
 
@@ -52,7 +52,7 @@ def test_reviewer_snapshot_paper_and_figure_manifest_use_canonical_source() -> N
 
     assert "artifacts/main_benchmark/main_benchmark_manifest.json" in paper
     assert "canonical_main_benchmark" in figure_manifest
-    assert "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json" in figure_manifest
+    assert "three_dof_benchmark_paper9suite_full5profile_bc32x32_stage4_20260429.json" in figure_manifest
 
 
 def test_reviewer_snapshot_inputs_do_not_embed_local_paths() -> None:
