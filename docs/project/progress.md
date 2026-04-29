@@ -37,6 +37,15 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py` -> exit 0; 13 passed.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0.
   - `git diff --check` -> exit 0.
+- B.3 SCI artifact capability audit and decision:
+  - Initial ad hoc `rg` / PowerShell audit attempts -> exit 1 due command quoting/pipeline syntax; reran fixed commands below.
+  - `rg -n -F -e 'trace_runs' -e '"trace"' -e 'demo_observations' -e 'demo_actions' -e 'rollout_observations' -e 'rollout_actions' -e 'raw' -e 'support_metrics' -e 'support_coverage_index' artifacts\main_benchmark\three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json outputs\revision\teacher_coupling_ablation_20260425.json outputs\revision\motion_matched_impedance_ablation_20260425.json` -> exit 0; target artifacts contain aggregated `support_metrics` / `support_coverage_index` entries but no raw demo or rollout state-action arrays and no trace-run fields.
+  - JSON key audit with `ConvertFrom-Json` -> exit 0; canonical stage3 sample suite keys are `suite_run_kwargs`, `train_configs`, `training_summaries`, `eval_results`, `five_profile_mean`; P0 ablation suites add support-metric summaries but still no raw trace arrays.
+  - Decision: use B3-B formal downgrade. Do not fabricate traces and do not claim real-trace SCI association from aggregated support metrics.
+  - Updated `paper/main.tex` to state that SCI is retained as an exploratory benchmark-local diagnostic and current artifacts do not establish a real-trace association between SCI and downstream rollout success.
+  - Updated `docs/reviews/review_response_matrix_2026-04-25.md` Gate C row/readout to record the formal downgrade.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 16 passed.
+  - `git diff --check` -> exit 0.
 
 ### Phase 7.1 Sprint A: Gate A1 Remote CI Sign-off (2026-04-29)
 - **Status:** complete on commit `8f46792`.

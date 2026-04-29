@@ -371,7 +371,10 @@ Q_{\Delta}\left(\psi(\mathbf{o}^{R}_t,\mathbf{a}^{R}_t)\right) \in \mathcal{S}_D
 \end{equation}
 SCI is therefore 1 when the rollout remains entirely inside the quantized demonstration support and
 0 when it never re-enters that support. In this paper SCI is proposed as a benchmark-local
-diagnostic that complements success, contact, and force metrics rather than replacing them.
+diagnostic that complements success, contact, and force metrics rather than replacing them. SCI is
+retained as an exploratory benchmark-local diagnostic: current artifacts support synthetic
+sensitivity and rank-stability checks, but do not establish a real-trace association between SCI
+and downstream rollout success.
 
 All learned baselines reported in the main text are trained on the nominal profile only. The stable imitation
 configuration used throughout the main benchmark is
@@ -864,7 +867,8 @@ $(\alpha_{xy}, \alpha_z, \mu_{\mathrm{wall}})$, jam thresholds, stiffness ranges
 quantity/quality also need systematic sensitivity sweeps before the conclusions can be read as
 anything beyond controlled-benchmark evidence. The same applies to SCI itself: the current
 projected state-action signature and bin widths are frozen to the scale of this 3DoF relative-frame
-benchmark rather than tuned as a universal discretization. The $0.5\,\mm$ position bins resolve
+benchmark rather than tuned as a universal discretization. They do not establish a real-trace
+association between SCI and downstream rollout success. The $0.5\,\mm$ position bins resolve
 sub-millimeter contact-entry structure relative to the $0.8/1.0\,\mm$ success tolerances, the
 $0.25\,\N$ force bin stays well below the $8\,\N$ jam threshold while separating low-force approach
 from contact, and the $0.1$ normalized action bins keep the explicit motion/stiffness channels

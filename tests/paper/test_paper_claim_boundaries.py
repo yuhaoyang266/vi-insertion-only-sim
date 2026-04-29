@@ -89,6 +89,33 @@ def test_sci_not_generalization_proof() -> None:
             )
 
 
+def test_sci_is_formally_exploratory_diagnostic() -> None:
+    paper_text = re.sub(r"\s+", " ", PAPER.read_text(encoding="utf-8"))
+
+    assert "SCI is retained as an exploratory benchmark-local diagnostic" in paper_text
+    assert "do not establish a real-trace association" in paper_text
+
+
+def test_sci_predictive_language_is_negated_or_diagnostic() -> None:
+    whitelist = [
+        r"do not establish",
+        r"without",
+        r"diagnostic",
+        r"pending",
+        r"rather than",
+    ]
+    for i, line in enumerate(_lines(), 1):
+        if re.search(r"\bSCI\b", line) and re.search(
+            r"predict|association|correlat|validity",
+            line,
+            re.IGNORECASE,
+        ):
+            context = " ".join(_lines()[max(i - 3, 0): i + 2])
+            assert any(re.search(w, context, re.IGNORECASE) for w in whitelist), (
+                f"line {i}: SCI predictive/association language is unqualified: {line.strip()}"
+            )
+
+
 _DAPG_WHITELIST = [
     "matched.protocol",
     "mechanism control",
