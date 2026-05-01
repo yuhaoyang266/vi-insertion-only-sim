@@ -17,6 +17,22 @@ RANKING_METRICS = (
     "mean_contact_steps",
     "mean_contact_work",
 )
+CROSS_SIM_RECORD_SCHEMA_VERSION = 1
+CROSS_SIM_RECORD_STATUS_VALUES = ("completed", "failed", "not_available", "skipped")
+CROSS_SIM_RECORD_REQUIRED_KEYS = (
+    "schema_version",
+    "suite_name",
+    "profile",
+    "seed",
+    "episode_count",
+    "status",
+    "episode_status",
+    "reason",
+    "paper_a_policy_artifact",
+    "paper_b_env_config",
+    "out_of_paper_a_scope",
+    "mean_dropped_torque_norm_nm",
+)
 NON_COMPLETED_STATUS_PRIORITY = ("failed", "not_available", "skipped")
 
 
@@ -37,6 +53,80 @@ def _json_safe(value: Any) -> Any:
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
     return str(value)
+
+
+def _validate_metric_value(record: dict[str, Any], metric_name: str) -> None:
+    metric_value = record.get(metric_name)
+    if metric_value is None:
+        return
+    try:
+        float(metric_value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{metric_name} must be numeric or null.") from exc
+
+
+def validate_cross_sim_record_schema(record: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(record)
+    missing_keys = [key for key in CROSS_SIM_RECORD_REQUIRED_KEYS if key not in normalized]
+    if missing_keys:
+        raise ValueError(f"cross-sim record is missing required keys: {missing_keys}")
+    if int(normalized["schema_version"]) != CROSS_SIM_RECORD_SCHEMA_VERSION:
+        raise ValueError(
+            f"schema_version must be {CROSS_SIM_RECORD_SCHEMA_VERSION} for cross-sim records."
+        )
+    status = str(normalized["status"])
+    episode_status = str(normalized["episode_status"])
+    if status not in CROSS_SIM_RECORD_STATUS_VALUES:
+        raise ValueError(f"Unknown cross-sim record status: {status}")
+    if episode_status not in CROSS_SIM_RECORD_STATUS_VALUES:
+        raise ValueError(f"Unknown cross-sim episode_status: {episode_status}")
+    if status != episode_status:
+        raise ValueError("status and episode_status must match until per-episode records land.")
+    if not str(normalized["suite_name"]):
+        raise ValueError("suite_name must not be empty.")
+    if not str(normalized["profile"]):
+        raise ValueError("profile must not be empty.")
+    if isinstance(normalized["seed"], bool):
+        raise ValueError("seed must be an integer.")
+    normalized["seed"] = int(normalized["seed"])
+    normalized["episode_count"] = int(normalized["episode_count"])
+    if normalized["episode_count"] <= 0:
+        raise ValueError("episode_count must be positive.")
+    if normalized["out_of_paper_a_scope"] is not None and not isinstance(
+        normalized["out_of_paper_a_scope"],
+        bool,
+    ):
+        raise ValueError("out_of_paper_a_scope must be boolean or null.")
+    _validate_metric_value(normalized, "mean_dropped_torque_norm_nm")
+    if not str(normalized["paper_a_policy_artifact"]):
+        raise ValueError("paper_a_policy_artifact must not be empty.")
+    if not str(normalized["paper_b_env_config"]):
+        raise ValueError("paper_b_env_config must not be empty.")
+    for metric_name in RANKING_METRICS:
+        _validate_metric_value(normalized, metric_name)
+    if status == "not_available":
+        populated_metrics = [
+            metric_name
+            for metric_name in RANKING_METRICS
+            if normalized.get(metric_name) is not None
+        ]
+        if populated_metrics:
+            raise ValueError(
+                "not_available cross-sim records must keep metrics null: "
+                f"{populated_metrics}"
+            )
+    if status == "completed":
+        missing_metrics = [
+            metric_name
+            for metric_name in RANKING_METRICS
+            if normalized.get(metric_name) is None
+        ]
+        if missing_metrics:
+            raise ValueError(
+                "completed cross-sim records must include real episode metrics: "
+                f"{missing_metrics}"
+            )
+    return normalized
 
 
 def _row_sort_key(row: dict[str, Any]) -> tuple[Any, ...]:
@@ -96,9 +186,12 @@ def build_cross_sim_ranking(
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     grouped: dict[str, list[dict[str, Any]]] = {}
+    normalized_records: list[dict[str, Any]] = []
     for record in records:
-        suite_name = str(record["suite_name"])
-        grouped.setdefault(suite_name, []).append(dict(record))
+        normalized_record = validate_cross_sim_record_schema(record)
+        normalized_records.append(normalized_record)
+        suite_name = str(normalized_record["suite_name"])
+        grouped.setdefault(suite_name, []).append(normalized_record)
     rows = [_summarize_suite(suite_name, suite_records) for suite_name, suite_records in grouped.items()]
     rows.sort(key=_row_sort_key)
     return {
@@ -106,7 +199,7 @@ def build_cross_sim_ranking(
         "schema_version": 1,
         "metadata": _json_safe(metadata or {}),
         "rows": _json_safe(rows),
-        "records": _json_safe(records),
+        "records": _json_safe(normalized_records),
     }
 
 

@@ -29,6 +29,7 @@ from vi_full.cross_paper_bridge import (
     project_paper_b_observation_to_paper_a,
 )
 from vi_full.cross_sim_ranking import build_cross_sim_ranking, write_cross_sim_ranking_artifacts
+from vi_full.cross_sim_ranking import CROSS_SIM_RECORD_SCHEMA_VERSION, RANKING_METRICS
 from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
 
@@ -200,12 +201,19 @@ def _dry_run_records(
             for seed in seeds:
                 records.append(
                     {
+                        "schema_version": CROSS_SIM_RECORD_SCHEMA_VERSION,
                         "suite_name": suite_name,
                         "profile": profile,
                         "seed": int(seed),
                         "episode_count": int(episodes_per_seed),
                         "status": "not_available",
+                        "episode_status": "not_available",
                         "reason": "Paper-A policy artifact loader is not implemented.",
+                        "paper_a_policy_artifact": "not_available",
+                        "paper_b_env_config": "not_available",
+                        "out_of_paper_a_scope": None,
+                        "mean_dropped_torque_norm_nm": None,
+                        **{metric_name: None for metric_name in RANKING_METRICS},
                     }
                 )
     return records
