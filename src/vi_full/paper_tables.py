@@ -1498,6 +1498,28 @@ def export_3dof_paper_table(
     return json_path, markdown_path
 
 
+def _csv_metric_mean(row: dict[str, Any], metric_name: str) -> float | str:
+    statistics = row.get("five_profile_statistics", {})
+    if metric_name in statistics:
+        return statistics[metric_name]["mean"]
+    return row.get("five_profile_mean", {}).get(metric_name, "")
+
+
+def _csv_metric_std(row: dict[str, Any], metric_name: str) -> float | str:
+    statistics = row.get("five_profile_statistics", {})
+    if metric_name in statistics:
+        return statistics[metric_name]["std"]
+    return ""
+
+
+def _csv_class_success_mean(row: dict[str, Any], class_name: str) -> float | str:
+    class_statistics = row.get("class_success_statistics", {}).get(class_name, {})
+    if int(class_statistics.get("num_samples", 0)) > 0:
+        return class_statistics["mean"]
+    pressure_class = row.get("effective_pressure_classes", {}).get(class_name, {})
+    return pressure_class.get("metrics", {}).get("success_rate", "")
+
+
 def render_3dof_paper_table_csv(export_payload: dict[str, Any]) -> str:
     fieldnames = [
         "suite_name",
@@ -1517,28 +1539,26 @@ def render_3dof_paper_table_csv(export_payload: dict[str, Any]) -> str:
     writer = csv.DictWriter(buffer, fieldnames=fieldnames, lineterminator="\n")
     writer.writeheader()
     for row in export_payload["suite_rows"]:
-        stats = row["five_profile_statistics"]
-        class_stats = row["class_success_statistics"]
         writer.writerow(
             {
                 "suite_name": row["suite_name"],
                 "display_name": row["display_name"],
-                "baseline_success_mean": class_stats["baseline"]["mean"],
-                "high_friction_success_mean": class_stats["high_friction"]["mean"],
-                "noisy_force_success_mean": class_stats["noisy_force"]["mean"],
-                "five_profile_success_rate_mean": stats["success_rate"]["mean"],
-                "five_profile_success_rate_std": stats["success_rate"]["std"],
-                "five_profile_jam_rate_mean": stats["jam_rate"]["mean"],
-                "five_profile_jam_rate_std": stats["jam_rate"]["std"],
-                "five_profile_mean_final_distance_mm_mean": stats[
-                    "mean_final_distance_mm"
-                ]["mean"],
-                "five_profile_mean_peak_contact_force_n_mean": stats[
-                    "mean_peak_contact_force_n"
-                ]["mean"],
-                "five_profile_mean_contact_steps_mean": stats[
-                    "mean_contact_steps"
-                ]["mean"],
+                "baseline_success_mean": _csv_class_success_mean(row, "baseline"),
+                "high_friction_success_mean": _csv_class_success_mean(row, "high_friction"),
+                "noisy_force_success_mean": _csv_class_success_mean(row, "noisy_force"),
+                "five_profile_success_rate_mean": _csv_metric_mean(row, "success_rate"),
+                "five_profile_success_rate_std": _csv_metric_std(row, "success_rate"),
+                "five_profile_jam_rate_mean": _csv_metric_mean(row, "jam_rate"),
+                "five_profile_jam_rate_std": _csv_metric_std(row, "jam_rate"),
+                "five_profile_mean_final_distance_mm_mean": _csv_metric_mean(
+                    row, "mean_final_distance_mm"
+                ),
+                "five_profile_mean_peak_contact_force_n_mean": _csv_metric_mean(
+                    row, "mean_peak_contact_force_n"
+                ),
+                "five_profile_mean_contact_steps_mean": _csv_metric_mean(
+                    row, "mean_contact_steps"
+                ),
             }
         )
     return buffer.getvalue()

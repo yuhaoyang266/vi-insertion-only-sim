@@ -102,6 +102,49 @@ def test_benchmark_table_override_does_not_load_manifest(tmp_path: Path) -> None
     assert resolved.provenance_label == "override_benchmark_input"
 
 
+def test_benchmark_table_override_writes_csv_without_manifest(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_benchmark_table.py",
+        "benchmark_table_exporter_override_write_under_test",
+    )
+    output_dir = tmp_path / "table"
+    latex_output = tmp_path / "main_benchmark_table.tex"
+    missing_manifest = tmp_path / "missing_manifest.json"
+    args = module.parse_args(
+        [
+            "--manifest",
+            str(missing_manifest),
+            "--benchmark-input",
+            str(SCHEMA2_DIAGNOSTIC),
+            "--output-dir",
+            str(output_dir),
+            "--stem",
+            "override_table",
+            "--latex-output",
+            str(latex_output),
+        ]
+    )
+    resolved = module.resolve_export_inputs(args)
+
+    module._load_paper_tables_module().export_3dof_paper_table(
+        benchmark_report_path=resolved.benchmark_input,
+        statistics_report_path=resolved.statistics_report_input,
+        output_dir=args.output_dir,
+        stem=args.stem,
+        source_role=resolved.provenance_label,
+        generating_command=resolved.generating_command,
+        git_commit=resolved.git_commit,
+        latex_output_path=args.latex_output,
+    )
+    payload = json.loads((output_dir / "override_table.json").read_text(encoding="utf-8"))
+
+    assert resolved.provenance_label == "override_benchmark_input"
+    assert payload["source_role"] == "override_benchmark_input"
+    assert (output_dir / "override_table.md").exists()
+    assert (output_dir / "override_table.csv").exists()
+    assert latex_output.exists()
+
+
 def test_figure2_exporter_defaults_to_manifest_sources() -> None:
     module = _load_script(
         "scripts/export/export_paper_only_sim_figure2.py",
@@ -180,6 +223,29 @@ def test_exporters_support_check_mode_without_rewriting_outputs() -> None:
     assert figure_module.parse_args(["--check"]).check is True
     assert hasattr(table_module, "run_check")
     assert hasattr(figure_module, "run_check")
+
+
+def test_table_check_detects_stale_csv_output(tmp_path: Path) -> None:
+    module = _load_script(
+        "scripts/export/export_paper_only_sim_benchmark_table.py",
+        "benchmark_table_exporter_csv_check_under_test",
+    )
+    stem = "paper_table"
+    expected_dir = tmp_path / "expected"
+    generated_dir = tmp_path / "generated"
+    expected_dir.mkdir()
+    generated_dir.mkdir()
+    for suffix in (".json", ".md"):
+        (expected_dir / f"{stem}{suffix}").write_text("same\n", encoding="utf-8")
+        (generated_dir / f"{stem}{suffix}").write_text("same\n", encoding="utf-8")
+    (expected_dir / f"{stem}.csv").write_text("suite_name\nold\n", encoding="utf-8")
+    (generated_dir / f"{stem}.csv").write_text("suite_name\nnew\n", encoding="utf-8")
+
+    diff = module._diff_outputs(expected_dir, generated_dir, stem)
+
+    assert "paper_table.csv" in diff
+    assert "-old" in diff
+    assert "+new" in diff
 
 
 def test_figure2_check_accepts_same_dimension_platform_specific_png_bytes(

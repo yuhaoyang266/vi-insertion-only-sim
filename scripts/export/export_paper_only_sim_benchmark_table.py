@@ -169,7 +169,7 @@ def _diff_text_files(expected_path: Path, generated_path: Path) -> list[str]:
 
 def _diff_outputs(expected_dir: Path, generated_dir: Path, stem: str) -> str:
     messages: list[str] = []
-    for suffix in (".json", ".md"):
+    for suffix in (".json", ".md", ".csv"):
         expected_path = expected_dir / f"{stem}{suffix}"
         generated_path = generated_dir / f"{stem}{suffix}"
         messages.extend(_diff_text_files(expected_path, generated_path))

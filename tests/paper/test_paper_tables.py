@@ -1,4 +1,5 @@
-﻿import importlib.util
+﻿import csv
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -856,10 +857,36 @@ def test_export_3dof_paper_table_writes_json_and_markdown(tmp_path: Path) -> Non
 
     exported_json = json.loads(json_path.read_text(encoding="utf-8"))
     markdown = markdown_path.read_text(encoding="utf-8")
+    csv_path = tmp_path / "paper_table.csv"
+    csv_text = csv_path.read_text(encoding="utf-8")
+    csv_rows = list(csv.DictReader(csv_text.splitlines()))
 
     assert json_path.name == "paper_table.json"
     assert markdown_path.name == "paper_table.md"
+    assert csv_path.exists()
     assert exported_json["suite_rows"][2]["display_name"] == "Fixed-impedance RL (stable BC 32/32)"
+    assert csv_text.splitlines()[0].split(",") == [
+        "suite_name",
+        "display_name",
+        "baseline_success_mean",
+        "high_friction_success_mean",
+        "noisy_force_success_mean",
+        "five_profile_success_rate_mean",
+        "five_profile_success_rate_std",
+        "five_profile_jam_rate_mean",
+        "five_profile_jam_rate_std",
+        "five_profile_mean_final_distance_mm_mean",
+        "five_profile_mean_peak_contact_force_n_mean",
+        "five_profile_mean_contact_steps_mean",
+    ]
+    fixed_csv_row = next(
+        row for row in csv_rows if row["suite_name"] == "fixed_impedance_rl_stable_r32_p32"
+    )
+    assert float(fixed_csv_row["five_profile_success_rate_mean"]) == pytest.approx(0.9133333333333333)
+    assert float(fixed_csv_row["five_profile_jam_rate_mean"]) == pytest.approx(0.0)
+    assert float(fixed_csv_row["five_profile_mean_final_distance_mm_mean"]) == pytest.approx(0.9430541400754262)
+    assert fixed_csv_row["five_profile_success_rate_std"] == ""
+    assert fixed_csv_row["five_profile_jam_rate_std"] == ""
     assert "PPO w/o BC" in markdown
     assert "Fixed-impedance RL (stable BC 32/32)" in markdown
     assert "Five nominal eval profiles collapse to three effective pressure classes" in markdown
@@ -1033,6 +1060,35 @@ def test_paper_table_export_can_embed_statistics_report_and_render_notes(tmp_pat
     assert "selected_comparisons" in export["statistics_report"]
     assert "95% CI" in markdown
     assert "negligible under ceiling saturation" in markdown
+
+
+def test_render_3dof_paper_table_csv_prefers_statistics_values(tmp_path: Path) -> None:
+    module = _load_paper_tables_module()
+    main_path, fixed_path = _write_statistics_sample_artifacts(tmp_path)
+    statistics_json_path, _ = module.export_3dof_statistics_report(
+        benchmark_report_path=main_path,
+        fixed_impedance_report_path=fixed_path,
+        output_dir=tmp_path,
+        stem="three_dof_stats",
+    )
+    export = module.build_3dof_paper_table_export(
+        benchmark_report_path=main_path,
+        fixed_impedance_report_path=fixed_path,
+        statistics_report_path=statistics_json_path,
+    )
+    repaired_row = next(
+        row for row in export["suite_rows"] if row["suite_name"] == "repaired_mainline_bc_to_ppo"
+    )
+    repaired_row["five_profile_mean"]["success_rate"] = -1.0
+
+    csv_text = module.render_3dof_paper_table_csv(export)
+    csv_rows = list(csv.DictReader(csv_text.splitlines()))
+    csv_row = next(row for row in csv_rows if row["suite_name"] == "repaired_mainline_bc_to_ppo")
+
+    assert "\r\n" not in csv_text
+    assert csv_text.endswith("\n")
+    assert float(csv_row["five_profile_success_rate_mean"]) == pytest.approx(0.9956)
+    assert float(csv_row["five_profile_success_rate_std"]) > 0.0
 
 
 def test_build_3dof_paper_table_export_rejects_mismatched_statistics_report(
