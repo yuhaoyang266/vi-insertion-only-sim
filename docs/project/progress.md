@@ -128,13 +128,13 @@
   - `git diff --check` -> exit 0; CRLF/LF conversion warning for `paper/main.tex` only.
 
 ### Sprint C May Checkpoint (2026-05-01)
-- **Status:** Paper-B bridge active at contract/dry-run level; Paper-B physics ranking deferred until a real Paper-A policy artifact loader exists.
+- **Status:** initial checkpoint; superseded by the later 2026-05-01 Paper-B deferred path decision after the loader contract and mid-scale sensitivity artifact landed.
 - Contract: `docs/cross_paper_interface_contract.md`, SHA pinned to `d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e`.
 - Paper-B roles: `paper_b_verified_env_commit = 3eb8408`; the initial mirror/checkout at this checkpoint used the same Paper-B commit, with unrelated pre-existing dirty Paper-B files left untouched.
 - Bridge artifact: `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` plus CSV/Markdown sidecars; rows are intentionally `not_available` because the policy artifact loader is not implemented.
-- Sensitivity artifact: `outputs/revision/contact_parameter_sensitivity_smoke_20260501.json` plus CSV/Markdown sidecars.
+- Initial sensitivity artifact: `outputs/revision/contact_parameter_sensitivity_smoke_20260501.json` plus CSV/Markdown sidecars; the mid-scale replacement is recorded in the later contact-parameter sensitivity expansion entry.
 - Modern baseline: `iql_offline`, smoke status `scaffold_only`, artifact `outputs/revision/modern_baseline_iql_smoke_20260501.json`.
-- June decision: continue Paper-B path for policy-loader and physics-smoke implementation; keep within-A contact-parameter sensitivity as the fallback evidence path if Paper-B physics parity blocks again.
+- Initial June direction: continue Paper-B path for policy-loader and physics-smoke implementation; this was superseded by the later Paper-B deferred / within-A fallback decision after the current evidence landed.
 - Final review fix:
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> first exit 1; reviewer scan found local `F:/` path in cross-sim artifact.
   - Updated `scripts/experiments/run_cross_sim_via_paper_b.py` to record a portable Paper-B repo label and path policy instead of embedding the external checkout path; regenerated the cross-sim smoke artifact.
