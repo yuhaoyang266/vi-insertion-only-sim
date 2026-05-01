@@ -157,6 +157,25 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_sim_ranking.py tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 4 passed.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the refreshed cross-sim JSON.
 
+### Sprint C Contract Provenance Metadata Refresh (2026-05-01)
+- **Status:** complete.
+- Review finding:
+  - The contract still used a generic `<paper-b-commit>` reproduction placeholder, and the dry-run cross-sim JSON did not include every metadata key required by the contract's version-pinning block.
+- Action:
+  - Added the verified Paper-B readiness baseline commit `3eb8408` to `docs/cross_paper_interface_contract.md`.
+  - Added `--paper-b-commit <paper-b-commit>` to the contract reproduction template.
+  - Updated the Paper-A and Paper-B contract SHA pins to `19a155c7a754cacce7aef9bcc9b72007a00667589de43821ae03d6a0271d5d3b`.
+  - Mirrored the contract/pin update in Paper-B and committed it as `bb680b6` (`docs: refresh cross-paper contract pin`).
+  - Updated the cross-sim runner metadata to emit `contract_version`, `paper_a_policy_artifact`, `paper_b_env_config`, `mapping_dyaw`, and `torque_drop_guard_n_m`.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`; CSV/Markdown sidecars were unchanged.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` in Paper-B -> exit 0; 2 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_contract_sha_pin.py tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 4 passed.
+  - Dry-run smoke command with Paper-B commit `bb680b6` -> exit 0; regenerated the cross-sim JSON.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 18 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the refreshed cross-sim JSON.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
