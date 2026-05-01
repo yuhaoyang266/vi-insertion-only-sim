@@ -115,6 +115,18 @@
   - `python scripts/experiments/run_modern_baseline_iql_smoke.py --help` -> exit 0.
   - Smoke command -> exit 0; generated the two modern-baseline artifacts above.
 
+### Tier-2 Writing Skeleton: External-Validity Checkpoint (2026-05-01)
+- **Status:** Section 5 skeleton and Tier-2 cover-letter template added.
+- Scope:
+  - Added a manuscript Section 5 skeleton, `External-Validity Bridge and Checkpoint Evidence`, after the experiments and before Discussion.
+  - The section cites only landed contract/smoke artifacts and explicitly says the cross-sim artifact is contract-level dry-run evidence, not a Paper-B physics-ranking claim.
+  - Added `docs/submission/cover_letter_tier2_template.md`.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py tests/paper/test_docs_claim_source_sync.py` first run -> exit 1; manuscript used internal process wording (`Sprint`).
+  - Same command after wording fix -> exit 0; 21 passed.
+  - `rg -n -i "sprint" paper/main.tex` -> exit 1; no internal process wording remains in the manuscript.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warning for `paper/main.tex` only.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

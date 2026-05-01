@@ -843,6 +843,39 @@ benchmark-local even after the dedicated pose-perturbation study.
   \end{tabular}
 \end{table}
 
+\section{External-Validity Bridge and Checkpoint Evidence}
+\label{sec:external_validity_bridge}
+
+The main benchmark remains the simulation-only 3DoF analytical benchmark reported above. The
+external-validity bridge is an explicitly separate evidence layer rather than a revision to the
+main paper numbers. The bridge is governed by
+\code{docs/cross_paper_interface_contract.md}, which pins the 5D Paper-A action interface, the
+Paper-B to Paper-A observation projection, shared metrics, the five-profile suite, the offline
+dataset schema, and the contract SHA refusal protocol. The Paper-B mirror is currently pinned in
+the companion repository, while this paper keeps the learnability claim local to Paper-A.
+
+The current cross-simulator artifact is a contract-level dry-run smoke:
+\code{outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json}. It verifies the
+contract SHA, Paper-B mirror SHA, action translation, and observation projection, but it does not
+run Paper-B physics with learned Paper-A policies. Its rows are therefore marked
+\code{not_available} until a real Paper-A policy artifact loader is added. This distinction is
+important: the bridge has landed as an auditable interface and artifact path, not as a new
+physics-ranking claim.
+
+Two companion smoke artifacts bound the next steps. The contact-parameter sensitivity smoke,
+\code{outputs/revision/contact_parameter_sensitivity_smoke_20260501.json}, runs a small
+within-A sweep over \code{contact\_xy\_scale} for handcrafted Paper-A policies and reports no
+success-rate overturn in that tiny slice. The modern-baseline scaffold,
+\code{outputs/revision/modern_baseline_iql_smoke_20260501.json}, selects an IQL/CQL-style offline
+baseline path and validates the 14D observation / 5D action offline dataset contract, but does not
+yet train an offline RL policy.
+
+This section is therefore a checkpoint skeleton for the Tier-2 external-validity path. It clarifies
+the non-overlap between the two papers: Paper-A studies the support-gated learnability boundary,
+while Paper-B studies a force-bounded safety layer. Paper-A does not claim Paper-B's safety
+guarantee, and Paper-B is not used here to re-establish the SG-VI or SCI claims. Hardware remains
+out of scope, and SCI remains a benchmark-local diagnostic.
+
 \section{Discussion and Limitations}
 \label{sec:discussion}
 
