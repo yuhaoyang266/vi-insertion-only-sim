@@ -290,6 +290,21 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
   - `git diff --check` -> exit 0.
 
+### Sprint C May Path Decision (2026-05-01)
+- **Status:** Paper-B deferred; within-A sensitivity is the June fallback evidence path unless real Paper-A policy artifacts and completed Paper-B episode records land first.
+- Decision basis:
+  - Paper-B contract/readiness remains green at `dfb3c5c`, but `scripts/experiments/run_cross_sim_via_paper_b.py` still intentionally refuses full physics execution without `--dry-run`.
+  - Paper-A now has a pure JSON policy-loader contract and future-compatible cross-sim record schema, but no real learned policy artifact loader or completed Paper-B episode record.
+  - The mid-scale within-A sensitivity artifact is landed and covers all five planned contact parameters across the selected three-profile, three-seed slice.
+- Writing update:
+  - Updated manuscript Section 5 to name the mid-scale sensitivity artifact and state that Paper-B physics ranking is deferred.
+  - Updated the Tier-2 cover-letter template to describe the current checkpoint as contract-level cross-sim dry-run, mid-scale within-A sensitivity, and offline-baseline scaffold evidence.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py tests/paper/test_docs_claim_source_sync.py` -> exit 0; 21 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warning only for `paper/main.tex`.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

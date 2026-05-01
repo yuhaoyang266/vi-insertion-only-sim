@@ -864,19 +864,22 @@ physics-ranking claim.
 The artifact metadata separates the Paper-B readiness commit, contract-mirror commit, and actual
 checkout commit so that provenance checks are not collapsed into a single ambiguous SHA.
 
-Two companion smoke artifacts bound the next steps. The contact-parameter sensitivity smoke,
-\code{outputs/revision/contact_parameter_sensitivity_smoke_20260501.json}, runs a small
-within-A sweep over \code{contact\_xy\_scale} for handcrafted Paper-A policies and reports no
-success-rate overturn in that tiny slice. The modern-baseline scaffold,
+Two companion artifacts bound the next steps. The within-A contact-parameter sensitivity artifact,
+\code{outputs/revision/contact_parameter_sensitivity_20260501.json}, sweeps all five planned
+contact parameters across three profiles, three seeds, and both handcrafted Paper-A policies.
+Success and jam rates remain flat in this checkpoint, while wall friction is the largest driver of
+force, contact-work, contact-step, and final-distance deltas. The modern-baseline scaffold,
 \code{outputs/revision/modern_baseline_iql_smoke_20260501.json}, selects an IQL/CQL-style offline
 baseline path and validates the 14D observation / 5D action offline dataset contract, but does not
 yet train an offline RL policy.
 
-This section is therefore a checkpoint skeleton for the Tier-2 external-validity path. It clarifies
-the non-overlap between the two papers: Paper-A studies the support-gated learnability boundary,
-while Paper-B studies a force-bounded safety layer. Paper-A does not claim Paper-B's safety
-guarantee, and Paper-B is not used here to re-establish the SG-VI or SCI claims. Hardware remains
-out of scope, and SCI remains a benchmark-local diagnostic.
+This checkpoint therefore defers Paper-B physics ranking until real Paper-A policy artifacts and
+completed Paper-B episode records exist. The June fallback path is the within-A sensitivity
+artifact family rather than an unlanded cross-simulator leaderboard. This framing clarifies the
+non-overlap between the two papers: Paper-A studies the support-gated learnability boundary, while
+Paper-B studies a force-bounded safety layer. Paper-A does not claim Paper-B's safety guarantee,
+and Paper-B is not used here to re-establish the SG-VI or SCI claims. Hardware remains out of
+scope, and SCI remains a benchmark-local diagnostic.
 
 \section{Discussion and Limitations}
 \label{sec:discussion}
