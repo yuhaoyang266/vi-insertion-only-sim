@@ -7,9 +7,13 @@ from pathlib import Path
 import pytest
 
 from vi_full.three_dof_contact_parameter_sensitivity import (
+    build_generated_summary_table,
+    build_paired_deltas_vs_nominal,
+    build_seed_uncertainty_summary,
     build_contact_parameter_grid,
     identify_most_sensitive_parameter,
     identify_most_sensitive_parameters_by_metric,
+    identify_largest_vi_vs_fixed_divergence_by_metric,
     run_contact_parameter_sensitivity,
     write_contact_parameter_sensitivity_artifacts,
 )
@@ -51,6 +55,28 @@ def test_contact_parameter_sensitivity_runs_small_real_sweep() -> None:
     assert all(row["profile"] == "nominal" for row in report["rows"])
     assert all(row["policy_name"] == "fixed_impedance" for row in report["rows"])
     assert all("success_rate" in row for row in report["rows"])
+
+
+def test_contact_parameter_sensitivity_reports_uncertainty_and_nominal_deltas() -> None:
+    report = run_contact_parameter_sensitivity(
+        profiles=["nominal"],
+        seeds=[0, 1],
+        episodes_per_seed=1,
+        policy_names=["fixed_impedance"],
+        parameter_names=["contact_xy_scale"],
+        level_names=["low", "nominal", "high"],
+    )
+
+    assert len(report["seed_summaries"]) == 6
+    assert len(report["paired_deltas_vs_nominal"]) == 2
+    success_ci = [
+        row
+        for row in report["uncertainty_by_row"]
+        if row["metric_name"] == "success_rate" and row["level_name"] == "nominal"
+    ][0]
+    assert success_ci["seed_count"] == 2
+    assert success_ci["ci95_low"] <= success_ci["mean"] <= success_ci["ci95_high"]
+    assert report["generated_summary_table"]["rows"]
 
 
 def test_contact_parameter_sensitivity_rejects_non_positive_episode_count() -> None:
@@ -210,6 +236,99 @@ def test_identify_most_sensitive_parameters_reports_each_metric() -> None:
     assert summary["mean_contact_work"]["max_abs_delta"] == pytest.approx(0.06)
 
 
+def test_contact_sensitivity_summary_helpers_use_nominal_and_policy_pairs() -> None:
+    rows = [
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "nominal",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 0.8,
+            "jam_rate": 0.0,
+            "documented_force_jam_rate": 0.0,
+            "blocked_contact_termination_rate": 0.0,
+            "mean_final_distance": 0.002,
+            "mean_peak_contact_force": 2.0,
+            "p95_peak_contact_force": 2.5,
+            "mean_contact_steps": 10.0,
+            "mean_contact_work": 0.02,
+        },
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "high",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 0.5,
+            "jam_rate": 0.0,
+            "documented_force_jam_rate": 0.0,
+            "blocked_contact_termination_rate": 0.0,
+            "mean_final_distance": 0.004,
+            "mean_peak_contact_force": 5.0,
+            "p95_peak_contact_force": 6.0,
+            "mean_contact_steps": 12.0,
+            "mean_contact_work": 0.08,
+        },
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "high",
+            "profile": "nominal",
+            "policy_name": "variable_impedance",
+            "success_rate": 0.9,
+            "jam_rate": 0.0,
+            "documented_force_jam_rate": 0.0,
+            "blocked_contact_termination_rate": 0.0,
+            "mean_final_distance": 0.001,
+            "mean_peak_contact_force": 1.0,
+            "p95_peak_contact_force": 1.2,
+            "mean_contact_steps": 20.0,
+            "mean_contact_work": 0.01,
+        },
+    ]
+
+    deltas = build_paired_deltas_vs_nominal(rows)
+    uncertainty = build_seed_uncertainty_summary(
+        [
+            {
+                "parameter_name": "contact_xy_scale",
+                "level_name": "nominal",
+                "profile": "nominal",
+                "policy_name": "fixed_impedance",
+                "seed": 0,
+                **{metric_name: 1.0 for metric_name in (
+                    "success_rate",
+                    "jam_rate",
+                    "documented_force_jam_rate",
+                    "blocked_contact_termination_rate",
+                    "mean_final_distance",
+                    "mean_peak_contact_force",
+                    "p95_peak_contact_force",
+                    "mean_contact_steps",
+                    "mean_contact_work",
+                )},
+            }
+        ],
+        metric_names=("success_rate",),
+    )
+    divergence = identify_largest_vi_vs_fixed_divergence_by_metric(
+        rows,
+        metric_names=("success_rate",),
+    )
+    table = build_generated_summary_table(rows)
+
+    assert deltas[0]["minus_nominal"]["success_rate"] == pytest.approx(-0.3)
+    assert uncertainty[0]["ci95_low"] == uncertainty[0]["ci95_high"] == 1.0
+    assert divergence["success_rate"]["variable_minus_fixed"] == pytest.approx(0.4)
+    assert table["rows"][0]["most_sensitive_profile"] == "nominal"
+    assert table["largest_vi_vs_fixed_divergence"]["metric_name"] in {
+        "success_rate",
+        "mean_final_distance",
+        "mean_peak_contact_force",
+        "p95_peak_contact_force",
+        "mean_contact_steps",
+        "mean_contact_work",
+    }
+
+
 def test_contact_parameter_sensitivity_writes_artifacts(tmp_path: Path) -> None:
     report = {
         "artifact_type": "three_dof_contact_parameter_sensitivity",
@@ -274,5 +393,8 @@ def test_committed_contact_parameter_sensitivity_artifact_covers_all_profiles() 
         "contact_transition_band_m",
     ]
     assert payload["config"]["seeds"] == [0, 1, 2]
-    assert payload["config"]["episodes_per_seed"] == 5
+    assert payload["config"]["episodes_per_seed"] == 20
     assert len(payload["rows"]) == 150
+    assert len(payload["seed_summaries"]) == 450
+    assert payload["paired_deltas_vs_nominal"]
+    assert payload["generated_summary_table"]["rows"]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import itertools
 import json
 from dataclasses import replace
 from pathlib import Path
@@ -121,6 +122,37 @@ def _percentile(values: list[float], percentile: float) -> float:
     return float(np.percentile(np.asarray(values, dtype=np.float64), percentile))
 
 
+def _bootstrap_mean_ci(values: list[float]) -> dict[str, float]:
+    numeric = [float(value) for value in values]
+    if not numeric:
+        raise ValueError("values must not be empty")
+    if len(numeric) == 1:
+        mean_value = numeric[0]
+        return {
+            "mean": mean_value,
+            "ci95_low": mean_value,
+            "ci95_high": mean_value,
+        }
+    if len(numeric) <= 5:
+        resampled_means = [
+            _mean([numeric[index] for index in indexes])
+            for indexes in itertools.product(range(len(numeric)), repeat=len(numeric))
+        ]
+    else:
+        rng = np.random.default_rng(0)
+        samples = rng.choice(
+            np.asarray(numeric, dtype=np.float64),
+            size=(1000, len(numeric)),
+            replace=True,
+        )
+        resampled_means = [float(value) for value in np.mean(samples, axis=1)]
+    return {
+        "mean": _mean(numeric),
+        "ci95_low": _percentile(resampled_means, 2.5),
+        "ci95_high": _percentile(resampled_means, 97.5),
+    }
+
+
 def _evaluate_policy(
     *,
     config: ThreeDoFInsertionConfig,
@@ -201,6 +233,216 @@ def _aggregate_seed_summaries(summaries: list[dict[str, Any]]) -> dict[str, floa
     }
 
 
+def build_seed_uncertainty_summary(
+    seed_summaries: list[dict[str, Any]],
+    *,
+    metric_names: tuple[str, ...] = SENSITIVITY_SUMMARY_METRICS,
+) -> list[dict[str, Any]]:
+    grouped: dict[tuple[str, str, str, str], list[dict[str, Any]]] = {}
+    for summary in seed_summaries:
+        key = (
+            str(summary["parameter_name"]),
+            str(summary["level_name"]),
+            str(summary["profile"]),
+            str(summary["policy_name"]),
+        )
+        grouped.setdefault(key, []).append(summary)
+    rows: list[dict[str, Any]] = []
+    for key, summaries in sorted(grouped.items()):
+        parameter_name, level_name, profile, policy_name = key
+        for metric_name in metric_names:
+            ci = _bootstrap_mean_ci([float(summary[metric_name]) for summary in summaries])
+            rows.append(
+                {
+                    "parameter_name": parameter_name,
+                    "level_name": level_name,
+                    "profile": profile,
+                    "policy_name": policy_name,
+                    "metric_name": metric_name,
+                    "seed_count": len(summaries),
+                    **ci,
+                }
+            )
+    return rows
+
+
+def build_paired_deltas_vs_nominal(
+    rows: list[dict[str, Any]],
+    *,
+    metric_names: tuple[str, ...] = SENSITIVITY_SUMMARY_METRICS,
+) -> list[dict[str, Any]]:
+    by_key = {
+        (
+            str(row["parameter_name"]),
+            str(row["level_name"]),
+            str(row["profile"]),
+            str(row["policy_name"]),
+        ): row
+        for row in rows
+    }
+    deltas: list[dict[str, Any]] = []
+    for row in rows:
+        level_name = str(row["level_name"])
+        if level_name == "nominal":
+            continue
+        key = (
+            str(row["parameter_name"]),
+            "nominal",
+            str(row["profile"]),
+            str(row["policy_name"]),
+        )
+        nominal_row = by_key.get(key)
+        if nominal_row is None:
+            continue
+        deltas.append(
+            {
+                "parameter_name": str(row["parameter_name"]),
+                "level_name": level_name,
+                "profile": str(row["profile"]),
+                "policy_name": str(row["policy_name"]),
+                "minus_nominal": {
+                    metric_name: float(row[metric_name])
+                    - float(nominal_row[metric_name])
+                    for metric_name in metric_names
+                },
+            }
+        )
+    return deltas
+
+
+def identify_most_sensitive_profiles_by_metric(
+    paired_deltas: list[dict[str, Any]],
+    *,
+    metric_names: tuple[str, ...] = SENSITIVITY_SUMMARY_METRICS,
+) -> dict[str, dict[str, Any]]:
+    best_by_metric: dict[str, dict[str, Any]] = {
+        metric_name: {
+            "metric_name": metric_name,
+            "profile": None,
+            "parameter_name": None,
+            "policy_name": None,
+            "level_name": None,
+            "delta": 0.0,
+            "max_abs_delta": 0.0,
+        }
+        for metric_name in metric_names
+    }
+    for delta_row in paired_deltas:
+        deltas = delta_row["minus_nominal"]
+        for metric_name in metric_names:
+            delta = float(deltas[metric_name])
+            best = best_by_metric[metric_name]
+            if best["profile"] is None or abs(delta) > float(best["max_abs_delta"]):
+                best_by_metric[metric_name] = {
+                    "metric_name": metric_name,
+                    "profile": str(delta_row["profile"]),
+                    "parameter_name": str(delta_row["parameter_name"]),
+                    "policy_name": str(delta_row["policy_name"]),
+                    "level_name": str(delta_row["level_name"]),
+                    "delta": delta,
+                    "max_abs_delta": abs(delta),
+                }
+    return best_by_metric
+
+
+def identify_largest_vi_vs_fixed_divergence_by_metric(
+    rows: list[dict[str, Any]],
+    *,
+    metric_names: tuple[str, ...] = SENSITIVITY_SUMMARY_METRICS,
+) -> dict[str, dict[str, Any]]:
+    by_key = {
+        (
+            str(row["parameter_name"]),
+            str(row["level_name"]),
+            str(row["profile"]),
+            str(row["policy_name"]),
+        ): row
+        for row in rows
+    }
+    strata = sorted(
+        {
+            (
+                str(row["parameter_name"]),
+                str(row["level_name"]),
+                str(row["profile"]),
+            )
+            for row in rows
+        }
+    )
+    best_by_metric: dict[str, dict[str, Any]] = {
+        metric_name: {
+            "metric_name": metric_name,
+            "parameter_name": None,
+            "level_name": None,
+            "profile": None,
+            "fixed_impedance_value": None,
+            "variable_impedance_value": None,
+            "variable_minus_fixed": 0.0,
+            "max_abs_delta": 0.0,
+        }
+        for metric_name in metric_names
+    }
+    for parameter_name, level_name, profile in strata:
+        fixed_row = by_key.get((parameter_name, level_name, profile, "fixed_impedance"))
+        variable_row = by_key.get((parameter_name, level_name, profile, "variable_impedance"))
+        if fixed_row is None or variable_row is None:
+            continue
+        for metric_name in metric_names:
+            fixed_value = float(fixed_row[metric_name])
+            variable_value = float(variable_row[metric_name])
+            delta = variable_value - fixed_value
+            best = best_by_metric[metric_name]
+            if best["parameter_name"] is None or abs(delta) > float(best["max_abs_delta"]):
+                best_by_metric[metric_name] = {
+                    "metric_name": metric_name,
+                    "parameter_name": parameter_name,
+                    "level_name": level_name,
+                    "profile": profile,
+                    "fixed_impedance_value": fixed_value,
+                    "variable_impedance_value": variable_value,
+                    "variable_minus_fixed": delta,
+                    "max_abs_delta": abs(delta),
+                }
+    return best_by_metric
+
+
+def build_generated_summary_table(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    paired_deltas = build_paired_deltas_vs_nominal(rows)
+    parameter_by_metric = identify_most_sensitive_parameters_by_metric(rows)
+    profile_by_metric = identify_most_sensitive_profiles_by_metric(paired_deltas)
+    policy_divergence_by_metric = identify_largest_vi_vs_fixed_divergence_by_metric(rows)
+    table_rows: list[dict[str, Any]] = []
+    for metric_name in SENSITIVITY_SUMMARY_METRICS:
+        parameter_summary = parameter_by_metric[metric_name]
+        profile_summary = profile_by_metric[metric_name]
+        policy_summary = policy_divergence_by_metric[metric_name]
+        table_rows.append(
+            {
+                "metric_name": metric_name,
+                "most_sensitive_parameter": parameter_summary.get("parameter_name"),
+                "most_sensitive_parameter_profile": parameter_summary.get("profile"),
+                "most_sensitive_parameter_delta": parameter_summary.get("max_abs_delta"),
+                "most_sensitive_profile": profile_summary.get("profile"),
+                "most_sensitive_profile_parameter": profile_summary.get("parameter_name"),
+                "most_sensitive_profile_delta": profile_summary.get("delta"),
+                "largest_vi_vs_fixed_profile": policy_summary.get("profile"),
+                "largest_vi_vs_fixed_parameter": policy_summary.get("parameter_name"),
+                "largest_vi_vs_fixed_level": policy_summary.get("level_name"),
+                "largest_vi_vs_fixed_delta": policy_summary.get("variable_minus_fixed"),
+            }
+        )
+    overall_policy = max(
+        policy_divergence_by_metric.values(),
+        key=lambda item: float(item.get("max_abs_delta") or 0.0),
+    )
+    return {
+        "rows": table_rows,
+        "most_sensitive_profile_by_metric": profile_by_metric,
+        "largest_vi_vs_fixed_divergence_by_metric": policy_divergence_by_metric,
+        "largest_vi_vs_fixed_divergence": overall_policy,
+    }
+
+
 def _profile_config_and_overrides(
     profile: str,
     *,
@@ -241,6 +483,7 @@ def run_contact_parameter_sensitivity(
         level_names=level_names,
     )
     rows: list[dict[str, Any]] = []
+    seed_metric_summaries: list[dict[str, Any]] = []
     for point in grid:
         for profile in selected_profiles:
             config, overrides = _profile_config_and_overrides(
@@ -260,6 +503,21 @@ def run_contact_parameter_sensitivity(
                     )
                     for seed in selected_seeds
                 ]
+                for seed_summary in seed_summaries:
+                    seed_metric_summaries.append(
+                        {
+                            "parameter_name": point["parameter_name"],
+                            "level_name": point["level_name"],
+                            "profile": profile,
+                            "policy_name": policy_name,
+                            "seed": int(seed_summary["seed"]),
+                            "episodes_per_seed": int(episodes_per_seed),
+                            **{
+                                metric_name: float(seed_summary[metric_name])
+                                for metric_name in SENSITIVITY_SUMMARY_METRICS
+                            },
+                        }
+                    )
                 rows.append(
                     {
                         "parameter_name": point["parameter_name"],
@@ -273,6 +531,7 @@ def run_contact_parameter_sensitivity(
                     }
                 )
     most_sensitive_parameters_by_metric = identify_most_sensitive_parameters_by_metric(rows)
+    paired_deltas_vs_nominal = build_paired_deltas_vs_nominal(rows)
     return {
         "artifact_type": "three_dof_contact_parameter_sensitivity",
         "schema_version": 1,
@@ -287,6 +546,12 @@ def run_contact_parameter_sensitivity(
         },
         "most_sensitive_parameter": identify_most_sensitive_parameter(rows),
         "most_sensitive_parameters_by_metric": most_sensitive_parameters_by_metric,
+        "seed_summaries": _json_safe(seed_metric_summaries),
+        "uncertainty_by_row": _json_safe(
+            build_seed_uncertainty_summary(seed_metric_summaries)
+        ),
+        "paired_deltas_vs_nominal": _json_safe(paired_deltas_vs_nominal),
+        "generated_summary_table": _json_safe(build_generated_summary_table(rows)),
         "rows": _json_safe(rows),
     }
 
@@ -384,10 +649,13 @@ def render_contact_parameter_sensitivity_csv(report: dict[str, Any]) -> str:
 
 def render_contact_parameter_sensitivity_markdown(report: dict[str, Any]) -> str:
     summary_by_metric = report.get("most_sensitive_parameters_by_metric", {})
+    generated_summary_rows = report.get("generated_summary_table", {}).get("rows", [])
     lines = [
         "# 3DoF Contact-Parameter Sensitivity",
         "",
         f"- most_sensitive_parameter: {report['most_sensitive_parameter'].get('parameter_name')}",
+        f"- seed_summary_rows: {len(report.get('seed_summaries', []))}",
+        f"- paired_deltas_vs_nominal: {len(report.get('paired_deltas_vs_nominal', []))}",
         "",
         "## Most Sensitive Parameters By Metric",
         "",
@@ -407,6 +675,25 @@ def render_contact_parameter_sensitivity_markdown(report: dict[str, Any]) -> str
                 nominal_value="" if summary.get("nominal_value") is None else summary["nominal_value"],
                 level_value="" if summary.get("level_value") is None else summary["level_value"],
                 max_abs_delta="" if summary.get("max_abs_delta") is None else summary["max_abs_delta"],
+            )
+        )
+    lines.extend(
+        [
+            "",
+            "## Generated Summary Table",
+            "",
+            "| Metric | Parameter | Parameter profile | Parameter delta | Profile | Profile parameter | Profile delta | VI-vs-fixed profile | VI-vs-fixed parameter | VI-vs-fixed delta |",
+            "| --- | --- | --- | ---: | --- | --- | ---: | --- | --- | ---: |",
+        ]
+    )
+    for row in generated_summary_rows:
+        lines.append(
+            "| {metric_name} | {most_sensitive_parameter} | "
+            "{most_sensitive_parameter_profile} | {most_sensitive_parameter_delta} | "
+            "{most_sensitive_profile} | {most_sensitive_profile_parameter} | "
+            "{most_sensitive_profile_delta} | {largest_vi_vs_fixed_profile} | "
+            "{largest_vi_vs_fixed_parameter} | {largest_vi_vs_fixed_delta} |".format(
+                **row
             )
         )
     lines.extend(

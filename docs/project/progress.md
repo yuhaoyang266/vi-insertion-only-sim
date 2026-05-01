@@ -1152,3 +1152,23 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_alt_contact_model.py tests/runners/test_run_3dof_alt_contact_model_sensitivity.py tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> 19 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> 5 passed.
   - `python scripts/experiments/run_3dof_alt_contact_model_sensitivity.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 1 --policies fixed_impedance variable_impedance --output outputs/revision/alt_contact_model_cross_check_20260501.json` -> exit 0; generated JSON/CSV/Markdown sidecars.
+
+### Sprint C Week 2: Fallback Sensitivity Evidence Strengthening (2026-05-01)
+- Status: 20-episode within-A sensitivity artifact and evidence review landed.
+- Actions taken:
+  - Added seed-level summaries, deterministic bootstrap CIs over seeds, paired deltas versus nominal levels, and a generated summary table to `src/vi_full/three_dof_contact_parameter_sensitivity.py`.
+  - Regenerated `outputs/revision/contact_parameter_sensitivity_20260501.{json,csv,md}` with `20` episodes per seed.
+  - Wrote `docs/reviews/sprint_c_fallback_evidence_review_20260501.md`.
+  - Checked for local learned-policy/model artifacts; none were present, so learned-suite proxy rows remain explicitly blocked rather than fabricated.
+- Files changed:
+  - `src/vi_full/three_dof_contact_parameter_sensitivity.py`
+  - `tests/three_dof/test_three_dof_contact_parameter_sensitivity.py`
+  - `outputs/revision/contact_parameter_sensitivity_20260501.json`
+  - `outputs/revision/contact_parameter_sensitivity_20260501.csv`
+  - `outputs/revision/contact_parameter_sensitivity_20260501.md`
+  - `docs/reviews/sprint_c_fallback_evidence_review_20260501.md`
+  - `docs/project/progress.md`
+- Verification:
+  - First focused run before regeneration failed only because the committed artifact still recorded `episodes_per_seed = 5`.
+  - `python scripts/experiments/run_3dof_contact_parameter_sensitivity.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 20 --policies fixed_impedance variable_impedance --parameters contact_xy_scale contact_z_scale wall_friction_range force_noise_std_range contact_transition_band_m --levels low nominal high --output outputs/revision/contact_parameter_sensitivity_20260501.json` -> exit 0 in about 103 seconds.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> 13 passed.
