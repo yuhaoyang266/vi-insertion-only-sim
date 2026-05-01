@@ -1,0 +1,102 @@
+{
+  "artifact_type": "cross_sim_ranking",
+  "schema_version": 1,
+  "metadata": {
+    "contract_sha": "d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e",
+    "paper_b_contract_sha": "d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e",
+    "paper_a_commit": "bf48257",
+    "paper_b_commit": "3eb8408",
+    "paper_b_repo_path": "F:/edge download/every-embodied-main/research-cartesian-impedance-vla-sim",
+    "dry_run": true,
+    "profiles": [
+      "nominal"
+    ],
+    "seeds": [
+      0
+    ],
+    "episodes_per_seed": 5,
+    "suites": [
+      "repaired_mainline_bc_to_ppo",
+      "bc_only_stable_r32_p32"
+    ],
+    "translation_smoke": {
+      "schema_p_action": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "env_action_keys": [
+        "dpitch",
+        "droll",
+        "dx",
+        "dy",
+        "dz",
+        "k_cart_diag"
+      ],
+      "observation_shape": [
+        14
+      ],
+      "out_of_paper_a_scope": false
+    }
+  },
+  "rows": [
+    {
+      "suite_name": "bc_only_stable_r32_p32",
+      "status": "not_available",
+      "profile_count": 1,
+      "seed_count": 1,
+      "record_count": 1,
+      "completed_record_count": 0,
+      "episode_count": 5,
+      "reason": "Paper-A policy artifact loader is not implemented.",
+      "success_rate": null,
+      "jam_rate": null,
+      "documented_force_jam_rate": null,
+      "blocked_contact_termination_rate": null,
+      "mean_final_distance": null,
+      "mean_peak_contact_force": null,
+      "p95_peak_contact_force": null,
+      "mean_contact_steps": null,
+      "mean_contact_work": null
+    },
+    {
+      "suite_name": "repaired_mainline_bc_to_ppo",
+      "status": "not_available",
+      "profile_count": 1,
+      "seed_count": 1,
+      "record_count": 1,
+      "completed_record_count": 0,
+      "episode_count": 5,
+      "reason": "Paper-A policy artifact loader is not implemented.",
+      "success_rate": null,
+      "jam_rate": null,
+      "documented_force_jam_rate": null,
+      "blocked_contact_termination_rate": null,
+      "mean_final_distance": null,
+      "mean_peak_contact_force": null,
+      "p95_peak_contact_force": null,
+      "mean_contact_steps": null,
+      "mean_contact_work": null
+    }
+  ],
+  "records": [
+    {
+      "suite_name": "repaired_mainline_bc_to_ppo",
+      "profile": "nominal",
+      "seed": 0,
+      "episode_count": 5,
+      "status": "not_available",
+      "reason": "Paper-A policy artifact loader is not implemented."
+    },
+    {
+      "suite_name": "bc_only_stable_r32_p32",
+      "profile": "nominal",
+      "seed": 0,
+      "episode_count": 5,
+      "status": "not_available",
+      "reason": "Paper-A policy artifact loader is not implemented."
+    }
+  ]
+}

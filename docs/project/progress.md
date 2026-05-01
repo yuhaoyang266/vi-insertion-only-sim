@@ -57,6 +57,24 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_bridge_contract.py` before implementation -> exit 1; 7 expected missing-helper failures.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper` -> exit 0; 9 passed.
 
+### Sprint C Cross-Sim Dry-Run Smoke Artifact (2026-05-01)
+- **Status:** contract-level dry-run smoke artifact exists; Paper-B physics execution remains blocked on a real Paper-A policy artifact loader.
+- Scope:
+  - Added `src/vi_full/cross_sim_ranking.py` for JSON/CSV/Markdown cross-sim ranking artifacts.
+  - Added `scripts/experiments/run_cross_sim_via_paper_b.py` with contract SHA checks, Paper-B contract mirror checks, translation smoke, and explicit `--dry-run` mode.
+  - Added runner/ranking tests and committed code as `bf48257`.
+- Artifact:
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.csv`
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.md`
+  - Metadata pins Paper-A `bf48257`, Paper-B `3eb8408`, contract SHA `d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e`, profile `nominal`, seed `0`, and suites `repaired_mainline_bc_to_ppo` / `bc_only_stable_r32_p32`.
+  - Rows are marked `not_available` with reason `Paper-A policy artifact loader is not implemented`; no Paper-B physics claim is made.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_sim_ranking.py tests/runners/test_run_cross_sim_via_paper_b.py` before implementation -> exit 1; expected missing `vi_full.cross_sim_ranking`.
+  - Same command after implementation -> exit 0; 4 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 13 passed.
+  - Dry-run smoke command -> exit 0; generated the three `outputs/cross_sim/` artifacts above.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

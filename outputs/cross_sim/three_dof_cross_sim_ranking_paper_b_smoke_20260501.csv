@@ -1,0 +1,3 @@
+suite_name,status,success_rate,jam_rate,mean_peak_contact_force,mean_final_distance,mean_contact_steps,mean_contact_work,episode_count,completed_record_count,reason
+bc_only_stable_r32_p32,not_available,,,,,,,5,0,Paper-A policy artifact loader is not implemented.
+repaired_mainline_bc_to_ppo,not_available,,,,,,,5,0,Paper-A policy artifact loader is not implemented.
