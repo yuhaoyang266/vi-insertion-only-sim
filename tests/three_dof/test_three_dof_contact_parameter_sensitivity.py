@@ -48,6 +48,18 @@ def test_contact_parameter_sensitivity_runs_small_real_sweep() -> None:
     assert all("success_rate" in row for row in report["rows"])
 
 
+def test_contact_parameter_sensitivity_rejects_non_positive_episode_count() -> None:
+    with pytest.raises(ValueError, match="episodes_per_seed"):
+        run_contact_parameter_sensitivity(
+            profiles=["nominal"],
+            seeds=[0],
+            episodes_per_seed=0,
+            policy_names=["fixed_impedance"],
+            parameter_names=["contact_xy_scale"],
+            level_names=["nominal"],
+        )
+
+
 def test_contact_parameter_sensitivity_nominal_level_preserves_profile_baseline() -> None:
     report = run_contact_parameter_sensitivity(
         profiles=["high_friction"],

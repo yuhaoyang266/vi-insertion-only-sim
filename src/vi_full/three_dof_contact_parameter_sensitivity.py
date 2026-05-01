@@ -101,6 +101,8 @@ def build_contact_parameter_grid(
 
 
 def _mean(values: list[float]) -> float:
+    if not values:
+        raise ValueError("values must not be empty")
     return float(np.mean(np.asarray(values, dtype=np.float64)))
 
 
@@ -214,6 +216,8 @@ def run_contact_parameter_sensitivity(
     level_names: list[str] | None = None,
     max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
 ) -> dict[str, Any]:
+    if episodes_per_seed <= 0:
+        raise ValueError("episodes_per_seed must be positive.")
     selected_profiles = list(profiles or DEFAULT_UNCERTAINTY_PROFILES)
     selected_seeds = [int(seed) for seed in (seeds or [0])]
     selected_policy_names = list(policy_names or ["fixed_impedance", "variable_impedance"])

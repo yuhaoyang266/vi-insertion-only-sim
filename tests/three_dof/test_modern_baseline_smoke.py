@@ -58,6 +58,30 @@ def test_offline_dataset_schema_requires_current_contract_and_profile() -> None:
         validate_offline_dataset_schema(bad_contract)
 
 
+def test_offline_dataset_schema_requires_typed_nonempty_episode_metadata() -> None:
+    dataset = build_synthetic_offline_dataset(num_steps=4)
+
+    bad_seed = [dict(dataset[0])]
+    bad_seed[0]["seed"] = 0.5
+    with pytest.raises(ValueError, match="seed"):
+        validate_offline_dataset_schema(bad_seed)
+
+    bad_success = [dict(dataset[0])]
+    bad_success[0]["success"] = "false"
+    with pytest.raises(ValueError, match="success"):
+        validate_offline_dataset_schema(bad_success)
+
+    bad_reason = [dict(dataset[0])]
+    bad_reason[0]["termination_reason"] = ""
+    with pytest.raises(ValueError, match="termination_reason"):
+        validate_offline_dataset_schema(bad_reason)
+
+    bad_commit = [dict(dataset[0])]
+    bad_commit[0]["paper_a_commit"] = ""
+    with pytest.raises(ValueError, match="paper_a_commit"):
+        validate_offline_dataset_schema(bad_commit)
+
+
 def test_modern_baseline_smoke_reports_scaffold_status() -> None:
     report = run_modern_baseline_smoke(num_steps=4)
 

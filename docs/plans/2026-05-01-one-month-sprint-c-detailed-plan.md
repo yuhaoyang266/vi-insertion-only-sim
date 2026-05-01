@@ -1,9 +1,9 @@
 # 2026-05 One-Month Sprint C Detailed Plan
 
-> Date created: 2026-05-01  
-> Scope: May 2026 execution plan for Sprint C, External Validity via Paper-B Bridge.  
-> Primary repo: `vi-insertion-only-sim`  
-> Planned companion repo: `research-cartesian-impedance-vla-sim`  
+> Date created: 2026-05-01
+> Scope: May 2026 execution plan for Sprint C, External Validity via Paper-B Bridge.
+> Primary repo: `vi-insertion-only-sim`
+> Planned companion repo: `research-cartesian-impedance-vla-sim`
 > Source roadmap: `docs/plans/2026-04-28-12-month-tier2-roadmap-plan.md` and `docs/plans/2026-04-28-12-month-tier2-roadmap-task-list.md`
 
 ## 1. Current Project State
@@ -413,4 +413,3 @@ Use this shape for the 2026-05-31 progress entry:
 - Verification:
   - `<command>` -> exit `<code>`.
 ```
-

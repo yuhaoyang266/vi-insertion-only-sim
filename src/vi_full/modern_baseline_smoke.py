@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from numbers import Integral
 from pathlib import Path
 from typing import Any
 
@@ -114,8 +115,20 @@ def _validate_episode_record(record: dict[str, Any]) -> dict[str, Any]:
     profile = str(record["profile"])
     if profile not in DEFAULT_UNCERTAINTY_PROFILES:
         raise ValueError(f"profile must be one of {list(DEFAULT_UNCERTAINTY_PROFILES)}")
+    seed = record["seed"]
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    success = record["success"]
+    if not isinstance(success, bool):
+        raise ValueError("success must be a boolean")
+    termination_reason = str(record["termination_reason"])
+    if not termination_reason:
+        raise ValueError("termination_reason must not be empty")
     if not str(record["source_policy"]):
         raise ValueError("source_policy must not be empty")
+    paper_a_commit = str(record["paper_a_commit"])
+    if not paper_a_commit:
+        raise ValueError("paper_a_commit must not be empty")
     contract_sha = str(record["contract_sha"])
     if contract_sha != CONTRACT_SHA:
         raise ValueError(f"contract_sha must match current contract SHA {CONTRACT_SHA}")
@@ -125,11 +138,11 @@ def _validate_episode_record(record: dict[str, Any]) -> dict[str, Any]:
         "reward_shape": list(rewards.shape),
         "sample_count": int(len(observations)),
         "profile": profile,
-        "seed": int(record["seed"]),
-        "success": bool(record["success"]),
-        "termination_reason": str(record["termination_reason"]),
+        "seed": int(seed),
+        "success": success,
+        "termination_reason": termination_reason,
         "source_policy": str(record["source_policy"]),
-        "paper_a_commit": str(record["paper_a_commit"]),
+        "paper_a_commit": paper_a_commit,
         "contract_sha": contract_sha,
     }
 

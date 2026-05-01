@@ -11,7 +11,7 @@ studies when demonstration support opens useful contact under a matched benchmar
 impedance changes the local high-friction load path. It does not claim hardware validation,
 force-bounded safety guarantees, or a general sim-to-real metric.
 
-For a Tier-2 venue, the submission now has a documented external-validity path. The Sprint C bridge
+For a Tier-2 venue, the submission now has a documented external-validity path. The bridge
 uses `docs/cross_paper_interface_contract.md` to pin the interface between this paper's analytical
 3DoF benchmark and the companion Paper-B MuJoCo safety-layer environment. The current artifacts
 include a contract-level cross-sim dry-run smoke, a within-A contact-parameter sensitivity smoke,
@@ -21,7 +21,7 @@ not as unlanded cross-simulator physics results.
 The repository package includes the LaTeX source, paper-facing artifacts, cross-paper contract,
 focused reproduction scripts, reviewer smoke tests, and progress log entries that record command
 outputs and artifact paths. The paper-facing numbers remain tied to checked-in artifacts and are
-kept separate from the Sprint C smoke scaffolds.
+kept separate from the external-validity smoke scaffolds.
 
 Sincerely,
 

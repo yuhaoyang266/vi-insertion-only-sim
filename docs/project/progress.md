@@ -194,6 +194,24 @@
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 297 passed, 14 skipped, 13 warnings.
 
+### Sprint C Final Review Cleanup (2026-05-01)
+- **Status:** complete.
+- Review findings:
+  - The modern-baseline offline schema accepted non-integer seeds, string-like success values, and empty provenance strings despite the contract requiring typed episode metadata.
+  - The contact sensitivity API could accept `episodes_per_seed = 0`, which would leave empty metric lists instead of failing at the caller boundary.
+  - The Tier-2 cover-letter template still used internal `Sprint C` wording, and the committed Sprint C plan had trailing whitespace visible under a range-level diff check.
+- Action:
+  - Hardened `src/vi_full/modern_baseline_smoke.py` to require integer seeds, boolean success, nonempty termination reasons, and nonempty Paper-A commit metadata.
+  - Hardened `src/vi_full/three_dof_contact_parameter_sensitivity.py` to reject non-positive episode counts before environment evaluation.
+  - Removed internal process wording from `docs/submission/cover_letter_tier2_template.md` and cleaned `docs/plans/2026-05-01-one-month-sprint-c-detailed-plan.md` whitespace.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 9 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> exit 0; 8 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer tests/cross_paper tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_cross_sim_via_paper_b.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py tests/runners/test_run_modern_baseline_iql_smoke.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 55 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 299 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for regenerated smoke artifacts.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
