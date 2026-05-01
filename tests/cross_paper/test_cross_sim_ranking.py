@@ -105,6 +105,114 @@ def test_cross_sim_ranking_marks_partial_suite_as_failed() -> None:
     assert row["reason"] == "Paper-B episode failed"
 
 
+def test_cross_sim_ranking_excludes_out_of_scope_completed_from_metric_means() -> None:
+    ranking = build_cross_sim_ranking(
+        [
+            _record(
+                suite_name="mixed_scope_suite",
+                seed=0,
+                success_rate=0.5,
+                mean_peak_contact_force=2.0,
+                mean_final_distance=0.002,
+                mean_contact_steps=10.0,
+                mean_contact_work=0.02,
+            ),
+            _record(
+                suite_name="mixed_scope_suite",
+                seed=1,
+                out_of_paper_a_scope=True,
+                mean_dropped_torque_norm_nm=0.4,
+                success_rate=1.0,
+                mean_peak_contact_force=200.0,
+                mean_final_distance=0.2,
+                mean_contact_steps=100.0,
+                mean_contact_work=2.0,
+            ),
+        ],
+    )
+
+    row = ranking["rows"][0]
+    assert row["status"] == "completed"
+    assert row["success_rate"] == 0.5
+    assert row["mean_peak_contact_force"] == 2.0
+    assert row["primary_completed_record_count"] == 1
+    assert row["raw_completed_record_count"] == 2
+    assert row["out_of_scope_record_count"] == 1
+    assert row["completed_record_count"] == 1
+    assert "excluded 1 completed record out of Paper-A scope" in row["reason"]
+    assert len(ranking["records"]) == 2
+    assert ranking["records"][1]["out_of_paper_a_scope"] is True
+
+
+def test_cross_sim_ranking_marks_all_out_of_scope_completed_as_skipped() -> None:
+    ranking = build_cross_sim_ranking(
+        [
+            _record(
+                suite_name="all_out_of_scope_suite",
+                out_of_paper_a_scope=True,
+                mean_dropped_torque_norm_nm=0.3,
+                success_rate=1.0,
+                mean_peak_contact_force=100.0,
+                mean_final_distance=0.1,
+            ),
+            _record(
+                suite_name="all_out_of_scope_suite",
+                seed=1,
+                out_of_paper_a_scope=True,
+                mean_dropped_torque_norm_nm=0.5,
+                success_rate=0.0,
+                mean_peak_contact_force=200.0,
+                mean_final_distance=0.2,
+            ),
+        ],
+    )
+
+    row = ranking["rows"][0]
+    assert row["status"] == "skipped"
+    assert row["success_rate"] is None
+    assert row["mean_peak_contact_force"] is None
+    assert row["primary_completed_record_count"] == 0
+    assert row["raw_completed_record_count"] == 2
+    assert row["out_of_scope_record_count"] == 2
+    assert row["reason"] == "all completed records are out of Paper-A scope"
+
+
+def test_cross_sim_ranking_counts_mixed_scope_records_in_renderers(tmp_path: Path) -> None:
+    ranking = build_cross_sim_ranking(
+        [
+            _record(suite_name="mixed_scope_suite", seed=0, success_rate=0.25),
+            _record(
+                suite_name="mixed_scope_suite",
+                seed=1,
+                out_of_paper_a_scope=True,
+                mean_dropped_torque_norm_nm=0.2,
+                success_rate=0.75,
+            ),
+            _record(
+                suite_name="mixed_scope_suite",
+                seed=2,
+                out_of_paper_a_scope=True,
+                mean_dropped_torque_norm_nm=0.3,
+                success_rate=1.0,
+            ),
+        ],
+    )
+
+    row = ranking["rows"][0]
+    assert row["primary_completed_record_count"] == 1
+    assert row["raw_completed_record_count"] == 3
+    assert row["out_of_scope_record_count"] == 2
+
+    paths = write_cross_sim_ranking_artifacts(tmp_path / "cross_sim_ranking.json", ranking)
+    csv_rows = list(csv.DictReader(paths["csv"].read_text(encoding="utf-8").splitlines()))
+    assert csv_rows[0]["primary_completed_record_count"] == "1"
+    assert csv_rows[0]["raw_completed_record_count"] == "3"
+    assert csv_rows[0]["out_of_scope_record_count"] == "2"
+    markdown = paths["markdown"].read_text(encoding="utf-8")
+    assert "Primary completed" in markdown
+    assert "| mixed_scope_suite | completed | 0.25 |" in markdown
+
+
 def test_cross_sim_ranking_writes_json_csv_and_markdown(tmp_path: Path) -> None:
     ranking = build_cross_sim_ranking(
         [

@@ -1090,3 +1090,23 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/runners/test_run_cross_sim_via_paper_b.py` -> 9 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> 26 passed.
   - Dry-run smoke command with Paper-B checkout `dfb3c5c` and verified env commit `3eb8408` -> exit 0; regenerated JSON/CSV/Markdown sidecars.
+
+### Sprint C Repair B: Out-of-Scope Ranking Exclusion (2026-05-01)
+- Status: R5 closed for cross-sim primary row aggregation.
+- Actions taken:
+  - Changed primary ranking means to use only completed records where `out_of_paper_a_scope is not True`.
+  - Added `raw_completed_record_count`, `primary_completed_record_count`, and `out_of_scope_record_count` to JSON rows and CSV/Markdown renderers.
+  - Kept raw records unchanged for audit; `completed_record_count` remains as the primary completed count for compatibility.
+  - Marked all-completed-but-out-of-scope suites as `skipped` with reason `all completed records are out of Paper-A scope`.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.{json,csv,md}` with the new row-count fields.
+- Files changed:
+  - `src/vi_full/cross_sim_ranking.py`
+  - `tests/cross_paper/test_cross_sim_ranking.py`
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.csv`
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.md`
+  - `docs/project/progress.md`
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_sim_ranking.py` -> 8 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> 29 passed.
+  - Dry-run smoke command with Paper-B checkout `dfb3c5c` and verified env commit `3eb8408` -> exit 0; regenerated JSON/CSV/Markdown sidecars.

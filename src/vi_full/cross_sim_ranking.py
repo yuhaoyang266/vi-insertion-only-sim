@@ -143,32 +143,55 @@ def _row_sort_key(row: dict[str, Any]) -> tuple[Any, ...]:
     )
 
 
-def _suite_status(records: list[dict[str, Any]], completed_records: list[dict[str, Any]]) -> str:
+def _suite_status(
+    records: list[dict[str, Any]],
+    primary_completed_records: list[dict[str, Any]],
+    raw_completed_records: list[dict[str, Any]],
+) -> str:
     statuses = {str(record.get("status", "unknown")) for record in records}
-    if statuses == {"completed"}:
+    if statuses == {"completed"} and primary_completed_records:
         return "completed"
+    if statuses == {"completed"} and raw_completed_records:
+        return "skipped"
     for status in NON_COMPLETED_STATUS_PRIORITY:
         if status in statuses:
             return status
-    if completed_records:
+    if primary_completed_records:
         return "failed"
     return sorted(statuses)[0] if statuses else "unknown"
 
 
 def _summarize_suite(suite_name: str, records: list[dict[str, Any]]) -> dict[str, Any]:
-    completed_records = [record for record in records if record.get("status") == "completed"]
-    status = _suite_status(records, completed_records)
+    raw_completed_records = [
+        record for record in records if record.get("status") == "completed"
+    ]
+    primary_completed_records = [
+        record
+        for record in raw_completed_records
+        if record.get("out_of_paper_a_scope") is not True
+    ]
+    out_of_scope_records = [
+        record
+        for record in raw_completed_records
+        if record.get("out_of_paper_a_scope") is True
+    ]
+    status = _suite_status(records, primary_completed_records, raw_completed_records)
     row: dict[str, Any] = {
         "suite_name": suite_name,
         "status": status,
         "profile_count": len({str(record.get("profile", "")) for record in records}),
         "seed_count": len({int(record.get("seed", 0)) for record in records}),
         "record_count": len(records),
-        "completed_record_count": len(completed_records),
+        "completed_record_count": len(primary_completed_records),
+        "raw_completed_record_count": len(raw_completed_records),
+        "primary_completed_record_count": len(primary_completed_records),
+        "out_of_scope_record_count": len(out_of_scope_records),
         "episode_count": int(sum(int(record.get("episode_count", 0)) for record in records)),
         "reason": "",
     }
-    source_records = completed_records if completed_records else records
+    source_records = primary_completed_records
+    if not source_records and not raw_completed_records:
+        source_records = records
     for metric_name in RANKING_METRICS:
         row[metric_name] = _mean(record.get(metric_name) for record in source_records)
     reasons = [
@@ -176,6 +199,14 @@ def _summarize_suite(suite_name: str, records: list[dict[str, Any]]) -> dict[str
         for record in records
         if record.get("status") != "completed" and record.get("reason")
     ]
+    if out_of_scope_records:
+        if primary_completed_records:
+            record_label = "record" if len(out_of_scope_records) == 1 else "records"
+            reasons.append(
+                f"excluded {len(out_of_scope_records)} completed {record_label} out of Paper-A scope"
+            )
+        else:
+            reasons.append("all completed records are out of Paper-A scope")
     row["reason"] = "; ".join(sorted(set(reasons)))
     return row
 
@@ -215,6 +246,9 @@ def render_cross_sim_ranking_csv(ranking: dict[str, Any]) -> str:
         "mean_contact_work",
         "episode_count",
         "completed_record_count",
+        "raw_completed_record_count",
+        "primary_completed_record_count",
+        "out_of_scope_record_count",
         "reason",
     ]
     rows = ranking.get("rows", [])
@@ -232,13 +266,15 @@ def render_cross_sim_ranking_markdown(ranking: dict[str, Any]) -> str:
     lines = [
         "# Cross-Sim Ranking",
         "",
-        "| Suite | Status | Success | Jam | Peak force | Final distance | Contact steps | Reason |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |",
+        "| Suite | Status | Success | Jam | Peak force | Final distance | Contact steps | Primary completed | Raw completed | Out of scope | Reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
     ]
     for row in ranking.get("rows", []):
         lines.append(
             "| {suite_name} | {status} | {success_rate} | {jam_rate} | "
-            "{mean_peak_contact_force} | {mean_final_distance} | {mean_contact_steps} | {reason} |".format(
+            "{mean_peak_contact_force} | {mean_final_distance} | {mean_contact_steps} | "
+            "{primary_completed_record_count} | {raw_completed_record_count} | "
+            "{out_of_scope_record_count} | {reason} |".format(
                 suite_name=row.get("suite_name", ""),
                 status=row.get("status", ""),
                 success_rate="" if row.get("success_rate") is None else row["success_rate"],
@@ -252,6 +288,9 @@ def render_cross_sim_ranking_markdown(ranking: dict[str, Any]) -> str:
                 mean_contact_steps=(
                     "" if row.get("mean_contact_steps") is None else row["mean_contact_steps"]
                 ),
+                primary_completed_record_count=row.get("primary_completed_record_count", ""),
+                raw_completed_record_count=row.get("raw_completed_record_count", ""),
+                out_of_scope_record_count=row.get("out_of_scope_record_count", ""),
                 reason=row.get("reason", ""),
             )
         )
