@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime
 import subprocess
 from pathlib import Path
+import re
 import sys
 from typing import Any
 
@@ -29,6 +30,9 @@ from vi_full.cross_paper_bridge import (
 )
 from vi_full.cross_sim_ranking import build_cross_sim_ranking, write_cross_sim_ranking_artifacts
 from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
+
+
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-fA-F]{4,40}$")
 
 
 def _parse_args() -> argparse.Namespace:
@@ -65,9 +69,13 @@ def _default_output_path() -> Path:
     return Path("outputs") / "cross_sim" / f"three_dof_cross_sim_ranking_paper_b_{date_stamp}.json"
 
 
-def _git_commit(repo_path: Path) -> str:
+def _git_commit(repo_path: Path, *, short: bool = True) -> str:
+    command = ["git", "rev-parse"]
+    if short:
+        command.append("--short")
+    command.append("HEAD")
     completed = subprocess.run(
-        ["git", "rev-parse", "--short", "HEAD"],
+        command,
         cwd=repo_path,
         text=True,
         capture_output=True,
@@ -76,6 +84,51 @@ def _git_commit(repo_path: Path) -> str:
     if completed.returncode != 0:
         return "unknown"
     return completed.stdout.strip()
+
+
+def _resolve_commit(repo_path: Path, commitish: str) -> str | None:
+    completed = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", f"{commitish}^{{commit}}"],
+        cwd=repo_path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        return None
+    return completed.stdout.strip()
+
+
+def _resolve_and_verify_paper_b_commit(
+    args: argparse.Namespace,
+    paper_b_repo_path: Path,
+) -> str:
+    actual_full_commit = _git_commit(paper_b_repo_path, short=False)
+    actual_short_commit = _git_commit(paper_b_repo_path)
+    provided_commit = args.paper_b_commit
+    if actual_full_commit == "unknown":
+        if provided_commit is None:
+            return "unknown"
+        raise RuntimeError(
+            "Cannot verify --paper-b-commit because the actual Paper-B checkout "
+            f"commit is unknown; expected {provided_commit}, actual unknown."
+        )
+    if provided_commit is None:
+        return actual_short_commit
+    if not _COMMIT_SHA_RE.fullmatch(provided_commit):
+        raise RuntimeError(
+            "--paper-b-commit must be an unambiguous git SHA prefix; "
+            f"expected {provided_commit}, actual {actual_short_commit}."
+        )
+    resolved_commit = _resolve_commit(paper_b_repo_path, provided_commit)
+    if resolved_commit != actual_full_commit:
+        resolved_display = resolved_commit if resolved_commit is not None else "unresolved"
+        raise RuntimeError(
+            "Paper-B commit mismatch: "
+            f"expected {provided_commit}, actual {actual_short_commit} "
+            f"({actual_full_commit}); provided resolves to {resolved_display}."
+        )
+    return actual_short_commit
 
 
 def _validate_paper_b_contract(paper_b_repo_path: Path) -> str:
@@ -171,7 +224,7 @@ def main() -> None:
     if not paper_b_repo_path.exists():
         raise FileNotFoundError(f"Paper-B repo path does not exist: {paper_b_repo_path}")
     paper_b_contract_sha = _validate_paper_b_contract(paper_b_repo_path)
-    paper_b_commit = args.paper_b_commit or _git_commit(paper_b_repo_path)
+    paper_b_commit = _resolve_and_verify_paper_b_commit(args, paper_b_repo_path)
     if not args.dry_run:
         raise RuntimeError(
             "Paper-B physics execution is not implemented yet; use --dry-run for contract smoke."

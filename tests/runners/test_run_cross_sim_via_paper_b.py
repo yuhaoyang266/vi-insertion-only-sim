@@ -26,17 +26,39 @@ def _load_runner_module():
     return module
 
 
-def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
-    monkeypatch,
-    tmp_path: Path,
-) -> None:
-    module = _load_runner_module()
+def _run_git(repo_path: Path, *args: str) -> str:
+    completed = subprocess.run(
+        ["git", *args],
+        cwd=repo_path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    return completed.stdout.strip()
+
+
+def _make_paper_b_repo(tmp_path: Path) -> tuple[Path, str]:
     paper_b_repo = tmp_path / "paper_b"
     paper_b_docs = paper_b_repo / "docs"
     paper_b_docs.mkdir(parents=True)
     paper_b_contract = paper_b_docs / "cross_paper_interface_contract.md"
     paper_a_contract = REPO_ROOT / "docs" / "cross_paper_interface_contract.md"
     paper_b_contract.write_bytes(paper_a_contract.read_bytes())
+    _run_git(paper_b_repo, "init")
+    _run_git(paper_b_repo, "config", "user.email", "test@example.com")
+    _run_git(paper_b_repo, "config", "user.name", "Test User")
+    _run_git(paper_b_repo, "add", "docs/cross_paper_interface_contract.md")
+    _run_git(paper_b_repo, "commit", "-m", "mirror contract")
+    return paper_b_repo, _run_git(paper_b_repo, "rev-parse", "--short", "HEAD")
+
+
+def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, paper_b_commit = _make_paper_b_repo(tmp_path)
     output_path = tmp_path / "cross_sim" / "paper_b_smoke.json"
     monkeypatch.setattr(
         sys,
@@ -46,7 +68,7 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
             "--paper-b-repo-path",
             str(paper_b_repo),
             "--paper-b-commit",
-            "paperb123",
+            paper_b_commit,
             "--profiles",
             "nominal",
             "--seeds",
@@ -65,7 +87,7 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     payload = json.loads(output_path.read_text(encoding="utf-8"))
 
     assert payload["artifact_type"] == "cross_sim_ranking"
-    assert payload["metadata"]["paper_b_commit"] == "paperb123"
+    assert payload["metadata"]["paper_b_commit"] == paper_b_commit
     assert payload["metadata"]["paper_a_policy_artifact"] == "not_available"
     assert payload["metadata"]["paper_b_env_config"] == "not_available"
     assert payload["metadata"]["mapping_dyaw"] == 0.0
@@ -79,12 +101,7 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
 
 def test_cross_sim_runner_rejects_unknown_profiles(monkeypatch, tmp_path: Path) -> None:
     module = _load_runner_module()
-    paper_b_repo = tmp_path / "paper_b"
-    paper_b_docs = paper_b_repo / "docs"
-    paper_b_docs.mkdir(parents=True)
-    paper_b_contract = paper_b_docs / "cross_paper_interface_contract.md"
-    paper_a_contract = REPO_ROOT / "docs" / "cross_paper_interface_contract.md"
-    paper_b_contract.write_bytes(paper_a_contract.read_bytes())
+    paper_b_repo, paper_b_commit = _make_paper_b_repo(tmp_path)
     monkeypatch.setattr(
         sys,
         "argv",
@@ -93,7 +110,7 @@ def test_cross_sim_runner_rejects_unknown_profiles(monkeypatch, tmp_path: Path) 
             "--paper-b-repo-path",
             str(paper_b_repo),
             "--paper-b-commit",
-            "paperb123",
+            paper_b_commit,
             "--profiles",
             "invalid_profile",
             "--dry-run",
@@ -104,6 +121,68 @@ def test_cross_sim_runner_rejects_unknown_profiles(monkeypatch, tmp_path: Path) 
 
     with pytest.raises(ValueError, match="invalid_profile"):
         module.main()
+
+
+def test_cross_sim_runner_rejects_wrong_paper_b_commit(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, _paper_b_commit = _make_paper_b_repo(tmp_path)
+    output_path = tmp_path / "cross_sim.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--paper-b-commit",
+            "deadbee",
+            "--dry-run",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    with pytest.raises(RuntimeError, match="Paper-B commit mismatch"):
+        module.main()
+
+    assert not output_path.exists()
+
+
+def test_cross_sim_runner_records_actual_checkout_commit_when_omitted(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, paper_b_commit = _make_paper_b_repo(tmp_path)
+    output_path = tmp_path / "cross_sim.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--profiles",
+            "nominal",
+            "--seeds",
+            "0",
+            "--episodes-per-seed",
+            "1",
+            "--suites",
+            "repaired_mainline_bc_to_ppo",
+            "--dry-run",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    module.main()
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+
+    assert payload["metadata"]["paper_b_commit"] == paper_b_commit
 
 
 def test_cross_sim_runner_help_works_from_repo_root() -> None:
