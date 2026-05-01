@@ -272,6 +272,24 @@
 - Verification:
   - Paper-B `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py tests/test_readiness.py tests/test_contact_wrench.py tests/test_peg_in_hole_env.py tests/test_safety_layer_core.py tests/test_safety_layer_eval.py tests/test_safety_layer_matrix.py` -> exit 0; 46 passed.
 
+### Sprint C Contact-Parameter Sensitivity Expansion (2026-05-01)
+- **Status:** mid-scale within-A sensitivity artifact generated for the fallback evidence path.
+- Scope:
+  - Added per-metric sensitivity summaries for success, jam, documented force jam, blocked-contact termination, final distance, peak force, p95 peak force, contact steps, and contact work.
+  - Preserved the existing success-only `most_sensitive_parameter` field for backward compatibility.
+- Artifact:
+  - `outputs/revision/contact_parameter_sensitivity_20260501.json`
+  - `outputs/revision/contact_parameter_sensitivity_20260501.csv`
+  - `outputs/revision/contact_parameter_sensitivity_20260501.md`
+  - Config: parameters `contact_xy_scale`, `contact_z_scale`, `wall_friction_range`, `force_noise_std_range`, `contact_transition_band_m`; levels `low/nominal/high`; profiles `nominal`, `high_friction`, `tight_clearance`; seeds `0/1/2`; `5` episodes per seed; policies `fixed_impedance`, `variable_impedance`; `90` aggregate rows.
+- Readout:
+  - Success and jam deltas stayed at `0.0` in this slice.
+  - `wall_friction_range` was most sensitive for final distance, peak force, p95 peak force, contact steps, and contact work; the largest peak-force delta was `1.1174858857696188` N on `high_friction` / `fixed_impedance` / `high`.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> exit 0; 10 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `git diff --check` -> exit 0.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

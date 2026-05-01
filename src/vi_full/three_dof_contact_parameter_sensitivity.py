@@ -43,6 +43,17 @@ ROW_FIELDS = (
     "mean_contact_steps",
     "mean_contact_work",
 )
+SENSITIVITY_SUMMARY_METRICS = (
+    "success_rate",
+    "jam_rate",
+    "documented_force_jam_rate",
+    "blocked_contact_termination_rate",
+    "mean_final_distance",
+    "mean_peak_contact_force",
+    "p95_peak_contact_force",
+    "mean_contact_steps",
+    "mean_contact_work",
+)
 
 
 def _json_safe(value: Any) -> Any:
@@ -261,6 +272,7 @@ def run_contact_parameter_sensitivity(
                         **_aggregate_seed_summaries(seed_summaries),
                     }
                 )
+    most_sensitive_parameters_by_metric = identify_most_sensitive_parameters_by_metric(rows)
     return {
         "artifact_type": "three_dof_contact_parameter_sensitivity",
         "schema_version": 1,
@@ -274,42 +286,89 @@ def run_contact_parameter_sensitivity(
             "max_episode_steps": int(max_episode_steps),
         },
         "most_sensitive_parameter": identify_most_sensitive_parameter(rows),
+        "most_sensitive_parameters_by_metric": most_sensitive_parameters_by_metric,
         "rows": _json_safe(rows),
     }
 
 
-def identify_most_sensitive_parameter(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    values_by_stratum: dict[tuple[str, str, str], list[float]] = {}
-    nominal_by_stratum: dict[tuple[str, str, str], list[float]] = {}
+def identify_most_sensitive_parameters_by_metric(
+    rows: list[dict[str, Any]],
+    *,
+    metric_names: tuple[str, ...] = SENSITIVITY_SUMMARY_METRICS,
+) -> dict[str, dict[str, Any]]:
+    values_by_stratum: dict[tuple[str, str, str, str], list[tuple[str, float]]] = {}
+    nominal_by_stratum: dict[tuple[str, str, str, str], list[float]] = {}
     for row in rows:
         parameter_name = str(row["parameter_name"])
-        stratum = (
-            parameter_name,
-            str(row.get("profile", "")),
-            str(row.get("policy_name", "")),
-        )
-        success_rate = float(row["success_rate"])
-        values_by_stratum.setdefault(stratum, []).append(success_rate)
-        if row["level_name"] == "nominal":
-            nominal_by_stratum.setdefault(stratum, []).append(success_rate)
-    best: dict[str, Any] = {
-        "parameter_name": None,
-        "max_abs_success_delta": 0.0,
+        profile = str(row.get("profile", ""))
+        policy_name = str(row.get("policy_name", ""))
+        level_name = str(row["level_name"])
+        for metric_name in metric_names:
+            if metric_name not in row:
+                continue
+            stratum = (metric_name, parameter_name, profile, policy_name)
+            metric_value = float(row[metric_name])
+            values_by_stratum.setdefault(stratum, []).append((level_name, metric_value))
+            if level_name == "nominal":
+                nominal_by_stratum.setdefault(stratum, []).append(metric_value)
+    best_by_metric: dict[str, dict[str, Any]] = {
+        metric_name: {
+            "metric_name": metric_name,
+            "parameter_name": None,
+            "profile": None,
+            "policy_name": None,
+            "level_name": None,
+            "nominal_value": None,
+            "level_value": None,
+            "max_abs_delta": 0.0,
+        }
+        for metric_name in metric_names
     }
     for stratum, values in values_by_stratum.items():
-        parameter_name = stratum[0]
+        metric_name, parameter_name, profile, policy_name = stratum
         nominal_values = nominal_by_stratum.get(stratum)
         if not nominal_values:
             continue
         nominal = _mean(nominal_values)
-        max_delta = max(abs(float(value) - nominal) for value in values)
-        if best["parameter_name"] is None or max_delta > float(best["max_abs_success_delta"]):
-            best = {
+        level_name, level_value = max(
+            values,
+            key=lambda item: abs(float(item[1]) - nominal),
+        )
+        max_delta = abs(float(level_value) - nominal)
+        best = best_by_metric[metric_name]
+        if best["parameter_name"] is None or max_delta > float(best["max_abs_delta"]):
+            best_by_metric[metric_name] = {
+                "metric_name": metric_name,
                 "parameter_name": parameter_name,
-                "nominal_success_rate": nominal,
-                "max_abs_success_delta": float(max_delta),
+                "profile": profile,
+                "policy_name": policy_name,
+                "level_name": level_name,
+                "nominal_value": nominal,
+                "level_value": float(level_value),
+                "max_abs_delta": float(max_delta),
             }
-    return best
+    return best_by_metric
+
+
+def identify_most_sensitive_parameter(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    success_summary = identify_most_sensitive_parameters_by_metric(
+        rows,
+        metric_names=("success_rate",),
+    )["success_rate"]
+    if success_summary["parameter_name"] is None:
+        return {
+            "parameter_name": None,
+            "max_abs_success_delta": 0.0,
+        }
+    return {
+        "parameter_name": success_summary["parameter_name"],
+        "profile": success_summary["profile"],
+        "policy_name": success_summary["policy_name"],
+        "level_name": success_summary["level_name"],
+        "nominal_success_rate": success_summary["nominal_value"],
+        "level_success_rate": success_summary["level_value"],
+        "max_abs_success_delta": success_summary["max_abs_delta"],
+    }
 
 
 def render_contact_parameter_sensitivity_csv(report: dict[str, Any]) -> str:
@@ -324,14 +383,41 @@ def render_contact_parameter_sensitivity_csv(report: dict[str, Any]) -> str:
 
 
 def render_contact_parameter_sensitivity_markdown(report: dict[str, Any]) -> str:
+    summary_by_metric = report.get("most_sensitive_parameters_by_metric", {})
     lines = [
         "# 3DoF Contact-Parameter Sensitivity",
         "",
         f"- most_sensitive_parameter: {report['most_sensitive_parameter'].get('parameter_name')}",
         "",
-        "| Parameter | Level | Profile | Policy | Success | Jam | Peak force | Final distance |",
-        "| --- | --- | --- | --- | ---: | ---: | ---: | ---: |",
+        "## Most Sensitive Parameters By Metric",
+        "",
+        "| Metric | Parameter | Profile | Policy | Level | Nominal | Level value | Abs delta |",
+        "| --- | --- | --- | --- | --- | ---: | ---: | ---: |",
     ]
+    for metric_name in SENSITIVITY_SUMMARY_METRICS:
+        summary = summary_by_metric.get(metric_name, {})
+        lines.append(
+            "| {metric_name} | {parameter_name} | {profile} | {policy_name} | {level_name} | "
+            "{nominal_value} | {level_value} | {max_abs_delta} |".format(
+                metric_name=metric_name,
+                parameter_name=summary.get("parameter_name", ""),
+                profile=summary.get("profile", ""),
+                policy_name=summary.get("policy_name", ""),
+                level_name=summary.get("level_name", ""),
+                nominal_value="" if summary.get("nominal_value") is None else summary["nominal_value"],
+                level_value="" if summary.get("level_value") is None else summary["level_value"],
+                max_abs_delta="" if summary.get("max_abs_delta") is None else summary["max_abs_delta"],
+            )
+        )
+    lines.extend(
+        [
+            "",
+            "## Rows",
+            "",
+            "| Parameter | Level | Profile | Policy | Success | Jam | Peak force | Final distance |",
+            "| --- | --- | --- | --- | ---: | ---: | ---: | ---: |",
+        ]
+    )
     for row in report["rows"]:
         lines.append(
             "| {parameter_name} | {level_name} | {profile} | {policy_name} | "

@@ -9,6 +9,7 @@ import pytest
 from vi_full.three_dof_contact_parameter_sensitivity import (
     build_contact_parameter_grid,
     identify_most_sensitive_parameter,
+    identify_most_sensitive_parameters_by_metric,
     run_contact_parameter_sensitivity,
     write_contact_parameter_sensitivity_artifacts,
 )
@@ -42,6 +43,9 @@ def test_contact_parameter_sensitivity_runs_small_real_sweep() -> None:
 
     assert report["artifact_type"] == "three_dof_contact_parameter_sensitivity"
     assert len(report["rows"]) == 2
+    assert report["most_sensitive_parameters_by_metric"]["mean_peak_contact_force"][
+        "metric_name"
+    ] == "mean_peak_contact_force"
     assert {row["level_name"] for row in report["rows"]} == {"low", "nominal"}
     assert all(row["profile"] == "nominal" for row in report["rows"])
     assert all(row["policy_name"] == "fixed_impedance" for row in report["rows"])
@@ -139,12 +143,89 @@ def test_identify_most_sensitive_parameter_compares_matching_profile_policy() ->
     assert result["max_abs_success_delta"] == pytest.approx(0.3)
 
 
+def test_identify_most_sensitive_parameters_reports_each_metric() -> None:
+    rows = [
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "nominal",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_peak_contact_force": 2.0,
+            "mean_final_distance": 0.001,
+            "mean_contact_work": 0.01,
+        },
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "high",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_peak_contact_force": 5.0,
+            "mean_final_distance": 0.001,
+            "mean_contact_work": 0.02,
+        },
+        {
+            "parameter_name": "force_noise_std_range",
+            "level_name": "nominal",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 1.0,
+            "jam_rate": 0.0,
+            "mean_peak_contact_force": 2.0,
+            "mean_final_distance": 0.001,
+            "mean_contact_work": 0.01,
+        },
+        {
+            "parameter_name": "force_noise_std_range",
+            "level_name": "high",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 1.0,
+            "jam_rate": 0.25,
+            "mean_peak_contact_force": 2.5,
+            "mean_final_distance": 0.003,
+            "mean_contact_work": 0.07,
+        },
+    ]
+
+    summary = identify_most_sensitive_parameters_by_metric(
+        rows,
+        metric_names=(
+            "success_rate",
+            "jam_rate",
+            "mean_peak_contact_force",
+            "mean_final_distance",
+            "mean_contact_work",
+        ),
+    )
+
+    assert summary["success_rate"]["max_abs_delta"] == pytest.approx(0.0)
+    assert summary["jam_rate"]["parameter_name"] == "force_noise_std_range"
+    assert summary["mean_peak_contact_force"]["parameter_name"] == "contact_xy_scale"
+    assert summary["mean_final_distance"]["parameter_name"] == "force_noise_std_range"
+    assert summary["mean_contact_work"]["max_abs_delta"] == pytest.approx(0.06)
+
+
 def test_contact_parameter_sensitivity_writes_artifacts(tmp_path: Path) -> None:
     report = {
         "artifact_type": "three_dof_contact_parameter_sensitivity",
         "schema_version": 1,
         "config": {},
         "most_sensitive_parameter": {"parameter_name": "contact_xy_scale"},
+        "most_sensitive_parameters_by_metric": {
+            "success_rate": {
+                "parameter_name": "contact_xy_scale",
+                "profile": "nominal",
+                "policy_name": "fixed_impedance",
+                "level_name": "nominal",
+                "nominal_value": 1.0,
+                "level_value": 1.0,
+                "max_abs_delta": 0.0,
+            }
+        },
         "rows": [
             {
                 "parameter_name": "contact_xy_scale",
