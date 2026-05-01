@@ -4,9 +4,10 @@
   "metadata": {
     "contract_sha": "d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e",
     "paper_b_contract_sha": "d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e",
-    "paper_a_commit": "bf48257",
+    "paper_a_commit": "0d13050",
     "paper_b_commit": "3eb8408",
-    "paper_b_repo_path": "F:/edge download/every-embodied-main/research-cartesian-impedance-vla-sim",
+    "paper_b_repo": "research-cartesian-impedance-vla-sim",
+    "paper_b_repo_path_policy": "external checkout path is not embedded in reviewer artifacts",
     "dry_run": true,
     "profiles": [
       "nominal"

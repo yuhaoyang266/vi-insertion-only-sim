@@ -127,6 +127,24 @@
   - `rg -n -i "sprint" paper/main.tex` -> exit 1; no internal process wording remains in the manuscript.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning for `paper/main.tex` only.
 
+### Sprint C May Checkpoint (2026-05-01)
+- **Status:** Paper-B bridge active at contract/dry-run level; Paper-B physics ranking deferred until a real Paper-A policy artifact loader exists.
+- Contract: `docs/cross_paper_interface_contract.md`, SHA pinned to `d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e`.
+- Paper-B commit: `3eb8408`; mirror contract/pin committed in `F:\edge download\every-embodied-main\research-cartesian-impedance-vla-sim`, with unrelated pre-existing dirty Paper-B files left untouched.
+- Bridge artifact: `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` plus CSV/Markdown sidecars; rows are intentionally `not_available` because the policy artifact loader is not implemented.
+- Sensitivity artifact: `outputs/revision/contact_parameter_sensitivity_smoke_20260501.json` plus CSV/Markdown sidecars.
+- Modern baseline: `iql_offline`, smoke status `scaffold_only`, artifact `outputs/revision/modern_baseline_iql_smoke_20260501.json`.
+- June decision: continue Paper-B path for policy-loader and physics-smoke implementation; keep within-A contact-parameter sensitivity as the fallback evidence path if Paper-B physics parity blocks again.
+- Final review fix:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> first exit 1; reviewer scan found local `F:/` path in cross-sim artifact.
+  - Updated `scripts/experiments/run_cross_sim_via_paper_b.py` to record a portable Paper-B repo label and path policy instead of embedding the external checkout path; regenerated the cross-sim smoke artifact.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_cross_sim_via_paper_b.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 25 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 292 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for generated cross-sim smoke sidecars.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
