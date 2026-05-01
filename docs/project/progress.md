@@ -1110,3 +1110,22 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_sim_ranking.py` -> 8 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> 29 passed.
   - Dry-run smoke command with Paper-B checkout `dfb3c5c` and verified env commit `3eb8408` -> exit 0; regenerated JSON/CSV/Markdown sidecars.
+
+### Sprint C Repair C: Modern Dataset Digest Provenance (2026-05-01)
+- Status: R6 closed for modern-baseline JSON dataset ingestion.
+- Actions taken:
+  - Added `compute_dataset_sha256()` and byte-size provenance for `--dataset-path` inputs.
+  - Kept absolute path redaction unchanged: in-repo datasets remain repo-relative, external datasets remain `external_json_dataset:<filename>`.
+  - Added top-level `dataset_sha256` and `dataset_size_bytes` fields; synthetic scaffold artifacts record both as `null`.
+  - Regenerated `outputs/revision/modern_baseline_iql_smoke_20260501.{json,md}` with synthetic provenance fields.
+- Files changed:
+  - `src/vi_full/modern_baseline_smoke.py`
+  - `tests/three_dof/test_modern_baseline_smoke.py`
+  - `tests/runners/test_run_modern_baseline_iql_smoke.py`
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.json`
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.md`
+  - `docs/project/progress.md`
+- Verification:
+  - First focused run before artifact regeneration failed only because the committed artifact lacked the new `dataset_sha256` field.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> 12 passed after regeneration.
+  - `python scripts/experiments/run_modern_baseline_iql_smoke.py --num-steps 8 --output outputs/revision/modern_baseline_iql_smoke_20260501.json` -> exit 0; regenerated JSON/Markdown sidecars.

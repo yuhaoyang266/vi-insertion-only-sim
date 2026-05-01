@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from numbers import Integral
 from pathlib import Path
@@ -84,6 +85,10 @@ def load_offline_dataset_json(dataset_path: Path) -> Any:
     if not path.exists():
         raise FileNotFoundError(f"offline dataset does not exist: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def compute_dataset_sha256(dataset_path: Path) -> str:
+    return hashlib.sha256(Path(dataset_path).read_bytes()).hexdigest()
 
 
 def _dataset_source_label(dataset_path: Path) -> str:
@@ -191,15 +196,20 @@ def run_modern_baseline_smoke(
         dataset = build_synthetic_offline_dataset(num_steps=num_steps)
         status = "scaffold_only"
         dataset_source = "synthetic_schema_smoke"
+        dataset_sha256 = None
+        dataset_size_bytes = None
         blocked_on = [
             "real Paper-A offline demonstration artifact path",
             "IQL/CQL training dependency and hyperparameter file",
             "comparison protocol against existing five-suite benchmark rows",
         ]
     else:
-        dataset = load_offline_dataset_json(dataset_path)
+        resolved_dataset_path = Path(dataset_path)
+        dataset = load_offline_dataset_json(resolved_dataset_path)
         status = "dataset_schema_verified"
-        dataset_source = _dataset_source_label(dataset_path)
+        dataset_source = _dataset_source_label(resolved_dataset_path)
+        dataset_sha256 = compute_dataset_sha256(resolved_dataset_path)
+        dataset_size_bytes = int(resolved_dataset_path.stat().st_size)
         blocked_on = [
             "IQL/CQL training dependency and hyperparameter file",
             "comparison protocol against existing five-suite benchmark rows",
@@ -212,6 +222,8 @@ def run_modern_baseline_smoke(
         "status": status,
         "decision": dict(MODERN_BASELINE_DECISION),
         "dataset_source": dataset_source,
+        "dataset_sha256": dataset_sha256,
+        "dataset_size_bytes": dataset_size_bytes,
         "dataset_summary": dataset_summary,
         "blocked_on": blocked_on,
     }
@@ -219,11 +231,18 @@ def run_modern_baseline_smoke(
 
 def render_modern_baseline_smoke_markdown(report: dict[str, Any]) -> str:
     summary = report["dataset_summary"]
+    dataset_sha256 = "null" if report["dataset_sha256"] is None else report["dataset_sha256"]
+    dataset_size_bytes = (
+        "null" if report["dataset_size_bytes"] is None else report["dataset_size_bytes"]
+    )
     lines = [
         "# Modern Baseline Smoke",
         "",
         f"- algorithm: {report['algorithm']}",
         f"- status: {report['status']}",
+        f"- dataset_source: {report['dataset_source']}",
+        f"- dataset_sha256: {dataset_sha256}",
+        f"- dataset_size_bytes: {dataset_size_bytes}",
         f"- observation_shape: {summary['observation_shape']}",
         f"- action_shape: {summary['action_shape']}",
         f"- sample_count: {summary['sample_count']}",

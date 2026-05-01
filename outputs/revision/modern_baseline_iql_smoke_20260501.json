@@ -13,6 +13,8 @@
     "rationale": "IQL/CQL can consume the existing Paper-A 14D observation and 5D action offline dataset contract without introducing vision, hardware, or action-space scope."
   },
   "dataset_source": "synthetic_schema_smoke",
+  "dataset_sha256": null,
+  "dataset_size_bytes": null,
   "dataset_summary": {
     "episode_count": 1,
     "profile_count": 1,

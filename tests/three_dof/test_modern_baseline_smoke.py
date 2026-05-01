@@ -10,6 +10,7 @@ from vi_full.cross_paper_bridge import CONTRACT_SHA
 from vi_full.modern_baseline_smoke import (
     MODERN_BASELINE_DECISION,
     build_synthetic_offline_dataset,
+    compute_dataset_sha256,
     load_offline_dataset_json,
     run_modern_baseline_smoke,
     validate_offline_dataset_schema,
@@ -94,6 +95,8 @@ def test_modern_baseline_smoke_reports_scaffold_status() -> None:
     assert report["algorithm"] == "iql_offline"
     assert report["status"] == "scaffold_only"
     assert report["dataset_source"] == "synthetic_schema_smoke"
+    assert report["dataset_sha256"] is None
+    assert report["dataset_size_bytes"] is None
     assert report["dataset_summary"]["observation_shape"] == [4, 14]
     assert "episode_id" in report["dataset_summary"]["required_episode_keys"]
 
@@ -115,7 +118,10 @@ def test_modern_baseline_smoke_can_ingest_json_dataset(tmp_path: Path) -> None:
     assert loaded[0]["episode_id"] == "synthetic_schema_smoke_0000"
     assert report["status"] == "dataset_schema_verified"
     assert report["dataset_source"] == "external_json_dataset:offline_dataset.json"
+    assert report["dataset_sha256"] == compute_dataset_sha256(dataset_path)
+    assert report["dataset_size_bytes"] == len(dataset_path.read_bytes())
     assert str(tmp_path) not in report["dataset_source"]
+    assert str(tmp_path) not in json.dumps(report)
     assert report["dataset_summary"]["sample_count"] == 4
     assert "real Paper-A offline demonstration artifact path" not in report["blocked_on"]
 
@@ -136,4 +142,7 @@ def test_committed_modern_baseline_artifact_uses_current_contract_sha() -> None:
     payload = json.loads(artifact_path.read_text(encoding="utf-8"))
 
     assert payload["status"] == "scaffold_only"
+    assert payload["dataset_source"] == "synthetic_schema_smoke"
+    assert payload["dataset_sha256"] is None
+    assert payload["dataset_size_bytes"] is None
     assert payload["dataset_summary"]["contract_sha"] == CONTRACT_SHA

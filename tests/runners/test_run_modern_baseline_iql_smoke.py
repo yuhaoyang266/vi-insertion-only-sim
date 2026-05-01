@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -96,7 +97,11 @@ def test_modern_baseline_iql_smoke_runner_accepts_dataset_path(
 
     assert payload["status"] == "dataset_schema_verified"
     assert payload["dataset_source"] == "external_json_dataset:offline_dataset.json"
+    dataset_bytes = dataset_path.read_bytes()
+    assert payload["dataset_sha256"] == hashlib.sha256(dataset_bytes).hexdigest()
+    assert payload["dataset_size_bytes"] == len(dataset_bytes)
     assert str(tmp_path) not in payload["dataset_source"]
+    assert str(tmp_path) not in json.dumps(payload)
 
 
 def test_modern_baseline_iql_smoke_runner_help_works_from_repo_root() -> None:
