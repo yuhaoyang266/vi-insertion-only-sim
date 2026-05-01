@@ -130,7 +130,7 @@
 ### Sprint C May Checkpoint (2026-05-01)
 - **Status:** Paper-B bridge active at contract/dry-run level; Paper-B physics ranking deferred until a real Paper-A policy artifact loader exists.
 - Contract: `docs/cross_paper_interface_contract.md`, SHA pinned to `d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e`.
-- Paper-B commit: `3eb8408`; mirror contract/pin committed in `F:\edge download\every-embodied-main\research-cartesian-impedance-vla-sim`, with unrelated pre-existing dirty Paper-B files left untouched.
+- Paper-B roles: `paper_b_verified_env_commit = 3eb8408`; the initial mirror/checkout at this checkpoint used the same Paper-B commit, with unrelated pre-existing dirty Paper-B files left untouched.
 - Bridge artifact: `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` plus CSV/Markdown sidecars; rows are intentionally `not_available` because the policy artifact loader is not implemented.
 - Sensitivity artifact: `outputs/revision/contact_parameter_sensitivity_smoke_20260501.json` plus CSV/Markdown sidecars.
 - Modern baseline: `iql_offline`, smoke status `scaffold_only`, artifact `outputs/revision/modern_baseline_iql_smoke_20260501.json`.
@@ -150,7 +150,7 @@
 - Review finding:
   - The cross-sim smoke JSON had portable path metadata but still recorded `paper_a_commit = 0d13050`, because it was regenerated before the final provenance-fix commit existed.
 - Action:
-  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with the same dry-run command, Paper-B commit `3eb8408`, and current committed Paper-A provenance state `3df89bd`.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with the same dry-run command, `paper_b_checkout_commit = 3eb8408`, and current committed Paper-A provenance state `3df89bd`.
   - CSV and Markdown sidecars were unchanged.
 - Verification:
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
@@ -162,8 +162,8 @@
 - Review finding:
   - The contract still used a generic `<paper-b-commit>` reproduction placeholder, and the dry-run cross-sim JSON did not include every metadata key required by the contract's version-pinning block.
 - Action:
-  - Added the verified Paper-B readiness baseline commit `3eb8408` to `docs/cross_paper_interface_contract.md`.
-  - Added `--paper-b-commit <paper-b-commit>` to the contract reproduction template.
+  - Added `paper_b_verified_env_commit = 3eb8408` to `docs/cross_paper_interface_contract.md`.
+  - Added `--paper-b-commit <actual-paper-b-checkout-commit>` to the contract reproduction template.
   - Updated the Paper-A and Paper-B contract SHA pins to `19a155c7a754cacce7aef9bcc9b72007a00667589de43821ae03d6a0271d5d3b`.
   - Mirrored the contract/pin update in Paper-B and committed it as `bb680b6` (`docs: refresh cross-paper contract pin`).
   - Updated the cross-sim runner metadata to emit `contract_version`, `paper_a_policy_artifact`, `paper_b_env_config`, `mapping_dyaw`, and `torque_drop_guard_n_m`.
@@ -171,7 +171,7 @@
 - Verification:
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` in Paper-B -> exit 0; 2 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_contract_sha_pin.py tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 4 passed.
-  - Dry-run smoke command with Paper-B commit `bb680b6` -> exit 0; regenerated the cross-sim JSON.
+  - Dry-run smoke command with `paper_b_checkout_commit = bb680b6` -> exit 0; regenerated the cross-sim JSON.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 18 passed.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the refreshed cross-sim JSON.
@@ -211,6 +211,23 @@
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 299 passed, 14 skipped, 13 warnings.
   - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for regenerated smoke artifacts.
+
+### Sprint C Review-Finding R1-R3 Cleanup (2026-05-01)
+- **Status:** role-schema source and smoke artifact refreshed; full Week 0 verification pending.
+- Review findings:
+  - R1: `--paper-b-commit` was accepted as trusted metadata instead of being checked against the actual Paper-B checkout.
+  - R2: the contract's Paper-A-to-Paper-B command omitted `--dry-run` even though full Paper-B physics execution is future-only.
+  - R3: Paper-B verification, mirror, and checkout commits were collapsed into ambiguous `paper_b_commit` language.
+- Action:
+  - Added commit verification to `scripts/experiments/run_cross_sim_via_paper_b.py`; wrong checkout SHAs now fail before artifact writing, and omitted SHAs record the actual checkout.
+  - Updated the contract, manuscript Section 5, and Tier-2 cover-letter template to separate dry-run checkpoint evidence from future full-physics execution.
+  - Replaced ambiguous artifact metadata with `paper_b_checkout_commit`, `paper_b_verified_env_commit`, and `paper_b_contract_mirror_commit`.
+  - Mirrored the revised contract and SHA pin to Paper-B as `dfb3c5c`; `paper_b_verified_env_commit` remains `3eb8408`.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with contract SHA `8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b`, `paper_a_commit = 66c06aa`, `paper_b_checkout_commit = dfb3c5c`, and `paper_b_contract_mirror_commit = dfb3c5c`.
+- Verification so far:
+  - Paper-B `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` -> exit 0; 2 passed.
+  - Paper-A `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 35 passed.
+  - Dry-run smoke command with `--dry-run` and `paper_b_checkout_commit = dfb3c5c` -> exit 0; regenerated JSON artifact.
 
 ### Sprint C Sensitivity Aggregation Review (2026-05-01)
 - **Status:** complete.
