@@ -114,7 +114,8 @@ def test_modern_baseline_smoke_can_ingest_json_dataset(tmp_path: Path) -> None:
 
     assert loaded[0]["episode_id"] == "synthetic_schema_smoke_0000"
     assert report["status"] == "dataset_schema_verified"
-    assert report["dataset_source"] == dataset_path.as_posix()
+    assert report["dataset_source"] == "external_json_dataset:offline_dataset.json"
+    assert str(tmp_path) not in report["dataset_source"]
     assert report["dataset_summary"]["sample_count"] == 4
     assert "real Paper-A offline demonstration artifact path" not in report["blocked_on"]
 

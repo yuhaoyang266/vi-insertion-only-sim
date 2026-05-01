@@ -95,7 +95,8 @@ def test_modern_baseline_iql_smoke_runner_accepts_dataset_path(
     payload = json.loads(output_path.read_text(encoding="utf-8"))
 
     assert payload["status"] == "dataset_schema_verified"
-    assert payload["dataset_source"] == dataset_path.as_posix()
+    assert payload["dataset_source"] == "external_json_dataset:offline_dataset.json"
+    assert str(tmp_path) not in payload["dataset_source"]
 
 
 def test_modern_baseline_iql_smoke_runner_help_works_from_repo_root() -> None:

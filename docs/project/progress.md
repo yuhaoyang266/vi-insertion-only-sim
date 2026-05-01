@@ -342,6 +342,22 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 316 passed, 14 skipped, 13 warnings.
   - `git diff --check` -> exit 0.
 
+### Sprint C Final Portability Review (2026-05-01)
+- **Status:** complete; May checkpoint scope unchanged.
+- Review finding:
+  - Dataset-backed modern-baseline smoke artifacts could record an absolute `--dataset-path` when the JSON dataset lived outside the repository, reintroducing local machine paths into reviewer-facing output.
+- Action:
+  - Updated `src/vi_full/modern_baseline_smoke.py` so `dataset_source` records a repo-relative path for in-repo datasets and `external_json_dataset:<filename>` for external datasets.
+  - Added module and runner regressions that verify external temp paths are not embedded while preserving `dataset_schema_verified` behavior.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 12 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 23 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> exit 0; 11 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 316 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

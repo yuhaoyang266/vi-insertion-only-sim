@@ -11,6 +11,7 @@ from vi_full.cross_paper_bridge import CONTRACT_SHA
 from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_EPISODE_RECORD_KEYS = (
     "observations",
     "actions",
@@ -83,6 +84,15 @@ def load_offline_dataset_json(dataset_path: Path) -> Any:
     if not path.exists():
         raise FileNotFoundError(f"offline dataset does not exist: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _dataset_source_label(dataset_path: Path) -> str:
+    path = Path(dataset_path)
+    resolved_path = path.resolve()
+    try:
+        return resolved_path.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return f"external_json_dataset:{path.name}"
 
 
 def _as_array(dataset: dict[str, Any], name: str, shape_tail: tuple[int, ...]) -> np.ndarray:
@@ -189,7 +199,7 @@ def run_modern_baseline_smoke(
     else:
         dataset = load_offline_dataset_json(dataset_path)
         status = "dataset_schema_verified"
-        dataset_source = Path(dataset_path).as_posix()
+        dataset_source = _dataset_source_label(dataset_path)
         blocked_on = [
             "IQL/CQL training dependency and hyperparameter file",
             "comparison protocol against existing five-suite benchmark rows",
