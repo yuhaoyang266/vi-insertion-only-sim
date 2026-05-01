@@ -1,0 +1,54 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from vi_full.modern_baseline_smoke import (
+    MODERN_BASELINE_DECISION,
+    build_synthetic_offline_dataset,
+    run_modern_baseline_smoke,
+    validate_offline_dataset_schema,
+    write_modern_baseline_smoke_artifacts,
+)
+
+
+def test_modern_baseline_decision_prefers_iql_offline() -> None:
+    assert MODERN_BASELINE_DECISION["chosen"] == "iql_offline"
+    assert "cql_offline" in MODERN_BASELINE_DECISION["compatible_fallbacks"]
+
+
+def test_offline_dataset_schema_requires_14d_observations_and_5d_actions() -> None:
+    dataset = build_synthetic_offline_dataset(num_steps=4)
+
+    summary = validate_offline_dataset_schema(dataset)
+
+    assert summary["observation_shape"] == [4, 14]
+    assert summary["action_shape"] == [4, 5]
+    assert summary["profile_count"] == 1
+
+    bad_dataset = dict(dataset)
+    bad_dataset["actions"] = np.zeros((4, 4), dtype=np.float32)
+    with pytest.raises(ValueError, match="actions"):
+        validate_offline_dataset_schema(bad_dataset)
+
+
+def test_modern_baseline_smoke_reports_scaffold_status() -> None:
+    report = run_modern_baseline_smoke(num_steps=4)
+
+    assert report["artifact_type"] == "modern_baseline_smoke"
+    assert report["algorithm"] == "iql_offline"
+    assert report["status"] == "scaffold_only"
+    assert report["dataset_summary"]["observation_shape"] == [4, 14]
+
+
+def test_modern_baseline_smoke_writes_artifacts(tmp_path: Path) -> None:
+    report = run_modern_baseline_smoke(num_steps=4)
+
+    paths = write_modern_baseline_smoke_artifacts(tmp_path / "modern_baseline.json", report)
+
+    assert set(paths) == {"json", "markdown"}
+    assert json.loads(paths["json"].read_text(encoding="utf-8"))["algorithm"] == "iql_offline"
+    assert "iql_offline" in paths["markdown"].read_text(encoding="utf-8")

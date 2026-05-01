@@ -94,6 +94,27 @@
   - `python scripts/experiments/run_3dof_contact_parameter_sensitivity.py --help` -> exit 0.
   - Smoke sweep command -> exit 0; generated the three `outputs/revision/` artifacts above.
 
+### Sprint C Modern Baseline Decision And Smoke Scaffold (2026-05-01)
+- **Status:** IQL/CQL offline path selected; scaffold smoke artifact generated.
+- Decision:
+  - Chosen path: `iql_offline`.
+  - Compatible fallback: `cql_offline`.
+  - Deferred fallbacks: Diffusion Policy via LeRobot and ACT state-based, because they add more implementation surface than needed for the first offline baseline smoke.
+  - Rationale: IQL/CQL can consume the current Paper-A 14D observation / 5D action offline dataset schema without introducing vision, hardware, or a new action space.
+- Scope:
+  - Added `src/vi_full/modern_baseline_smoke.py` to validate the offline dataset schema and record the baseline decision.
+  - Added `scripts/experiments/run_modern_baseline_iql_smoke.py`.
+  - Added focused module and runner tests.
+- Artifact:
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.json`
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.md`
+  - Status is `scaffold_only`; no IQL/CQL training claim is made yet.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` before implementation -> exit 1; expected missing module.
+  - Same command after implementation -> exit 0; 6 passed.
+  - `python scripts/experiments/run_modern_baseline_iql_smoke.py --help` -> exit 0.
+  - Smoke command -> exit 0; generated the two modern-baseline artifacts above.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
