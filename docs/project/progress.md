@@ -1129,3 +1129,26 @@
   - First focused run before artifact regeneration failed only because the committed artifact lacked the new `dataset_sha256` field.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> 12 passed after regeneration.
   - `python scripts/experiments/run_modern_baseline_iql_smoke.py --num-steps 8 --output outputs/revision/modern_baseline_iql_smoke_20260501.json` -> exit 0; regenerated JSON/Markdown sidecars.
+
+### Sprint C Week 1: Alternative Contact-Model Cross-Check (2026-05-01)
+- Status: small within-A fallback artifact landed.
+- Actions taken:
+  - Extended `src/vi_full/three_dof_alt_contact_model.py` from a config-only scaffold into a base-vs-alternative contact-law evaluator.
+  - Added `scripts/experiments/run_3dof_alt_contact_model_sensitivity.py`.
+  - Preserved action, observation, and metric contracts; tests now assert only the declared contact-law fields differ.
+  - Generated `outputs/revision/alt_contact_model_cross_check_20260501.{json,csv,md}` for all five profiles, seeds `0 1 2`, and fixed/variable handcrafted policies.
+  - Artifact wording keeps this as a `within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim`.
+- Files changed:
+  - `src/vi_full/three_dof_alt_contact_model.py`
+  - `scripts/experiments/run_3dof_alt_contact_model_sensitivity.py`
+  - `tests/three_dof/test_three_dof_alt_contact_model.py`
+  - `tests/runners/test_run_3dof_alt_contact_model_sensitivity.py`
+  - `outputs/revision/alt_contact_model_cross_check_20260501.json`
+  - `outputs/revision/alt_contact_model_cross_check_20260501.csv`
+  - `outputs/revision/alt_contact_model_cross_check_20260501.md`
+  - `docs/project/progress.md`
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_alt_contact_model.py tests/runners/test_run_3dof_alt_contact_model_sensitivity.py` -> 8 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_alt_contact_model.py tests/runners/test_run_3dof_alt_contact_model_sensitivity.py tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> 19 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> 5 passed.
+  - `python scripts/experiments/run_3dof_alt_contact_model_sensitivity.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 1 --policies fixed_impedance variable_impedance --output outputs/revision/alt_contact_model_cross_check_20260501.json` -> exit 0; generated JSON/CSV/Markdown sidecars.

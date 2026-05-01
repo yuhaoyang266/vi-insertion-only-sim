@@ -1,0 +1,701 @@
+{
+  "artifact_type": "three_dof_alt_contact_model_cross_check",
+  "schema_version": 1,
+  "claim_scope": "within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim",
+  "config": {
+    "profiles": [
+      "nominal",
+      "tight_clearance",
+      "high_friction",
+      "offset_bias",
+      "noisy_force"
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "episodes_per_seed": 1,
+    "policy_names": [
+      "fixed_impedance",
+      "variable_impedance"
+    ],
+    "max_episode_steps": 64
+  },
+  "contact_models": [
+    "within_a_base_contact_law",
+    "within_a_soft_wall_contact_cross_check"
+  ],
+  "changed_fields": [
+    "contact_xy_scale",
+    "contact_z_scale",
+    "in_hole_drag_scale",
+    "contact_transition_band_m"
+  ],
+  "contact_model_summaries": [
+    {
+      "name": "within_a_soft_wall_contact_cross_check",
+      "claim_scope": "within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim",
+      "base_profile": "nominal",
+      "changed_fields": [
+        "contact_xy_scale",
+        "contact_z_scale",
+        "in_hole_drag_scale",
+        "contact_transition_band_m"
+      ],
+      "invariant_fields": [
+        "action_dim",
+        "observation_dim",
+        "success_lateral_tolerance_m",
+        "success_axial_tolerance_m",
+        "jam_force_threshold_n",
+        "jam_persistence_steps",
+        "max_episode_steps"
+      ],
+      "field_deltas": {
+        "contact_xy_scale": {
+          "base": 4200.0,
+          "alternative": 3570.0
+        },
+        "contact_z_scale": {
+          "base": 3400.0,
+          "alternative": 3909.9999999999995
+        },
+        "in_hole_drag_scale": {
+          "base": 120.0,
+          "alternative": 132.0
+        },
+        "contact_transition_band_m": {
+          "base": 0.001,
+          "alternative": 0.00125
+        }
+      }
+    },
+    {
+      "name": "within_a_soft_wall_contact_cross_check",
+      "claim_scope": "within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim",
+      "base_profile": "tight_clearance",
+      "changed_fields": [
+        "contact_xy_scale",
+        "contact_z_scale",
+        "in_hole_drag_scale",
+        "contact_transition_band_m"
+      ],
+      "invariant_fields": [
+        "action_dim",
+        "observation_dim",
+        "success_lateral_tolerance_m",
+        "success_axial_tolerance_m",
+        "jam_force_threshold_n",
+        "jam_persistence_steps",
+        "max_episode_steps"
+      ],
+      "field_deltas": {
+        "contact_xy_scale": {
+          "base": 4200.0,
+          "alternative": 3570.0
+        },
+        "contact_z_scale": {
+          "base": 3400.0,
+          "alternative": 3909.9999999999995
+        },
+        "in_hole_drag_scale": {
+          "base": 120.0,
+          "alternative": 132.0
+        },
+        "contact_transition_band_m": {
+          "base": 0.001,
+          "alternative": 0.00125
+        }
+      }
+    },
+    {
+      "name": "within_a_soft_wall_contact_cross_check",
+      "claim_scope": "within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim",
+      "base_profile": "high_friction",
+      "changed_fields": [
+        "contact_xy_scale",
+        "contact_z_scale",
+        "in_hole_drag_scale",
+        "contact_transition_band_m"
+      ],
+      "invariant_fields": [
+        "action_dim",
+        "observation_dim",
+        "success_lateral_tolerance_m",
+        "success_axial_tolerance_m",
+        "jam_force_threshold_n",
+        "jam_persistence_steps",
+        "max_episode_steps"
+      ],
+      "field_deltas": {
+        "contact_xy_scale": {
+          "base": 4200.0,
+          "alternative": 3570.0
+        },
+        "contact_z_scale": {
+          "base": 3400.0,
+          "alternative": 3909.9999999999995
+        },
+        "in_hole_drag_scale": {
+          "base": 120.0,
+          "alternative": 132.0
+        },
+        "contact_transition_band_m": {
+          "base": 0.001,
+          "alternative": 0.00125
+        }
+      }
+    },
+    {
+      "name": "within_a_soft_wall_contact_cross_check",
+      "claim_scope": "within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim",
+      "base_profile": "offset_bias",
+      "changed_fields": [
+        "contact_xy_scale",
+        "contact_z_scale",
+        "in_hole_drag_scale",
+        "contact_transition_band_m"
+      ],
+      "invariant_fields": [
+        "action_dim",
+        "observation_dim",
+        "success_lateral_tolerance_m",
+        "success_axial_tolerance_m",
+        "jam_force_threshold_n",
+        "jam_persistence_steps",
+        "max_episode_steps"
+      ],
+      "field_deltas": {
+        "contact_xy_scale": {
+          "base": 4200.0,
+          "alternative": 3570.0
+        },
+        "contact_z_scale": {
+          "base": 3400.0,
+          "alternative": 3909.9999999999995
+        },
+        "in_hole_drag_scale": {
+          "base": 120.0,
+          "alternative": 132.0
+        },
+        "contact_transition_band_m": {
+          "base": 0.001,
+          "alternative": 0.00125
+        }
+      }
+    },
+    {
+      "name": "within_a_soft_wall_contact_cross_check",
+      "claim_scope": "within-A fallback contact-law cross-check; not a second-simulator or hardware-validity claim",
+      "base_profile": "noisy_force",
+      "changed_fields": [
+        "contact_xy_scale",
+        "contact_z_scale",
+        "in_hole_drag_scale",
+        "contact_transition_band_m"
+      ],
+      "invariant_fields": [
+        "action_dim",
+        "observation_dim",
+        "success_lateral_tolerance_m",
+        "success_axial_tolerance_m",
+        "jam_force_threshold_n",
+        "jam_persistence_steps",
+        "max_episode_steps"
+      ],
+      "field_deltas": {
+        "contact_xy_scale": {
+          "base": 4200.0,
+          "alternative": 3570.0
+        },
+        "contact_z_scale": {
+          "base": 3400.0,
+          "alternative": 3909.9999999999995
+        },
+        "in_hole_drag_scale": {
+          "base": 120.0,
+          "alternative": 132.0
+        },
+        "contact_transition_band_m": {
+          "base": 0.001,
+          "alternative": 0.00125
+        }
+      }
+    }
+  ],
+  "rows": [
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "nominal",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 1.9679313389014121,
+      "p95_peak_contact_force": 1.9679313389014121,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008006676601477086
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "nominal",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 2.1587948162452486,
+      "p95_peak_contact_force": 2.1587948162452486,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008807344261624793
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009603550036752709,
+      "mean_peak_contact_force": 0.5992486759366799,
+      "p95_peak_contact_force": 0.5992486759366799,
+      "mean_contact_steps": 27.666666666666668,
+      "mean_contact_work": 0.0020324459065739625
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009603550036752709,
+      "mean_peak_contact_force": 0.6470506278837823,
+      "p95_peak_contact_force": 0.6470506278837823,
+      "mean_contact_steps": 27.333333333333332,
+      "mean_contact_work": 0.0022356904972313588
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 1.9679313389014121,
+      "p95_peak_contact_force": 1.9679313389014121,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008006676601477086
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 2.1587948162452486,
+      "p95_peak_contact_force": 2.1587948162452486,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008807344261624793
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "tight_clearance",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009603550036752709,
+      "mean_peak_contact_force": 0.5992486759366799,
+      "p95_peak_contact_force": 0.5992486759366799,
+      "mean_contact_steps": 27.666666666666668,
+      "mean_contact_work": 0.0020324459065739625
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "tight_clearance",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009603550036752709,
+      "mean_peak_contact_force": 0.6470506278837823,
+      "p95_peak_contact_force": 0.6470506278837823,
+      "mean_contact_steps": 27.333333333333332,
+      "mean_contact_work": 0.0022356904972313588
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "high_friction",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 3.7901227987738495,
+      "p95_peak_contact_force": 3.7901227987738495,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.01567586851884786
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "high_friction",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 4.164353681492483,
+      "p95_peak_contact_force": 4.164353681492483,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.017243455370732644
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "high_friction",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009449074814718108,
+      "mean_peak_contact_force": 1.0321016148673807,
+      "p95_peak_contact_force": 1.0321016148673807,
+      "mean_contact_steps": 28.666666666666668,
+      "mean_contact_work": 0.0038745874211428793
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "high_friction",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009703858743111827,
+      "mean_peak_contact_force": 1.1082349681879913,
+      "p95_peak_contact_force": 1.1082349681879913,
+      "mean_contact_steps": 29.666666666666668,
+      "mean_contact_work": 0.004152017969593672
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "offset_bias",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 1.9679313389014121,
+      "p95_peak_contact_force": 1.9679313389014121,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008006676601477086
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "offset_bias",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 2.1587948162452486,
+      "p95_peak_contact_force": 2.1587948162452486,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008807344261624793
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "offset_bias",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009603550036752709,
+      "mean_peak_contact_force": 0.5992486759366799,
+      "p95_peak_contact_force": 0.5992486759366799,
+      "mean_contact_steps": 27.666666666666668,
+      "mean_contact_work": 0.0020324459065739625
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "offset_bias",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009603550036752709,
+      "mean_peak_contact_force": 0.6470506278837823,
+      "p95_peak_contact_force": 0.6470506278837823,
+      "mean_contact_steps": 27.333333333333332,
+      "mean_contact_work": 0.0022356904972313588
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 2.2769172161004247,
+      "p95_peak_contact_force": 2.2769172161004247,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008959609629311934
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 2.489345531842756,
+      "p95_peak_contact_force": 2.489345531842756,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.009855570592243129
+    },
+    {
+      "contact_model": "within_a_base_contact_law",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009529167562723154,
+      "mean_peak_contact_force": 0.8537779309022068,
+      "p95_peak_contact_force": 0.8537779309022068,
+      "mean_contact_steps": 44.333333333333336,
+      "mean_contact_work": 0.0015189647022796455
+    },
+    {
+      "contact_model": "within_a_soft_wall_contact_cross_check",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "seed_count": 3,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009529167562723154,
+      "mean_peak_contact_force": 0.906558382239974,
+      "p95_peak_contact_force": 0.906558382239974,
+      "mean_contact_steps": 44.333333333333336,
+      "mean_contact_work": 0.0016708611725076105
+    }
+  ],
+  "paired_deltas": [
+    {
+      "profile": "high_friction",
+      "policy_name": "fixed_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.3742308827186336,
+        "p95_peak_contact_force": 0.3742308827186336,
+        "mean_contact_steps": 0.0,
+        "mean_contact_work": 0.0015675868518847842
+      }
+    },
+    {
+      "profile": "high_friction",
+      "policy_name": "variable_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 2.547839283937193e-05,
+        "mean_peak_contact_force": 0.07613335332061055,
+        "p95_peak_contact_force": 0.07613335332061055,
+        "mean_contact_steps": 1.0,
+        "mean_contact_work": 0.00027743054845079254
+      }
+    },
+    {
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.21242831574233145,
+        "p95_peak_contact_force": 0.21242831574233145,
+        "mean_contact_steps": 0.0,
+        "mean_contact_work": 0.0008959609629311943
+      }
+    },
+    {
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.05278045133776721,
+        "p95_peak_contact_force": 0.05278045133776721,
+        "mean_contact_steps": 0.0,
+        "mean_contact_work": 0.00015189647022796496
+      }
+    },
+    {
+      "profile": "nominal",
+      "policy_name": "fixed_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.19086347734383646,
+        "p95_peak_contact_force": 0.19086347734383646,
+        "mean_contact_steps": 0.0,
+        "mean_contact_work": 0.000800667660147707
+      }
+    },
+    {
+      "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.04780195194710246,
+        "p95_peak_contact_force": 0.04780195194710246,
+        "mean_contact_steps": -0.3333333333333357,
+        "mean_contact_work": 0.00020324459065739625
+      }
+    },
+    {
+      "profile": "offset_bias",
+      "policy_name": "fixed_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.19086347734383646,
+        "p95_peak_contact_force": 0.19086347734383646,
+        "mean_contact_steps": 0.0,
+        "mean_contact_work": 0.000800667660147707
+      }
+    },
+    {
+      "profile": "offset_bias",
+      "policy_name": "variable_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.04780195194710246,
+        "p95_peak_contact_force": 0.04780195194710246,
+        "mean_contact_steps": -0.3333333333333357,
+        "mean_contact_work": 0.00020324459065739625
+      }
+    },
+    {
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.19086347734383646,
+        "p95_peak_contact_force": 0.19086347734383646,
+        "mean_contact_steps": 0.0,
+        "mean_contact_work": 0.000800667660147707
+      }
+    },
+    {
+      "profile": "tight_clearance",
+      "policy_name": "variable_impedance",
+      "alternative_minus_base": {
+        "success_rate": 0.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0,
+        "mean_peak_contact_force": 0.04780195194710246,
+        "p95_peak_contact_force": 0.04780195194710246,
+        "mean_contact_steps": -0.3333333333333357,
+        "mean_contact_work": 0.00020324459065739625
+      }
+    }
+  ]
+}
