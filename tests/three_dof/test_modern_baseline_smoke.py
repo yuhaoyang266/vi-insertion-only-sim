@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from vi_full.cross_paper_bridge import CONTRACT_SHA
 from vi_full.modern_baseline_smoke import (
     MODERN_BASELINE_DECISION,
     build_synthetic_offline_dataset,
@@ -13,6 +14,9 @@ from vi_full.modern_baseline_smoke import (
     validate_offline_dataset_schema,
     write_modern_baseline_smoke_artifacts,
 )
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_modern_baseline_decision_prefers_iql_offline() -> None:
@@ -100,3 +104,12 @@ def test_modern_baseline_smoke_writes_artifacts(tmp_path: Path) -> None:
     assert set(paths) == {"json", "markdown"}
     assert json.loads(paths["json"].read_text(encoding="utf-8"))["algorithm"] == "iql_offline"
     assert "iql_offline" in paths["markdown"].read_text(encoding="utf-8")
+
+
+def test_committed_modern_baseline_artifact_uses_current_contract_sha() -> None:
+    artifact_path = REPO_ROOT / "outputs" / "revision" / "modern_baseline_iql_smoke_20260501.json"
+
+    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+
+    assert payload["status"] == "scaffold_only"
+    assert payload["dataset_summary"]["contract_sha"] == CONTRACT_SHA

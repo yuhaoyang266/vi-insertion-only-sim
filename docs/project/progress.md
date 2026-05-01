@@ -305,6 +305,22 @@
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning only for `paper/main.tex`.
 
+### Sprint C Modern Baseline Contract Refresh (2026-05-01)
+- **Status:** complete; scaffold artifact now matches the current cross-paper contract SHA.
+- Review finding:
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.json` still recorded the earlier contract SHA `19a155c7...` after the cross-paper contract was updated to `8b3e7f...`.
+- Action:
+  - Regenerated the modern-baseline scaffold artifact with `scripts/experiments/run_modern_baseline_iql_smoke.py` so `dataset_summary.contract_sha` equals the current `CONTRACT_SHA`.
+  - Added a committed-artifact regression in `tests/three_dof/test_modern_baseline_smoke.py` while preserving `status = scaffold_only`; no offline RL training claim was added.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 10 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 23 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> exit 0; 10 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 310 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warning only for `outputs/revision/modern_baseline_iql_smoke_20260501.json`.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

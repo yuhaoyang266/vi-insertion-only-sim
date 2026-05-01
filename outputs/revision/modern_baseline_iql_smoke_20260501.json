@@ -43,7 +43,7 @@
     "profiles": [
       "nominal"
     ],
-    "contract_sha": "19a155c7a754cacce7aef9bcc9b72007a00667589de43821ae03d6a0271d5d3b"
+    "contract_sha": "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b"
   },
   "blocked_on": [
     "real Paper-A offline demonstration artifact path",
