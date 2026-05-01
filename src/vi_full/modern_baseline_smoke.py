@@ -9,7 +9,16 @@ from typing import Any
 import numpy as np
 
 from vi_full.cross_paper_bridge import CONTRACT_SHA
-from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
+from vi_full.offline_demo_dataset import (
+    NearestNeighborOfflinePolicy,
+    flatten_offline_dataset_arrays,
+)
+from vi_full.three_dof_contact_parameter_sensitivity import (
+    _aggregate_seed_summaries,
+    _evaluate_policy,
+)
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
+from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES, build_3dof_profile_config
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -35,6 +44,9 @@ MODERN_BASELINE_DECISION = {
         "dataset contract without introducing vision, hardware, or action-space scope."
     ),
 }
+SCHEMA_SMOKE_ALGORITHM = "offline_dataset_schema_smoke"
+DATASET_SCHEMA_CHECK_ALGORITHM = "offline_dataset_schema_check"
+BC_OFFLINE_STUB_ALGORITHM = "bc_offline_stub"
 
 
 def _json_safe(value: Any) -> Any:
@@ -187,14 +199,76 @@ def validate_offline_dataset_schema(dataset: Any) -> dict[str, Any]:
     }
 
 
+def run_bc_offline_stub_evaluation(
+    dataset: Any,
+    *,
+    profiles: list[str] | None = None,
+    seeds: list[int] | None = None,
+    episodes_per_seed: int = 1,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+) -> dict[str, Any]:
+    if episodes_per_seed <= 0:
+        raise ValueError("episodes_per_seed must be positive.")
+    observations, actions = flatten_offline_dataset_arrays(dataset)
+    policy = NearestNeighborOfflinePolicy(observations=observations, actions=actions)
+    selected_profiles = list(profiles or DEFAULT_UNCERTAINTY_PROFILES)
+    selected_seeds = [int(seed) for seed in (seeds or [0])]
+    rows: list[dict[str, Any]] = []
+    for profile in selected_profiles:
+        config = build_3dof_profile_config(
+            profile,
+            max_episode_steps=max_episode_steps,
+        )
+        seed_summaries = [
+            _evaluate_policy(
+                config=config,
+                policy=policy,
+                episodes=int(episodes_per_seed),
+                seed=seed,
+                profile=profile,
+            )
+            for seed in selected_seeds
+        ]
+        rows.append(
+            {
+                "profile": profile,
+                "policy_name": BC_OFFLINE_STUB_ALGORITHM,
+                "seed_count": len(selected_seeds),
+                "episodes_per_seed": int(episodes_per_seed),
+                **_aggregate_seed_summaries(seed_summaries),
+            }
+        )
+    return {
+        "algorithm": BC_OFFLINE_STUB_ALGORITHM,
+        "status": "completed",
+        "config": {
+            "profiles": selected_profiles,
+            "seeds": selected_seeds,
+            "episodes_per_seed": int(episodes_per_seed),
+            "max_episode_steps": int(max_episode_steps),
+            "training_updates": 0,
+        },
+        "dataset_sample_count": int(len(observations)),
+        "rows": _json_safe(rows),
+    }
+
+
 def run_modern_baseline_smoke(
     *,
     num_steps: int = 8,
     dataset_path: Path | None = None,
+    evaluate_bc_stub: bool = False,
+    eval_profiles: list[str] | None = None,
+    eval_seeds: list[int] | None = None,
+    eval_episodes_per_seed: int = 1,
+    max_episode_steps: int = DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
 ) -> dict[str, Any]:
     if dataset_path is None:
+        if evaluate_bc_stub:
+            raise ValueError("evaluate_bc_stub requires --dataset-path.")
         dataset = build_synthetic_offline_dataset(num_steps=num_steps)
         status = "scaffold_only"
+        algorithm = SCHEMA_SMOKE_ALGORITHM
         dataset_source = "synthetic_schema_smoke"
         dataset_sha256 = None
         dataset_size_bytes = None
@@ -206,7 +280,8 @@ def run_modern_baseline_smoke(
     else:
         resolved_dataset_path = Path(dataset_path)
         dataset = load_offline_dataset_json(resolved_dataset_path)
-        status = "dataset_schema_verified"
+        status = "bc_offline_stub" if evaluate_bc_stub else "dataset_schema_verified"
+        algorithm = BC_OFFLINE_STUB_ALGORITHM if evaluate_bc_stub else DATASET_SCHEMA_CHECK_ALGORITHM
         dataset_source = _dataset_source_label(resolved_dataset_path)
         dataset_sha256 = compute_dataset_sha256(resolved_dataset_path)
         dataset_size_bytes = int(resolved_dataset_path.stat().st_size)
@@ -215,16 +290,29 @@ def run_modern_baseline_smoke(
             "comparison protocol against existing five-suite benchmark rows",
         ]
     dataset_summary = validate_offline_dataset_schema(dataset)
+    baseline_evaluation = (
+        run_bc_offline_stub_evaluation(
+            dataset,
+            profiles=eval_profiles,
+            seeds=eval_seeds,
+            episodes_per_seed=eval_episodes_per_seed,
+            max_episode_steps=max_episode_steps,
+        )
+        if evaluate_bc_stub
+        else None
+    )
     return {
         "artifact_type": "modern_baseline_smoke",
         "schema_version": 1,
-        "algorithm": MODERN_BASELINE_DECISION["chosen"],
+        "algorithm": algorithm,
         "status": status,
+        "target_algorithm": MODERN_BASELINE_DECISION["chosen"],
         "decision": dict(MODERN_BASELINE_DECISION),
         "dataset_source": dataset_source,
         "dataset_sha256": dataset_sha256,
         "dataset_size_bytes": dataset_size_bytes,
         "dataset_summary": dataset_summary,
+        "baseline_evaluation": baseline_evaluation,
         "blocked_on": blocked_on,
     }
 
@@ -240,16 +328,33 @@ def render_modern_baseline_smoke_markdown(report: dict[str, Any]) -> str:
         "",
         f"- algorithm: {report['algorithm']}",
         f"- status: {report['status']}",
+        f"- target_algorithm: {report['target_algorithm']}",
         f"- dataset_source: {report['dataset_source']}",
         f"- dataset_sha256: {dataset_sha256}",
         f"- dataset_size_bytes: {dataset_size_bytes}",
         f"- observation_shape: {summary['observation_shape']}",
         f"- action_shape: {summary['action_shape']}",
         f"- sample_count: {summary['sample_count']}",
-        "",
-        "## Blocked On",
-        "",
     ]
+    if report.get("baseline_evaluation") is not None:
+        evaluation = report["baseline_evaluation"]
+        lines.extend(
+            [
+                f"- baseline_dataset_sample_count: {evaluation['dataset_sample_count']}",
+                f"- baseline_eval_rows: {len(evaluation['rows'])}",
+                "",
+                "## BC Offline Stub Rows",
+                "",
+                "| Profile | Success | Jam | Peak force | Final distance | Contact steps |",
+                "| --- | ---: | ---: | ---: | ---: | ---: |",
+            ]
+        )
+        for row in evaluation["rows"]:
+            lines.append(
+                "| {profile} | {success_rate} | {jam_rate} | {mean_peak_contact_force} | "
+                "{mean_final_distance} | {mean_contact_steps} |".format(**row)
+            )
+    lines.extend(["", "## Blocked On", ""])
     lines.extend(f"- {item}" for item in report["blocked_on"])
     lines.append("")
     return "\n".join(lines)

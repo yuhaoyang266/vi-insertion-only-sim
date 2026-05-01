@@ -1172,3 +1172,29 @@
   - First focused run before regeneration failed only because the committed artifact still recorded `episodes_per_seed = 5`.
   - `python scripts/experiments/run_3dof_contact_parameter_sensitivity.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 20 --policies fixed_impedance variable_impedance --parameters contact_xy_scale contact_z_scale wall_friction_range force_noise_std_range contact_transition_band_m --levels low nominal high --output outputs/revision/contact_parameter_sensitivity_20260501.json` -> exit 0 in about 103 seconds.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> 13 passed.
+
+### Sprint C Week 3: Offline Demo Dataset And BC Stub (2026-05-01)
+- Status: real offline dataset path and deterministic baseline stub landed.
+- Actions taken:
+  - Added `src/vi_full/offline_demo_dataset.py` and `scripts/experiments/export_3dof_offline_demo_dataset.py`.
+  - Generated `artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json` from the variable-impedance teacher over all five profiles, seeds `0 1 2`, and `2` episodes per seed.
+  - Dataset artifact records generation command, `dataset_payload_sha256`, `paper_a_commit`, contract SHA, `30` episodes, and `1299` samples.
+  - Updated modern-baseline smoke to label default schema-only output as `offline_dataset_schema_smoke`, dataset validation as `offline_dataset_schema_check`, and runnable nearest-neighbor behavior-cloning evaluation as `bc_offline_stub`.
+  - Regenerated `outputs/revision/modern_baseline_iql_smoke_20260501.{json,md}` using the dataset and `bc_offline_stub`; no IQL/CQL update is claimed.
+- Files changed:
+  - `src/vi_full/offline_demo_dataset.py`
+  - `src/vi_full/modern_baseline_smoke.py`
+  - `scripts/experiments/export_3dof_offline_demo_dataset.py`
+  - `scripts/experiments/run_modern_baseline_iql_smoke.py`
+  - `tests/three_dof/test_offline_demo_dataset.py`
+  - `tests/runners/test_export_3dof_offline_demo_dataset.py`
+  - `tests/three_dof/test_modern_baseline_smoke.py`
+  - `tests/runners/test_run_modern_baseline_iql_smoke.py`
+  - `artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json`
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.json`
+  - `outputs/revision/modern_baseline_iql_smoke_20260501.md`
+  - `docs/project/progress.md`
+- Verification:
+  - `python scripts/experiments/export_3dof_offline_demo_dataset.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 2 --source-policy variable_impedance --output artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json` -> exit 0.
+  - `python scripts/experiments/run_modern_baseline_iql_smoke.py --dataset-path artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json --evaluate-bc-stub --eval-profiles nominal tight_clearance high_friction offset_bias noisy_force --eval-seeds 0 1 2 --eval-episodes-per-seed 1 --output outputs/revision/modern_baseline_iql_smoke_20260501.json` -> exit 0.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_offline_demo_dataset.py tests/runners/test_export_3dof_offline_demo_dataset.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> 19 passed.

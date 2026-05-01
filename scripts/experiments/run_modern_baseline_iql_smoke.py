@@ -15,6 +15,8 @@ from vi_full.modern_baseline_smoke import (
     run_modern_baseline_smoke,
     write_modern_baseline_smoke_artifacts,
 )
+from vi_full.three_dof_contract import DEFAULT_3DOF_BENCHMARK_CONTRACT
+from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
 
 def _parse_args() -> argparse.Namespace:
@@ -23,6 +25,15 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--num-steps", type=int, default=8)
     parser.add_argument("--dataset-path", type=Path, default=None)
+    parser.add_argument("--evaluate-bc-stub", action="store_true")
+    parser.add_argument("--eval-profiles", type=str, nargs="+", default=list(DEFAULT_UNCERTAINTY_PROFILES))
+    parser.add_argument("--eval-seeds", type=int, nargs="+", default=[0])
+    parser.add_argument("--eval-episodes-per-seed", type=int, default=1)
+    parser.add_argument(
+        "--max-episode-steps",
+        type=int,
+        default=DEFAULT_3DOF_BENCHMARK_CONTRACT.max_episode_steps,
+    )
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
@@ -37,6 +48,11 @@ def main() -> None:
     report = run_modern_baseline_smoke(
         num_steps=int(args.num_steps),
         dataset_path=args.dataset_path,
+        evaluate_bc_stub=bool(args.evaluate_bc_stub),
+        eval_profiles=list(args.eval_profiles),
+        eval_seeds=[int(seed) for seed in args.eval_seeds],
+        eval_episodes_per_seed=int(args.eval_episodes_per_seed),
+        max_episode_steps=int(args.max_episode_steps),
     )
     output_path = args.output if args.output is not None else _default_output_path()
     paths = write_modern_baseline_smoke_artifacts(output_path, report)

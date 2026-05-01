@@ -9,9 +9,13 @@ import pytest
 from vi_full.cross_paper_bridge import CONTRACT_SHA
 from vi_full.modern_baseline_smoke import (
     MODERN_BASELINE_DECISION,
+    BC_OFFLINE_STUB_ALGORITHM,
+    DATASET_SCHEMA_CHECK_ALGORITHM,
+    SCHEMA_SMOKE_ALGORITHM,
     build_synthetic_offline_dataset,
     compute_dataset_sha256,
     load_offline_dataset_json,
+    run_bc_offline_stub_evaluation,
     run_modern_baseline_smoke,
     validate_offline_dataset_schema,
     write_modern_baseline_smoke_artifacts,
@@ -92,8 +96,9 @@ def test_modern_baseline_smoke_reports_scaffold_status() -> None:
     report = run_modern_baseline_smoke(num_steps=4)
 
     assert report["artifact_type"] == "modern_baseline_smoke"
-    assert report["algorithm"] == "iql_offline"
+    assert report["algorithm"] == SCHEMA_SMOKE_ALGORITHM
     assert report["status"] == "scaffold_only"
+    assert report["target_algorithm"] == "iql_offline"
     assert report["dataset_source"] == "synthetic_schema_smoke"
     assert report["dataset_sha256"] is None
     assert report["dataset_size_bytes"] is None
@@ -117,6 +122,7 @@ def test_modern_baseline_smoke_can_ingest_json_dataset(tmp_path: Path) -> None:
 
     assert loaded[0]["episode_id"] == "synthetic_schema_smoke_0000"
     assert report["status"] == "dataset_schema_verified"
+    assert report["algorithm"] == DATASET_SCHEMA_CHECK_ALGORITHM
     assert report["dataset_source"] == "external_json_dataset:offline_dataset.json"
     assert report["dataset_sha256"] == compute_dataset_sha256(dataset_path)
     assert report["dataset_size_bytes"] == len(dataset_path.read_bytes())
@@ -126,14 +132,46 @@ def test_modern_baseline_smoke_can_ingest_json_dataset(tmp_path: Path) -> None:
     assert "real Paper-A offline demonstration artifact path" not in report["blocked_on"]
 
 
+def test_modern_baseline_smoke_can_run_bc_offline_stub(tmp_path: Path) -> None:
+    dataset = build_synthetic_offline_dataset(num_steps=4)
+    json_dataset = [
+        {
+            key: value.tolist() if hasattr(value, "tolist") else value
+            for key, value in dataset[0].items()
+        }
+    ]
+    dataset_path = tmp_path / "offline_dataset.json"
+    dataset_path.write_text(json.dumps(json_dataset), encoding="utf-8")
+
+    report = run_modern_baseline_smoke(
+        dataset_path=dataset_path,
+        evaluate_bc_stub=True,
+        eval_profiles=["nominal"],
+        eval_seeds=[0],
+        eval_episodes_per_seed=1,
+    )
+    direct_evaluation = run_bc_offline_stub_evaluation(
+        json_dataset,
+        profiles=["nominal"],
+        seeds=[0],
+        episodes_per_seed=1,
+    )
+
+    assert report["status"] == "bc_offline_stub"
+    assert report["algorithm"] == BC_OFFLINE_STUB_ALGORITHM
+    assert report["baseline_evaluation"]["config"]["training_updates"] == 0
+    assert report["baseline_evaluation"]["rows"][0]["profile"] == "nominal"
+    assert direct_evaluation["algorithm"] == BC_OFFLINE_STUB_ALGORITHM
+
+
 def test_modern_baseline_smoke_writes_artifacts(tmp_path: Path) -> None:
     report = run_modern_baseline_smoke(num_steps=4)
 
     paths = write_modern_baseline_smoke_artifacts(tmp_path / "modern_baseline.json", report)
 
     assert set(paths) == {"json", "markdown"}
-    assert json.loads(paths["json"].read_text(encoding="utf-8"))["algorithm"] == "iql_offline"
-    assert "iql_offline" in paths["markdown"].read_text(encoding="utf-8")
+    assert json.loads(paths["json"].read_text(encoding="utf-8"))["algorithm"] == SCHEMA_SMOKE_ALGORITHM
+    assert SCHEMA_SMOKE_ALGORITHM in paths["markdown"].read_text(encoding="utf-8")
 
 
 def test_committed_modern_baseline_artifact_uses_current_contract_sha() -> None:
@@ -141,8 +179,14 @@ def test_committed_modern_baseline_artifact_uses_current_contract_sha() -> None:
 
     payload = json.loads(artifact_path.read_text(encoding="utf-8"))
 
-    assert payload["status"] == "scaffold_only"
-    assert payload["dataset_source"] == "synthetic_schema_smoke"
-    assert payload["dataset_sha256"] is None
-    assert payload["dataset_size_bytes"] is None
+    assert payload["status"] == "bc_offline_stub"
+    assert payload["algorithm"] == BC_OFFLINE_STUB_ALGORITHM
+    assert payload["target_algorithm"] == "iql_offline"
+    assert payload["dataset_source"] == (
+        "artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json"
+    )
+    assert payload["dataset_sha256"]
+    assert payload["dataset_size_bytes"] > 0
+    assert payload["baseline_evaluation"]["config"]["training_updates"] == 0
+    assert len(payload["baseline_evaluation"]["rows"]) == 5
     assert payload["dataset_summary"]["contract_sha"] == CONTRACT_SHA

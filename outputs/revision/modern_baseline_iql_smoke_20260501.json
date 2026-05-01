@@ -1,8 +1,9 @@
 {
   "artifact_type": "modern_baseline_smoke",
   "schema_version": 1,
-  "algorithm": "iql_offline",
-  "status": "scaffold_only",
+  "algorithm": "bc_offline_stub",
+  "status": "bc_offline_stub",
+  "target_algorithm": "iql_offline",
   "decision": {
     "chosen": "iql_offline",
     "compatible_fallbacks": [
@@ -12,13 +13,13 @@
     ],
     "rationale": "IQL/CQL can consume the existing Paper-A 14D observation and 5D action offline dataset contract without introducing vision, hardware, or action-space scope."
   },
-  "dataset_source": "synthetic_schema_smoke",
-  "dataset_sha256": null,
-  "dataset_size_bytes": null,
+  "dataset_source": "artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json",
+  "dataset_sha256": "14116380517c3f0c201f5a371ba52a5af6d84498c13d4c44b7445c0b43ce44e2",
+  "dataset_size_bytes": 885498,
   "dataset_summary": {
-    "episode_count": 1,
-    "profile_count": 1,
-    "sample_count": 8,
+    "episode_count": 30,
+    "profile_count": 5,
+    "sample_count": 1299,
     "required_episode_keys": [
       "observations",
       "actions",
@@ -33,23 +34,125 @@
       "contract_sha"
     ],
     "observation_shape": [
-      8,
+      42,
       14
     ],
     "action_shape": [
-      8,
+      42,
       5
     ],
     "reward_shape": [
-      8
+      42
     ],
     "profiles": [
-      "nominal"
+      "high_friction",
+      "noisy_force",
+      "nominal",
+      "offset_bias",
+      "tight_clearance"
     ],
     "contract_sha": "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b"
   },
+  "baseline_evaluation": {
+    "algorithm": "bc_offline_stub",
+    "status": "completed",
+    "config": {
+      "profiles": [
+        "nominal",
+        "tight_clearance",
+        "high_friction",
+        "offset_bias",
+        "noisy_force"
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "episodes_per_seed": 1,
+      "max_episode_steps": 64,
+      "training_updates": 0
+    },
+    "dataset_sample_count": 1299,
+    "rows": [
+      {
+        "profile": "nominal",
+        "policy_name": "bc_offline_stub",
+        "seed_count": 3,
+        "episodes_per_seed": 1,
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0009603550036752709,
+        "mean_peak_contact_force": 0.5992486759366799,
+        "p95_peak_contact_force": 0.5992486759366799,
+        "mean_contact_steps": 27.666666666666668,
+        "mean_contact_work": 0.0020324459065739625
+      },
+      {
+        "profile": "tight_clearance",
+        "policy_name": "bc_offline_stub",
+        "seed_count": 3,
+        "episodes_per_seed": 1,
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0009603550036752709,
+        "mean_peak_contact_force": 0.5992486759366799,
+        "p95_peak_contact_force": 0.5992486759366799,
+        "mean_contact_steps": 27.666666666666668,
+        "mean_contact_work": 0.0020324459065739625
+      },
+      {
+        "profile": "high_friction",
+        "policy_name": "bc_offline_stub",
+        "seed_count": 3,
+        "episodes_per_seed": 1,
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0009449074814718108,
+        "mean_peak_contact_force": 1.0321016148673807,
+        "p95_peak_contact_force": 1.0321016148673807,
+        "mean_contact_steps": 28.666666666666668,
+        "mean_contact_work": 0.0038745874211428793
+      },
+      {
+        "profile": "offset_bias",
+        "policy_name": "bc_offline_stub",
+        "seed_count": 3,
+        "episodes_per_seed": 1,
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0009603550036752709,
+        "mean_peak_contact_force": 0.5992486759366799,
+        "p95_peak_contact_force": 0.5992486759366799,
+        "mean_contact_steps": 27.666666666666668,
+        "mean_contact_work": 0.0020324459065739625
+      },
+      {
+        "profile": "noisy_force",
+        "policy_name": "bc_offline_stub",
+        "seed_count": 3,
+        "episodes_per_seed": 1,
+        "success_rate": 1.0,
+        "jam_rate": 0.0,
+        "documented_force_jam_rate": 0.0,
+        "blocked_contact_termination_rate": 0.0,
+        "mean_final_distance": 0.0009529167562723154,
+        "mean_peak_contact_force": 0.8537779309022068,
+        "p95_peak_contact_force": 0.8537779309022068,
+        "mean_contact_steps": 44.333333333333336,
+        "mean_contact_work": 0.0015189647022796455
+      }
+    ]
+  },
   "blocked_on": [
-    "real Paper-A offline demonstration artifact path",
     "IQL/CQL training dependency and hyperparameter file",
     "comparison protocol against existing five-suite benchmark rows"
   ]
