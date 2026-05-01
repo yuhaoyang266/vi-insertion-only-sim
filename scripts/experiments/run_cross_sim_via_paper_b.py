@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime
+import hashlib
 import subprocess
 from pathlib import Path
 import re
@@ -24,7 +25,6 @@ from vi_full.cross_paper_bridge import (
     TORQUE_DROP_GUARD_N_M,
     assert_contract_sha_current,
     build_policy_stub,
-    compute_contract_sha,
     map_paper_a_action_to_paper_b,
     project_paper_b_observation_to_paper_a,
 )
@@ -116,6 +116,28 @@ def _resolve_commit(repo_path: Path, commitish: str) -> str | None:
     return completed.stdout.strip()
 
 
+def _shorten_commit(repo_path: Path, commitish: str) -> str:
+    completed = subprocess.run(
+        ["git", "rev-parse", "--short", commitish],
+        cwd=repo_path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        return commitish[:7]
+    return completed.stdout.strip()
+
+
+def _resolve_verified_commit(repo_path: Path, commitish: str, role_name: str) -> str:
+    resolved_commit = _resolve_commit(repo_path, commitish)
+    if resolved_commit is None:
+        raise RuntimeError(
+            f"{role_name} does not resolve to a commit in the Paper-B repo: {commitish}"
+        )
+    return resolved_commit
+
+
 def _resolve_and_verify_paper_b_commit(
     args: argparse.Namespace,
     paper_b_repo_path: Path,
@@ -148,11 +170,23 @@ def _resolve_and_verify_paper_b_commit(
     return actual_short_commit
 
 
-def _validate_paper_b_contract(paper_b_repo_path: Path) -> str:
-    contract_path = paper_b_repo_path / CONTRACT_RELATIVE_PATH
-    if not contract_path.exists():
-        raise FileNotFoundError(f"Paper-B contract not found: {contract_path}")
-    paper_b_contract_sha = compute_contract_sha(contract_path)
+def _validate_paper_b_contract_at_commit(
+    paper_b_repo_path: Path,
+    commitish: str,
+) -> str:
+    contract_ref = f"{commitish}:{CONTRACT_RELATIVE_PATH.as_posix()}"
+    completed = subprocess.run(
+        ["git", "show", contract_ref],
+        cwd=paper_b_repo_path,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(
+            "Paper-B contract mirror commit does not contain "
+            f"{CONTRACT_RELATIVE_PATH.as_posix()}: {commitish}"
+        )
+    paper_b_contract_sha = hashlib.sha256(completed.stdout).hexdigest()
     if paper_b_contract_sha != CONTRACT_SHA:
         raise RuntimeError(
             "Paper-B contract SHA mismatch: "
@@ -223,6 +257,8 @@ def _metadata(
     args: argparse.Namespace,
     paper_b_contract_sha: str,
     paper_b_checkout_commit: str,
+    paper_b_verified_env_commit: str,
+    paper_b_contract_mirror_commit: str,
 ) -> dict[str, Any]:
     return {
         "contract_sha": CONTRACT_SHA,
@@ -230,10 +266,8 @@ def _metadata(
         "paper_b_contract_sha": paper_b_contract_sha,
         "paper_a_commit": _git_commit(REPO_ROOT),
         "paper_b_checkout_commit": paper_b_checkout_commit,
-        "paper_b_verified_env_commit": str(args.paper_b_verified_env_commit),
-        "paper_b_contract_mirror_commit": str(
-            args.paper_b_contract_mirror_commit or paper_b_checkout_commit
-        ),
+        "paper_b_verified_env_commit": paper_b_verified_env_commit,
+        "paper_b_contract_mirror_commit": paper_b_contract_mirror_commit,
         "paper_a_policy_artifact": "not_available",
         "paper_b_env_config": "not_available",
         "mapping_dyaw": 0.0,
@@ -255,8 +289,27 @@ def main() -> None:
     paper_b_repo_path = args.paper_b_repo_path.resolve()
     if not paper_b_repo_path.exists():
         raise FileNotFoundError(f"Paper-B repo path does not exist: {paper_b_repo_path}")
-    paper_b_contract_sha = _validate_paper_b_contract(paper_b_repo_path)
     paper_b_checkout_commit = _resolve_and_verify_paper_b_commit(args, paper_b_repo_path)
+    verified_env_full_commit = _resolve_verified_commit(
+        paper_b_repo_path,
+        str(args.paper_b_verified_env_commit),
+        "--paper-b-verified-env-commit",
+    )
+    contract_mirror_commitish = str(args.paper_b_contract_mirror_commit or paper_b_checkout_commit)
+    contract_mirror_full_commit = _resolve_verified_commit(
+        paper_b_repo_path,
+        contract_mirror_commitish,
+        "--paper-b-contract-mirror-commit",
+    )
+    paper_b_contract_sha = _validate_paper_b_contract_at_commit(
+        paper_b_repo_path,
+        contract_mirror_full_commit,
+    )
+    paper_b_verified_env_commit = _shorten_commit(paper_b_repo_path, verified_env_full_commit)
+    paper_b_contract_mirror_commit = _shorten_commit(
+        paper_b_repo_path,
+        contract_mirror_full_commit,
+    )
     if not args.dry_run:
         raise RuntimeError(
             "Paper-B physics execution is not implemented yet; use --dry-run for contract smoke."
@@ -270,7 +323,13 @@ def main() -> None:
     output_path = args.output if args.output is not None else _default_output_path()
     ranking = build_cross_sim_ranking(
         records,
-        metadata=_metadata(args, paper_b_contract_sha, paper_b_checkout_commit),
+        metadata=_metadata(
+            args,
+            paper_b_contract_sha,
+            paper_b_checkout_commit,
+            paper_b_verified_env_commit,
+            paper_b_contract_mirror_commit,
+        ),
     )
     paths = write_cross_sim_ranking_artifacts(output_path, ranking)
     print(f"cross_sim_ranking_json {paths['json']}", flush=True)

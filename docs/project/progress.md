@@ -1073,3 +1073,20 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_docs_claim_source_sync.py tests/paper/test_paper_claim_boundaries.py` -> 16 passed in 0.05s.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_docs_claim_source_sync.py tests/paper/test_paper_claim_boundaries.py tests/sprints/test_three_dof_teacher_coupling_ablation.py tests/sprints/test_three_dof_motion_matched_ablation.py tests/runners/test_run_3dof_teacher_coupling_ablation.py tests/three_dof/test_three_dof_support_metric_sensitivity.py tests/runners/test_export_3dof_support_metric_sensitivity.py tests/paper/test_prose_statistics_sync.py tests/paper/test_paper_figures.py tests/three_dof/test_three_dof_teacher_policies.py tests/three_dof/test_three_dof_teacher_training.py tests/three_dof/test_three_dof_support_metrics.py` -> 54 passed, 12 skipped, 1 warning.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary asset paths printed under `%TEMP%`.
+
+### Sprint C Repair A: Paper-B Role Commit Verification (2026-05-01)
+- Status: R4 closed for the dry-run cross-sim runner.
+- Actions taken:
+  - Added Paper-B role commit resolution for `--paper-b-verified-env-commit` and `--paper-b-contract-mirror-commit`.
+  - Defaulted omitted mirror metadata to the verified checkout commit and recorded resolved short SHAs in artifacts.
+  - Verified mirror contract bytes with `git show <commit>:docs/cross_paper_interface_contract.md` before artifact writing.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`; only `paper_a_commit` changed to current Paper-A `a852207`.
+- Files changed:
+  - `scripts/experiments/run_cross_sim_via_paper_b.py`
+  - `tests/runners/test_run_cross_sim_via_paper_b.py`
+  - `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`
+  - `docs/project/progress.md`
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/runners/test_run_cross_sim_via_paper_b.py` -> 9 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> 26 passed.
+  - Dry-run smoke command with Paper-B checkout `dfb3c5c` and verified env commit `3eb8408` -> exit 0; regenerated JSON/CSV/Markdown sidecars.

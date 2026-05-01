@@ -55,6 +55,26 @@ def _make_paper_b_repo(tmp_path: Path) -> tuple[Path, str]:
     return paper_b_repo, _run_git(paper_b_repo, "rev-parse", "--short", "HEAD")
 
 
+def _make_paper_b_repo_with_stale_contract(tmp_path: Path) -> tuple[Path, str, str]:
+    paper_b_repo = tmp_path / "paper_b_stale"
+    paper_b_docs = paper_b_repo / "docs"
+    paper_b_docs.mkdir(parents=True)
+    paper_b_contract = paper_b_docs / "cross_paper_interface_contract.md"
+    _run_git(paper_b_repo, "init")
+    _run_git(paper_b_repo, "config", "user.email", "test@example.com")
+    _run_git(paper_b_repo, "config", "user.name", "Test User")
+    paper_b_contract.write_text("# stale contract\n", encoding="utf-8")
+    _run_git(paper_b_repo, "add", "docs/cross_paper_interface_contract.md")
+    _run_git(paper_b_repo, "commit", "-m", "stale contract")
+    stale_commit = _run_git(paper_b_repo, "rev-parse", "--short", "HEAD")
+    paper_a_contract = REPO_ROOT / "docs" / "cross_paper_interface_contract.md"
+    paper_b_contract.write_bytes(paper_a_contract.read_bytes())
+    _run_git(paper_b_repo, "add", "docs/cross_paper_interface_contract.md")
+    _run_git(paper_b_repo, "commit", "-m", "mirror contract")
+    current_commit = _run_git(paper_b_repo, "rev-parse", "--short", "HEAD")
+    return paper_b_repo, stale_commit, current_commit
+
+
 def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     monkeypatch,
     tmp_path: Path,
@@ -70,6 +90,8 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
             "--paper-b-repo-path",
             str(paper_b_repo),
             "--paper-b-commit",
+            paper_b_commit,
+            "--paper-b-verified-env-commit",
             paper_b_commit,
             "--profiles",
             "nominal",
@@ -91,7 +113,7 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     assert payload["artifact_type"] == "cross_sim_ranking"
     assert "paper_b_commit" not in payload["metadata"]
     assert payload["metadata"]["paper_b_checkout_commit"] == paper_b_commit
-    assert payload["metadata"]["paper_b_verified_env_commit"] == "3eb8408"
+    assert payload["metadata"]["paper_b_verified_env_commit"] == paper_b_commit
     assert payload["metadata"]["paper_b_contract_mirror_commit"] == paper_b_commit
     assert payload["metadata"]["paper_a_policy_artifact"] == "not_available"
     assert payload["metadata"]["paper_b_env_config"] == "not_available"
@@ -123,6 +145,8 @@ def test_cross_sim_runner_rejects_unknown_profiles(monkeypatch, tmp_path: Path) 
             "--paper-b-repo-path",
             str(paper_b_repo),
             "--paper-b-commit",
+            paper_b_commit,
+            "--paper-b-verified-env-commit",
             paper_b_commit,
             "--profiles",
             "invalid_profile",
@@ -164,6 +188,100 @@ def test_cross_sim_runner_rejects_wrong_paper_b_commit(
     assert not output_path.exists()
 
 
+def test_cross_sim_runner_rejects_invalid_verified_env_commit(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, paper_b_commit = _make_paper_b_repo(tmp_path)
+    output_path = tmp_path / "cross_sim.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--paper-b-commit",
+            paper_b_commit,
+            "--paper-b-verified-env-commit",
+            "deadbee",
+            "--dry-run",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    with pytest.raises(RuntimeError, match="--paper-b-verified-env-commit"):
+        module.main()
+
+    assert not output_path.exists()
+
+
+def test_cross_sim_runner_rejects_invalid_contract_mirror_commit(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, paper_b_commit = _make_paper_b_repo(tmp_path)
+    output_path = tmp_path / "cross_sim.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--paper-b-commit",
+            paper_b_commit,
+            "--paper-b-verified-env-commit",
+            paper_b_commit,
+            "--paper-b-contract-mirror-commit",
+            "deadbee",
+            "--dry-run",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    with pytest.raises(RuntimeError, match="--paper-b-contract-mirror-commit"):
+        module.main()
+
+    assert not output_path.exists()
+
+
+def test_cross_sim_runner_rejects_stale_contract_mirror_commit(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, stale_commit, current_commit = _make_paper_b_repo_with_stale_contract(tmp_path)
+    output_path = tmp_path / "cross_sim.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--paper-b-commit",
+            current_commit,
+            "--paper-b-verified-env-commit",
+            current_commit,
+            "--paper-b-contract-mirror-commit",
+            stale_commit,
+            "--dry-run",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    with pytest.raises(RuntimeError, match="Paper-B contract SHA mismatch"):
+        module.main()
+
+    assert not output_path.exists()
+
+
 def test_cross_sim_runner_records_actual_checkout_commit_when_omitted(
     monkeypatch,
     tmp_path: Path,
@@ -178,6 +296,8 @@ def test_cross_sim_runner_records_actual_checkout_commit_when_omitted(
             "run_cross_sim_via_paper_b.py",
             "--paper-b-repo-path",
             str(paper_b_repo),
+            "--paper-b-verified-env-commit",
+            paper_b_commit,
             "--profiles",
             "nominal",
             "--seeds",
@@ -214,6 +334,8 @@ def test_cross_sim_runner_accepts_full_paper_b_commit(
             "--paper-b-repo-path",
             str(paper_b_repo),
             "--paper-b-commit",
+            paper_b_full_commit,
+            "--paper-b-verified-env-commit",
             paper_b_full_commit,
             "--profiles",
             "nominal",
