@@ -171,6 +171,11 @@ torque_drop_guard_n_m: 0.1
 
 Paper-A stores its SHA pin in `src/vi_full/cross_paper_bridge.py` as `CONTRACT_SHA`. Paper-B must store the same value in its bridge copy when that repository is available. Bridge code must refuse to run when the computed contract SHA does not match the pinned value.
 
+Current synchronized readiness baseline:
+
+- Paper-B verification commit: `3eb8408`.
+- Verification evidence: Paper-B contract, readiness, peg-in-hole, contact-wrench, and safety-layer checks are recorded in Paper-A `docs/project/progress.md` on 2026-05-01.
+
 ## 9. Reproduction Templates
 
 Paper-A driving Paper-B:
@@ -178,6 +183,7 @@ Paper-A driving Paper-B:
 ```bash
 python scripts/experiments/run_cross_sim_via_paper_b.py \
   --paper-b-repo-path <path-to-paper-b-checkout> \
+  --paper-b-commit <paper-b-commit> \
   --profiles nominal tight_clearance high_friction offset_bias noisy_force \
   --seeds 0 1 2 3 4 \
   --episodes-per-seed 100 \

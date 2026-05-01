@@ -18,7 +18,9 @@ if str(SRC_ROOT) not in sys.path:
 from vi_full.cross_paper_bridge import (
     CONTRACT_RELATIVE_PATH,
     CONTRACT_SHA,
+    CONTRACT_VERSION,
     PAPER_A_POLICY_SUITE_NAMES,
+    TORQUE_DROP_GUARD_N_M,
     assert_contract_sha_current,
     build_policy_stub,
     compute_contract_sha,
@@ -138,9 +140,14 @@ def _dry_run_records(
 def _metadata(args: argparse.Namespace, paper_b_contract_sha: str, paper_b_commit: str) -> dict[str, Any]:
     return {
         "contract_sha": CONTRACT_SHA,
+        "contract_version": CONTRACT_VERSION,
         "paper_b_contract_sha": paper_b_contract_sha,
         "paper_a_commit": _git_commit(REPO_ROOT),
         "paper_b_commit": paper_b_commit,
+        "paper_a_policy_artifact": "not_available",
+        "paper_b_env_config": "not_available",
+        "mapping_dyaw": 0.0,
+        "torque_drop_guard_n_m": TORQUE_DROP_GUARD_N_M,
         "paper_b_repo": Path(args.paper_b_repo_path).name,
         "paper_b_repo_path_policy": "external checkout path is not embedded in reviewer artifacts",
         "dry_run": bool(args.dry_run),

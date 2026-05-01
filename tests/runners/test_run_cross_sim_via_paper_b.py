@@ -64,6 +64,10 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
 
     assert payload["artifact_type"] == "cross_sim_ranking"
     assert payload["metadata"]["paper_b_commit"] == "paperb123"
+    assert payload["metadata"]["paper_a_policy_artifact"] == "not_available"
+    assert payload["metadata"]["paper_b_env_config"] == "not_available"
+    assert payload["metadata"]["mapping_dyaw"] == 0.0
+    assert payload["metadata"]["torque_drop_guard_n_m"] == 0.1
     assert payload["metadata"]["dry_run"] is True
     assert payload["rows"][0]["suite_name"] == "repaired_mainline_bc_to_ppo"
     assert payload["rows"][0]["status"] == "not_available"
