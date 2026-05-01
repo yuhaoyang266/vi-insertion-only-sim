@@ -321,6 +321,27 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 310 passed, 14 skipped, 13 warnings.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning only for `outputs/revision/modern_baseline_iql_smoke_20260501.json`.
 
+### Sprint C May Checkpoint (2026-05-01)
+- **Status:** Paper-B deferred; within-A fallback path is active for June unless real Paper-A policy artifacts and completed Paper-B episode records land first.
+- Review findings:
+  - R1 Paper-B commit verification: closed.
+  - R2 runnable dry-run command: closed.
+  - R3 Paper-B commit-role metadata: closed.
+- Cross-paper contract: `docs/cross_paper_interface_contract.md`, SHA `8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b`.
+- Paper-B verified env commit: `3eb8408`.
+- Paper-B contract mirror commit: `dfb3c5c`.
+- Paper-B checkout commit used in cross-sim artifact: `dfb3c5c`.
+- Cross-sim artifact: `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`; dry-run rows remain `not_available` and metric-null.
+- Sensitivity artifact: `outputs/revision/contact_parameter_sensitivity_20260501.json`; all five default uncertainty profiles, all five contact parameters, seeds `0/1/2`, 5 episodes/seed, fixed/variable impedance policies, 150 rows.
+- Modern baseline artifact: `outputs/revision/modern_baseline_iql_smoke_20260501.json`; status `scaffold_only`, with `--dataset-path` available for JSON offline-dataset schema ingestion.
+- Deferred fallback scaffold: `src/vi_full/three_dof_alt_contact_model.py`; within-A contact-law cross-check only, not a second-simulator claim.
+- June path: Paper-B deferred fallback; expand within-A contact sensitivity and alternative contact-law checks while keeping Paper-B as a pinned contract interface until real physics episodes exist.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py tests/paper/test_docs_claim_source_sync.py` -> exit 0; 44 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 316 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
