@@ -262,6 +262,16 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the regenerated cross-sim JSON.
 
+### Sprint C Paper-B Readiness Follow-Up (2026-05-01)
+- **Status:** Paper-B remains ready for the contract-level bridge at checkout `dfb3c5c`; unrelated Paper-B dirty files were left untouched.
+- Paper-B checkout:
+  - Path: `F:\edge download\every-embodied-main\research-cartesian-impedance-vla-sim`.
+  - Branch/status after readiness rerun: `## master` with modified `configs/safety_layer_paper_matrix.yaml`, `src/variable_impedance/experiments/peg_in_hole_baselines.py`, `src/variable_impedance/experiments/safety_layer_eval.py`, `tests/test_safety_layer_eval.py`, `tests/test_safety_layer_matrix.py`, plus untracked `findings.md`, `progress.md`, and `task_plan.md`.
+  - Commit: short `dfb3c5c`; full `dfb3c5c0badab96877b824a19b7fc34b7543754d`.
+  - Paper-B contract file SHA and Paper-A `CONTRACT_SHA` both equal `8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b`.
+- Verification:
+  - Paper-B `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py tests/test_readiness.py tests/test_contact_wrench.py tests/test_peg_in_hole_env.py tests/test_safety_layer_core.py tests/test_safety_layer_eval.py tests/test_safety_layer_matrix.py` -> exit 0; 46 passed.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
