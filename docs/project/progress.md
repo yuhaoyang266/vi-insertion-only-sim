@@ -1,5 +1,22 @@
 ﻿# Progress Log
 
+### Sprint C Kickoff: External Validity Bridge (2026-05-01)
+- **Status:** started after review-repair baseline closure.
+- Scope:
+  - Sprint C targets an external-validity path through a pinned cross-paper interface contract, Paper-B readiness check or fallback decision, minimal Paper-A/Paper-B bridge, contact-parameter sensitivity sweep, modern-baseline smoke scaffold, and checkpoint writing.
+  - Hardware phases remain cancelled; SCI remains benchmark-local and must not be promoted beyond the current diagnostic boundary.
+- Baseline closure:
+  - Review-repair CSV/export checks committed as `7b26982`.
+  - Review-repair provenance hardening committed as `b77c369`.
+  - `git status --short --branch` -> exit 0; branch `main...origin/main [ahead 2]`, only `docs/plans/2026-05-01-one-month-sprint-c-detailed-plan.md` untracked before Sprint C kickoff note.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_tables.py` -> exit 0; 15 passed, 3 skipped.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py` -> exit 0; 17 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_artifact_provenance.py tests/paper/test_prose_statistics_sync.py tests/paper/test_paper_figures.py` -> exit 0; 22 passed, 11 skipped, 3 warnings.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 267 passed, 14 skipped, 13 warnings.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary evidence-matrix and sprint2 main-table outputs only.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for pre-existing touched files.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
