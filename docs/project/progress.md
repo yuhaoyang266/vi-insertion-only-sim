@@ -1198,3 +1198,30 @@
   - `python scripts/experiments/export_3dof_offline_demo_dataset.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 2 --source-policy variable_impedance --output artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json` -> exit 0.
   - `python scripts/experiments/run_modern_baseline_iql_smoke.py --dataset-path artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json --evaluate-bc-stub --eval-profiles nominal tight_clearance high_friction offset_bias noisy_force --eval-seeds 0 1 2 --eval-episodes-per-seed 1 --output outputs/revision/modern_baseline_iql_smoke_20260501.json` -> exit 0.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_offline_demo_dataset.py tests/runners/test_export_3dof_offline_demo_dataset.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> 19 passed.
+
+### Sprint C Next-Month Checkpoint (2026-06-01 target; recorded 2026-05-01)
+- Status: Paper-B physics ranking deferred; publication-facing fallback packet assembled from landed artifacts.
+- Repairs:
+  - R4 Paper-B role commit verification: closed.
+  - R5 out-of-scope ranking exclusion: closed.
+  - R6 dataset digest provenance: closed.
+- Artifact packet:
+  - Cross-sim dry-run artifact: `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`.
+  - Sensitivity artifact: `outputs/revision/contact_parameter_sensitivity_20260501.json`; five profiles, seeds `0 1 2`, 20 episodes per seed, 150 aggregate rows, 450 seed summaries, and 100 paired deltas.
+  - Alternative contact artifact: `outputs/revision/alt_contact_model_cross_check_20260501.json`; within-A contact-law cross-check, not a second-simulator or hardware-validity claim.
+  - Modern baseline dataset artifact: `artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json`; 30 variable-impedance teacher episodes and 1299 samples.
+  - Modern baseline smoke artifact: `outputs/revision/modern_baseline_iql_smoke_20260501.json`; `algorithm = bc_offline_stub`, `target_algorithm = iql_offline`, and zero offline-RL training updates.
+- Writing:
+  - Updated `paper/main.tex` Section 5 with landed artifact paths, no Paper-B physics-ranking claim, no hardware claim, and no trained IQL/CQL claim.
+  - Updated `docs/submission/cover_letter_tier2_template.md` with exact conservative fallback wording.
+  - Added reviewer-facing fallback packet commands to `README.md`.
+- June decision: fallback packet is publication-facing as a conservative within-A / contract-dry-run packet; Paper-B full physics ranking remains deferred.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> 29 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py tests/three_dof/test_offline_demo_dataset.py tests/runners/test_export_3dof_offline_demo_dataset.py` -> 19 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> 13 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_alt_contact_model.py tests/runners/test_run_3dof_alt_contact_model_sensitivity.py` -> 8 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py tests/paper/test_docs_claim_source_sync.py` -> 21 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for touched text files.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> 336 passed, 14 skipped, 13 warnings.

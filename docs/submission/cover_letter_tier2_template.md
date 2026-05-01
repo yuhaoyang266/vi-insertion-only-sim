@@ -14,10 +14,13 @@ force-bounded safety guarantees, or a general sim-to-real metric.
 For a Tier-2 venue, the submission now has a documented external-validity path. The bridge
 uses `docs/cross_paper_interface_contract.md` to pin the interface between this paper's analytical
 3DoF benchmark and the companion Paper-B MuJoCo safety-layer environment. The current artifacts
-include a contract-level cross-sim dry-run smoke, a five-profile within-A contact-parameter
-sensitivity artifact, and an IQL/CQL offline-baseline scaffold. These artifacts are presented as a
-conservative checkpoint with role-separated Paper-B provenance. Paper-B physics ranking is deferred
-until real Paper-A policy artifacts and completed Paper-B episode records exist.
+include a contract-level cross-sim dry-run smoke, a five-profile 20-episode-per-seed within-A
+contact-parameter sensitivity artifact, an alternative within-A contact-model cross-check, and an
+offline demonstration dataset with a `bc_offline_stub` baseline smoke. These artifacts are presented
+as a conservative checkpoint with role-separated Paper-B provenance. They do not claim Paper-B
+physics ranking, hardware validation, or trained IQL/CQL results; those remain deferred until real
+Paper-A policy artifacts, completed Paper-B episode records, and an actual offline-RL training path
+exist.
 
 The repository package includes the LaTeX source, paper-facing artifacts, cross-paper contract,
 focused reproduction scripts, reviewer smoke tests, and progress log entries that record command

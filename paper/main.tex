@@ -864,23 +864,31 @@ physics-ranking claim.
 The artifact metadata separates the Paper-B readiness commit, contract-mirror commit, and actual
 checkout commit so that provenance checks are not collapsed into a single ambiguous SHA.
 
-Two companion artifacts bound the next steps. The within-A contact-parameter sensitivity artifact,
-\code{outputs/revision/contact_parameter_sensitivity_20260501.json}, sweeps all five planned
-contact parameters across all five uncertainty profiles, three seeds, and both handcrafted Paper-A
-policies. In the five-profile checkpoint, high force-noise sensitivity reduces the variable
-impedance success rate on the noisy-force profile, while wall friction remains the largest driver of
-peak-force, contact-work, and contact-step deltas. The modern-baseline scaffold,
-\code{outputs/revision/modern_baseline_iql_smoke_20260501.json}, selects an IQL/CQL-style offline
-baseline path and validates the 14D observation / 5D action offline dataset contract, but does not
-yet train an offline RL policy.
+Three companion artifacts bound the fallback path. The within-A contact-parameter sensitivity
+artifact, \code{outputs/revision/contact_parameter_sensitivity_20260501.json}, sweeps all five
+planned contact parameters across all five uncertainty profiles, three seeds, 20 episodes per seed,
+and both handcrafted Paper-A policies. Its summary records 150 aggregate rows, 450 seed summaries,
+and 100 paired deltas versus nominal levels. In this checkpoint, high force-noise sensitivity
+reduces the variable-impedance success rate on the noisy-force profile, while wall friction remains
+the largest driver of peak-force, contact-work, and contact-step deltas. The alternative contact-law
+artifact, \code{outputs/revision/alt_contact_model_cross_check_20260501.json}, compares the base
+analytical contact law with a within-A soft-wall contact cross-check over the same five profiles and
+both handcrafted policies. It is a contact-law stress check inside Paper-A, not a second simulator.
+The modern-baseline path now has a concrete offline demonstration artifact,
+\code{artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json}, and a baseline smoke
+artifact, \code{outputs/revision/modern_baseline_iql_smoke_20260501.json}. The dataset records 30
+variable-impedance teacher episodes and 1299 samples. The baseline artifact labels the current
+method as \code{bc_offline_stub}, keeps IQL/CQL as the target offline-RL direction, and records zero
+offline-RL training updates.
 
 This checkpoint therefore defers Paper-B physics ranking until real Paper-A policy artifacts and
 completed Paper-B episode records exist. The June fallback path is the within-A sensitivity
-artifact family rather than an unlanded cross-simulator leaderboard. This framing clarifies the
-non-overlap between the two papers: Paper-A studies the support-gated learnability boundary, while
-Paper-B studies a force-bounded safety layer. Paper-A does not claim Paper-B's safety guarantee,
-and Paper-B is not used here to re-establish the SG-VI or SCI claims. Hardware remains out of
-scope, and SCI remains a benchmark-local diagnostic.
+artifact family, the contact-law cross-check, and the offline dataset / BC-stub path rather than an
+unlanded cross-simulator leaderboard. This framing clarifies the non-overlap between the two
+papers: Paper-A studies the support-gated learnability boundary, while Paper-B studies a
+force-bounded safety layer. Paper-A does not claim Paper-B's safety guarantee, and Paper-B is not
+used here to re-establish the SG-VI or SCI claims. No hardware evidence is included, and SCI
+remains a benchmark-local diagnostic.
 
 \section{Discussion and Limitations}
 \label{sec:discussion}

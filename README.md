@@ -225,6 +225,20 @@ python scripts/experiments/export_sprint4_clearance_shift.py --output-dir output
 These runs can be computationally slower than figure export. For manuscript inspection, the frozen
 JSON/Markdown artifacts are the canonical paper record.
 
+### External-Validity Packet Commands
+
+The current external-validity packet is conservative: Paper-B remains a contract-level dry-run path,
+the contact checks are within-A stress checks, and the modern-baseline command evaluates only the
+deterministic `bc_offline_stub`.
+
+```bash
+python scripts/experiments/run_cross_sim_via_paper_b.py --paper-b-repo-path <paper_b_repo_path> --paper-b-commit <paper_b_checkout_commit> --paper-b-verified-env-commit 3eb8408 --paper-b-contract-mirror-commit <paper_b_contract_mirror_commit> --profiles nominal --seeds 0 --episodes-per-seed 5 --suites repaired_mainline_bc_to_ppo bc_only_stable_r32_p32 --dry-run --output outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json
+python scripts/experiments/run_3dof_contact_parameter_sensitivity.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 20 --policies fixed_impedance variable_impedance --parameters contact_xy_scale contact_z_scale wall_friction_range force_noise_std_range contact_transition_band_m --levels low nominal high --output outputs/revision/contact_parameter_sensitivity_20260501.json
+python scripts/experiments/run_3dof_alt_contact_model_sensitivity.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 1 --policies fixed_impedance variable_impedance --output outputs/revision/alt_contact_model_cross_check_20260501.json
+python scripts/experiments/export_3dof_offline_demo_dataset.py --profiles nominal tight_clearance high_friction offset_bias noisy_force --seeds 0 1 2 --episodes-per-seed 2 --source-policy variable_impedance --output artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json
+python scripts/experiments/run_modern_baseline_iql_smoke.py --dataset-path artifacts/main_benchmark/three_dof_offline_demo_dataset_20260501.json --evaluate-bc-stub --eval-profiles nominal tight_clearance high_friction offset_bias noisy_force --eval-seeds 0 1 2 --eval-episodes-per-seed 1 --output outputs/revision/modern_baseline_iql_smoke_20260501.json
+```
+
 ## Scope
 
 This is a simulation-only, translational 3DoF analytical benchmark. It uses relative observations,
