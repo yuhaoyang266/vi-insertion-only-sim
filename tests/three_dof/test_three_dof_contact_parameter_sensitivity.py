@@ -87,6 +87,58 @@ def test_identify_most_sensitive_parameter_uses_success_delta() -> None:
     assert result["max_abs_success_delta"] == pytest.approx(0.6)
 
 
+def test_identify_most_sensitive_parameter_compares_matching_profile_policy() -> None:
+    rows = [
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "nominal",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 1.0,
+        },
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "high",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 1.0,
+        },
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "nominal",
+            "profile": "tight_clearance",
+            "policy_name": "fixed_impedance",
+            "success_rate": 0.0,
+        },
+        {
+            "parameter_name": "contact_xy_scale",
+            "level_name": "high",
+            "profile": "tight_clearance",
+            "policy_name": "fixed_impedance",
+            "success_rate": 0.0,
+        },
+        {
+            "parameter_name": "contact_z_scale",
+            "level_name": "nominal",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 0.5,
+        },
+        {
+            "parameter_name": "contact_z_scale",
+            "level_name": "high",
+            "profile": "nominal",
+            "policy_name": "fixed_impedance",
+            "success_rate": 0.8,
+        },
+    ]
+
+    result = identify_most_sensitive_parameter(rows)
+
+    assert result["parameter_name"] == "contact_z_scale"
+    assert result["max_abs_success_delta"] == pytest.approx(0.3)
+
+
 def test_contact_parameter_sensitivity_writes_artifacts(tmp_path: Path) -> None:
     report = {
         "artifact_type": "three_dof_contact_parameter_sensitivity",

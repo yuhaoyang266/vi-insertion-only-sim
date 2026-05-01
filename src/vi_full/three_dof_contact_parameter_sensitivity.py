@@ -279,20 +279,26 @@ def run_contact_parameter_sensitivity(
 
 
 def identify_most_sensitive_parameter(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    nominal_by_parameter: dict[str, list[float]] = {}
-    values_by_parameter: dict[str, list[float]] = {}
+    values_by_stratum: dict[tuple[str, str, str], list[float]] = {}
+    nominal_by_stratum: dict[tuple[str, str, str], list[float]] = {}
     for row in rows:
         parameter_name = str(row["parameter_name"])
+        stratum = (
+            parameter_name,
+            str(row.get("profile", "")),
+            str(row.get("policy_name", "")),
+        )
         success_rate = float(row["success_rate"])
-        values_by_parameter.setdefault(parameter_name, []).append(success_rate)
+        values_by_stratum.setdefault(stratum, []).append(success_rate)
         if row["level_name"] == "nominal":
-            nominal_by_parameter.setdefault(parameter_name, []).append(success_rate)
+            nominal_by_stratum.setdefault(stratum, []).append(success_rate)
     best: dict[str, Any] = {
         "parameter_name": None,
         "max_abs_success_delta": 0.0,
     }
-    for parameter_name, values in values_by_parameter.items():
-        nominal_values = nominal_by_parameter.get(parameter_name)
+    for stratum, values in values_by_stratum.items():
+        parameter_name = stratum[0]
+        nominal_values = nominal_by_stratum.get(stratum)
         if not nominal_values:
             continue
         nominal = _mean(nominal_values)

@@ -212,6 +212,20 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 299 passed, 14 skipped, 13 warnings.
   - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for regenerated smoke artifacts.
 
+### Sprint C Sensitivity Aggregation Review (2026-05-01)
+- **Status:** complete.
+- Review finding:
+  - `identify_most_sensitive_parameter()` compared each parameter's rows to a parameter-wide nominal mean, which could mistake profile or policy baseline differences for contact-parameter sensitivity.
+- Action:
+  - Updated `src/vi_full/three_dof_contact_parameter_sensitivity.py` to compare each level against the nominal row for the same parameter/profile/policy stratum.
+  - Added a regression in `tests/three_dof/test_three_dof_contact_parameter_sensitivity.py` where profile baseline differences are larger than the true within-stratum parameter effect.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py` -> exit 0; 7 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py tests/runners/test_run_cross_sim_via_paper_b.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 33 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` first attempt -> timed out after 124s before completion; rerun with longer timeout -> exit 0; 300 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
