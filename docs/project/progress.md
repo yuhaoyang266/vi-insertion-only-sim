@@ -47,6 +47,16 @@
   - `python -m variable_impedance.experiments.safety_layer_eval --help` -> exit 1 without `PYTHONPATH`; `PYTHONPATH=src python -m variable_impedance.experiments.safety_layer_eval --help` -> exit 0.
   - Paper-A and Paper-B contract file hashes both equal `d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e`.
 
+### Sprint C Bridge Helpers: Contract-Level Translation (2026-05-01)
+- **Status:** pure Paper-A bridge helpers implemented; simulator runner still pending.
+- Scope:
+  - Added contract-level tests for Paper-A action clipping/decoding, Paper-B observation projection, finite-difference velocity fallback, and five-suite policy stub registry.
+  - Extended `src/vi_full/cross_paper_bridge.py` with action mapping, observation projection, torque-drop scope flagging, and unavailable policy wrapper stubs.
+  - Kept the bridge pure-Python/Paper-A-side; it does not import Paper-B or run MuJoCo.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_bridge_contract.py` before implementation -> exit 1; 7 expected missing-helper failures.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper` -> exit 0; 9 passed.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
