@@ -213,7 +213,7 @@
   - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for regenerated smoke artifacts.
 
 ### Sprint C Review-Finding R1-R3 Cleanup (2026-05-01)
-- **Status:** role-schema source and smoke artifact refreshed; full Week 0 verification pending.
+- **Status:** complete; review findings R1-R3 are closed for the current dry-run bridge.
 - Review findings:
   - R1: `--paper-b-commit` was accepted as trusted metadata instead of being checked against the actual Paper-B checkout.
   - R2: the contract's Paper-A-to-Paper-B command omitted `--dry-run` even though full Paper-B physics execution is future-only.
@@ -224,10 +224,14 @@
   - Replaced ambiguous artifact metadata with `paper_b_checkout_commit`, `paper_b_verified_env_commit`, and `paper_b_contract_mirror_commit`.
   - Mirrored the revised contract and SHA pin to Paper-B as `dfb3c5c`; `paper_b_verified_env_commit` remains `3eb8408`.
   - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with contract SHA `8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b`, `paper_a_commit = 66c06aa`, `paper_b_checkout_commit = dfb3c5c`, and `paper_b_contract_mirror_commit = dfb3c5c`.
-- Verification so far:
+- Verification:
   - Paper-B `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` -> exit 0; 2 passed.
   - Paper-A `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 35 passed.
   - Dry-run smoke command with `--dry-run` and `paper_b_checkout_commit = dfb3c5c` -> exit 0; regenerated JSON artifact.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 17 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `git diff --check` -> exit 0.
 
 ### Sprint C Sensitivity Aggregation Review (2026-05-01)
 - **Status:** complete.
