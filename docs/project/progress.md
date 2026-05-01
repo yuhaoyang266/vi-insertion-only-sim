@@ -230,7 +230,7 @@
   - Paper-A `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 35 passed.
   - Dry-run smoke command with `--dry-run` and `paper_b_checkout_commit = dfb3c5c` -> exit 0; regenerated JSON artifact.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/runners/test_run_cross_sim_via_paper_b.py` after mirror-default cleanup -> exit 0; 6 passed.
-  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 17 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 18 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
   - `git diff --check` -> exit 0.
