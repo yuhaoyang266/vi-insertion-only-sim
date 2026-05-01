@@ -39,6 +39,12 @@ CANONICAL_STAGE4 = (
 CANONICAL_STATISTICS_STAGE4 = (
     "artifacts/main_benchmark/three_dof_statistics_report_stage4_20260429.json"
 )
+STAGE4_TABLE = (
+    "artifacts/main_benchmark/table_3dof_paper_benchmark_stage4_20260429.json"
+)
+MOTION_MATCHED_MAIN = "artifacts/main_benchmark/three_dof_motion_matched_main_20260429.json"
+MECHANICS_ARTIFACT = "outputs/revision/three_dof_impedance_mechanics_20260429.json"
+MECHANICS_TRACE = "artifacts/mechanics/latest_three_dof_high_friction_direct_mechanics_trace.json"
 SCHEMA2_DIAGNOSTIC = (
     "artifacts/main_benchmark/"
     "three_dof_benchmark_schema2_paper_teacher_20260418_034230.json"
@@ -172,6 +178,56 @@ def test_schema2_appendix_table_is_diagnostic_legacy_with_provenance() -> None:
     assert "appendix" in appendix_table["claim_scope"]
     assert "main" not in appendix_table["claim_scope"]
     _assert_sources(appendix_table, {"benchmark_report": SCHEMA2_DIAGNOSTIC})
+
+
+def test_stage4_table_and_statistics_have_source_provenance() -> None:
+    table = _load_json(STAGE4_TABLE)
+    _assert_common_provenance(table)
+    assert table["schema_version"] == 3
+    assert table["source_role"] == "canonical_main_benchmark"
+    assert "export_paper_only_sim_benchmark_table.py" in table["generating_command"]
+    _assert_sources(
+        table,
+        {
+            "benchmark_report": CANONICAL_STAGE4,
+            "statistics_report": CANONICAL_STATISTICS_STAGE4,
+        },
+    )
+
+    statistics = _load_json(CANONICAL_STATISTICS_STAGE4)
+    _assert_common_provenance(statistics)
+    assert statistics["schema_version"] == 3
+    _assert_sources(statistics, {"benchmark_report": CANONICAL_STAGE4})
+
+
+def test_motion_matched_main_artifact_has_source_provenance() -> None:
+    report = _load_json(MOTION_MATCHED_MAIN)
+    _assert_common_provenance(report)
+    assert report["schema_version"] == 1
+    assert report["source_artifacts"]["protocol_module"] == "src/vi_full/three_dof_motion_matched_main_protocol.py"
+    assert report["source_artifacts"]["protocol_runner"] == "scripts/experiments/run_3dof_motion_matched_main_protocol.py"
+    assert report["source_hashes"]["protocol_module"] == _sha256(
+        "src/vi_full/three_dof_motion_matched_main_protocol.py"
+    )
+    assert report["source_hashes"]["protocol_runner"] == _sha256(
+        "scripts/experiments/run_3dof_motion_matched_main_protocol.py"
+    )
+    assert "run_3dof_motion_matched_main_protocol.py" in report["generating_command"]
+
+
+def test_mechanics_artifact_has_source_provenance() -> None:
+    report = _load_json(MECHANICS_ARTIFACT)
+    _assert_common_provenance(report)
+    assert report["schema_version"] == 1
+    _assert_sources(
+        report,
+        {
+            "trace_artifact": MECHANICS_TRACE,
+            "mechanics_module": "src/vi_full/three_dof_impedance_mechanics.py",
+            "mechanics_exporter": "scripts/experiments/export_3dof_impedance_mechanics.py",
+        },
+    )
+    assert "export_3dof_impedance_mechanics.py" in report["generating_command"]
 
 
 def test_evidence_artifacts_have_manifest_level_provenance() -> None:

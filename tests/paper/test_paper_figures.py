@@ -813,6 +813,29 @@ def test_figure3_success_matched_and_legacy_assets_exist() -> None:
         assert path.stat().st_size > 0
 
 
+def test_figure3_assets_distinguish_success_matched_from_legacy_appendix() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    mechanics = json.loads(
+        (repo_root / "outputs/revision/three_dof_impedance_mechanics_20260429.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    main_assets = [
+        repo_root / "figures/main/fig3_high_friction_impedance_mechanism.pdf",
+        repo_root / "figures/main/fig3_high_friction_impedance_mechanism.png",
+    ]
+    appendix_assets = [
+        repo_root / "figures/appendix/fig3_legacy_all_trace_high_friction_impedance_mechanism.pdf",
+        repo_root / "figures/appendix/fig3_legacy_all_trace_high_friction_impedance_mechanism.png",
+    ]
+
+    assert mechanics["config"]["curve_basis"] == "success_matched"
+    assert mechanics["force_curve"]["curve_basis"] == "success_matched"
+    assert mechanics["generating_command"].count("--figure-stem fig3_high_friction_impedance_mechanism") == 1
+    assert "fig3_legacy_all_trace_high_friction_impedance_mechanism" not in mechanics["generating_command"]
+    assert {path.name for path in main_assets}.isdisjoint(path.name for path in appendix_assets)
+
+
 def test_figure3_caption_uses_success_matched_framing() -> None:
     manuscript = (
         Path(__file__).resolve().parents[2] / "paper" / "main.tex"

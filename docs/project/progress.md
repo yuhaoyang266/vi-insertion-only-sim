@@ -1,5 +1,25 @@
 ﻿# Progress Log
 
+### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
+- **Status:** complete.
+- Scope:
+  - Repaired no-statistics `paper_table.csv` export by falling back to `five_profile_mean` for means and leaving std-only fields blank when no statistics report is attached.
+  - Added CSV stale-output comparison to the benchmark-table exporter check path.
+  - Added CSV contract coverage for no-statistics exports, statistics-backed canonical values, line endings, and override benchmark-input writes.
+  - Added targeted provenance coverage for Stage 4 table/statistics, motion-matched main artifact, and mechanics artifact; added sync checks for motion-matched prose and Figure 3 success-matched assets.
+- Reproduction evidence:
+  - `python -m pytest -q tests/paper/test_paper_tables.py::test_export_3dof_paper_table_writes_json_and_markdown` from the outer working directory -> exit 1 before test collection due environment plugin incompatibility: `AttributeError: module 'numpy' has no attribute 'dtypes'` while importing `zarr`.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_tables.py::test_export_3dof_paper_table_writes_json_and_markdown` from the project root -> exit 1; reproduced target `KeyError: 'five_profile_statistics'` at `src/vi_full/paper_tables.py:1520`.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_tables.py::test_export_3dof_paper_table_writes_json_and_markdown` -> exit 0; 1 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_tables.py` -> exit 0; 14 passed, 3 skipped before the final CSV statistics test addition; final targeted rerun below includes 15 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_exporter_defaults.py tests/paper/test_paper_table_sync.py` -> exit 0; 17 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/artifacts/test_artifact_provenance.py tests/paper/test_prose_statistics_sync.py tests/paper/test_paper_figures.py` -> exit 0; 22 passed, 11 skipped, 3 warnings.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary evidence-matrix and sprint2 main-table outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 267 passed, 14 skipped, 13 warnings.
+  - `git diff --check` -> exit 0 with CRLF/LF conversion warnings for `src/vi_full/paper_tables.py` and `tests/paper/test_paper_tables.py` only.
+  - `git status --short` -> only intended code/test files plus the two review-repair plan files are changed/untracked.
+
 ### Phase 7.2 Sprint B: Matched-Protocol Main-Table Evidence (2026-04-29)
 - **Status:** complete; final closure review only cleaned dropped-path roadmap items.
 - Scope:

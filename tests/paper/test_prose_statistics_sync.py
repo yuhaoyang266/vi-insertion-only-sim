@@ -37,6 +37,14 @@ def _motion_success(report: dict, condition_name: str) -> str:
     return f"${stats['mean']:.3f}$"
 
 
+def test_motion_matched_report_path_matches_main_text_source() -> None:
+    main_tex = MAIN_TEX.read_text(encoding="utf-8")
+    report = json.loads(MOTION_MATCHED_REPORT.read_text(encoding="utf-8"))
+
+    assert report["source_artifacts"]["protocol_runner"] == "scripts/experiments/run_3dof_motion_matched_main_protocol.py"
+    assert "three\\_dof\\_motion\\_matched\\_main\\_20260429.json" in main_tex
+
+
 def test_main_text_statistics_match_canonical_report() -> None:
     report = _statistics_report()
     motion_report = json.loads(MOTION_MATCHED_REPORT.read_text(encoding="utf-8"))
