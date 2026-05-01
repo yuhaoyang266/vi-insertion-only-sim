@@ -5,7 +5,7 @@
     "contract_sha": "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b",
     "contract_version": "2026-05-01",
     "paper_b_contract_sha": "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b",
-    "paper_a_commit": "d490b65",
+    "paper_a_commit": "c939046",
     "paper_b_checkout_commit": "dfb3c5c",
     "paper_b_verified_env_commit": "3eb8408",
     "paper_b_contract_mirror_commit": "dfb3c5c",
@@ -91,20 +91,50 @@
   ],
   "records": [
     {
+      "schema_version": 1,
       "suite_name": "repaired_mainline_bc_to_ppo",
       "profile": "nominal",
       "seed": 0,
       "episode_count": 5,
       "status": "not_available",
-      "reason": "Paper-A policy artifact loader is not implemented."
+      "episode_status": "not_available",
+      "reason": "Paper-A policy artifact loader is not implemented.",
+      "paper_a_policy_artifact": "not_available",
+      "paper_b_env_config": "not_available",
+      "out_of_paper_a_scope": null,
+      "mean_dropped_torque_norm_nm": null,
+      "success_rate": null,
+      "jam_rate": null,
+      "documented_force_jam_rate": null,
+      "blocked_contact_termination_rate": null,
+      "mean_final_distance": null,
+      "mean_peak_contact_force": null,
+      "p95_peak_contact_force": null,
+      "mean_contact_steps": null,
+      "mean_contact_work": null
     },
     {
+      "schema_version": 1,
       "suite_name": "bc_only_stable_r32_p32",
       "profile": "nominal",
       "seed": 0,
       "episode_count": 5,
       "status": "not_available",
-      "reason": "Paper-A policy artifact loader is not implemented."
+      "episode_status": "not_available",
+      "reason": "Paper-A policy artifact loader is not implemented.",
+      "paper_a_policy_artifact": "not_available",
+      "paper_b_env_config": "not_available",
+      "out_of_paper_a_scope": null,
+      "mean_dropped_torque_norm_nm": null,
+      "success_rate": null,
+      "jam_rate": null,
+      "documented_force_jam_rate": null,
+      "blocked_contact_termination_rate": null,
+      "mean_final_distance": null,
+      "mean_peak_contact_force": null,
+      "p95_peak_contact_force": null,
+      "mean_contact_steps": null,
+      "mean_contact_work": null
     }
   ]
 }

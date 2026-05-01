@@ -249,6 +249,19 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` first attempt -> timed out after 124s before completion; rerun with longer timeout -> exit 0; 300 passed, 14 skipped, 13 warnings.
   - `git diff --check` -> exit 0.
 
+### Sprint C Policy Loader Contract And Dry-Run Record Schema (2026-05-01)
+- **Status:** complete for contract-level loader stub and dry-run schema; real learned artifact loading remains pending.
+- Action:
+  - Added `src/vi_full/cross_paper_policy_loader.py` with a pure JSON stub loader contract: suite name, artifact path, observation shape `(14,)`, action shape `(5,)`, and required normalization state.
+  - Added unavailable, invalid-stub, and valid-stub loader tests without importing training or Paper-B dependencies.
+  - Hardened `src/vi_full/cross_sim_ranking.py` so cross-sim records carry schema version, `episode_status`, policy/env artifact fields, out-of-scope and dropped-torque placeholders, and null metrics for `not_available` rows.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json`; metadata records `paper_a_commit = c939046`, `paper_b_checkout_commit = dfb3c5c`, and dry-run records now match the future episode schema.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 23 passed.
+  - Dry-run smoke command with `--dry-run` and `paper_b_checkout_commit = dfb3c5c` -> exit 0; regenerated JSON/CSV/Markdown sidecars.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the regenerated cross-sim JSON.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

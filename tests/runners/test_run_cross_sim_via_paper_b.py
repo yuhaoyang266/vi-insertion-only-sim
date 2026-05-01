@@ -8,6 +8,8 @@ import sys
 
 import pytest
 
+from vi_full.cross_sim_ranking import CROSS_SIM_RECORD_SCHEMA_VERSION, RANKING_METRICS
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -98,6 +100,14 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     assert payload["metadata"]["dry_run"] is True
     assert payload["rows"][0]["suite_name"] == "repaired_mainline_bc_to_ppo"
     assert payload["rows"][0]["status"] == "not_available"
+    record = payload["records"][0]
+    assert record["schema_version"] == CROSS_SIM_RECORD_SCHEMA_VERSION
+    assert record["episode_status"] == "not_available"
+    assert record["paper_a_policy_artifact"] == "not_available"
+    assert record["paper_b_env_config"] == "not_available"
+    assert record["out_of_paper_a_scope"] is None
+    assert record["mean_dropped_torque_norm_nm"] is None
+    assert all(record[metric_name] is None for metric_name in RANKING_METRICS)
     assert output_path.with_suffix(".csv").exists()
     assert output_path.with_suffix(".md").exists()
 
