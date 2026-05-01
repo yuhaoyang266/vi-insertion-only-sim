@@ -861,6 +861,8 @@ run Paper-B physics with learned Paper-A policies. Its rows are therefore marked
 \code{not_available} until a real Paper-A policy artifact loader is added. This distinction is
 important: the bridge has landed as an auditable interface and artifact path, not as a new
 physics-ranking claim.
+The artifact metadata separates the Paper-B readiness commit, contract-mirror commit, and actual
+checkout commit so that provenance checks are not collapsed into a single ambiguous SHA.
 
 Two companion smoke artifacts bound the next steps. The contact-parameter sensitivity smoke,
 \code{outputs/revision/contact_parameter_sensitivity_smoke_20260501.json}, runs a small

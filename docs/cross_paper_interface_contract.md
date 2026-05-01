@@ -2,7 +2,7 @@
 
 Status: active Sprint C draft, 2026-05-01.
 
-This contract defines the only supported interface between Paper-A (`vi-insertion-only-sim`) and the planned Paper-B repository (`research-cartesian-impedance-vla-sim`). Paper-A owns the support-gated 3DoF benchmark. Paper-B owns the MuJoCo Cartesian impedance and safety-layer environment. Cross-paper artifacts must record the contract SHA, both repository commits when available, and the exact runner command.
+This contract defines the only supported interface between Paper-A (`vi-insertion-only-sim`) and the planned Paper-B repository (`research-cartesian-impedance-vla-sim`). Paper-A owns the support-gated 3DoF benchmark. Paper-B owns the MuJoCo Cartesian impedance and safety-layer environment. Cross-paper artifacts must record the contract SHA, Paper-A commit, distinct Paper-B commit roles when available, and the exact runner command.
 
 ## 1. Scope
 
@@ -162,7 +162,9 @@ Every cross-paper artifact must include:
 ```yaml
 contract_sha: <sha256 of docs/cross_paper_interface_contract.md>
 paper_a_commit: <git commit of vi-insertion-only-sim>
-paper_b_commit: <git commit of research-cartesian-impedance-vla-sim, or deferred>
+paper_b_checkout_commit: <actual Paper-B checkout commit used for the artifact, or deferred>
+paper_b_verified_env_commit: <Paper-B commit where readiness/environment checks passed, or deferred>
+paper_b_contract_mirror_commit: <Paper-B commit that mirrors this contract and SHA pin, or deferred>
 paper_a_policy_artifact: <path or not_available>
 paper_b_env_config: <path or not_available>
 mapping_dyaw: 0.0
@@ -173,17 +175,33 @@ Paper-A stores its SHA pin in `src/vi_full/cross_paper_bridge.py` as `CONTRACT_S
 
 Current synchronized readiness baseline:
 
-- Paper-B verification commit: `3eb8408`.
+- `paper_b_verified_env_commit`: `3eb8408`; this is the Paper-B checkout where contract, readiness, peg-in-hole, contact-wrench, and safety-layer checks were recorded.
+- `paper_b_contract_mirror_commit`: the Paper-B checkout that mirrors this contract and SHA pin; record the exact commit in each artifact.
+- `paper_b_checkout_commit`: the actual Paper-B checkout used by the artifact runner; `scripts/experiments/run_cross_sim_via_paper_b.py` verifies `--paper-b-commit` against this checkout before writing artifacts.
 - Verification evidence: Paper-B contract, readiness, peg-in-hole, contact-wrench, and safety-layer checks are recorded in Paper-A `docs/project/progress.md` on 2026-05-01.
 
 ## 9. Reproduction Templates
 
-Paper-A driving Paper-B:
+Current dry-run smoke command:
 
 ```bash
 python scripts/experiments/run_cross_sim_via_paper_b.py \
   --paper-b-repo-path <path-to-paper-b-checkout> \
-  --paper-b-commit <paper-b-commit> \
+  --paper-b-commit <actual-paper-b-checkout-commit> \
+  --profiles nominal \
+  --seeds 0 \
+  --episodes-per-seed 5 \
+  --suites repaired_mainline_bc_to_ppo bc_only_stable_r32_p32 \
+  --dry-run \
+  --output outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json
+```
+
+Future full-physics command, after Paper-A policy artifact loading and Paper-B physics execution are implemented:
+
+```bash
+python scripts/experiments/run_cross_sim_via_paper_b.py \
+  --paper-b-repo-path <path-to-paper-b-checkout> \
+  --paper-b-commit <actual-paper-b-checkout-commit> \
   --profiles nominal tight_clearance high_friction offset_bias noisy_force \
   --seeds 0 1 2 3 4 \
   --episodes-per-seed 100 \

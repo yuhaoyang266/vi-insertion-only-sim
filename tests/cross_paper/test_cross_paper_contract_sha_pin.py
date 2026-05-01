@@ -13,7 +13,11 @@ def test_cross_paper_contract_sha_pin_matches_document() -> None:
     assert contract_path.exists()
     assert cross_paper_bridge.compute_contract_sha(contract_path) == cross_paper_bridge.CONTRACT_SHA
     assert re.fullmatch(r"[0-9a-f]{64}", cross_paper_bridge.CONTRACT_SHA)
-    assert "Paper-B verification commit: `3eb8408`" in contract_path.read_text(encoding="utf-8")
+    contract_text = contract_path.read_text(encoding="utf-8")
+    assert "`paper_b_verified_env_commit`: `3eb8408`" in contract_text
+    assert "paper_b_checkout_commit" in contract_text
+    assert "paper_b_contract_mirror_commit" in contract_text
+    assert "--dry-run" in contract_text
 
 
 def test_cross_paper_contract_path_stays_inside_repo() -> None:

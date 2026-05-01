@@ -9,7 +9,7 @@ import numpy as np
 
 
 CONTRACT_RELATIVE_PATH = Path("docs") / "cross_paper_interface_contract.md"
-CONTRACT_SHA = "19a155c7a754cacce7aef9bcc9b72007a00667589de43821ae03d6a0271d5d3b"
+CONTRACT_SHA = "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b"
 CONTRACT_VERSION = "2026-05-01"
 PAPER_A_ACTION_LOW = np.array([-1.0, -1.0, -1.0, 0.0, 0.0], dtype=np.float64)
 PAPER_A_ACTION_HIGH = np.array([1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float64)

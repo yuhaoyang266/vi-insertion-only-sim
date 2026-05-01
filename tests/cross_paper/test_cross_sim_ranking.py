@@ -44,7 +44,7 @@ def test_cross_sim_ranking_orders_completed_rows_before_unavailable() -> None:
 
     ranking = build_cross_sim_ranking(
         records,
-        metadata={"contract_sha": "abc", "paper_b_commit": "def"},
+        metadata={"contract_sha": "abc", "paper_b_checkout_commit": "def"},
     )
 
     assert [row["suite_name"] for row in ranking["rows"]] == [
@@ -55,7 +55,7 @@ def test_cross_sim_ranking_orders_completed_rows_before_unavailable() -> None:
     assert ranking["rows"][0]["status"] == "completed"
     assert ranking["rows"][0]["success_rate"] == 1.0
     assert ranking["rows"][2]["status"] == "not_available"
-    assert ranking["metadata"]["paper_b_commit"] == "def"
+    assert ranking["metadata"]["paper_b_checkout_commit"] == "def"
 
 
 def test_cross_sim_ranking_marks_partial_suite_as_failed() -> None:

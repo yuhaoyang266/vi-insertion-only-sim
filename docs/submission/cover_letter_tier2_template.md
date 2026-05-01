@@ -16,7 +16,7 @@ uses `docs/cross_paper_interface_contract.md` to pin the interface between this 
 3DoF benchmark and the companion Paper-B MuJoCo safety-layer environment. The current artifacts
 include a contract-level cross-sim dry-run smoke, a within-A contact-parameter sensitivity smoke,
 and an IQL/CQL offline-baseline scaffold. These artifacts are presented as a conservative checkpoint,
-not as unlanded cross-simulator physics results.
+with role-separated Paper-B provenance, not as unlanded cross-simulator physics results.
 
 The repository package includes the LaTeX source, paper-facing artifacts, cross-paper contract,
 focused reproduction scripts, reviewer smoke tests, and progress log entries that record command

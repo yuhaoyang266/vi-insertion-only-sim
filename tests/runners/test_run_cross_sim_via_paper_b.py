@@ -87,7 +87,10 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     payload = json.loads(output_path.read_text(encoding="utf-8"))
 
     assert payload["artifact_type"] == "cross_sim_ranking"
-    assert payload["metadata"]["paper_b_commit"] == paper_b_commit
+    assert "paper_b_commit" not in payload["metadata"]
+    assert payload["metadata"]["paper_b_checkout_commit"] == paper_b_commit
+    assert payload["metadata"]["paper_b_verified_env_commit"] == "3eb8408"
+    assert payload["metadata"]["paper_b_contract_mirror_commit"] == "dfb3c5c"
     assert payload["metadata"]["paper_a_policy_artifact"] == "not_available"
     assert payload["metadata"]["paper_b_env_config"] == "not_available"
     assert payload["metadata"]["mapping_dyaw"] == 0.0
@@ -182,7 +185,7 @@ def test_cross_sim_runner_records_actual_checkout_commit_when_omitted(
     module.main()
     payload = json.loads(output_path.read_text(encoding="utf-8"))
 
-    assert payload["metadata"]["paper_b_commit"] == paper_b_commit
+    assert payload["metadata"]["paper_b_checkout_commit"] == paper_b_commit
 
 
 def test_cross_sim_runner_help_works_from_repo_root() -> None:

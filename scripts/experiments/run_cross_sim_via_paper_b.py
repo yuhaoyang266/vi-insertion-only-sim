@@ -33,6 +33,8 @@ from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
 
 _COMMIT_SHA_RE = re.compile(r"^[0-9a-fA-F]{4,40}$")
+PAPER_B_VERIFIED_ENV_COMMIT = "3eb8408"
+PAPER_B_CONTRACT_MIRROR_COMMIT = "dfb3c5c"
 
 
 def _parse_args() -> argparse.Namespace:
@@ -41,6 +43,18 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--paper-b-repo-path", type=Path, required=True)
     parser.add_argument("--paper-b-commit", type=str, default=None)
+    parser.add_argument(
+        "--paper-b-verified-env-commit",
+        type=str,
+        default=PAPER_B_VERIFIED_ENV_COMMIT,
+        help="Paper-B commit where readiness/environment checks were verified.",
+    )
+    parser.add_argument(
+        "--paper-b-contract-mirror-commit",
+        type=str,
+        default=PAPER_B_CONTRACT_MIRROR_COMMIT,
+        help="Paper-B commit that mirrors the current cross-paper contract.",
+    )
     parser.add_argument(
         "--profiles",
         type=str,
@@ -195,13 +209,19 @@ def _dry_run_records(
     return records
 
 
-def _metadata(args: argparse.Namespace, paper_b_contract_sha: str, paper_b_commit: str) -> dict[str, Any]:
+def _metadata(
+    args: argparse.Namespace,
+    paper_b_contract_sha: str,
+    paper_b_checkout_commit: str,
+) -> dict[str, Any]:
     return {
         "contract_sha": CONTRACT_SHA,
         "contract_version": CONTRACT_VERSION,
         "paper_b_contract_sha": paper_b_contract_sha,
         "paper_a_commit": _git_commit(REPO_ROOT),
-        "paper_b_commit": paper_b_commit,
+        "paper_b_checkout_commit": paper_b_checkout_commit,
+        "paper_b_verified_env_commit": str(args.paper_b_verified_env_commit),
+        "paper_b_contract_mirror_commit": str(args.paper_b_contract_mirror_commit),
         "paper_a_policy_artifact": "not_available",
         "paper_b_env_config": "not_available",
         "mapping_dyaw": 0.0,
@@ -224,7 +244,7 @@ def main() -> None:
     if not paper_b_repo_path.exists():
         raise FileNotFoundError(f"Paper-B repo path does not exist: {paper_b_repo_path}")
     paper_b_contract_sha = _validate_paper_b_contract(paper_b_repo_path)
-    paper_b_commit = _resolve_and_verify_paper_b_commit(args, paper_b_repo_path)
+    paper_b_checkout_commit = _resolve_and_verify_paper_b_commit(args, paper_b_repo_path)
     if not args.dry_run:
         raise RuntimeError(
             "Paper-B physics execution is not implemented yet; use --dry-run for contract smoke."
@@ -238,7 +258,7 @@ def main() -> None:
     output_path = args.output if args.output is not None else _default_output_path()
     ranking = build_cross_sim_ranking(
         records,
-        metadata=_metadata(args, paper_b_contract_sha, paper_b_commit),
+        metadata=_metadata(args, paper_b_contract_sha, paper_b_checkout_commit),
     )
     paths = write_cross_sim_ranking_artifacts(output_path, ranking)
     print(f"cross_sim_ranking_json {paths['json']}", flush=True)
