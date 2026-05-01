@@ -13,6 +13,7 @@ from vi_full.three_dof_contact_parameter_sensitivity import (
     run_contact_parameter_sensitivity,
     write_contact_parameter_sensitivity_artifacts,
 )
+from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
 
 def test_contact_parameter_grid_covers_default_parameters_and_levels() -> None:
@@ -252,3 +253,26 @@ def test_contact_parameter_sensitivity_writes_artifacts(tmp_path: Path) -> None:
     csv_rows = list(csv.DictReader(paths["csv"].read_text(encoding="utf-8").splitlines()))
     assert csv_rows[0]["parameter_name"] == "contact_xy_scale"
     assert "contact_xy_scale" in paths["markdown"].read_text(encoding="utf-8")
+
+
+def test_committed_contact_parameter_sensitivity_artifact_covers_all_profiles() -> None:
+    artifact_path = (
+        Path(__file__).resolve().parents[2]
+        / "outputs"
+        / "revision"
+        / "contact_parameter_sensitivity_20260501.json"
+    )
+
+    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+
+    assert payload["config"]["profiles"] == list(DEFAULT_UNCERTAINTY_PROFILES)
+    assert payload["config"]["parameter_names"] == [
+        "contact_xy_scale",
+        "contact_z_scale",
+        "wall_friction_range",
+        "force_noise_std_range",
+        "contact_transition_band_m",
+    ]
+    assert payload["config"]["seeds"] == [0, 1, 2]
+    assert payload["config"]["episodes_per_seed"] == 5
+    assert len(payload["rows"]) == 150

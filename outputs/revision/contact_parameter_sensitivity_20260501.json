@@ -4,8 +4,10 @@
   "config": {
     "profiles": [
       "nominal",
+      "tight_clearance",
       "high_friction",
-      "tight_clearance"
+      "offset_bias",
+      "noisy_force"
     ],
     "seeds": [
       0,
@@ -32,24 +34,24 @@
     "max_episode_steps": 64
   },
   "most_sensitive_parameter": {
-    "parameter_name": "contact_xy_scale",
-    "profile": "nominal",
-    "policy_name": "fixed_impedance",
-    "level_name": "low",
+    "parameter_name": "force_noise_std_range",
+    "profile": "noisy_force",
+    "policy_name": "variable_impedance",
+    "level_name": "high",
     "nominal_success_rate": 1.0,
-    "level_success_rate": 1.0,
-    "max_abs_success_delta": 0.0
+    "level_success_rate": 0.8000000000000002,
+    "max_abs_success_delta": 0.19999999999999984
   },
   "most_sensitive_parameters_by_metric": {
     "success_rate": {
       "metric_name": "success_rate",
-      "parameter_name": "contact_xy_scale",
-      "profile": "nominal",
-      "policy_name": "fixed_impedance",
-      "level_name": "low",
+      "parameter_name": "force_noise_std_range",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "level_name": "high",
       "nominal_value": 1.0,
-      "level_value": 1.0,
-      "max_abs_delta": 0.0
+      "level_value": 0.8000000000000002,
+      "max_abs_delta": 0.19999999999999984
     },
     "jam_rate": {
       "metric_name": "jam_rate",
@@ -83,13 +85,13 @@
     },
     "mean_final_distance": {
       "metric_name": "mean_final_distance",
-      "parameter_name": "wall_friction_range",
-      "profile": "nominal",
+      "parameter_name": "force_noise_std_range",
+      "profile": "noisy_force",
       "policy_name": "variable_impedance",
       "level_name": "high",
-      "nominal_value": 0.0009452778408930752,
-      "level_value": 0.0009250124077006842,
-      "max_abs_delta": 2.0265433192391026e-05
+      "nominal_value": 0.0009524939099947615,
+      "level_value": 0.0010063581168651577,
+      "max_abs_delta": 5.386420687039618e-05
     },
     "mean_peak_contact_force": {
       "metric_name": "mean_peak_contact_force",
@@ -176,6 +178,46 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "low",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 3150.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "low",
+      "profile": "tight_clearance",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 3150.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "low",
       "profile": "high_friction",
       "policy_name": "fixed_impedance",
       "overrides": {
@@ -216,7 +258,7 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_xy_scale": 3150.0
@@ -236,7 +278,7 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_xy_scale": 3150.0
@@ -255,6 +297,46 @@
     },
     {
       "parameter_name": "contact_xy_scale",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 3150.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 3150.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
+    },
+    {
+      "parameter_name": "contact_xy_scale",
       "level_name": "nominal",
       "profile": "nominal",
       "policy_name": "fixed_impedance",
@@ -277,6 +359,46 @@
       "parameter_name": "contact_xy_scale",
       "level_name": "nominal",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 4200.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 4200.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_xy_scale": 4200.0
@@ -336,7 +458,7 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_xy_scale": 4200.0
@@ -356,7 +478,7 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_xy_scale": 4200.0
@@ -375,6 +497,46 @@
     },
     {
       "parameter_name": "contact_xy_scale",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 4200.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 4200.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
+    },
+    {
+      "parameter_name": "contact_xy_scale",
       "level_name": "high",
       "profile": "nominal",
       "policy_name": "fixed_impedance",
@@ -397,6 +559,46 @@
       "parameter_name": "contact_xy_scale",
       "level_name": "high",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 5250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "high",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 5250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "high",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_xy_scale": 5250.0
@@ -456,7 +658,7 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_xy_scale": 5250.0
@@ -476,7 +678,7 @@
     {
       "parameter_name": "contact_xy_scale",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_xy_scale": 5250.0
@@ -494,6 +696,46 @@
       "mean_contact_work": 0.002862375617320365
     },
     {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 5250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 5250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
+    },
+    {
       "parameter_name": "contact_z_scale",
       "level_name": "low",
       "profile": "nominal",
@@ -517,6 +759,46 @@
       "parameter_name": "contact_z_scale",
       "level_name": "low",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_z_scale": 2550.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "low",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_z_scale": 2550.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "low",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_z_scale": 2550.0
@@ -576,7 +858,7 @@
     {
       "parameter_name": "contact_z_scale",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_z_scale": 2550.0
@@ -596,7 +878,7 @@
     {
       "parameter_name": "contact_z_scale",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_z_scale": 2550.0
@@ -615,6 +897,46 @@
     },
     {
       "parameter_name": "contact_z_scale",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_z_scale": 2550.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_z_scale": 2550.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
+    },
+    {
+      "parameter_name": "contact_z_scale",
       "level_name": "nominal",
       "profile": "nominal",
       "policy_name": "fixed_impedance",
@@ -637,6 +959,46 @@
       "parameter_name": "contact_z_scale",
       "level_name": "nominal",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_z_scale": 3400.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_z_scale": 3400.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_z_scale": 3400.0
@@ -696,7 +1058,7 @@
     {
       "parameter_name": "contact_z_scale",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_z_scale": 3400.0
@@ -716,7 +1078,7 @@
     {
       "parameter_name": "contact_z_scale",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_z_scale": 3400.0
@@ -732,6 +1094,46 @@
       "p95_peak_contact_force": 1.017071768135007,
       "mean_contact_steps": 27.53333333333333,
       "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_z_scale": 3400.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_z_scale": 3400.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
     },
     {
       "parameter_name": "contact_z_scale",
@@ -757,6 +1159,46 @@
       "parameter_name": "contact_z_scale",
       "level_name": "high",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_z_scale": 4250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "high",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_z_scale": 4250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "high",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_z_scale": 4250.0
@@ -816,7 +1258,7 @@
     {
       "parameter_name": "contact_z_scale",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_z_scale": 4250.0
@@ -836,7 +1278,7 @@
     {
       "parameter_name": "contact_z_scale",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_z_scale": 4250.0
@@ -852,6 +1294,46 @@
       "p95_peak_contact_force": 1.017071768135007,
       "mean_contact_steps": 27.53333333333333,
       "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_z_scale": 4250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_z_scale",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_z_scale": 4250.0
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
     },
     {
       "parameter_name": "wall_friction_range",
@@ -880,6 +1362,52 @@
       "parameter_name": "wall_friction_range",
       "level_name": "low",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.09,
+          0.24
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.000928670842449868,
+      "mean_peak_contact_force": 0.6217498410784393,
+      "p95_peak_contact_force": 0.7968867141693603,
+      "mean_contact_steps": 26.066666666666666,
+      "mean_contact_work": 0.0022073958748982485
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "low",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.09,
+          0.24
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.073728480228936,
+      "p95_peak_contact_force": 2.7678537167394235,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008541897836762314
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "low",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -948,7 +1476,7 @@
     {
       "parameter_name": "wall_friction_range",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -971,7 +1499,7 @@
     {
       "parameter_name": "wall_friction_range",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -990,6 +1518,52 @@
       "p95_peak_contact_force": 0.7968867141693603,
       "mean_contact_steps": 26.066666666666666,
       "mean_contact_work": 0.0022073958748982485
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.11249999999999999,
+          0.22499999999999998
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.1590351331521793,
+      "p95_peak_contact_force": 2.723870693352579,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.008622375011224825
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.11249999999999999,
+          0.22499999999999998
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009494455566008891,
+      "mean_peak_contact_force": 0.7885295923513421,
+      "p95_peak_contact_force": 0.9271469869928269,
+      "mean_contact_steps": 39.46666666666667,
+      "mean_contact_work": 0.0016476158384711025
     },
     {
       "parameter_name": "wall_friction_range",
@@ -1018,6 +1592,52 @@
       "parameter_name": "wall_friction_range",
       "level_name": "nominal",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.12,
+          0.32
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.12,
+          0.32
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -1086,7 +1706,7 @@
     {
       "parameter_name": "wall_friction_range",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -1109,7 +1729,7 @@
     {
       "parameter_name": "wall_friction_range",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -1128,6 +1748,52 @@
       "p95_peak_contact_force": 1.017071768135007,
       "mean_contact_steps": 27.53333333333333,
       "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.15,
+          0.3
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.15,
+          0.3
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
     },
     {
       "parameter_name": "wall_friction_range",
@@ -1156,6 +1822,52 @@
       "parameter_name": "wall_friction_range",
       "level_name": "high",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.15,
+          0.4
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009250124077006842,
+      "mean_peak_contact_force": 0.9597342131608508,
+      "p95_peak_contact_force": 1.2567752184092302,
+      "mean_contact_steps": 28.46666666666667,
+      "mean_contact_work": 0.0035208939666873424
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "high",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.15,
+          0.4
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 3.432708893270781,
+      "p95_peak_contact_force": 4.569843452659771,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.014236496394603856
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "high",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -1224,7 +1936,7 @@
     {
       "parameter_name": "wall_friction_range",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -1247,7 +1959,7 @@
     {
       "parameter_name": "wall_friction_range",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "wall_friction_range": [
@@ -1266,6 +1978,52 @@
       "p95_peak_contact_force": 1.2567752184092302,
       "mean_contact_steps": 28.46666666666667,
       "mean_contact_work": 0.0035208939666873424
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.1875,
+          0.375
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 3.5209540361261085,
+      "p95_peak_contact_force": 4.4249652774961215,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.014370625018708042
+    },
+    {
+      "parameter_name": "wall_friction_range",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "wall_friction_range": [
+          0.1875,
+          0.375
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009531544009844461,
+      "mean_peak_contact_force": 1.1276321328350332,
+      "p95_peak_contact_force": 1.361659766834465,
+      "mean_contact_steps": 40.333333333333336,
+      "mean_contact_work": 0.002693424072597031
     },
     {
       "parameter_name": "force_noise_std_range",
@@ -1294,6 +2052,52 @@
       "parameter_name": "force_noise_std_range",
       "level_name": "low",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.015,
+          0.09
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009533303022394747,
+      "mean_peak_contact_force": 0.7650615600243623,
+      "p95_peak_contact_force": 0.991644969566445,
+      "mean_contact_steps": 25.866666666666664,
+      "mean_contact_work": 0.0029546452985203097
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "low",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.015,
+          0.09
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.744456315121905,
+      "p95_peak_contact_force": 3.6526603871734378,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "low",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1362,7 +2166,7 @@
     {
       "parameter_name": "force_noise_std_range",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1385,7 +2189,7 @@
     {
       "parameter_name": "force_noise_std_range",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1404,6 +2208,52 @@
       "p95_peak_contact_force": 0.991644969566445,
       "mean_contact_steps": 25.866666666666664,
       "mean_contact_work": 0.0029546452985203097
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.09,
+          0.1875
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.81186954380424,
+      "p95_peak_contact_force": 3.531552771311651,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.09,
+          0.1875
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009395432800054682,
+      "mean_peak_contact_force": 0.8894602586697952,
+      "p95_peak_contact_force": 1.0615206510660709,
+      "mean_contact_steps": 34.53333333333333,
+      "mean_contact_work": 0.0025041305974292352
     },
     {
       "parameter_name": "force_noise_std_range",
@@ -1432,6 +2282,52 @@
       "parameter_name": "force_noise_std_range",
       "level_name": "nominal",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.02,
+          0.12
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.02,
+          0.12
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1500,7 +2396,7 @@
     {
       "parameter_name": "force_noise_std_range",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1523,7 +2419,7 @@
     {
       "parameter_name": "force_noise_std_range",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1542,6 +2438,52 @@
       "p95_peak_contact_force": 1.017071768135007,
       "mean_contact_steps": 27.53333333333333,
       "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.12,
+          0.25
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.12,
+          0.25
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
     },
     {
       "parameter_name": "force_noise_std_range",
@@ -1570,6 +2512,52 @@
       "parameter_name": "force_noise_std_range",
       "level_name": "high",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.025,
+          0.15
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009389784554645584,
+      "mean_peak_contact_force": 0.8018446142173055,
+      "p95_peak_contact_force": 1.0493237841010845,
+      "mean_contact_steps": 28.733333333333334,
+      "mean_contact_work": 0.002806234560960847
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "high",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.025,
+          0.15
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.761966925524879,
+      "p95_peak_contact_force": 3.6850287116787395,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "high",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1638,7 +2626,7 @@
     {
       "parameter_name": "force_noise_std_range",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1661,7 +2649,7 @@
     {
       "parameter_name": "force_noise_std_range",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "force_noise_std_range": [
@@ -1682,6 +2670,52 @@
       "mean_contact_work": 0.002806234560960847
     },
     {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.15,
+          0.3125
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.868027329948878,
+      "p95_peak_contact_force": 3.617232505185465,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "force_noise_std_range",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "force_noise_std_range": [
+          0.15,
+          0.3125
+        ]
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 0.8000000000000002,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0010063581168651577,
+      "mean_peak_contact_force": 0.9969528743351406,
+      "p95_peak_contact_force": 1.1682894680846452,
+      "mean_contact_steps": 44.333333333333336,
+      "mean_contact_work": 0.0018699408402228909
+    },
+    {
       "parameter_name": "contact_transition_band_m",
       "level_name": "low",
       "profile": "nominal",
@@ -1705,6 +2739,46 @@
       "parameter_name": "contact_transition_band_m",
       "level_name": "low",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00075
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "low",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00075
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "low",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_transition_band_m": 0.00075
@@ -1764,7 +2838,7 @@
     {
       "parameter_name": "contact_transition_band_m",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_transition_band_m": 0.00075
@@ -1784,7 +2858,7 @@
     {
       "parameter_name": "contact_transition_band_m",
       "level_name": "low",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_transition_band_m": 0.00075
@@ -1803,6 +2877,46 @@
     },
     {
       "parameter_name": "contact_transition_band_m",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00075
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "low",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00075
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
       "level_name": "nominal",
       "profile": "nominal",
       "policy_name": "fixed_impedance",
@@ -1825,6 +2939,46 @@
       "parameter_name": "contact_transition_band_m",
       "level_name": "nominal",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.001
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.001
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "nominal",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_transition_band_m": 0.001
@@ -1884,7 +3038,7 @@
     {
       "parameter_name": "contact_transition_band_m",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_transition_band_m": 0.001
@@ -1904,7 +3058,7 @@
     {
       "parameter_name": "contact_transition_band_m",
       "level_name": "nominal",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_transition_band_m": 0.001
@@ -1920,6 +3074,46 @@
       "p95_peak_contact_force": 1.017071768135007,
       "mean_contact_steps": 27.53333333333333,
       "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.001
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "nominal",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.001
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
     },
     {
       "parameter_name": "contact_transition_band_m",
@@ -1945,6 +3139,46 @@
       "parameter_name": "contact_transition_band_m",
       "level_name": "high",
       "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00125
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009452778408930752,
+      "mean_peak_contact_force": 0.7837026735225558,
+      "p95_peak_contact_force": 1.017071768135007,
+      "mean_contact_steps": 27.53333333333333,
+      "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "high",
+      "profile": "tight_clearance",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00125
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.75310028515995,
+      "p95_peak_contact_force": 3.6687823264778996,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011389197115683083
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "high",
+      "profile": "tight_clearance",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_transition_band_m": 0.00125
@@ -2004,7 +3238,7 @@
     {
       "parameter_name": "contact_transition_band_m",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "fixed_impedance",
       "overrides": {
         "contact_transition_band_m": 0.00125
@@ -2024,7 +3258,7 @@
     {
       "parameter_name": "contact_transition_band_m",
       "level_name": "high",
-      "profile": "tight_clearance",
+      "profile": "offset_bias",
       "policy_name": "variable_impedance",
       "overrides": {
         "contact_transition_band_m": 0.00125
@@ -2040,6 +3274,46 @@
       "p95_peak_contact_force": 1.017071768135007,
       "mean_contact_steps": 27.53333333333333,
       "mean_contact_work": 0.002862375617320365
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00125
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834007,
+      "mean_peak_contact_force": 2.836905673978615,
+      "p95_peak_contact_force": 3.5739828563293794,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.011496500014966432
+    },
+    {
+      "parameter_name": "contact_transition_band_m",
+      "level_name": "high",
+      "profile": "noisy_force",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_transition_band_m": 0.00125
+      },
+      "seed_count": 3,
+      "episodes_per_seed": 5,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009524939099947615,
+      "mean_peak_contact_force": 0.9560987908771335,
+      "p95_peak_contact_force": 1.1466101734190577,
+      "mean_contact_steps": 40.06666666666666,
+      "mean_contact_work": 0.0021666637403131663
     }
   ]
 }

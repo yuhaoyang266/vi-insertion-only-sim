@@ -866,9 +866,10 @@ checkout commit so that provenance checks are not collapsed into a single ambigu
 
 Two companion artifacts bound the next steps. The within-A contact-parameter sensitivity artifact,
 \code{outputs/revision/contact_parameter_sensitivity_20260501.json}, sweeps all five planned
-contact parameters across three profiles, three seeds, and both handcrafted Paper-A policies.
-Success and jam rates remain flat in this checkpoint, while wall friction is the largest driver of
-force, contact-work, contact-step, and final-distance deltas. The modern-baseline scaffold,
+contact parameters across all five uncertainty profiles, three seeds, and both handcrafted Paper-A
+policies. In the five-profile checkpoint, high force-noise sensitivity reduces the variable
+impedance success rate on the noisy-force profile, while wall friction remains the largest driver of
+peak-force, contact-work, and contact-step deltas. The modern-baseline scaffold,
 \code{outputs/revision/modern_baseline_iql_smoke_20260501.json}, selects an IQL/CQL-style offline
 baseline path and validates the 14D observation / 5D action offline dataset contract, but does not
 yet train an offline RL policy.

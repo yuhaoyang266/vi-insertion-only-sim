@@ -273,7 +273,7 @@
   - Paper-B `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py tests/test_readiness.py tests/test_contact_wrench.py tests/test_peg_in_hole_env.py tests/test_safety_layer_core.py tests/test_safety_layer_eval.py tests/test_safety_layer_matrix.py` -> exit 0; 46 passed.
 
 ### Sprint C Contact-Parameter Sensitivity Expansion (2026-05-01)
-- **Status:** mid-scale within-A sensitivity artifact generated for the fallback evidence path.
+- **Status:** five-profile within-A sensitivity artifact generated for the fallback evidence path.
 - Scope:
   - Added per-metric sensitivity summaries for success, jam, documented force jam, blocked-contact termination, final distance, peak force, p95 peak force, contact steps, and contact work.
   - Preserved the existing success-only `most_sensitive_parameter` field for backward compatibility.
@@ -281,10 +281,10 @@
   - `outputs/revision/contact_parameter_sensitivity_20260501.json`
   - `outputs/revision/contact_parameter_sensitivity_20260501.csv`
   - `outputs/revision/contact_parameter_sensitivity_20260501.md`
-  - Config: parameters `contact_xy_scale`, `contact_z_scale`, `wall_friction_range`, `force_noise_std_range`, `contact_transition_band_m`; levels `low/nominal/high`; profiles `nominal`, `high_friction`, `tight_clearance`; seeds `0/1/2`; `5` episodes per seed; policies `fixed_impedance`, `variable_impedance`; `90` aggregate rows.
+  - Config: parameters `contact_xy_scale`, `contact_z_scale`, `wall_friction_range`, `force_noise_std_range`, `contact_transition_band_m`; levels `low/nominal/high`; profiles `nominal`, `tight_clearance`, `high_friction`, `offset_bias`, `noisy_force`; seeds `0/1/2`; `5` episodes per seed; policies `fixed_impedance`, `variable_impedance`; `150` aggregate rows.
 - Readout:
-  - Success and jam deltas stayed at `0.0` in this slice.
-  - `wall_friction_range` was most sensitive for final distance, peak force, p95 peak force, contact steps, and contact work; the largest peak-force delta was `1.1174858857696188` N on `high_friction` / `fixed_impedance` / `high`.
+  - `force_noise_std_range` was most sensitive for success rate and final distance; high force noise on `noisy_force` / `variable_impedance` reduced success from `1.0` to `0.8000000000000002`.
+  - `wall_friction_range` was most sensitive for peak force, p95 peak force, contact steps, and contact work; the largest peak-force delta was `1.1174858857696188` N on `high_friction` / `fixed_impedance` / `high`.
 - Verification:
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> exit 0; 10 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
@@ -295,10 +295,10 @@
 - Decision basis:
   - Paper-B contract/readiness remains green at `dfb3c5c`, but `scripts/experiments/run_cross_sim_via_paper_b.py` still intentionally refuses full physics execution without `--dry-run`.
   - Paper-A now has a pure JSON policy-loader contract and future-compatible cross-sim record schema, but no real learned policy artifact loader or completed Paper-B episode record.
-  - The mid-scale within-A sensitivity artifact is landed and covers all five planned contact parameters across the selected three-profile, three-seed slice.
+  - The five-profile within-A sensitivity artifact is landed and covers all five planned contact parameters across the full default uncertainty profile suite and three seeds.
 - Writing update:
   - Updated manuscript Section 5 to name the mid-scale sensitivity artifact and state that Paper-B physics ranking is deferred.
-  - Updated the Tier-2 cover-letter template to describe the current checkpoint as contract-level cross-sim dry-run, mid-scale within-A sensitivity, and offline-baseline scaffold evidence.
+  - Updated the Tier-2 cover-letter template to describe the current checkpoint as contract-level cross-sim dry-run, five-profile within-A sensitivity, and offline-baseline scaffold evidence.
 - Verification:
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py tests/paper/test_docs_claim_source_sync.py` -> exit 0; 21 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
