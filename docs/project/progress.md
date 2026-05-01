@@ -29,6 +29,24 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_contract_sha_pin.py` after implementation -> exit 0; 2 passed.
   - `rg -n "[^\\x00-\\x7F]" docs/cross_paper_interface_contract.md src/vi_full/cross_paper_bridge.py tests/cross_paper/test_cross_paper_contract_sha_pin.py` -> exit 1; no non-ASCII matches.
 
+### Sprint C Paper-B Readiness Check (2026-05-01)
+- **Status:** Paper-B located and contract mirror/pin committed; bridge parity smoke remains pending Paper-A bridge implementation.
+- Paper-B checkout:
+  - Path: `F:\edge download\every-embodied-main\research-cartesian-impedance-vla-sim`.
+  - Initial branch/status: `git status --short --branch` -> exit 0; `## master` with pre-existing dirty files in safety-layer matrix/eval files and untracked planning notes.
+  - Initial commit before mirror: `git rev-parse --short HEAD` -> exit 0; `5f6c8c2`.
+  - Mirrored `docs/cross_paper_interface_contract.md`, added `src/variable_impedance/safety_layer/cross_paper.py`, added `tests/test_cross_paper_contract_pin.py`, and added a minimal `.gitattributes` LF rule for the contract.
+  - Paper-B mirror commit: `3eb8408` (`feat: mirror cross-paper contract pin`).
+  - Final Paper-B status: unrelated pre-existing dirty files remain; mirror/pin files are committed.
+- Readiness evidence:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` before Paper-B helper -> exit 1; expected missing `cross_paper` import.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` after helper -> exit 0; 2 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_readiness.py tests/test_contact_wrench.py tests/test_peg_in_hole_env.py` -> exit 0; 21 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_safety_layer_core.py tests/test_safety_layer_eval.py tests/test_safety_layer_matrix.py` -> exit 0; 23 passed.
+  - Combined Paper-B contract/readiness/safety slice -> exit 0; 46 passed.
+  - `python -m variable_impedance.experiments.safety_layer_eval --help` -> exit 1 without `PYTHONPATH`; `PYTHONPATH=src python -m variable_impedance.experiments.safety_layer_eval --help` -> exit 0.
+  - Paper-A and Paper-B contract file hashes both equal `d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e`.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
