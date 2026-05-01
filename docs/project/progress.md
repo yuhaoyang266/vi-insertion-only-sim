@@ -176,6 +176,24 @@
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
   - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the refreshed cross-sim JSON.
 
+### Sprint C Post-Review Schema And Status Hardening (2026-05-01)
+- **Status:** complete.
+- Review findings:
+  - The modern-baseline smoke scaffold validated a flattened synthetic dataset instead of the contract's one-record-per-episode offline schema.
+  - The contact sensitivity sweep scaled parameter levels from the nominal base config before applying profile defaults, which could erase profile-specific baselines for fields such as `wall_friction_range`.
+  - The cross-sim dry-run path accepted unknown profile names, and suite ranking could report `completed` when only part of a suite had completed records.
+- Action:
+  - Hardened `src/vi_full/modern_baseline_smoke.py` to require contract episode metadata, current contract SHA, and the five allowed profile names; regenerated `outputs/revision/modern_baseline_iql_smoke_20260501.json`.
+  - Updated `src/vi_full/three_dof_contact_parameter_sensitivity.py` so nominal/low/high overrides are relative to each selected profile config.
+  - Updated `scripts/experiments/run_cross_sim_via_paper_b.py` and `src/vi_full/cross_sim_ranking.py` to reject unknown dry-run profiles, reject non-positive episode counts, and mark partially failed suites as non-completed.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 8 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` -> exit 0; 7 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_sim_ranking.py tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 6 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer tests/cross_paper tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/three_dof/test_modern_baseline_smoke.py tests/runners/test_run_cross_sim_via_paper_b.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py tests/runners/test_run_modern_baseline_iql_smoke.py` -> exit 0; 35 passed.
+  - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 297 passed, 14 skipped, 13 warnings.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:

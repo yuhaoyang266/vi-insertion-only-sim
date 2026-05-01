@@ -119,6 +119,11 @@ def _dry_run_records(
     seeds: list[int],
     episodes_per_seed: int,
 ) -> list[dict[str, Any]]:
+    unknown_profiles = sorted(set(profiles) - set(DEFAULT_UNCERTAINTY_PROFILES))
+    if unknown_profiles:
+        raise ValueError(f"Unknown Paper-A uncertainty profiles: {unknown_profiles}")
+    if episodes_per_seed <= 0:
+        raise ValueError("episodes_per_seed must be positive.")
     records: list[dict[str, Any]] = []
     for suite_name in suites:
         build_policy_stub(suite_name)

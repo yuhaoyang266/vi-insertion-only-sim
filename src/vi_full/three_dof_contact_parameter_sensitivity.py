@@ -65,15 +65,20 @@ def _scale_value(value: float | tuple[float, float], factor: float) -> float | t
     return float(value) * factor
 
 
-def _parameter_override(parameter_name: str, level_name: str) -> dict[str, Any]:
+def _parameter_override(
+    parameter_name: str,
+    level_name: str,
+    *,
+    base_config: ThreeDoFInsertionConfig | None = None,
+) -> dict[str, Any]:
     if parameter_name not in DEFAULT_PARAMETER_NAMES:
         raise ValueError(f"Unknown contact parameter: {parameter_name}")
     if level_name not in LEVEL_FACTORS:
         raise ValueError(f"Unknown sensitivity level: {level_name}")
-    base_config = ThreeDoFInsertionConfig()
+    config = base_config if base_config is not None else ThreeDoFInsertionConfig()
     factor = LEVEL_FACTORS[level_name]
     return {
-        parameter_name: _scale_value(getattr(base_config, parameter_name), factor)
+        parameter_name: _scale_value(getattr(config, parameter_name), factor)
     }
 
 
@@ -183,14 +188,20 @@ def _aggregate_seed_summaries(summaries: list[dict[str, Any]]) -> dict[str, floa
     }
 
 
-def _profile_config(
+def _profile_config_and_overrides(
     profile: str,
     *,
     max_episode_steps: int,
-    overrides: dict[str, Any],
-) -> ThreeDoFInsertionConfig:
+    parameter_name: str,
+    level_name: str,
+) -> tuple[ThreeDoFInsertionConfig, dict[str, Any]]:
     config = build_3dof_profile_config(profile, max_episode_steps=max_episode_steps)
-    return replace(config, **overrides)
+    overrides = _parameter_override(
+        parameter_name,
+        level_name,
+        base_config=config,
+    )
+    return replace(config, **overrides), overrides
 
 
 def run_contact_parameter_sensitivity(
@@ -216,12 +227,12 @@ def run_contact_parameter_sensitivity(
     )
     rows: list[dict[str, Any]] = []
     for point in grid:
-        overrides = _parameter_override(point["parameter_name"], point["level_name"])
         for profile in selected_profiles:
-            config = _profile_config(
+            config, overrides = _profile_config_and_overrides(
                 profile,
                 max_episode_steps=max_episode_steps,
-                overrides=overrides,
+                parameter_name=point["parameter_name"],
+                level_name=point["level_name"],
             )
             for policy_name in selected_policy_names:
                 seed_summaries = [

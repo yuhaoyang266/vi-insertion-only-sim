@@ -29,10 +29,33 @@ def test_offline_dataset_schema_requires_14d_observations_and_5d_actions() -> No
     assert summary["action_shape"] == [4, 5]
     assert summary["profile_count"] == 1
 
-    bad_dataset = dict(dataset)
-    bad_dataset["actions"] = np.zeros((4, 4), dtype=np.float32)
+    bad_dataset = [dict(dataset[0])]
+    bad_dataset[0]["actions"] = np.zeros((4, 4), dtype=np.float32)
     with pytest.raises(ValueError, match="actions"):
         validate_offline_dataset_schema(bad_dataset)
+
+
+def test_offline_dataset_schema_requires_contract_episode_metadata() -> None:
+    dataset = build_synthetic_offline_dataset(num_steps=4)
+    bad_dataset = [dict(dataset[0])]
+    bad_dataset[0].pop("termination_reason")
+
+    with pytest.raises(ValueError, match="termination_reason"):
+        validate_offline_dataset_schema(bad_dataset)
+
+
+def test_offline_dataset_schema_requires_current_contract_and_profile() -> None:
+    dataset = build_synthetic_offline_dataset(num_steps=4)
+
+    bad_profile = [dict(dataset[0])]
+    bad_profile[0]["profile"] = "invalid_profile"
+    with pytest.raises(ValueError, match="profile"):
+        validate_offline_dataset_schema(bad_profile)
+
+    bad_contract = [dict(dataset[0])]
+    bad_contract[0]["contract_sha"] = "old"
+    with pytest.raises(ValueError, match="contract_sha"):
+        validate_offline_dataset_schema(bad_contract)
 
 
 def test_modern_baseline_smoke_reports_scaffold_status() -> None:
@@ -42,6 +65,7 @@ def test_modern_baseline_smoke_reports_scaffold_status() -> None:
     assert report["algorithm"] == "iql_offline"
     assert report["status"] == "scaffold_only"
     assert report["dataset_summary"]["observation_shape"] == [4, 14]
+    assert "episode_id" in report["dataset_summary"]["required_episode_keys"]
 
 
 def test_modern_baseline_smoke_writes_artifacts(tmp_path: Path) -> None:

@@ -17,6 +17,7 @@ RANKING_METRICS = (
     "mean_contact_steps",
     "mean_contact_work",
 )
+NON_COMPLETED_STATUS_PRIORITY = ("failed", "not_available", "skipped")
 
 
 def _mean(values: Iterable[float]) -> float | None:
@@ -52,9 +53,21 @@ def _row_sort_key(row: dict[str, Any]) -> tuple[Any, ...]:
     )
 
 
+def _suite_status(records: list[dict[str, Any]], completed_records: list[dict[str, Any]]) -> str:
+    statuses = {str(record.get("status", "unknown")) for record in records}
+    if statuses == {"completed"}:
+        return "completed"
+    for status in NON_COMPLETED_STATUS_PRIORITY:
+        if status in statuses:
+            return status
+    if completed_records:
+        return "failed"
+    return sorted(statuses)[0] if statuses else "unknown"
+
+
 def _summarize_suite(suite_name: str, records: list[dict[str, Any]]) -> dict[str, Any]:
     completed_records = [record for record in records if record.get("status") == "completed"]
-    status = "completed" if completed_records else str(records[0].get("status", "unknown"))
+    status = _suite_status(records, completed_records)
     row: dict[str, Any] = {
         "suite_name": suite_name,
         "status": status,
@@ -68,9 +81,12 @@ def _summarize_suite(suite_name: str, records: list[dict[str, Any]]) -> dict[str
     source_records = completed_records if completed_records else records
     for metric_name in RANKING_METRICS:
         row[metric_name] = _mean(record.get(metric_name) for record in source_records)
-    if not completed_records:
-        reasons = [str(record.get("reason", "")) for record in records if record.get("reason")]
-        row["reason"] = "; ".join(sorted(set(reasons)))
+    reasons = [
+        str(record.get("reason", ""))
+        for record in records
+        if record.get("status") != "completed" and record.get("reason")
+    ]
+    row["reason"] = "; ".join(sorted(set(reasons)))
     return row
 
 

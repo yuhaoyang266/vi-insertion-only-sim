@@ -6,6 +6,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+import pytest
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -73,6 +75,35 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     assert payload["rows"][0]["status"] == "not_available"
     assert output_path.with_suffix(".csv").exists()
     assert output_path.with_suffix(".md").exists()
+
+
+def test_cross_sim_runner_rejects_unknown_profiles(monkeypatch, tmp_path: Path) -> None:
+    module = _load_runner_module()
+    paper_b_repo = tmp_path / "paper_b"
+    paper_b_docs = paper_b_repo / "docs"
+    paper_b_docs.mkdir(parents=True)
+    paper_b_contract = paper_b_docs / "cross_paper_interface_contract.md"
+    paper_a_contract = REPO_ROOT / "docs" / "cross_paper_interface_contract.md"
+    paper_b_contract.write_bytes(paper_a_contract.read_bytes())
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--paper-b-commit",
+            "paperb123",
+            "--profiles",
+            "invalid_profile",
+            "--dry-run",
+            "--output",
+            str(tmp_path / "cross_sim.json"),
+        ],
+    )
+
+    with pytest.raises(ValueError, match="invalid_profile"):
+        module.main()
 
 
 def test_cross_sim_runner_help_works_from_repo_root() -> None:

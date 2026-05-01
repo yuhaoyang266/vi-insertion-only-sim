@@ -48,6 +48,19 @@ def test_contact_parameter_sensitivity_runs_small_real_sweep() -> None:
     assert all("success_rate" in row for row in report["rows"])
 
 
+def test_contact_parameter_sensitivity_nominal_level_preserves_profile_baseline() -> None:
+    report = run_contact_parameter_sensitivity(
+        profiles=["high_friction"],
+        seeds=[0],
+        episodes_per_seed=1,
+        policy_names=["fixed_impedance"],
+        parameter_names=["wall_friction_range"],
+        level_names=["nominal"],
+    )
+
+    assert report["rows"][0]["overrides"]["wall_friction_range"] == [0.28, 0.46]
+
+
 def test_identify_most_sensitive_parameter_uses_success_delta() -> None:
     rows = [
         {"parameter_name": "a", "level_name": "nominal", "success_rate": 0.8},

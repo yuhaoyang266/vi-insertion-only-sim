@@ -58,6 +58,35 @@ def test_cross_sim_ranking_orders_completed_rows_before_unavailable() -> None:
     assert ranking["metadata"]["paper_b_commit"] == "def"
 
 
+def test_cross_sim_ranking_marks_partial_suite_as_failed() -> None:
+    ranking = build_cross_sim_ranking(
+        [
+            {
+                "suite_name": "mixed_suite",
+                "profile": "nominal",
+                "seed": 0,
+                "status": "completed",
+                "success_rate": 1.0,
+                "mean_peak_contact_force": 2.0,
+                "mean_final_distance": 0.0005,
+            },
+            {
+                "suite_name": "mixed_suite",
+                "profile": "tight_clearance",
+                "seed": 0,
+                "status": "failed",
+                "reason": "Paper-B episode failed",
+            },
+        ],
+    )
+
+    row = ranking["rows"][0]
+    assert row["status"] == "failed"
+    assert row["completed_record_count"] == 1
+    assert row["success_rate"] == 1.0
+    assert row["reason"] == "Paper-B episode failed"
+
+
 def test_cross_sim_ranking_writes_json_csv_and_markdown(tmp_path: Path) -> None:
     ranking = build_cross_sim_ranking(
         [

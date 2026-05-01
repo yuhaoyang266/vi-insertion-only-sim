@@ -7,7 +7,22 @@ from typing import Any
 import numpy as np
 
 from vi_full.cross_paper_bridge import CONTRACT_SHA
+from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
+
+REQUIRED_EPISODE_RECORD_KEYS = (
+    "observations",
+    "actions",
+    "rewards",
+    "episode_id",
+    "profile",
+    "seed",
+    "success",
+    "termination_reason",
+    "source_policy",
+    "paper_a_commit",
+    "contract_sha",
+)
 
 MODERN_BASELINE_DECISION = {
     "chosen": "iql_offline",
@@ -33,7 +48,7 @@ def _json_safe(value: Any) -> Any:
     return str(value)
 
 
-def build_synthetic_offline_dataset(*, num_steps: int = 8) -> dict[str, Any]:
+def build_synthetic_offline_dataset(*, num_steps: int = 8) -> list[dict[str, Any]]:
     if num_steps <= 0:
         raise ValueError("num_steps must be positive.")
     observations = np.zeros((num_steps, 14), dtype=np.float32)
@@ -45,16 +60,21 @@ def build_synthetic_offline_dataset(*, num_steps: int = 8) -> dict[str, Any]:
     actions[:, 3] = 0.5
     actions[:, 4] = 0.6
     rewards[-1] = 1.0
-    return {
-        "observations": observations,
-        "actions": actions,
-        "rewards": rewards,
-        "episode_boundaries": [0, int(num_steps)],
-        "profiles": ["nominal"],
-        "seed": 0,
-        "source": "synthetic_schema_smoke",
-        "contract_sha": CONTRACT_SHA,
-    }
+    return [
+        {
+            "observations": observations,
+            "actions": actions,
+            "rewards": rewards,
+            "episode_id": "synthetic_schema_smoke_0000",
+            "profile": "nominal",
+            "seed": 0,
+            "success": True,
+            "termination_reason": "synthetic_success",
+            "source_policy": "synthetic_schema_smoke",
+            "paper_a_commit": "synthetic_schema_smoke",
+            "contract_sha": CONTRACT_SHA,
+        }
+    ]
 
 
 def _as_array(dataset: dict[str, Any], name: str, shape_tail: tuple[int, ...]) -> np.ndarray:
@@ -68,26 +88,67 @@ def _as_array(dataset: dict[str, Any], name: str, shape_tail: tuple[int, ...]) -
     return array
 
 
-def validate_offline_dataset_schema(dataset: dict[str, Any]) -> dict[str, Any]:
-    observations = _as_array(dataset, "observations", (14,))
-    actions = _as_array(dataset, "actions", (5,))
-    rewards = _as_array(dataset, "rewards", ())
+def _episode_records(dataset: Any) -> list[dict[str, Any]]:
+    if isinstance(dataset, dict) and "episodes" in dataset:
+        records = dataset["episodes"]
+    elif isinstance(dataset, dict):
+        records = [dataset]
+    else:
+        records = dataset
+    if not isinstance(records, (list, tuple)) or not records:
+        raise ValueError("dataset must contain at least one episode record")
+    return [dict(record) for record in records]
+
+
+def _validate_episode_record(record: dict[str, Any]) -> dict[str, Any]:
+    missing_keys = [key for key in REQUIRED_EPISODE_RECORD_KEYS if key not in record]
+    if missing_keys:
+        raise ValueError(f"episode record is missing required keys: {missing_keys}")
+    observations = _as_array(record, "observations", (14,))
+    actions = _as_array(record, "actions", (5,))
+    rewards = _as_array(record, "rewards", ())
     if len(observations) != len(actions) or len(observations) != len(rewards):
         raise ValueError("observations, actions, and rewards must have matching first dimension")
-    boundaries = [int(item) for item in dataset.get("episode_boundaries", [])]
-    if not boundaries or boundaries[0] != 0 or boundaries[-1] != len(observations):
-        raise ValueError("episode_boundaries must start at 0 and end at N")
-    profiles = [str(item) for item in dataset.get("profiles", [])]
-    if not profiles:
-        raise ValueError("profiles must not be empty")
+    if not str(record["episode_id"]):
+        raise ValueError("episode_id must not be empty")
+    profile = str(record["profile"])
+    if profile not in DEFAULT_UNCERTAINTY_PROFILES:
+        raise ValueError(f"profile must be one of {list(DEFAULT_UNCERTAINTY_PROFILES)}")
+    if not str(record["source_policy"]):
+        raise ValueError("source_policy must not be empty")
+    contract_sha = str(record["contract_sha"])
+    if contract_sha != CONTRACT_SHA:
+        raise ValueError(f"contract_sha must match current contract SHA {CONTRACT_SHA}")
     return {
         "observation_shape": list(observations.shape),
         "action_shape": list(actions.shape),
         "reward_shape": list(rewards.shape),
-        "episode_count": len(boundaries) - 1,
-        "profile_count": len(set(profiles)),
         "sample_count": int(len(observations)),
-        "contract_sha": str(dataset.get("contract_sha", "")),
+        "profile": profile,
+        "seed": int(record["seed"]),
+        "success": bool(record["success"]),
+        "termination_reason": str(record["termination_reason"]),
+        "source_policy": str(record["source_policy"]),
+        "paper_a_commit": str(record["paper_a_commit"]),
+        "contract_sha": contract_sha,
+    }
+
+
+def validate_offline_dataset_schema(dataset: Any) -> dict[str, Any]:
+    episode_summaries = [_validate_episode_record(record) for record in _episode_records(dataset)]
+    sample_count = int(sum(summary["sample_count"] for summary in episode_summaries))
+    profiles = [summary["profile"] for summary in episode_summaries]
+    contract_shas = sorted({summary["contract_sha"] for summary in episode_summaries})
+    return {
+        "episode_count": len(episode_summaries),
+        "profile_count": len(set(profiles)),
+        "sample_count": sample_count,
+        "required_episode_keys": list(REQUIRED_EPISODE_RECORD_KEYS),
+        "observation_shape": episode_summaries[0]["observation_shape"],
+        "action_shape": episode_summaries[0]["action_shape"],
+        "reward_shape": episode_summaries[0]["reward_shape"],
+        "profiles": sorted(set(profiles)),
+        "contract_sha": contract_shas[0] if len(contract_shas) == 1 else "mixed",
     }
 
 

@@ -13,6 +13,22 @@
     "rationale": "IQL/CQL can consume the existing Paper-A 14D observation and 5D action offline dataset contract without introducing vision, hardware, or action-space scope."
   },
   "dataset_summary": {
+    "episode_count": 1,
+    "profile_count": 1,
+    "sample_count": 8,
+    "required_episode_keys": [
+      "observations",
+      "actions",
+      "rewards",
+      "episode_id",
+      "profile",
+      "seed",
+      "success",
+      "termination_reason",
+      "source_policy",
+      "paper_a_commit",
+      "contract_sha"
+    ],
     "observation_shape": [
       8,
       14
@@ -24,10 +40,10 @@
     "reward_shape": [
       8
     ],
-    "episode_count": 1,
-    "profile_count": 1,
-    "sample_count": 8,
-    "contract_sha": "d0463ee78952bec382cc55cadeb6b32dc00494f391024d0903c17b0fcf29d45e"
+    "profiles": [
+      "nominal"
+    ],
+    "contract_sha": "19a155c7a754cacce7aef9bcc9b72007a00667589de43821ae03d6a0271d5d3b"
   },
   "blocked_on": [
     "real Paper-A offline demonstration artifact path",
