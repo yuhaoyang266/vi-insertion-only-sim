@@ -145,6 +145,18 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q` -> exit 0; 292 passed, 14 skipped, 13 warnings.
   - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for generated cross-sim smoke sidecars.
 
+### Sprint C Post-Checkpoint Provenance Refresh (2026-05-01)
+- **Status:** complete.
+- Review finding:
+  - The cross-sim smoke JSON had portable path metadata but still recorded `paper_a_commit = 0d13050`, because it was regenerated before the final provenance-fix commit existed.
+- Action:
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with the same dry-run command, Paper-B commit `3eb8408`, and current committed Paper-A provenance state `3df89bd`.
+  - CSV and Markdown sidecars were unchanged.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_sim_ranking.py tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 4 passed.
+  - `git diff --check` -> exit 0; CRLF/LF conversion warning only for the refreshed cross-sim JSON.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
