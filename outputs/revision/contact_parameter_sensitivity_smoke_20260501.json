@@ -1,0 +1,153 @@
+{
+  "artifact_type": "three_dof_contact_parameter_sensitivity",
+  "schema_version": 1,
+  "config": {
+    "profiles": [
+      "nominal"
+    ],
+    "seeds": [
+      0
+    ],
+    "episodes_per_seed": 1,
+    "policy_names": [
+      "fixed_impedance",
+      "variable_impedance"
+    ],
+    "parameter_names": [
+      "contact_xy_scale"
+    ],
+    "level_names": [
+      "low",
+      "nominal",
+      "high"
+    ],
+    "max_episode_steps": 64
+  },
+  "most_sensitive_parameter": {
+    "parameter_name": "contact_xy_scale",
+    "nominal_success_rate": 1.0,
+    "max_abs_success_delta": 0.0
+  },
+  "rows": [
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "low",
+      "profile": "nominal",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 3150.0
+      },
+      "seed_count": 1,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 1.6093863144428393,
+      "p95_peak_contact_force": 1.6093863144428393,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.006312739233310173
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "low",
+      "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 3150.0
+      },
+      "seed_count": 1,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009969908148051067,
+      "mean_peak_contact_force": 0.5087276958986107,
+      "p95_peak_contact_force": 0.5087276958986107,
+      "mean_contact_steps": 29.0,
+      "mean_contact_work": 0.001533007988630143
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "nominal",
+      "profile": "nominal",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 4200.0
+      },
+      "seed_count": 1,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 1.6093863144428393,
+      "p95_peak_contact_force": 1.6093863144428393,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.006312739233310173
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "nominal",
+      "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 4200.0
+      },
+      "seed_count": 1,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009969908148051067,
+      "mean_peak_contact_force": 0.5087276958986107,
+      "p95_peak_contact_force": 0.5087276958986107,
+      "mean_contact_steps": 29.0,
+      "mean_contact_work": 0.001533007988630143
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "high",
+      "profile": "nominal",
+      "policy_name": "fixed_impedance",
+      "overrides": {
+        "contact_xy_scale": 5250.0
+      },
+      "seed_count": 1,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009690347321834005,
+      "mean_peak_contact_force": 1.6093863144428393,
+      "p95_peak_contact_force": 1.6093863144428393,
+      "mean_contact_steps": 11.0,
+      "mean_contact_work": 0.006312739233310173
+    },
+    {
+      "parameter_name": "contact_xy_scale",
+      "level_name": "high",
+      "profile": "nominal",
+      "policy_name": "variable_impedance",
+      "overrides": {
+        "contact_xy_scale": 5250.0
+      },
+      "seed_count": 1,
+      "episodes_per_seed": 1,
+      "success_rate": 1.0,
+      "jam_rate": 0.0,
+      "documented_force_jam_rate": 0.0,
+      "blocked_contact_termination_rate": 0.0,
+      "mean_final_distance": 0.0009969908148051067,
+      "mean_peak_contact_force": 0.5087276958986107,
+      "p95_peak_contact_force": 0.5087276958986107,
+      "mean_contact_steps": 29.0,
+      "mean_contact_work": 0.001533007988630143
+    }
+  ]
+}

@@ -75,6 +75,25 @@
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 13 passed.
   - Dry-run smoke command -> exit 0; generated the three `outputs/cross_sim/` artifacts above.
 
+### Sprint C Contact-Parameter Sensitivity Smoke (2026-05-01)
+- **Status:** lightweight Paper-A sensitivity sweep implemented and smoke artifact generated.
+- Scope:
+  - Added `src/vi_full/three_dof_contact_parameter_sensitivity.py` with a five-parameter grid: `contact_xy_scale`, `contact_z_scale`, `wall_friction_range`, `force_noise_std_range`, and `contact_transition_band_m`.
+  - Added `scripts/experiments/run_3dof_contact_parameter_sensitivity.py`.
+  - Added focused module and runner tests.
+  - Current implementation evaluates handcrafted Paper-A policies directly in `ThreeDoFInsertionEnv`; it does not train or load learned policy suites.
+- Artifact:
+  - `outputs/revision/contact_parameter_sensitivity_smoke_20260501.json`
+  - `outputs/revision/contact_parameter_sensitivity_smoke_20260501.csv`
+  - `outputs/revision/contact_parameter_sensitivity_smoke_20260501.md`
+  - Smoke config: profile `nominal`, seed `0`, one episode per seed, policies `fixed_impedance` and `variable_impedance`, parameter `contact_xy_scale`, levels `low` / `nominal` / `high`.
+  - Readout: all smoke rows succeeded; `contact_xy_scale` had zero success-rate delta in this tiny slice, so no support-gate overturn is suggested by this smoke.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/three_dof/test_three_dof_contact_parameter_sensitivity.py tests/runners/test_run_3dof_contact_parameter_sensitivity.py` before implementation -> exit 1; expected missing module.
+  - Same command after implementation -> exit 0; 6 passed.
+  - `python scripts/experiments/run_3dof_contact_parameter_sensitivity.py --help` -> exit 0.
+  - Smoke sweep command -> exit 0; generated the three `outputs/revision/` artifacts above.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
