@@ -5,7 +5,7 @@
     "contract_sha": "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b",
     "contract_version": "2026-05-01",
     "paper_b_contract_sha": "8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b",
-    "paper_a_commit": "66c06aa",
+    "paper_a_commit": "d490b65",
     "paper_b_checkout_commit": "dfb3c5c",
     "paper_b_verified_env_commit": "3eb8408",
     "paper_b_contract_mirror_commit": "dfb3c5c",

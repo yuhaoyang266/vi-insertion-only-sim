@@ -223,11 +223,13 @@
   - Updated the contract, manuscript Section 5, and Tier-2 cover-letter template to separate dry-run checkpoint evidence from future full-physics execution.
   - Replaced ambiguous artifact metadata with `paper_b_checkout_commit`, `paper_b_verified_env_commit`, and `paper_b_contract_mirror_commit`.
   - Mirrored the revised contract and SHA pin to Paper-B as `dfb3c5c`; `paper_b_verified_env_commit` remains `3eb8408`.
-  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with contract SHA `8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b`, `paper_a_commit = 66c06aa`, `paper_b_checkout_commit = dfb3c5c`, and `paper_b_contract_mirror_commit = dfb3c5c`.
+  - Regenerated `outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_smoke_20260501.json` with contract SHA `8b3e7f300f5e427ac527829f0721edd489636c9a6db582509ccd72dfbf78454b`, `paper_a_commit = d490b65`, `paper_b_checkout_commit = dfb3c5c`, and `paper_b_contract_mirror_commit = dfb3c5c`.
+  - Review polish: default `paper_b_contract_mirror_commit` now derives from the verified checkout commit unless explicitly overridden, avoiding stale hardcoded mirror metadata for future checkouts.
 - Verification:
   - Paper-B `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_cross_paper_contract_pin.py` -> exit 0; 2 passed.
   - Paper-A `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py tests/paper/test_paper_claim_boundaries.py tests/paper/test_prose_statistics_sync.py` -> exit 0; 35 passed.
   - Dry-run smoke command with `--dry-run` and `paper_b_checkout_commit = dfb3c5c` -> exit 0; regenerated JSON artifact.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/runners/test_run_cross_sim_via_paper_b.py` after mirror-default cleanup -> exit 0; 6 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper tests/runners/test_run_cross_sim_via_paper_b.py` -> exit 0; 17 passed.
   - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/core/test_import_boundaries.py tests/reviewer` -> exit 0; 5 passed.
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary paper-asset outputs only.
