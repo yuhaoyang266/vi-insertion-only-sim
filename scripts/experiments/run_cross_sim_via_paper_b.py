@@ -34,7 +34,6 @@ from vi_full.three_dof_profiles import DEFAULT_UNCERTAINTY_PROFILES
 
 _COMMIT_SHA_RE = re.compile(r"^[0-9a-fA-F]{4,40}$")
 PAPER_B_VERIFIED_ENV_COMMIT = "3eb8408"
-PAPER_B_CONTRACT_MIRROR_COMMIT = "dfb3c5c"
 
 
 def _parse_args() -> argparse.Namespace:
@@ -52,8 +51,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--paper-b-contract-mirror-commit",
         type=str,
-        default=PAPER_B_CONTRACT_MIRROR_COMMIT,
-        help="Paper-B commit that mirrors the current cross-paper contract.",
+        default=None,
+        help=(
+            "Paper-B commit that mirrors the current cross-paper contract; "
+            "defaults to the verified Paper-B checkout commit."
+        ),
     )
     parser.add_argument(
         "--profiles",
@@ -221,7 +223,9 @@ def _metadata(
         "paper_a_commit": _git_commit(REPO_ROOT),
         "paper_b_checkout_commit": paper_b_checkout_commit,
         "paper_b_verified_env_commit": str(args.paper_b_verified_env_commit),
-        "paper_b_contract_mirror_commit": str(args.paper_b_contract_mirror_commit),
+        "paper_b_contract_mirror_commit": str(
+            args.paper_b_contract_mirror_commit or paper_b_checkout_commit
+        ),
         "paper_a_policy_artifact": "not_available",
         "paper_b_env_config": "not_available",
         "mapping_dyaw": 0.0,

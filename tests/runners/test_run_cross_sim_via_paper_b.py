@@ -90,7 +90,7 @@ def test_cross_sim_runner_writes_dry_run_ranking_artifacts(
     assert "paper_b_commit" not in payload["metadata"]
     assert payload["metadata"]["paper_b_checkout_commit"] == paper_b_commit
     assert payload["metadata"]["paper_b_verified_env_commit"] == "3eb8408"
-    assert payload["metadata"]["paper_b_contract_mirror_commit"] == "dfb3c5c"
+    assert payload["metadata"]["paper_b_contract_mirror_commit"] == paper_b_commit
     assert payload["metadata"]["paper_a_policy_artifact"] == "not_available"
     assert payload["metadata"]["paper_b_env_config"] == "not_available"
     assert payload["metadata"]["mapping_dyaw"] == 0.0
@@ -186,6 +186,44 @@ def test_cross_sim_runner_records_actual_checkout_commit_when_omitted(
     payload = json.loads(output_path.read_text(encoding="utf-8"))
 
     assert payload["metadata"]["paper_b_checkout_commit"] == paper_b_commit
+
+
+def test_cross_sim_runner_accepts_full_paper_b_commit(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    paper_b_repo, paper_b_commit = _make_paper_b_repo(tmp_path)
+    paper_b_full_commit = _run_git(paper_b_repo, "rev-parse", "HEAD")
+    output_path = tmp_path / "cross_sim.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_cross_sim_via_paper_b.py",
+            "--paper-b-repo-path",
+            str(paper_b_repo),
+            "--paper-b-commit",
+            paper_b_full_commit,
+            "--profiles",
+            "nominal",
+            "--seeds",
+            "0",
+            "--episodes-per-seed",
+            "1",
+            "--suites",
+            "repaired_mainline_bc_to_ppo",
+            "--dry-run",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    module.main()
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+
+    assert payload["metadata"]["paper_b_checkout_commit"] == paper_b_commit
+    assert payload["metadata"]["paper_b_contract_mirror_commit"] == paper_b_commit
 
 
 def test_cross_sim_runner_help_works_from_repo_root() -> None:
