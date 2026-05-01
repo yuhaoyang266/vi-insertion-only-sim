@@ -10,6 +10,7 @@ from vi_full.cross_paper_bridge import CONTRACT_SHA
 from vi_full.modern_baseline_smoke import (
     MODERN_BASELINE_DECISION,
     build_synthetic_offline_dataset,
+    load_offline_dataset_json,
     run_modern_baseline_smoke,
     validate_offline_dataset_schema,
     write_modern_baseline_smoke_artifacts,
@@ -92,8 +93,30 @@ def test_modern_baseline_smoke_reports_scaffold_status() -> None:
     assert report["artifact_type"] == "modern_baseline_smoke"
     assert report["algorithm"] == "iql_offline"
     assert report["status"] == "scaffold_only"
+    assert report["dataset_source"] == "synthetic_schema_smoke"
     assert report["dataset_summary"]["observation_shape"] == [4, 14]
     assert "episode_id" in report["dataset_summary"]["required_episode_keys"]
+
+
+def test_modern_baseline_smoke_can_ingest_json_dataset(tmp_path: Path) -> None:
+    dataset = build_synthetic_offline_dataset(num_steps=4)
+    json_dataset = [
+        {
+            key: value.tolist() if hasattr(value, "tolist") else value
+            for key, value in dataset[0].items()
+        }
+    ]
+    dataset_path = tmp_path / "offline_dataset.json"
+    dataset_path.write_text(json.dumps(json_dataset), encoding="utf-8")
+
+    loaded = load_offline_dataset_json(dataset_path)
+    report = run_modern_baseline_smoke(dataset_path=dataset_path)
+
+    assert loaded[0]["episode_id"] == "synthetic_schema_smoke_0000"
+    assert report["status"] == "dataset_schema_verified"
+    assert report["dataset_source"] == dataset_path.as_posix()
+    assert report["dataset_summary"]["sample_count"] == 4
+    assert "real Paper-A offline demonstration artifact path" not in report["blocked_on"]
 
 
 def test_modern_baseline_smoke_writes_artifacts(tmp_path: Path) -> None:

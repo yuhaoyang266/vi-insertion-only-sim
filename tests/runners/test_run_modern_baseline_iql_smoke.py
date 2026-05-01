@@ -6,6 +6,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from vi_full.cross_paper_bridge import CONTRACT_SHA
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -48,6 +50,52 @@ def test_modern_baseline_iql_smoke_runner_writes_artifact(
     assert payload["algorithm"] == "iql_offline"
     assert payload["status"] == "scaffold_only"
     assert output_path.with_suffix(".md").exists()
+
+
+def test_modern_baseline_iql_smoke_runner_accepts_dataset_path(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    module = _load_runner_module()
+    dataset_path = tmp_path / "offline_dataset.json"
+    output_path = tmp_path / "modern_baseline_iql_smoke.json"
+    dataset_path.write_text(
+        json.dumps(
+            [
+                {
+                    "observations": [[0.0] * 14, [0.1] * 14],
+                    "actions": [[0.0] * 5, [0.0] * 5],
+                    "rewards": [0.0, 1.0],
+                    "episode_id": "dataset_path_smoke_0000",
+                    "profile": "nominal",
+                    "seed": 0,
+                    "success": True,
+                    "termination_reason": "synthetic_success",
+                    "source_policy": "dataset_path_smoke",
+                    "paper_a_commit": "dataset_path_smoke",
+                    "contract_sha": CONTRACT_SHA,
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_modern_baseline_iql_smoke.py",
+            "--dataset-path",
+            str(dataset_path),
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    module.main()
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+
+    assert payload["status"] == "dataset_schema_verified"
+    assert payload["dataset_source"] == dataset_path.as_posix()
 
 
 def test_modern_baseline_iql_smoke_runner_help_works_from_repo_root() -> None:

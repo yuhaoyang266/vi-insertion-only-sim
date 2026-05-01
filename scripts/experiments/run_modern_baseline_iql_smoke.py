@@ -22,6 +22,7 @@ def _parse_args() -> argparse.Namespace:
         description="Run the modern IQL/CQL baseline smoke scaffold."
     )
     parser.add_argument("--num-steps", type=int, default=8)
+    parser.add_argument("--dataset-path", type=Path, default=None)
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
@@ -33,7 +34,10 @@ def _default_output_path() -> Path:
 
 def main() -> None:
     args = _parse_args()
-    report = run_modern_baseline_smoke(num_steps=int(args.num_steps))
+    report = run_modern_baseline_smoke(
+        num_steps=int(args.num_steps),
+        dataset_path=args.dataset_path,
+    )
     output_path = args.output if args.output is not None else _default_output_path()
     paths = write_modern_baseline_smoke_artifacts(output_path, report)
     print(f"modern_baseline_smoke_json {paths['json']}", flush=True)

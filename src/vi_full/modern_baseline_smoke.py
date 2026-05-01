@@ -78,6 +78,13 @@ def build_synthetic_offline_dataset(*, num_steps: int = 8) -> list[dict[str, Any
     ]
 
 
+def load_offline_dataset_json(dataset_path: Path) -> Any:
+    path = Path(dataset_path)
+    if not path.exists():
+        raise FileNotFoundError(f"offline dataset does not exist: {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def _as_array(dataset: dict[str, Any], name: str, shape_tail: tuple[int, ...]) -> np.ndarray:
     if name not in dataset:
         raise ValueError(f"dataset is missing {name}")
@@ -165,21 +172,38 @@ def validate_offline_dataset_schema(dataset: Any) -> dict[str, Any]:
     }
 
 
-def run_modern_baseline_smoke(*, num_steps: int = 8) -> dict[str, Any]:
-    dataset = build_synthetic_offline_dataset(num_steps=num_steps)
+def run_modern_baseline_smoke(
+    *,
+    num_steps: int = 8,
+    dataset_path: Path | None = None,
+) -> dict[str, Any]:
+    if dataset_path is None:
+        dataset = build_synthetic_offline_dataset(num_steps=num_steps)
+        status = "scaffold_only"
+        dataset_source = "synthetic_schema_smoke"
+        blocked_on = [
+            "real Paper-A offline demonstration artifact path",
+            "IQL/CQL training dependency and hyperparameter file",
+            "comparison protocol against existing five-suite benchmark rows",
+        ]
+    else:
+        dataset = load_offline_dataset_json(dataset_path)
+        status = "dataset_schema_verified"
+        dataset_source = Path(dataset_path).as_posix()
+        blocked_on = [
+            "IQL/CQL training dependency and hyperparameter file",
+            "comparison protocol against existing five-suite benchmark rows",
+        ]
     dataset_summary = validate_offline_dataset_schema(dataset)
     return {
         "artifact_type": "modern_baseline_smoke",
         "schema_version": 1,
         "algorithm": MODERN_BASELINE_DECISION["chosen"],
-        "status": "scaffold_only",
+        "status": status,
         "decision": dict(MODERN_BASELINE_DECISION),
+        "dataset_source": dataset_source,
         "dataset_summary": dataset_summary,
-        "blocked_on": [
-            "real Paper-A offline demonstration artifact path",
-            "IQL/CQL training dependency and hyperparameter file",
-            "comparison protocol against existing five-suite benchmark rows",
-        ],
+        "blocked_on": blocked_on,
     }
 
 
