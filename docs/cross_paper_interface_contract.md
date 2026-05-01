@@ -1,197 +1,211 @@
-# Cross-Paper Interface Contract (Paper-A <-> Paper-B)
+# Cross-Paper Interface Contract
 
-**Status:** Active draft (2026-04-28). Mirror copy lives in the Paper-B repository at the same relative path. **Both copies must stay byte-identical.** When this contract changes, update the SHA pin in `src/vi_full/cross_paper_bridge.py` (Paper-A) and `src/variable_impedance/safety_layer/cross_paper.py` (Paper-B) atomically.
+Status: active Sprint C draft, 2026-05-01.
 
-## 0. Parties
+This contract defines the only supported interface between Paper-A (`vi-insertion-only-sim`) and the planned Paper-B repository (`research-cartesian-impedance-vla-sim`). Paper-A owns the support-gated 3DoF benchmark. Paper-B owns the MuJoCo Cartesian impedance and safety-layer environment. Cross-paper artifacts must record the contract SHA, both repository commits when available, and the exact runner command.
 
-| Tag | Repository | Working title | Primary venue target |
-| --- | --- | --- | --- |
-| **Paper-A** | `vi-insertion-only-sim` | *Support-Gated Learnability and Variable-Impedance Load Paths in a 3DoF Insertion Benchmark* | Robotica / Adv. Robotics (Tier-3); RAL / T-Mech (Tier-2 stretch) |
-| **Paper-B** | `research-cartesian-impedance-vla-sim` | *A Contact-State-Aware Adaptive Impedance Safety Layer for Force-Bounded Contact-Rich Precision Assembly* | IEEE RA-L (primary, 2026-11-15); T-Mech / RAS / Mechatronics (fallback) |
+## 1. Scope
 
-## 1. Scope of This Contract
+The contract pins:
 
-This document is the **only** interface point between Paper-A and Paper-B. It pins:
+- Paper-A action to Paper-B Schema-P action mapping.
+- Paper-B state to Paper-A observation projection.
+- Shared success, jam, contact, horizon, and ranking metrics.
+- The five-profile evaluation suite.
+- Demonstration dataset schema for offline or imitation baselines.
+- Version-pinning and refusal behavior.
 
-1. The action schema mapping that lets a Paper-A learned policy drive Paper-B's environment.
-2. The observation projection that lets a Paper-A policy receive a Paper-A-shaped observation from Paper-B's MuJoCo state.
-3. The success / jam / horizon / metric definitions used in both papers' cross-cited tables.
-4. The 5-profile evaluation suite and its per-profile parameters.
-5. The demo dataset format used by both papers' learned baselines.
-6. The version-pinning protocol: every cross-paper artifact records the exact commit hash and contract SHA used.
+The contract does not promote SCI beyond Paper-A's benchmark-local diagnostic boundary. It also does not claim hardware validity; both papers use this interface for simulation-only evidence.
 
-**Out of scope of this contract:**
+## 2. Action Schema
 
-- Paper-A's SG-VI / SCI claims, contributions, or main-table contents. Paper-B does not re-derive these.
-- Paper-B's safety-layer construction, force-envelope theorem, or directional-K mechanics. Paper-A does not re-derive these.
-- Either paper's standalone abstract, introduction, related work, or conclusion.
-- Hardware. Both papers are simulation-only on this contract.
-
-## 2. Action Schema (Paper-A 5D <-> Paper-B Schema-P)
-
-**Paper-A learned policies output:**
+Paper-A policies output a 5D action:
 
 ```text
-a_A = [Δx, Δy, Δz, κ_xy, κ_z]  ∈ ℝ^5
-       └── Cartesian motion ──┘ └ stiffness ┘
+a_A = [dx, dy, dz, k_xy, k_z]
 ```
 
-with `Δx, Δy, Δz ∈ [-1, 1]` and `κ_xy, κ_z ∈ [0, 1]` per Paper-A `src/vi_full/three_dof_env.py`.
+Where:
 
-**Paper-B Schema-P upstream interface accepts:**
+- `dx`, `dy`, `dz` are normalized Cartesian commands in `[-1, 1]`.
+- `k_xy` and `k_z` are normalized stiffness commands in `[0, 1]`.
+- Paper-A decodes `dx` and `dy` with `step_scale_xy_m = 0.0012`.
+- Paper-A decodes `dz` with `step_scale_z_m = 0.0010`.
+- Paper-A decodes `k_xy` to `[20.0, 110.0]` N/m.
+- Paper-A decodes `k_z` to `[35.0, 140.0]` N/m.
+
+Paper-B Schema-P must accept the same upstream 5D vector:
 
 ```text
-a_up^P = Δx ∈ ℝ^5    (translation + lateral/axial stiffness mode)
+a_B = [dx, dy, dz, k_xy, k_z]
 ```
 
-per Paper-B `docs/SECTION3_METHOD.md` § 3.1.
+Mapping from Paper-A to Paper-B is identity for these five fields. Paper-A has no yaw command, so Paper-B must set `dyaw = 0.0` before any internal safety-layer or contact-frame processing. If Paper-B internally overrides stiffness for safety-layer evaluation, the artifact must record both the upstream stiffness command and the post-layer stiffness.
 
-**Mapping (Paper-A -> Paper-B):**
+Invalid actions:
+
+- Wrong shape is an error.
+- Non-finite values are an error.
+- Finite out-of-range values are clipped to the Paper-A action bounds before dispatch, matching `ThreeDoFInsertionEnv.step`.
+
+## 3. Observation Projection
+
+Paper-A observations are 14D:
 
 ```text
-Δx_paper_b[0:3]  = Δx_paper_a[0:3]              (translation, identity)
-Δx_paper_b[3]    = κ_xy_paper_a                  (lateral stiffness mode)
-Δx_paper_b[4]    = κ_z_paper_a                   (axial stiffness mode)
-dyaw             = 0  (FORCED)                   (Paper-A is translation-only)
+o_A = [p_rel_x, p_rel_y, p_rel_z,
+       v_x, v_y, v_z,
+       f_x, f_y, f_z,
+       prev_dx, prev_dy, prev_dz, prev_k_xy, prev_k_z]
 ```
 
-The Paper-B contact-frame estimator and directional-K decomposition treat `dyaw=0` as a Schema-P contract; this is acceptable for Paper-B's cylindrical peg-in-hole and chamfered-hole tasks (square / slot variants are deferred in Paper-B per its scope statement).
+Paper-B must project its simulator state into this shape:
 
-**Stiffness decoding inside Paper-B:** Paper-B's MuJoCo environment converts `(κ_xy, κ_z)` into the same `K_xy ∈ [20, 110]` and `K_z ∈ [35, 140]` ranges used by Paper-A `src/vi_full/three_dof_config.py`. If Paper-B's safety layer overrides stiffness, that override happens **after** the upstream policy decode; this preserves the Paper-A interface while exercising Paper-B's directional-K logic.
+- `p_rel`: end-effector position minus the active hole or target-frame origin, in meters.
+- `v`: end-effector linear velocity in meters per second.
+- `f`: world-frame contact force in newtons. If Paper-B reports a 6D wrench, use the force components and log the dropped torque norm.
+- `prev_action`: previous clipped Schema-P action after Paper-A bounds handling.
 
-## 3. Observation Projection (Paper-B MuJoCo state -> Paper-A 14D observation)
+If Paper-B does not expose linear velocity directly, the bridge may use finite differences from consecutive `p_rel` values. The artifact must record the timestep used for that approximation. If dropped torque has episode mean greater than `0.1 N*m`, mark the episode `out_of_paper_a_scope = true` and exclude it from primary ranking rows.
 
-**Paper-A observation:**
+## 4. Shared Metrics
+
+Shared metric definitions:
+
+| Name | Definition |
+| --- | --- |
+| `success` | Lateral error <= `0.0008` m, axial error <= `0.0010` m, and speed <= `0.08` m/s. |
+| `force_jam` | Force norm >= `8.0` N for `3` consecutive steps. |
+| `blocked_contact` | Paper-A-style blocked contact failure for `3` consecutive steps. |
+| `jam` | `force_jam OR blocked_contact`. |
+| `horizon` | `64` control steps for paper-facing benchmark runs. |
+| `contact_entry` | First step where force norm >= `0.05` N. |
+| `final_distance` | Final Euclidean distance to the contact target, in meters. |
+| `peak_force` | Episode maximum force norm, in newtons. |
+| `contact_work` | Sum of positive contact work increments over the episode. |
+| `contact_impulse` | Sum of force norm times timestep over the episode. |
+
+Ranking artifacts must report at least:
+
+- `success_rate`
+- `jam_rate`
+- `documented_force_jam_rate`
+- `blocked_contact_termination_rate`
+- `mean_final_distance`
+- `mean_peak_contact_force`
+- `p95_peak_contact_force`
+- `mean_contact_steps`
+- `mean_contact_work`
+
+## 5. Five-Profile Suite
+
+The default suite is exactly:
 
 ```text
-o_A = [p_xy_rel ∈ ℝ^2,  p_z_rel ∈ ℝ,  v_rel ∈ ℝ^3,  f ∈ ℝ^3,  a_{t-1} ∈ ℝ^5]   total 14
+nominal
+tight_clearance
+high_friction
+offset_bias
+noisy_force
 ```
 
-per Paper-A § 2.2 / `three_dof_env.py::_get_observation`.
+Paper-A profile parameters are:
 
-**Paper-B exposes** in `peg_in_hole.py`: 7-DoF Panda joint state, `RobotState` (ee_pos, ee_quat, ee_twist, J), and a 6D wrench sample from `ContactWrenchSample` summed in the world frame.
+| Profile | Parameters |
+| --- | --- |
+| `nominal` | `clearance_range_m = [0.00070, 0.00110]`, `hole_xy_offset_range_m = 0.0010`, `wall_friction_range = [0.12, 0.32]`, `force_noise_std_range = [0.02, 0.12]`. |
+| `tight_clearance` | `clearance_range_m = [0.00045, 0.00075]`, `hole_xy_offset_range_m = 0.0011`; other values inherit `nominal`. |
+| `high_friction` | `wall_friction_range = [0.28, 0.46]`, `force_noise_std_range = [0.03, 0.10]`; other values inherit `nominal`. |
+| `offset_bias` | `hole_xy_offset_range_m = 0.0018`, `clearance_range_m = [0.00065, 0.00100]`; other values inherit `nominal`. |
+| `noisy_force` | `force_noise_std_range = [0.12, 0.25]`, `wall_friction_range = [0.15, 0.30]`; other values inherit `nominal`. |
 
-**Projection (Paper-B -> Paper-A):**
+Paper-B may map these parameters to its own simulator fields, but it must record the mapped values and any non-equivalent contact-law differences in the run artifact.
 
-```text
-hole_frame_origin   = peg-in-hole task target site (Paper-B `peg_in_hole.py` exposes this)
-p_rel               = ee_pos - hole_frame_origin                  (3D)
-v_rel               = ee_linear_twist                              (3D, world frame)
-f_xyz               = wrench_sample.wrench[0:3]                    (3D linear force, world frame)
-a_{t-1}             = previous Schema-P action (5D), stored on the bridge
-```
+## 6. Demonstration Dataset Schema
 
-Yaw, roll, pitch components and torque components of the Paper-B wrench are **dropped** by this projection. The bridge MUST log dropped torque magnitude per step; if mean dropped-torque exceeds `0.1 N·m` over an episode, mark the episode as "out-of-Paper-A-scope" and exclude from cross-sim ranking. This guard prevents Paper-A policies from being scored on episodes whose dynamics fall outside Paper-A's 3DoF assumption.
-
-## 4. Success, Jam, Horizon, Metrics
-
-| Quantity | Definition | Source of truth |
-| --- | --- | --- |
-| Success | `‖p_rel_xy‖ ≤ 0.8 mm AND |p_rel_z| ≤ 1.0 mm AND ‖v_rel‖ ≤ 0.08 m/s` | Paper-A § 2.2 |
-| Jam | `‖f‖ ≥ 8.0 N` for 3 consecutive steps | Paper-A § 2.2 |
-| Episode horizon | 64 control steps | Paper-A § 2.2 |
-| Control rate | 50 ms / step (Paper-B's upstream-layer rate) | Paper-B § 4.1.1 |
-| Success rate | mean over episodes | both |
-| Mean peak contact force | episode-max `‖f‖` averaged over episodes | both |
-| Impulse | `∫ ‖f‖ dt` over episode | Paper-B; appendix-only in Paper-A |
-| Mean contact steps | count of steps with `‖f‖ ≥ 0.05 N` | Paper-A § benchmark |
-
-The cross-sim ranking table reports **success** and **mean peak contact force** as primary, **mean contact steps** and **jam rate** as secondary. Paper-B's safety-layer envelope-bound metric `ρ_m` is not part of this contract; Paper-B reports it independently.
-
-## 5. Five-Profile Evaluation Suite
-
-Both papers run the cross-sim ranking on the same 5 profiles (Paper-A § 2.5 nominal profiles):
-
-| Profile | Variation axis | Range / value |
-| --- | --- | --- |
-| `nominal` | none (reference) | clearance 0.70-1.10 mm, μ_wall 0.25, force_noise σ=0.0 N |
-| `tight_clearance` | clearance | 0.45-0.75 mm |
-| `high_friction` | wall friction | μ_wall 0.55 |
-| `offset_bias` | hole offset | hidden hole offset up to 1.5 mm (relative-frame attenuated) |
-| `noisy_force` | force-sensor noise | σ = 0.4 N additive on `f` |
-
-**Paper-B-side note:** Paper-B's MuJoCo environment must implement these 5 profiles using the same parameter values; per-profile overrides go into `configs/cross_paper_eval.yaml` (new file in Paper-B). The Paper-B physical contact model may produce different absolute force magnitudes than Paper-A's analytical model — this is expected and is exactly what the cross-sim ranking-stability table measures.
-
-## 6. Demo Dataset Format
-
-Paper-A's BC demonstrations (`bc_rollout_episodes = 32`, `bc_pretrain_steps = 32`) are the canonical demo source. Format:
+Demo datasets exchanged under this contract use one record per episode:
 
 ```python
-demo_record = {
-    "observations": np.ndarray,      # (T, 14) float32, per § 3
-    "actions": np.ndarray,           # (T, 5)  float32, per § 2
-    "rewards": np.ndarray,           # (T,)    float32, optional
-    "success": bool,
-    "profile": str,                  # one of the 5 profiles
-    "teacher_spec": dict,            # serialized ThreeDoFTeacherSpec
+{
+    "observations": float32[T, 14],
+    "actions": float32[T, 5],
+    "rewards": float32[T],
+    "episode_id": str,
+    "profile": str,
     "seed": int,
+    "success": bool,
+    "termination_reason": str,
+    "source_policy": str,
+    "paper_a_commit": str,
+    "contract_sha": str,
 }
 ```
 
-Paper-B's HybridIL-lite (Schema-PW) does NOT consume Paper-A demos directly because Paper-A demos lack wrench traces. Paper-B's IQL/CQL or any Schema-P offline-RL **does** consume Paper-A demos directly.
+Arrays must be step-aligned: `observations[t]` is the observation consumed before dispatching `actions[t]`. Profile names must be one of the five names in Section 5. Extra provenance keys are allowed; missing required keys are errors.
 
-## 7. Version Pinning Protocol
+## 7. Policy Suite Names
 
-Each cross-paper artifact records:
+Cross-sim bridge smoke and ranking runs use these Paper-A suite names unless a run explicitly narrows scope:
+
+- `ppo_no_bc`
+- `bc_only_stable_r32_p32`
+- `fixed_impedance_rl_stable_r32_p32`
+- `repaired_mainline_bc_to_ppo`
+- `dapg_lite_repaired_mainline`
+
+The bridge may expose placeholders for unavailable policy artifacts, but ranking artifacts must distinguish `not_available`, `skipped`, `failed`, and `completed`.
+
+## 8. Version Pinning
+
+Every cross-paper artifact must include:
 
 ```yaml
-contract_sha:        <SHA-256 of this markdown file at the time of the run>
-paper_a_commit:      <git commit hash of vi-insertion-only-sim>
-paper_b_commit:      <git commit hash of research-cartesian-impedance-vla-sim>
-paper_a_policy_artifact: artifacts/main_benchmark/three_dof_benchmark_paper9suite_full5profile_bc32x32_stage3_20260412.json
-paper_b_env_config:  configs/cross_paper_eval.yaml@<commit>
-mapping_dyaw:        0  (forced; see § 2)
-torque_drop_guard_n_m: 0.1  (see § 3)
+contract_sha: <sha256 of docs/cross_paper_interface_contract.md>
+paper_a_commit: <git commit of vi-insertion-only-sim>
+paper_b_commit: <git commit of research-cartesian-impedance-vla-sim, or deferred>
+paper_a_policy_artifact: <path or not_available>
+paper_b_env_config: <path or not_available>
+mapping_dyaw: 0.0
+torque_drop_guard_n_m: 0.1
 ```
 
-`src/vi_full/cross_paper_bridge.py` (Paper-A) and `src/variable_impedance/safety_layer/cross_paper.py` (Paper-B) each contain a `CONTRACT_SHA` constant. At bridge load time, both refuse to run if the constant disagrees with the SHA computed from this markdown file. This guarantees Paper-A's cross-sim numbers and Paper-B's RQ7 numbers are reproduced against the same pinned contract.
+Paper-A stores its SHA pin in `src/vi_full/cross_paper_bridge.py` as `CONTRACT_SHA`. Paper-B must store the same value in its bridge copy when that repository is available. Bridge code must refuse to run when the computed contract SHA does not match the pinned value.
 
-## 8. Reproduction Command Templates
+## 9. Reproduction Templates
 
-### From Paper-A repo (drives Paper-B as cross-sim)
+Paper-A driving Paper-B:
 
 ```bash
 python scripts/experiments/run_cross_sim_via_paper_b.py \
-    --paper-b-repo-path <path-to-paper-b-checkout> \
-    --paper-b-commit <pinned-commit> \
-    --profiles nominal tight_clearance high_friction offset_bias noisy_force \
-    --seeds 0 1 2 3 4 \
-    --episodes-per-seed 100 \
-    --output outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_<date>.json
+  --paper-b-repo-path <path-to-paper-b-checkout> \
+  --profiles nominal tight_clearance high_friction offset_bias noisy_force \
+  --seeds 0 1 2 3 4 \
+  --episodes-per-seed 100 \
+  --output outputs/cross_sim/three_dof_cross_sim_ranking_paper_b_<date>.json
 ```
 
-### From Paper-B repo (consumes Paper-A learned policy as U6 upstream)
+Paper-A fallback if Paper-B is blocked:
 
 ```bash
-python -m variable_impedance.experiments.safety_layer_eval \
-    --upstream sg_vi_paper_a \
-    --paper-a-policy-artifact <path-to-paper-a-stage3-json> \
-    --tasks peg_in_hole chamfered \
-    --layer-on-off both \
-    --seeds 0..49 \
-    --output reports/cross_paper_u6_<date>/
+python scripts/experiments/run_3dof_contact_parameter_sensitivity.py \
+  --profiles nominal tight_clearance high_friction offset_bias noisy_force \
+  --seeds 0 1 2 \
+  --output outputs/revision/contact_parameter_sensitivity_<date>.json
 ```
 
-## 9. Boundary Statements For Each Manuscript
+## 10. Boundary Text
 
-To avoid double-claiming, each paper must include a Related-Work paragraph that cross-cites the other and states:
+Paper-A may state that cross-simulator stability is evaluated by running its learned 3DoF suites through a separately pinned Paper-B simulator path. Paper-A must not claim Paper-B's safety-layer contribution.
 
-**In Paper-A (Section 5 cross-sim block):**
+Paper-B may state that it consumes a frozen Paper-A upstream policy via this contract. Paper-B must not re-establish Paper-A's support-gate or learnability claims.
 
-> "Cross-simulator stability is established by running the five learned suites of this paper against the MuJoCo physics environment of the companion work [Paper-B]. The mapping is fixed by `docs/cross_paper_interface_contract.md` and is restricted to translational Schema-P policies. The companion work is independent and is not assessed here for its own contributions, which concern a force-bounded safety layer that is orthogonal to our learnability claim."
+## 11. Change Control
 
-**In Paper-B (Section 4.6 RQ7 block):**
+Contract changes require:
 
-> "We additionally evaluate compositionality with a cross-cited Schema-P upstream from [Paper-A], the SG-VI BC->PPO policy. The policy is consumed as a frozen learned upstream via `docs/cross_paper_interface_contract.md`; we do not re-establish [Paper-A]'s support-gate or learnability claims, which are orthogonal to the safety-layer mechanism studied here."
+1. Updating this markdown file.
+2. Updating the Paper-A `CONTRACT_SHA` pin.
+3. Mirroring the same markdown bytes and SHA pin to Paper-B when Paper-B is available.
+4. Recording the decision in `docs/project/progress.md`.
 
-These two boundary paragraphs are the only place where the papers explicitly reference each other in their main manuscripts.
-
-## 10. Update and Conflict Resolution
-
-- Either repo can propose a contract change. The change is committed atomically to both repos with the same SHA and the same date stamp at the top of this file.
-- Conflicts (Paper-B physics rejects a Paper-A profile parameter, Paper-A scope shifts to non-translational, etc.) are resolved by Paper-A and Paper-B owner agreement and recorded in `docs/project/progress.md` (Paper-A) and an equivalent log in Paper-B.
-- If either paper is desk-rejected and pivots venue, the contract continues to apply unless explicitly retired in writing in this section.
-
----
-
-**Last updated:** 2026-04-28. Contract SHA: `<computed-on-write>`.
+If Paper-B is unavailable or not parity-ready, Paper-A records that status and continues through the documented fallback path instead of weakening this contract.

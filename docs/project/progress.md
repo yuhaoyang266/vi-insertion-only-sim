@@ -17,6 +17,18 @@
   - `python scripts/export/build_paper_assets.py --check` -> exit 0; temporary evidence-matrix and sprint2 main-table outputs only.
   - `git diff --check` -> exit 0; CRLF/LF conversion warnings only for pre-existing touched files.
 
+### Sprint C Contract Gate C0: Paper-A SHA Pin (2026-05-01)
+- **Status:** Paper-A contract authored and SHA-pinned; Paper-B mirror pending repository availability check.
+- Scope:
+  - Replaced the damaged draft `docs/cross_paper_interface_contract.md` with an ASCII contract aligned to current Paper-A code defaults.
+  - Pinned action mapping, observation projection, shared metrics, five-profile parameters, demo schema, policy suite names, and contract refusal behavior.
+  - Added `src/vi_full/cross_paper_bridge.py` with the Paper-A `CONTRACT_SHA` pin and lightweight SHA verification helper.
+  - Added `tests/cross_paper/test_cross_paper_contract_sha_pin.py` so contract edits fail unless the bridge pin is updated.
+- Verification:
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_contract_sha_pin.py` before bridge helper -> exit 1; expected import error for missing `vi_full.cross_paper_bridge`.
+  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/cross_paper/test_cross_paper_contract_sha_pin.py` after implementation -> exit 0; 2 passed.
+  - `rg -n "[^\\x00-\\x7F]" docs/cross_paper_interface_contract.md src/vi_full/cross_paper_bridge.py tests/cross_paper/test_cross_paper_contract_sha_pin.py` -> exit 1; no non-ASCII matches.
+
 ### Review Repair Execution: CSV Export and Provenance Hardening (2026-04-30)
 - **Status:** complete.
 - Scope:
